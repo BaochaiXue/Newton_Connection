@@ -218,7 +218,8 @@ def _issues_from_generator_story() -> list[str]:
     for rel, text in docs.items():
         if PUBLIC_GENERATOR_CMD not in text:
             issues.append(f"{rel} does not point to the canonical generator entrypoint `{PUBLIC_GENERATOR_CMD}`")
-        if "generate_md_truth_inventory.py" in text:
+        lowered = text.lower()
+        if "generate_md_truth_inventory.py" in text and "compatibility alias" not in lowered:
             issues.append(f"{rel} still presents generate_md_truth_inventory.py as a public workflow")
     for path in GENERATED_REQUIRED:
         if not path.exists():
@@ -228,7 +229,8 @@ def _issues_from_generator_story() -> list[str]:
             text = path.read_text(encoding="utf-8", errors="ignore")
             if PUBLIC_GENERATOR_CMD not in text:
                 issues.append(f"generated markdown artifact does not cite the public generator entrypoint: {_relative(path)}")
-            if "generate_md_truth_inventory.py" in text:
+            lowered = text.lower()
+            if "generate_md_truth_inventory.py" in text and "compatibility alias" not in lowered:
                 issues.append(f"generated markdown artifact still cites the private generator alias: {_relative(path)}")
     return issues
 

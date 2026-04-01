@@ -1050,16 +1050,8 @@ def _prepare_generated_assets() -> None:
             )
     for name, src in ACCEPTED_FORCE_MP4.items():
         _ensure_gif(src, ACCEPTED_FORCE_GIF[name], width=640, fps=8, max_colors=96)
-    for src, out in (
-        (SELF_MATRIX_OFF_MP4, SELF_MATRIX_OFF_GIF),
-        (SELF_MATRIX_NATIVE_MP4, SELF_MATRIX_NATIVE_GIF),
-        (SELF_MATRIX_CUSTOM_H2_MP4, SELF_MATRIX_CUSTOM_H2_GIF),
-        (SELF_MATRIX_PHYSTWIN_MP4, SELF_MATRIX_PHYSTWIN_GIF),
-        (SELF_HERO_MP4, SELF_HERO_GIF),
-        (SELF_PARITY_SUPPORT_MP4, SELF_PARITY_SUPPORT_GIF),
-    ):
-        if src.exists():
-            _ensure_gif(src, out, width=640, fps=8, max_colors=96)
+    if SELF_PARITY_SUPPORT_MP4.exists():
+        _ensure_gif(SELF_PARITY_SUPPORT_MP4, SELF_PARITY_SUPPORT_GIF, width=640, fps=8, max_colors=96)
     _ensure_gif(ROBOT_DROP_BASELINE_OFF_MP4, ROBOT_DROP_BASELINE_OFF_GIF, width=640, fps=8, max_colors=96)
     _ensure_gif(ROBOT_DROP_BASELINE_ON_MP4, ROBOT_DROP_BASELINE_ON_GIF, width=640, fps=8, max_colors=96)
 

@@ -295,9 +295,15 @@ def iter_control_plane_markdown() -> list[Path]:
                 continue
             seen.add(rel)
             paths.append(path)
-    for path in EXTRA_CONTROL_SURFACES + GENERATED_TARGETS + _iter_extra_glob_paths():
+    for path in EXTRA_CONTROL_SURFACES + _iter_extra_glob_paths():
         if not path.exists():
             continue
+        rel = _relative(path)
+        if rel in seen:
+            continue
+        seen.add(rel)
+        paths.append(path)
+    for path in GENERATED_TARGETS:
         rel = _relative(path)
         if rel in seen:
             continue
@@ -357,6 +363,10 @@ def _base_classification(rel: str, meta: dict[str, str]) -> tuple[str, str, str]
         return ("DEPRECATED_POINTER", replacement, notes or "Deprecated pointer surface.")
     if status == "historical":
         return ("HISTORICAL_ARCHIVE", replacement, notes or "Historical archive surface.")
+    if rel.startswith("tasks/history/") and rel != "tasks/history/README.md":
+        return ("HISTORICAL_ARCHIVE", replacement or "none", notes or "Execution-layer historical archive.")
+    if rel.startswith("plans/completed/") and rel != "plans/completed/README.md":
+        return ("HISTORICAL_ARCHIVE", replacement or "none", notes or "Completed or historical plan surface.")
     if rel in LOCAL_ONLY_SURFACES:
         return (
             "LOCAL_ONLY_SECONDARY",
@@ -531,7 +541,7 @@ def build_inventory() -> list[dict]:
     rows: list[dict] = []
     for path in iter_control_plane_markdown():
         rel = _relative(path)
-        text = path.read_text(encoding="utf-8", errors="ignore")
+        text = path.read_text(encoding="utf-8", errors="ignore") if path.exists() else ""
         meta = _parse_metadata_block(text)
         classification, replacement, reason = _base_classification(rel, meta)
         owner = _owner_surface(rel, meta, active_slugs)

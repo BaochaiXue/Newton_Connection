@@ -10,23 +10,30 @@
 
 ## Current State
 
-In progress.
+Completed for the 2026-04-01 maintenance pass.
 
 ## Last Completed Step
 
-- Audited the current markdown/control plane and confirmed:
-  - `docs/bridge/current_status.md` is overgrown for a dashboard role
-  - execution-layer historical files still live beside active task files
-  - `generate_md_inventory.py` vs `generate_md_truth_inventory.py` still reads like two public stories
-  - `robot_rope_franka_tabletop_push_hero` local bundle surfaces still sound too canonical
-  - at least one active task page (`interactive_playground_profiling`) still carries stale interpretation text
+- Landed the full maintenance pass:
+  - trimmed `docs/bridge/current_status.md` back into a dashboard
+  - made `python scripts/generate_md_inventory.py` the only public inventory entrypoint
+  - refreshed `docs/generated/` with inventory, staleness, orphan, deprecation, and task-surface ledgers
+  - aligned robot-tabletop local result surfaces with `results_meta/`
+  - rewrote `interactive_playground_profiling` as methodology-only rather than a competing authority surface
+  - tightened hooks and the `doc-gardener` skill around inventory + lint closeout
+  - verified `python scripts/lint_harness_consistency.py` passes after regeneration
 
 ## Next Step
 
-- finish moving historical execution files
-- rewrite the main dashboard/index surfaces
-- normalize inventory/lint/public-entrypoint behavior
+- keep this task as the active maintenance line for future markdown/control-plane follow-up
+- use `docs/generated/md_staleness_report.md` and `docs/generated/task_surface_matrix.md` for routine upkeep rather than ad hoc cleanup passes
 
 ## Blocking Issues
 
-- none; current work is control-plane cleanup, not experiment reruns
+- none for this completed maintenance pass
+
+## Validation
+
+- `python scripts/sync_results_registry.py`
+- `python scripts/generate_md_inventory.py`
+- `python scripts/lint_harness_consistency.py`

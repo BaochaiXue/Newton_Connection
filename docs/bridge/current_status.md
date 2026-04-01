@@ -37,8 +37,6 @@ Detailed result meaning belongs in:
   - operator exactness is strong, but full strict rollout parity remains blocked
 - `interactive_playground_profiling`
   - the exploratory profiling page must stay clearly separate from the committed rope benchmark truth under `rope_perf_apples_to_apples`
-- `markdown_harness_maintenance_upgrade`
-  - generated ledgers, local robot-tabletop result pages, and hook/lint policy still need to converge on one authority story
 
 ## Promoted Surfaces At A Glance
 
@@ -66,6 +64,7 @@ Detailed result meaning belongs in:
 ## Active Workstreams
 
 - `markdown_harness_maintenance_upgrade`
+  - inventory/lint/hook discipline now converges on one public markdown-maintenance path; follow-up is routine review-age cleanup rather than structural rescue
 - `slide_deck_overhaul`
 - `bunny_penetration_force_diagnostic`
 - `video_presentation_quality`
