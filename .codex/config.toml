@@ -1,0 +1,36 @@
+model = "gpt-5.4"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "cached"
+project_doc_max_bytes = 65536
+project_doc_fallback_filenames = ["AGENTS.md"]
+project_root_markers = [".git", "AGENTS.md", "docs", "tasks", "plans"]
+
+[features]
+codex_hooks = true
+multi_agent = true
+unified_exec = true
+shell_tool = true
+shell_snapshot = true
+
+[sandbox_workspace_write]
+network_access = false
+
+[profiles.plan]
+sandbox_mode = "read-only"
+approval_policy = "never"
+plan_mode_reasoning_effort = "high"
+web_search = "cached"
+personality = "pragmatic"
+
+[profiles.dev]
+sandbox_mode = "workspace-write"
+approval_policy = "on-request"
+web_search = "cached"
+personality = "pragmatic"
+
+[profiles.review]
+sandbox_mode = "read-only"
+approval_policy = "never"
+web_search = "cached"
+personality = "pragmatic"

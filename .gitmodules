@@ -1,0 +1,6 @@
+[submodule "Newton"]
+	path = Newton
+	url = https://github.com/BaochaiXue/Newton.git
+[submodule "PhysTwin"]
+	path = PhysTwin
+	url = git@github.com:BaochaiXue/FuturePhysTwin.git

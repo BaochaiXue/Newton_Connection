@@ -1,0 +1,5 @@
+{
+  "smtp_user": "your_yahoo_account@yahoo.com",
+  "smtp_pass": "your_yahoo_app_password",
+  "default_to": "recipient@example.com"
+}
