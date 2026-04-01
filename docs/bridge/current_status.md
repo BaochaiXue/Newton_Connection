@@ -193,6 +193,7 @@ It should stay current and be updated whenever a task changes state.
   - strict self-collision parity on the in-scope cloth reference case is currently blocked:
     - old campaign bundle: `rmse_mean = 0.025657856836915016`
     - latest shared-stack scratch run improves that to about `0.010737196542322636` on the full 302-frame case, but still misses the `1e-5` gate
+    - a follow-up frozen-candidate-table experiment improves 60-frame parity (`~0.00239 -> ~0.00145`) but does not materially fix the full 302-frame blocker (`~0.01068`)
     - blocker doc:
       - `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/BLOCKER_strict_self_collision_parity_bridge_rollout_mismatch.md`
 - `docs/`

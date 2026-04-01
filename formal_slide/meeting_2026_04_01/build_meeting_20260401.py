@@ -8,6 +8,7 @@ import subprocess
 import textwrap
 from pathlib import Path
 
+import matplotlib
 import markdown
 from PIL import Image, ImageDraw, ImageFont
 from pptx import Presentation
@@ -18,6 +19,9 @@ from pptx.util import Inches, Pt
 from pygments import lex
 from pygments.lexers import PythonLexer
 from pygments.token import Comment, Keyword, Name, Number, Operator, Punctuation, String, Text, Token
+
+matplotlib.use("Agg")
+from matplotlib import pyplot as plt
 
 
 MEETING_DIR = Path(__file__).resolve().parent
@@ -91,8 +95,11 @@ PHYSTWIN_SPRING_WARP_CODE_PATH = ROOT / "PhysTwin" / "qqtt" / "model" / "diff_si
 IMAGE_DIR = MEETING_DIR / "images"
 CODE_REPLAY_SEMANTICS_PNG = IMAGE_DIR / "code_replay_semantics.png"
 CODE_GRANULAR_PROFILE_PNG = IMAGE_DIR / "code_granular_profile.png"
+PERF_ATTRIBUTION_PNG = IMAGE_DIR / "perf_attribution_breakdown.png"
+PERF_NSIGHT_PNG = IMAGE_DIR / "perf_nsight_breakdown.png"
 FORCE_DIAG_CODE_PNG = IMAGE_DIR / "code_force_diag_capture.png"
 FORCE_LAYOUT_CODE_PNG = IMAGE_DIR / "code_force_diag_layout.png"
+PERF_ROPE_CASE_GIF = MEETING_DIR / "gif" / "rope_perf_case_anchor.gif"
 
 ROPE_PERF_ROOT = ROOT / "results" / "rope_perf_apples_to_apples"
 ROPE_PERF_SUMMARY_JSON = ROPE_PERF_ROOT / "summary.json"
@@ -389,42 +396,48 @@ RECALL_SLIDES: list[dict] = [
         ],
     },
     {
-        "kind": "body",
-        "title": "Method: Fair Rope Benchmark Before Optimization",
+        "kind": "perf_gif_bullets",
+        "title": "Hypothesis P1: Fair Benchmark Before Optimization",
+        "gif_label": "Same `rope_double_hand` replay case used later for the no-render benchmark.",
+        "gif_path": PERF_ROPE_CASE_GIF,
+        "note": "Visual anchor only: the speed claim still comes from the no-render benchmark, not from this GIF.",
         "bullets": [
-            "**Fairness first:** same rope case, same trajectory, same `dt/substeps`, same GPU, no render.",
-            "**Throughput first:** Newton **A0/A1** vs PhysTwin **B0** answer the speed question.",
-            "**Attribution second:** Newton **A2/A3** and PhysTwin **B1** explain the gap.",
-            "**Optimization last:** no fixes before the comparison and explanation are complete.",
+            "**Same replay:** one rope case, one controller trajectory, one `dt/substeps`, one GPU, no render.",
+            "**Throughput first:** A0/A1 vs B0 answer who is slower.",
+            "**Attribution second:** A2/A3/B1 explain why.",
+            "**Optimization last:** no fixes before the benchmark is fair.",
         ],
         "transcript": [
             "这里开始进入第二段 performance analysis。",
-            "这一页先把 hypothesis 改成教授要的版本。",
-            "不是先讲优化，而是先把比较做公平。也就是同一个 rope case、同一条 controller trajectory、同一个 dt、同一个 substeps、同一张 GPU，而且主比较必须把 rendering 排除掉。",
-            "所以这次 profiling section 的逻辑很硬：先用 Newton A0、Newton A1、PhysTwin B0 回答谁快谁慢；再用 A2、A3、B1 解释为什么慢。",
+            "这一页现在只保留 hypothesis 和 benchmark contract，本来放在 slide 上的很多解释都移回 transcript。",
+            "左边这个 GIF 只是 visual anchor，提醒老师后面所有 profiling 数字对应的是同一个 `rope_double_hand` replay case，而不是另一个 playground scene。",
+            "真正的 speed claim 不是从 GIF 看出来的，而是从 no-render benchmark 里算出来的。",
+            "这里最重要的 methodological point 只有四个：same case、same controller trajectory、same `dt/substeps`、same GPU，而且主比较必须把 rendering 排除掉。",
+            "所以这次 profiling section 的逻辑固定成两步：先用 Newton A0、Newton A1、PhysTwin B0 回答谁快谁慢；再用 A2、A3、B1 和 Nsight 解释为什么慢。",
             "这样做是为了避免把 attribution 模式自己的同步开销误当成真实吞吐，也避免把不公平的 GUI path 混进主表。",
-            f"另外 same-case identity 这次不是口头假设，而是已经检查到 PhysTwin controller trajectory 和 IR 的 max abs diff 是 {B0_PAYLOAD.get('trajectory_parity', {}).get('controller_traj_max_abs_diff', 0.0):.1e}，所以 benchmark 的输入本身是对上的。",
+            f"另外 same-case identity 不是口头假设，而是已经检查到 PhysTwin controller trajectory 和 IR 的 max abs diff 是 {B0_PAYLOAD.get('trajectory_parity', {}).get('controller_traj_max_abs_diff', 0.0):.1e}，所以 benchmark 的输入本身是对上的。",
         ],
     },
     {
-        "kind": "code_twocol",
-        "title": "Source Proof: Same Replay, Different Execution Style",
-        "common_settings": "Same rope replay semantics. Newton benchmarks a no-render replay path; PhysTwin replays through a graph-captured path.",
-        "left_label": "Newton: no-render replay benchmark with throughput / attribution and baseline / precomputed modes.",
+        "kind": "code_twocol_large",
+        "title": "Source Proof P1: Same Replay, Different Execution Style",
+        "note": "Real source excerpts only. The evidence here is replay interface shape, not full implementation detail.",
+        "left_label": "Newton: `--profile-only`, `throughput|attribution`, `baseline|precomputed`.",
         "left_path": CODE_REPLAY_SEMANTICS_PNG,
-        "right_label": "PhysTwin: `use_graph=True`, then `forward_graph` is captured once and replayed by graph launch.",
+        "right_label": "PhysTwin: `use_graph=True`, capture once, replay by `forward_graph`.",
         "right_path": CODE_GRANULAR_PROFILE_PNG,
         "transcript": [
-            "这一页是 source proof，不是结果页。",
-            "左边说明 Newton 这条 rope benchmark 本身已经把 no-render throughput、attribution，以及 baseline versus precomputed controller-write mode 显式做成了参数，所以 A0 到 A3 不是临时 hack，而是原生 benchmark interface。",
-            "右边说明 PhysTwin rope path 默认 `use_graph = True`，而且在 simulator 初始化时会 capture `forward_graph`。所以 B0 不是 GUI loop，而是 graph-captured replay path 的 headless timing。",
-            "这页真正要说明的是：两边不是在比不同任务，而是在比同任务下两种 execution style。这正是后面 H2 的证据基础。",
+            "这一页是 source proof，不是结果页，所以 slide 上只放两段短 code excerpt 和一句短分析。",
+            "左边这段 Newton source code 现在只保留三件事：`--profile-only`、`--profile-mode`、`--controller-write-mode`。这已经足够说明 A0 到 A3 不是临时 hack，而是这个 benchmark interface 原生支持的路径。",
+            "右边这段 PhysTwin source code 现在只保留 `cfg.use_graph`、`ScopedCapture`、`self.graph` 和 `self.forward_graph`。这已经足够说明 B0 是 graph-captured replay path，而不是 GUI loop。",
+            "所以这页真正的分析应该放在 transcript 里：两边不是在比不同 task，而是在比同一个 replay 下两种 execution style。",
+            "我把大部分低价值细节从 slide 移掉了，比如更长的 surrounding code、无关 helper、以及更多行的 control flow。",
         ],
     },
     {
         "kind": "table",
-        "title": "Result: Newton A1 Is 3.30x Slower Than PhysTwin B0",
-        "note": "Same `rope_double_hand` case. 264 trajectory frames. 175421 substeps. No render. RTX 4090.",
+        "title": "Result P1: A1 Is Still 3.30x Slower Than B0",
+        "note": "Same `rope_double_hand` replay. No render. RTX 4090.",
         "columns": ["Config", "Controller / Launch", "ms/substep", "RTF", "Takeaway"],
         "rows": [
             ["Newton A0", "baseline write", _fmt(A0_ROW, "ms_per_substep_mean", ".6f"), _fmt(A0_ROW, "rtf_mean", ".3f"), "bridge tax on"],
@@ -432,44 +445,38 @@ RECALL_SLIDES: list[dict] = [
             ["PhysTwin B0", "graph headless replay", _fmt(B0_ROW, "ms_per_substep_mean", ".6f"), _fmt(B0_ROW, "rtf_mean", ".3f"), "same replay, graph-enabled"],
         ],
         "transcript": [
-            "这一页是新的主结果页，不再沿用之前那组只看 Newton 单边的旧数字。",
-            "完整 rope replay 现在已经做成同 case apples-to-apples throughput table。264 个 trajectory frame 展开以后是 175421 个 substep，对应 8.77 秒物理时间。",
+            "这一页保留 table，因为这里的核心就是一个 bounded benchmark result。",
+            "我把 slide note 压短了，只保留同 case、no render、RTX 4090 这三个最重要的 reading keys；更细的 methodology 现在都回到 transcript。",
+            "完整 rope replay 现在已经做成 same-case apples-to-apples throughput table。264 个 trajectory frame 展开以后是 175421 个 substep，对应 8.77 秒物理时间。",
             f"authoritative 数字很直接：Newton A0 `{_fmt(A0_ROW, 'ms_per_substep_mean', '.6f')} ms/substep`，Newton A1 `{_fmt(A1_ROW, 'ms_per_substep_mean', '.6f')} ms/substep`，PhysTwin B0 `{_fmt(B0_ROW, 'ms_per_substep_mean', '.6f')} ms/substep`。",
-            f"所以这里的主结论非常清楚：即使把 controller bridge tax 降下去，Newton 在 clean rope replay 上仍然比 PhysTwin 慢 `{_fmt(A1_ROW, 'slowdown_vs_phystwin_headless', '.3f')}x`。这不是 viewer 污染，也不是 contact-heavy 场景误导，而是公平 baseline 本身的结果。",
+            f"所以这里的结论仍然不变：即使把 controller bridge tax 降下去，Newton 在 clean rope replay 上仍然比 PhysTwin 慢 `{_fmt(A1_ROW, 'slowdown_vs_phystwin_headless', '.3f')}x`。",
+            "这一页不再重复太多 caveat，因为 fairness caveat 已经在前两页讲完了。",
         ],
     },
     {
-        "kind": "body",
-        "title": "Result: Bridge Tax Is Real, But Not The Whole Gap",
-        "bullets": [
-            f"**Bridge tax is real:** A0 -> A1 gives **{A0_ROW.get('ms_per_substep_mean', 0.0) / max(A1_ROW.get('ms_per_substep_mean', 1.0e-12), 1.0e-12):.3f}x** speedup on the same replay.",
-            "**Collision is not the answer:** pure rope replay is not contact-heavy on either side.",
-            "**Residual cost remains after A1:** internal-force, integration, and runtime structure still matter.",
-            "**Takeaway:** bridge tax matters, but the residual pure-rope gap still points to execution structure, not collision.",
-        ],
+        "kind": "image",
+        "title": "Result P2: Bridge Tax Is Only Part Of The Gap",
+        "path": PERF_ATTRIBUTION_PNG,
+        "note": "A0→A1 proves bridge tax. A3/B1 still show the clean rope gap is not collision-dominated.",
         "transcript": [
-            "这一页把 attribution 结论真正拆开。",
-            f"首先 H1 现在很硬：A0 到 A1 是 `{A0_ROW.get('ms_per_substep_mean', 0.0) / max(A1_ROW.get('ms_per_substep_mean', 1.0e-12), 1.0e-12):.3f}x` 的提升，所以 controller bridge tax 不是猜测，而是真实存在的。",
-            f"但 bridge tax 不是全部。Newton A3 的 precomputed attribution 里，bridge 仍然有 `{A3_BRIDGE_MS:.3f} ms/substep`，internal force `{A3_INTERNAL_MS:.3f}`，integration `{A3_INTEGRATION_MS:.3f}`，collision 只有 `{A3_COLLISION_MS:.3f}`，还剩 `{A3_UNEXPLAINED_MS:.3f}` 的 runtime overhead。",
-            f"而 PhysTwin B1 的 frame-level attribution 说明它的大头基本就是 simulator launch 本身，大约 `{B1_SIM_LAUNCH_MS:.3f} ms/frame`；controller target `{B1_CONTROLLER_FRAME_MS:.3f}` 和 state reset `{B1_STATE_RESET_MS:.3f}` 都是小头。",
-            "所以这页真正说服人的地方不是某一个数字，而是结构：controller bridge tax 确实存在，但 collision 几乎不占主因，残余 gap 仍然指向 runtime / execution structure。",
+            "这一页现在不再是一堵字墙，而是改成一个 attribution chart。",
+            f"首先 H1 还是一样硬：A0 到 A1 是 `{A0_ROW.get('ms_per_substep_mean', 0.0) / max(A1_ROW.get('ms_per_substep_mean', 1.0e-12), 1.0e-12):.3f}x` 的提升，所以 controller bridge tax 是真实存在的。",
+            f"但 bridge tax 不是全部。Newton A3 的 precomputed attribution 里，bridge 是 `{A3_BRIDGE_MS:.3f} ms/substep`，internal force `{A3_INTERNAL_MS:.3f}`，integration `{A3_INTEGRATION_MS:.3f}`，collision 只有 `{A3_COLLISION_MS:.3f}`，还剩 `{A3_UNEXPLAINED_MS:.3f}` 的 runtime overhead。",
+            f"右边的 PhysTwin B1 frame-level attribution 则说明它的大头基本就是 simulator launch，本身大约 `{B1_SIM_LAUNCH_MS:.3f} ms/frame`；controller target `{B1_CONTROLLER_FRAME_MS:.3f}` 和 state reset `{B1_STATE_RESET_MS:.3f}` 都是小头。",
+            "所以这一页的真正 point 还是结构：bridge tax 确实存在，但 clean rope replay 的 remaining gap 不是 collision story。",
         ],
     },
     {
-        "kind": "body",
-        "title": "Nsight: Residual Gap Looks Like Launch Structure",
-        "bullets": [
-            "**Newton A1 API:** launch-dominated; the replay still looks like many decoupled launches.",
-            "**PhysTwin B0 API:** graph-launch-dominated; the replay is not GUI-bound.",
-            "**Interpretation:** the residual pure-rope gap looks like launch structure, not collision.",
-            "**Only now optimize:** keep precomputed writes, then investigate graph-like or batched Newton replay.",
-        ],
+        "kind": "image",
+        "title": "Result P3: Nsight Supports A Launch-Structure Explanation",
+        "path": PERF_NSIGHT_PNG,
+        "note": "Newton API time is launch-dominated; PhysTwin replay is graph-launch-dominated on the same rope case.",
         "transcript": [
-            "这一页再往下收一层，用 Nsight Systems 给 H2 加系统级证据。",
-            "Newton A1 的 CUDA API 时间里，`cuLaunchKernel` 占到 77.2%，GPU kernel 侧前四名分别是 spring、integrate_particles、precomputed write_kinematic_state 和 drag correction。这说明 Newton 这条 replay 路径仍然是大量 decoupled kernel launch。",
-            "PhysTwin B0 的 CUDA API 时间里，92.6% 是 `cudaGraphLaunch`，GPU kernel 主要是在 graph 里面执行 spring、velocity update、control point update 这些 kernel。也就是说，它不是完全不同的 physics，而是更像 graph-captured replay execution style。",
-            "所以这页真正的作用是堵住一个常见反驳：如果 residual gap 主要来自 collision，那 Nsight 不会长成现在这样；如果 residual gap 主要来自 execution structure，那它就会长成现在这样。",
-            "因此现在的优化路线才是有根据的：第一步保留 precomputed controller writes；第二步优先研究 Newton replay 能不能更 graph-like 或更 batched；只有这一步做完以后，再谈更细的 kernel micro-optimization。与此同时，weak-contact profiling 要继续独立处理，不要再和 pure rope baseline 混讲。",
+            "这一页也从纯文字改成了 chart，因为这里的 point 本质上是一个 100% share comparison。",
+            "Newton A1 的 CUDA API 时间里，`cuLaunchKernel` 占到 77.2%，其余主要是 `cudaMemsetAsync` 21.5%。这说明 Newton replay 仍然像 many decoupled launches。",
+            "PhysTwin B0 的 CUDA API 时间里，92.6% 是 `cudaGraphLaunch`，`cuCtxSynchronize` 只有 2.9%。所以它不是 GUI path，而是 graph-captured replay execution style。",
+            "这页真正要堵住的反驳是：如果 residual gap 主要来自 collision，Nsight 不会长成现在这样；现在它长成了 launch structure 的样子。",
+            "因此 optimization implication 保持不变：先保留 precomputed writes，再优先研究更 graph-like 或更 batched 的 Newton replay，弱接触 rope profiling 继续独立处理。",
         ],
     },
     {
@@ -653,7 +660,7 @@ RECALL_SLIDES: list[dict] = [
 ]
 
 
-def _build_transcript_md() -> str:
+def _build_transcript_md(slides: list[dict] | None = None) -> str:
     lines = [
         "# Meeting Transcript — PhysTwin -> Newton Bridge",
         "",
@@ -665,7 +672,8 @@ def _build_transcript_md() -> str:
         "---",
         "",
     ]
-    for idx, slide in enumerate(RECALL_SLIDES, start=1):
+    active_slides = slides or list(RECALL_SLIDES)
+    for idx, slide in enumerate(active_slides, start=1):
         lines.append(f"## Slide {idx} — {slide['title']}")
         for paragraph in slide["transcript"]:
             lines.append(paragraph)
@@ -676,12 +684,13 @@ def _build_transcript_md() -> str:
 def _prepare_generated_assets() -> None:
     IMAGE_DIR.mkdir(parents=True, exist_ok=True)
     (MEETING_DIR / "gif").mkdir(parents=True, exist_ok=True)
+    _ensure_resized_gif(RECALL_ROPE_GIF, PERF_ROPE_CASE_GIF, width=720, fps=8)
     _code_excerpt_image(
         VIEWER_CODE_PATH,
         "rope_benchmark_modes",
         _extract_code_segments(
             VIEWER_CODE_PATH,
-            [(184, 208)],
+            [(185, 193), (202, 208)],
             highlight_lines={185, 191, 202, 206, 207},
         ),
         CODE_REPLAY_SEMANTICS_PNG,
@@ -691,11 +700,13 @@ def _prepare_generated_assets() -> None:
         "phystwin_graph_capture",
         _extract_code_segments(
             PHYSTWIN_SPRING_WARP_CODE_PATH,
-            [(768, 802)],
+            [(768, 780), (800, 802)],
             highlight_lines={769, 772, 779, 800, 802},
         ),
         CODE_GRANULAR_PROFILE_PNG,
     )
+    _render_perf_attribution_png(PERF_ATTRIBUTION_PNG)
+    _render_perf_nsight_png(PERF_NSIGHT_PNG)
     bunny_force_code = ROOT / "Newton" / "phystwin_bridge" / "demos" / "demo_cloth_bunny_drop_without_self_contact.py"
     _code_excerpt_image(
         bunny_force_code,
@@ -730,6 +741,18 @@ def _prepare_generated_assets() -> None:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build the 2026-04-01 recall-only meeting deck.")
     parser.add_argument("--out-dir", type=Path, default=MEETING_DIR)
+    parser.add_argument(
+        "--out-pptx",
+        type=Path,
+        default=None,
+        help="Optional explicit PPTX output path. Defaults to bridge_meeting_20260401.pptx in --out-dir.",
+    )
+    parser.add_argument(
+        "--slide-range",
+        type=str,
+        default=None,
+        help="Optional 1-based inclusive slide range like 8-12. When omitted, build the full deck.",
+    )
     return parser.parse_args()
 
 
@@ -1004,6 +1027,126 @@ def _ensure_gif(mp4_path: Path, gif_path: Path, *, width: int = 640, fps: int = 
     return gif_path
 
 
+def _ensure_resized_gif(src_path: Path, out_path: Path, *, width: int = 720, fps: int = 8) -> Path:
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    if out_path.exists() and out_path.stat().st_mtime >= src_path.stat().st_mtime:
+        return out_path
+    subprocess.run(
+        [
+            "ffmpeg",
+            "-y",
+            "-i",
+            str(src_path),
+            "-vf",
+            f"fps={fps},scale={width}:-1:flags=lanczos",
+            str(out_path),
+        ],
+        check=True,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    return out_path
+
+
+def _render_perf_attribution_png(out_path: Path) -> Path:
+    labels_newton = ["bridge", "internal", "integration", "collision", "unexplained"]
+    values_newton = [A3_BRIDGE_MS, A3_INTERNAL_MS, A3_INTEGRATION_MS, A3_COLLISION_MS, A3_UNEXPLAINED_MS]
+    labels_phystwin = ["sim launch", "controller", "state reset"]
+    values_phystwin = [B1_SIM_LAUNCH_MS, B1_CONTROLLER_FRAME_MS, B1_STATE_RESET_MS]
+    colors_newton = ["#3B6EA8", "#E07A5F", "#81B29A", "#F2CC8F", "#8D99AE"]
+    colors_phystwin = ["#264653", "#2A9D8F", "#E9C46A"]
+
+    fig, axes = plt.subplots(1, 2, figsize=(12.8, 5.6), dpi=160, gridspec_kw={"width_ratios": [1.35, 1.0]})
+    fig.patch.set_facecolor("#F7F5EE")
+    for ax in axes:
+        ax.set_facecolor("#F7F5EE")
+
+    left = axes[0]
+    start = 0.0
+    for label, value, color in zip(labels_newton, values_newton, colors_newton):
+        left.barh(["Newton A3 ms/substep"], [value], left=start, color=color, edgecolor="white", height=0.46)
+        left.text(start + value / 2.0, 0, f"{label}\n{value:.3f}", ha="center", va="center", fontsize=10, color="#111111")
+        start += value
+    left.set_title("Newton A3 Breakdown", fontsize=16, fontweight="bold", loc="left")
+    left.set_xlabel("ms / substep", fontsize=12)
+    left.spines[["top", "right", "left"]].set_visible(False)
+    left.grid(axis="x", alpha=0.18)
+    left.tick_params(axis="y", length=0, labelsize=12)
+    left.tick_params(axis="x", labelsize=10)
+
+    right = axes[1]
+    y_pos = list(range(len(labels_phystwin)))
+    bars = right.barh(y_pos, values_phystwin, color=colors_phystwin, edgecolor="white", height=0.48)
+    right.set_yticks(y_pos, labels_phystwin, fontsize=12)
+    right.invert_yaxis()
+    right.set_title("PhysTwin B1 Frame Attribution", fontsize=16, fontweight="bold", loc="left")
+    right.set_xlabel("ms / frame", fontsize=12)
+    right.spines[["top", "right"]].set_visible(False)
+    right.grid(axis="x", alpha=0.18)
+    right.tick_params(axis="x", labelsize=10)
+    for bar, value in zip(bars, values_phystwin):
+        right.text(value + max(values_phystwin) * 0.02, bar.get_y() + bar.get_height() / 2.0, f"{value:.3f}", va="center", fontsize=10)
+
+    fig.suptitle("Bridge Tax Exists, But Collision Is Still Tiny On The Clean Rope Replay", fontsize=18, fontweight="bold", x=0.5, y=0.98)
+    fig.text(
+        0.075,
+        0.03,
+        "A0→A1 proves bridge tax. The remaining A3 split still leaves collision near zero on the clean replay baseline.",
+        fontsize=11,
+        color="#1F4E79",
+    )
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.tight_layout(rect=[0.02, 0.06, 0.98, 0.93])
+    fig.savefig(out_path, bbox_inches="tight")
+    plt.close(fig)
+    return out_path
+
+
+def _render_perf_nsight_png(out_path: Path) -> Path:
+    labels = ["dominant API", "next API", "other"]
+    newton_vals = [77.2, 21.5, 1.3]
+    phystwin_vals = [92.6, 2.9, 4.5]
+    colors = ["#355070", "#E56B6F", "#BFC7D5"]
+
+    fig, axes = plt.subplots(2, 1, figsize=(12.8, 5.6), dpi=160, sharex=True)
+    fig.patch.set_facecolor("#F7F5EE")
+    for ax in axes:
+        ax.set_facecolor("#F7F5EE")
+        ax.spines[["top", "right", "left"]].set_visible(False)
+        ax.grid(axis="x", alpha=0.18)
+        ax.tick_params(axis="y", length=0, labelsize=12)
+        ax.tick_params(axis="x", labelsize=10)
+        ax.set_xlim(0.0, 100.0)
+
+    for ax, vals, title, dominant, secondary in [
+        (axes[0], newton_vals, "Newton A1 CUDA API", "cuLaunchKernel 77.2%", "cudaMemsetAsync 21.5%"),
+        (axes[1], phystwin_vals, "PhysTwin B0 CUDA API", "cudaGraphLaunch 92.6%", "cuCtxSynchronize 2.9%"),
+    ]:
+        start = 0.0
+        for label, value, color in zip(labels, vals, colors):
+            ax.barh([title], [value], left=start, color=color, edgecolor="white", height=0.42)
+            if value >= 8.0:
+                ax.text(start + value / 2.0, 0, f"{value:.1f}%", ha="center", va="center", fontsize=10, color="#111111")
+            start += value
+        ax.text(1.0, 0.34, dominant, fontsize=11, color="#1F4E79")
+        ax.text(1.0, -0.34, secondary, fontsize=10, color="#444444")
+
+    axes[1].set_xlabel("share of CUDA API time (%)", fontsize=12)
+    fig.suptitle("Nsight Supports A Launch-Structure Story, Not A Collision Story", fontsize=18, fontweight="bold", x=0.5, y=0.98)
+    fig.text(
+        0.075,
+        0.03,
+        "Newton still looks like many decoupled launches; PhysTwin replay is graph-launch-dominated on the same rope case.",
+        fontsize=11,
+        color="#1F4E79",
+    )
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.tight_layout(rect=[0.02, 0.08, 0.98, 0.92])
+    fig.savefig(out_path, bbox_inches="tight")
+    plt.close(fig)
+    return out_path
+
+
 def _add_pic(slide, path: Path, left: int, top: int, width: int, height: int):
     with Image.open(path) as img:
         dx, dy, w, h = _fit_box(img.size[0], img.size[1], width, height)
@@ -1242,6 +1385,73 @@ def _gif_twocol(
     )
 
 
+def _perf_gif_bullets(
+    prs: Presentation,
+    title: str,
+    gif_label: str,
+    gif_path: Path,
+    bullets: list[str],
+    *,
+    note: str | None = None,
+) -> None:
+    slide = prs.slides.add_slide(_layout(prs))
+    _clear_placeholders(slide)
+    title_box = slide.shapes.add_textbox(REF_TITLE_LEFT, REF_TITLE_TOP, REF_TITLE_W, REF_TITLE_H)
+    _set_title_textbox(title_box, title, size_pt=28)
+    if note:
+        _add_label(
+            slide,
+            REF_GRID_COMMON_LEFT,
+            REF_GRID_COMMON_TOP,
+            REF_GRID_COMMON_W,
+            REF_GRID_COMMON_H,
+            note,
+            font_size=12,
+            bold=False,
+        )
+    _add_label(slide, 540000, 1620000, 3920000, 260000, gif_label, font_size=11, bold=False)
+    _add_pic(slide, gif_path, 540000, 1930000, 3920000, 2360000)
+    body_box = slide.shapes.add_textbox(4540000, 1680000, 3800000, 2580000)
+    _set_lines(body_box, bullets)
+
+
+def _code_twocol_large(
+    prs: Presentation,
+    title: str,
+    left_label: str,
+    left_path: Path,
+    right_label: str,
+    right_path: Path,
+    *,
+    note: str | None = None,
+) -> None:
+    slide = prs.slides.add_slide(_layout(prs))
+    _clear_placeholders(slide)
+    title_box = slide.shapes.add_textbox(REF_TITLE_LEFT, REF_TITLE_TOP, REF_TITLE_W, REF_TITLE_H)
+    _set_title_textbox(title_box, title, size_pt=26)
+    if note:
+        _add_label(
+            slide,
+            REF_GRID_COMMON_LEFT,
+            REF_GRID_COMMON_TOP,
+            REF_GRID_COMMON_W,
+            REF_GRID_COMMON_H,
+            note,
+            font_size=11,
+            bold=False,
+        )
+    left_x = 520000
+    right_x = 4760000
+    label_y = 1580000
+    pic_y = 1860000
+    pic_w = 3520000
+    pic_h = 2480000
+    _add_label(slide, left_x, label_y, pic_w, 220000, left_label, font_size=10, bold=False)
+    _add_pic(slide, left_path, left_x, pic_y, pic_w, pic_h)
+    _add_label(slide, right_x, label_y, pic_w, 220000, right_label, font_size=10, bold=False)
+    _add_pic(slide, right_path, right_x, pic_y, pic_w, pic_h)
+
+
 def _image_slide(prs: Presentation, title: str, path: Path, *, note: str | None = None) -> None:
     slide = prs.slides.add_slide(_layout(prs))
     _clear_placeholders(slide)
@@ -1267,9 +1477,25 @@ def _image_slide(prs: Presentation, title: str, path: Path, *, note: str | None 
     _add_pic(slide, path, pic_left, pic_top, pic_w, pic_h)
 
 
-def build_recall_only_deck(prs: Presentation) -> None:
+def _parse_slide_range(spec: str | None) -> list[dict]:
+    if not spec:
+        return list(RECALL_SLIDES)
+    match = re.fullmatch(r"\s*(\d+)\s*-\s*(\d+)\s*", spec)
+    if not match:
+        raise ValueError(f"Unsupported --slide-range format: {spec!r}. Expected START-END, e.g. 8-12.")
+    start = int(match.group(1))
+    end = int(match.group(2))
+    if start < 1 or end < start or end > len(RECALL_SLIDES):
+        raise ValueError(
+            f"Slide range {spec!r} is out of bounds for a {len(RECALL_SLIDES)}-slide deck."
+        )
+    return list(RECALL_SLIDES[start - 1 : end])
+
+
+def build_recall_only_deck(prs: Presentation, slides: list[dict] | None = None) -> None:
     _delete_all_slides(prs)
-    for slide in RECALL_SLIDES:
+    active_slides = slides or list(RECALL_SLIDES)
+    for slide in active_slides:
         kind = slide["kind"]
         if kind == "title":
             _title_slide(prs, slide["title"], slide["subtitle"])
@@ -1299,6 +1525,25 @@ def build_recall_only_deck(prs: Presentation) -> None:
                 slide["right_label"],
                 slide["right_path"],
                 common_settings=slide.get("common_settings"),
+            )
+        elif kind == "code_twocol_large":
+            _code_twocol_large(
+                prs,
+                slide["title"],
+                slide["left_label"],
+                slide["left_path"],
+                slide["right_label"],
+                slide["right_path"],
+                note=slide.get("note"),
+            )
+        elif kind == "perf_gif_bullets":
+            _perf_gif_bullets(
+                prs,
+                slide["title"],
+                slide["gif_label"],
+                slide["gif_path"],
+                slide["bullets"],
+                note=slide.get("note"),
             )
         elif kind == "body":
             _body(prs, slide["title"], slide["bullets"])
@@ -1370,22 +1615,25 @@ def main() -> int:
     out_dir = args.out_dir.resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
     _prepare_generated_assets()
+    active_slides = _parse_slide_range(args.slide_range)
 
     if not TEMPLATE_PPTX.exists():
         raise FileNotFoundError(f"Missing local template: {TEMPLATE_PPTX}")
 
     prs = Presentation(str(TEMPLATE_PPTX))
-    build_recall_only_deck(prs)
-    prs.save(str(OUT_PPTX))
+    build_recall_only_deck(prs, slides=active_slides)
+    out_pptx = args.out_pptx.resolve() if args.out_pptx else (out_dir / OUT_PPTX.name)
+    out_pptx.parent.mkdir(parents=True, exist_ok=True)
+    prs.save(str(out_pptx))
 
-    transcript_text = _build_transcript_md()
+    transcript_text = _build_transcript_md(active_slides)
     transcript_md = out_dir / "transcript.md"
     transcript_md.write_text(transcript_text, encoding="utf-8")
     transcript_html = out_dir / "transcript.html"
     transcript_pdf = out_dir / "transcript.pdf"
     _markdown_to_pdf(transcript_text, transcript_html, transcript_pdf)
 
-    print(f"PPTX: {OUT_PPTX}")
+    print(f"PPTX: {out_pptx}")
     print(f"Transcript MD: {transcript_md}")
     print(f"Transcript PDF: {transcript_pdf}")
     print(f"Slides: {len(prs.slides)}")

@@ -29,3 +29,10 @@ This folder is the local bundle for the `2026-04-01` formal slide deck.
 The intent is that the meeting-specific generator code and its direct media/template
 dependencies live inside this meeting folder instead of being spread across `~/下载`
 and the repo root.
+
+## Common Build Commands
+
+- Full deck + transcript:
+  - `python formal_slide/meeting_2026_04_01/build_meeting_20260401.py`
+- Performance-only slice (`slides 8-12`) for external review:
+  - `python formal_slide/meeting_2026_04_01/build_meeting_20260401.py --out-dir tmp_vis/performance_analysis_20260401 --out-pptx tmp_vis/performance_analysis_20260401/bridge_meeting_20260401_performance_only_slides_8_12.pptx --slide-range 8-12`

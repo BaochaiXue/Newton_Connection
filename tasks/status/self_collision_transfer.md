@@ -23,6 +23,11 @@ Latest post-refactor validation:
 - strict cloth parity full 302-frame run improved to:
   - `rmse_mean = 0.010737196542322636`
   - `Newton/phystwin_bridge/results/tmp_strict_self_collision_refactor_full/strict_self_collision_parity_full_rollout_report.json`
+- frozen candidate-table experiment:
+  - 60-frame dynamic query: `rmse_mean = 0.002392382826656103`
+  - 60-frame frame-frozen table: `rmse_mean = 0.0014532922068610787`
+  - 302-frame frame-frozen table: `rmse_mean = 0.010684290900826454`
+  - current read: frame-frozen candidate-table semantics help early/60-frame parity, but do not resolve the full-rollout blocker by themselves
 - OFF regression remains acceptable:
   - `Newton/phystwin_bridge/results/tmp_off_ground_regression_60/off_ground_regression60_rollout_report.json`
 - rope OFF importer smoke still passes:
