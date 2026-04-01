@@ -9,7 +9,6 @@ import subprocess
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-import fitz
 from weasyprint import HTML
 
 
@@ -137,19 +136,37 @@ def _convert_pptx_to_pdf(pptx_path: Path, out_dir: Path) -> Path:
 
 def _render_slide_previews(slides_pdf: Path, out_dir: Path) -> list[Path]:
     out_dir.mkdir(parents=True, exist_ok=True)
-    doc = fitz.open(slides_pdf)
-    image_paths: list[Path] = []
-    try:
-        for page_idx in range(doc.page_count):
-            out_path = out_dir / f"slide_{page_idx + 1:02d}.png"
-            if not out_path.exists() or out_path.stat().st_mtime < slides_pdf.stat().st_mtime:
-                page = doc.load_page(page_idx)
-                pix = page.get_pixmap(matrix=fitz.Matrix(2.0, 2.0), alpha=False)
-                pix.save(out_path)
-            image_paths.append(out_path)
-    finally:
-        doc.close()
-    return image_paths
+    expected_pages = _pdf_page_count(slides_pdf)
+    cached = sorted(out_dir.glob("slide-*.png"))
+    if cached and all(path.stat().st_mtime >= slides_pdf.stat().st_mtime for path in cached) and len(cached) == expected_pages:
+        return cached
+
+    for stale in out_dir.glob("slide-*.png"):
+        stale.unlink()
+
+    prefix = out_dir / "slide"
+    subprocess.run(
+        [
+            "pdftoppm",
+            "-png",
+            "-r",
+            "144",
+            str(slides_pdf),
+            str(prefix),
+        ],
+        check=True,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    rendered = sorted(
+        out_dir.glob("slide-*.png"),
+        key=lambda path: int(re.search(r"-(\d+)\.png$", path.name).group(1)),
+    )
+    if len(rendered) != expected_pages:
+        raise RuntimeError(
+            f"Expected {expected_pages} rendered slide previews from {slides_pdf}, got {len(rendered)}."
+        )
+    return rendered
 
 
 def _pdf_page_count(pdf_path: Path) -> int:
