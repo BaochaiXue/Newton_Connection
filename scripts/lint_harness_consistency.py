@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from md_truth_inventory import ROOT, active_task_slugs, build_inventory_paths
+from md_truth_inventory_lib import ROOT, PUBLIC_GENERATOR_CMD, active_task_slugs, build_inventory
 
 
 TASK_PAGE_DIR = ROOT / "docs/bridge/tasks"
@@ -15,45 +15,55 @@ SPEC_DIR = ROOT / "tasks/spec"
 PLAN_DIR = ROOT / "plans/active"
 IMPLEMENT_DIR = ROOT / "tasks/implement"
 STATUS_DIR = ROOT / "tasks/status"
-DEPRECATIONS_DOC = ROOT / "docs/generated/harness_deprecations.md"
-HARNESS_AUDIT_DOC = ROOT / "docs/generated/harness_audit.md"
+TASK_HISTORY_DIR = ROOT / "tasks/history"
 CURRENT_STATUS = ROOT / "docs/bridge/current_status.md"
+TASKS_README = ROOT / "docs/bridge/tasks/README.md"
+DOC_GARDENING = ROOT / "docs/runbooks/doc_gardening.md"
+GENERATED_README = ROOT / "docs/generated/README.md"
+RESULTS_README = ROOT / "results_meta/README.md"
+HARNESS_AUDIT = ROOT / "docs/generated/harness_audit.md"
 MD_INVENTORY_JSON = ROOT / "docs/generated/md_inventory.json"
-INVENTORY_MD = ROOT / "docs/generated/md_inventory.md"
-MD_CLEANUP_REPORT = ROOT / "docs/generated/md_cleanup_report.md"
-MD_ORPHANS = ROOT / "docs/generated/md_orphans.md"
-MD_DEPRECATION_MATRIX = ROOT / "docs/generated/md_deprecation_matrix.md"
+GENERATED_REQUIRED = [
+    ROOT / "docs/generated/md_inventory.md",
+    ROOT / "docs/generated/md_inventory.json",
+    ROOT / "docs/generated/md_cleanup_report.md",
+    ROOT / "docs/generated/md_orphans.md",
+    ROOT / "docs/generated/md_deprecation_matrix.md",
+    ROOT / "docs/generated/md_staleness_report.md",
+    ROOT / "docs/generated/task_surface_matrix.md",
+]
 REGISTRY_TASKS_DIR = ROOT / "results_meta/tasks"
 
 ROOT_SINGLETONS = ("Plan.md", "Prompt.md", "Status.md", "DecisionLog.md")
-LOCAL_POINTER_RE = re.compile(r"(BEST_RUN\.md|LATEST_SUCCESS\.txt|LATEST_ATTEMPT\.txt)", re.IGNORECASE)
-CANONICAL_CLAIM_RE = re.compile(r"\b(canonical|authoritative|source of truth|committed|best run|fallback)\b", re.IGNORECASE)
-RUN_ID_RE = re.compile(r"\b(?:\d{8}_\d{6}[A-Za-z0-9_]*|[A-Za-z][A-Za-z0-9_]*_\d{8}(?:_\d{6})[A-Za-z0-9_]*)\b")
-ALLOW_NONCANONICAL_MARKERS = ("historical", "local-only", "scratch", "comparison", "superseded", "rejected", "secondary")
-LOCAL_ONLY_RESULTS_MD = (
-    ROOT / "results/README.md",
-    ROOT / "results/bunny_force_visualization/README.md",
-    ROOT / "results/bunny_force_visualization/INDEX.md",
-    ROOT / "results/robot_deformable_demo/README.md",
-    ROOT / "results/robot_deformable_demo/BEST_RUN.md",
-    ROOT / "results/native_robot_rope_drop_release/README.md",
-    ROOT / "results/native_robot_rope_drop_release/BEST_RUN.md",
-    ROOT / "results/rope_perf_apples_to_apples/README.md",
-    ROOT / "results/rope_perf_apples_to_apples/BEST_EVIDENCE.md",
+RUN_ID_RE = re.compile(
+    r"\b(?:20\d{6}(?:_\d{6})?(?:_[A-Za-z0-9]+)+|final_self_collision_campaign_\d{8}_\d{6}_[A-Za-z0-9]+)\b"
 )
-LOCAL_ONLY_RESULTS_TXT = (
-    ROOT / "results/bunny_force_visualization/LATEST_ATTEMPT.txt",
-    ROOT / "results/bunny_force_visualization/LATEST_SUCCESS.txt",
-    ROOT / "results/native_robot_rope_drop_release/LATEST_ATTEMPT.txt",
-    ROOT / "results/native_robot_rope_drop_release/LATEST_SUCCESS.txt",
+CANONICAL_WORD_RE = re.compile(
+    r"\b(authoritative|current|latest|best run|best|promoted|source of truth|canonical)\b",
+    re.IGNORECASE,
 )
+NONCANONICAL_MARKERS = ("local-only", "secondary", "historical", "deprecated", "scratch", "rejected", "superseded")
+REQUIRED_METADATA_SURFACES = {
+    "AGENTS.md",
+    "TODO.md",
+    "docs/bridge/current_status.md",
+    "docs/bridge/tasks/README.md",
+    "docs/generated/README.md",
+    "docs/runbooks/doc_gardening.md",
+    "results_meta/README.md",
+    "docs/bridge/tasks/markdown_harness_maintenance_upgrade.md",
+    "tasks/spec/markdown_harness_maintenance_upgrade.md",
+    "plans/active/markdown_harness_maintenance_upgrade.md",
+    "tasks/implement/markdown_harness_maintenance_upgrade.md",
+    "tasks/status/markdown_harness_maintenance_upgrade.md",
+}
 
 
 def _relative(path: Path) -> str:
     return str(path.relative_to(ROOT))
 
 
-def _load_inventory() -> list[dict[str, Any]]:
+def _load_generated_inventory() -> list[dict[str, Any]]:
     if not MD_INVENTORY_JSON.exists():
         return []
     raw = json.loads(MD_INVENTORY_JSON.read_text(encoding="utf-8"))
@@ -72,7 +82,52 @@ def _registry_entries() -> dict[str, dict[str, Any]]:
     return out
 
 
-def _issues_from_active_chain(active_slugs: list[str]) -> list[str]:
+def _metadata_present(path: Path) -> bool:
+    text = path.read_text(encoding="utf-8", errors="ignore").splitlines()[:10]
+    required = {"status:", "owner_surface:", "last_reviewed:", "review_interval:", "update_rule:", "notes:"}
+    found = {line[2:].split(":", 1)[0].strip() + ":" for line in text if line.startswith("> ") and ":" in line}
+    return required.issubset(found)
+
+
+def _issues_from_generated_inventory(fresh: list[dict[str, Any]]) -> list[str]:
+    issues: list[str] = []
+    generated = _load_generated_inventory()
+    if not generated:
+        issues.append("missing generated markdown inventory JSON; run python scripts/generate_md_inventory.py")
+        return issues
+
+    fresh_by_path = {row["path"]: row for row in fresh}
+    generated_by_path = {row["path"]: row for row in generated}
+    fresh_paths = set(fresh_by_path)
+    generated_paths = set(generated_by_path)
+    if fresh_paths != generated_paths:
+        missing = sorted(fresh_paths - generated_paths)
+        extra = sorted(generated_paths - fresh_paths)
+        if missing:
+            issues.append("generated inventory is missing current control-plane paths: " + ", ".join(missing))
+        if extra:
+            issues.append("generated inventory still lists stale paths: " + ", ".join(extra))
+        return issues
+
+    for path, fresh_row in fresh_by_path.items():
+        gen_row = generated_by_path[path]
+        for key in ("classification", "action", "contains_machine_local_paths", "indexed_from_canonical_entrypoint"):
+            if gen_row.get(key) != fresh_row.get(key):
+                issues.append(
+                    f"generated inventory is stale for `{path}` field `{key}`: generated={gen_row.get(key)!r}, fresh={fresh_row.get(key)!r}"
+                )
+    return issues
+
+
+def _issues_from_root_singletons() -> list[str]:
+    issues: list[str] = []
+    for rel in ROOT_SINGLETONS:
+        if (ROOT / rel).exists():
+            issues.append(f"retired root singleton recreated: {rel}")
+    return issues
+
+
+def _issues_from_active_task_chain(active_slugs: list[str]) -> list[str]:
     issues: list[str] = []
     for slug in active_slugs:
         expected = [
@@ -90,230 +145,182 @@ def _issues_from_active_chain(active_slugs: list[str]) -> list[str]:
             continue
         if path.stem not in active_slugs:
             issues.append(f"non-active plan still lives in plans/active/: {_relative(path)}")
+    for directory in (SPEC_DIR, IMPLEMENT_DIR, STATUS_DIR):
+        for path in sorted(directory.glob("*.md")):
+            if path.name in {"README.md", "_spec_template.md", "_implement_template.md", "_status_template.md"}:
+                continue
+            if path.stem not in active_slugs:
+                issues.append(f"historical or non-active file still lives in active execution dir: {_relative(path)}")
     return issues
 
 
-def _issues_from_root_singletons(inventory_by_path: dict[str, dict[str, Any]]) -> list[str]:
+def _issues_from_task_index(active_slugs: list[str]) -> list[str]:
     issues: list[str] = []
-    for rel in ROOT_SINGLETONS:
+    text = TASKS_README.read_text(encoding="utf-8", errors="ignore")
+    if "harness_engineering_upgrade.md" in text.split("## One-Off / Historical Task Records")[0]:
+        issues.append("docs/bridge/tasks/README.md still lists `harness_engineering_upgrade` as active")
+    if "markdown_truthfulness_cleanup.md" in text.split("## One-Off / Historical Task Records")[0]:
+        issues.append("docs/bridge/tasks/README.md still lists `markdown_truthfulness_cleanup` as active")
+    if "markdown_harness_maintenance_upgrade.md" not in text:
+        issues.append("docs/bridge/tasks/README.md does not list `markdown_harness_maintenance_upgrade`")
+    return issues
+
+
+def _issues_from_current_status(fresh_inventory: list[dict[str, Any]], registry_entries: dict[str, dict[str, Any]]) -> list[str]:
+    issues: list[str] = []
+    if not CURRENT_STATUS.exists():
+        issues.append("missing docs/bridge/current_status.md")
+        return issues
+    text = CURRENT_STATUS.read_text(encoding="utf-8", errors="ignore")
+    line_count = len(text.splitlines())
+    if line_count > 140:
+        issues.append(f"current_status.md is too long for a dashboard: {line_count} lines")
+    if "results_meta/INDEX.md" not in text or "results_meta/LATEST.md" not in text:
+        issues.append("current_status.md must point readers to results_meta/INDEX.md and results_meta/LATEST.md")
+    run_ids = set(RUN_ID_RE.findall(text))
+    allowed_run_ids = {
+        str((entry.get("authoritative_run") or {}).get("run_id") or "")
+        for entry in registry_entries.values()
+    }
+    for run_id in sorted(run_ids):
+        if run_id and run_id not in allowed_run_ids and "historical" not in text.lower():
+            issues.append(f"current_status.md contains non-registry run id without historical marker: {run_id}")
+    fresh_row = next((row for row in fresh_inventory if row["path"] == "docs/bridge/current_status.md"), None)
+    if fresh_row and fresh_row["overgrown_for_role"]:
+        issues.append("current_status.md is still flagged as overgrown in the fresh inventory")
+    return issues
+
+
+def _issues_from_metadata(fresh_inventory: list[dict[str, Any]]) -> list[str]:
+    issues: list[str] = []
+    for rel in sorted(REQUIRED_METADATA_SURFACES):
         path = ROOT / rel
         if not path.exists():
+            issues.append(f"required metadata surface is missing: {rel}")
             continue
-        entry = inventory_by_path.get(rel)
-        if entry is None:
-            issues.append(f"retired root singleton is not in inventory: {rel}")
+        if not _metadata_present(path):
+            issues.append(f"required metadata surface lacks the standard metadata block: {rel}")
+    for row in fresh_inventory:
+        if row["path"] not in REQUIRED_METADATA_SURFACES:
             continue
-        if entry.get("classification") != "deprecated-pointer":
-            issues.append(f"retired root singleton must be absent or an explicit deprecated stub: {rel}")
-            continue
-        text = path.read_text(encoding="utf-8", errors="ignore")
-        nonblank = [line for line in text.splitlines() if line.strip()]
-        if len(nonblank) > 25:
-            issues.append(f"retired root singleton stub is too substantive: {rel}")
-        lowered = text.lower()
-        if "do not use as source of truth" not in lowered:
-            issues.append(f"retired root singleton stub lacks 'do not use as source of truth': {rel}")
-    return issues
-
-
-def _issues_from_inventory(entries: list[dict[str, Any]], registry_entries: dict[str, dict[str, Any]]) -> list[str]:
-    issues: list[str] = []
-    if not entries:
-        issues.append("missing generated markdown inventory: docs/generated/md_inventory.json")
-        return issues
-
-    scanned_paths = {_relative(path) for path in build_inventory_paths()}
-    inventory_paths = {entry["path"] for entry in entries}
-    missing = sorted(scanned_paths - inventory_paths)
-    extra = sorted(inventory_paths - scanned_paths)
-    if missing:
-        issues.append(f"inventory is missing control-plane markdown paths: {', '.join(missing)}")
-    if extra:
-        issues.append(f"inventory contains stale paths that no longer exist: {', '.join(extra)}")
-
-    delete_candidates = [entry["path"] for entry in entries if entry["classification"] == "delete-candidate"]
-    if delete_candidates:
-        issues.append(
-            "control-plane markdown still has delete-candidates: "
-            + ", ".join(sorted(delete_candidates))
-        )
-
-    for entry in entries:
-        if entry["classification"] in {"deprecated-pointer", "historical"}:
-            text = (ROOT / entry["path"]).read_text(encoding="utf-8", errors="ignore")
-            lowered = text.lower()
-            if "status:" not in lowered:
-                issues.append(f"{entry['classification']} file lacks metadata status field: {entry['path']}")
-            if "owner_surface:" not in lowered:
-                issues.append(f"{entry['classification']} file lacks owner_surface field: {entry['path']}")
-            if "last_reviewed:" not in lowered:
-                issues.append(f"{entry['classification']} file lacks last_reviewed field: {entry['path']}")
-            if "notes:" not in lowered:
-                issues.append(f"{entry['classification']} file lacks notes field: {entry['path']}")
-            if entry["classification"] == "deprecated-pointer" and not entry.get("canonical_replacement"):
-                issues.append(f"deprecated-pointer file lacks canonical_replacement field: {entry['path']}")
-
-    generated_expected = {
-        "docs/generated/md_inventory.md",
-        "docs/generated/md_inventory.json",
-        "docs/generated/md_cleanup_report.md",
-        "docs/generated/md_orphans.md",
-        "docs/generated/md_deprecation_matrix.md",
-    }
-    for rel in sorted(generated_expected):
-        if not (ROOT / rel).exists():
-            issues.append(f"missing generated markdown artifact: {rel}")
-
-    for entry in entries:
-        if entry["classification"] == "canonical" and entry.get("contains_machine_local_paths"):
-            issues.append(f"machine-local absolute path in canonical markdown surface: {entry['path']}")
-
-        if entry["classification"] == "canonical":
-            path = ROOT / entry["path"]
-            if not path.exists():
-                continue
-            lines = path.read_text(encoding="utf-8", errors="ignore").splitlines()
-            for idx, raw in enumerate(lines):
-                if not LOCAL_POINTER_RE.search(raw):
-                    continue
-                context = "\n".join(lines[max(0, idx - 2) : idx + 1]).lower()
-                if CANONICAL_CLAIM_RE.search(raw) and "local-only" not in context and "secondary" not in context:
-                    issues.append(
-                        f"canonical markdown treats local pointer as committed truth: {entry['path']}"
-                    )
-                    break
-
-    for slug, entry in registry_entries.items():
-        run = entry.get("authoritative_run") or {}
-        run_id = str(run.get("run_id") or "")
-        if not run_id:
-            issues.append(f"registry entry `{slug}` missing authoritative run id")
-            continue
-        chain = entry.get("task_chain") or {}
-        status_rel = chain.get("status")
-        if not status_rel:
-            issues.append(f"registry entry `{slug}` missing task-chain status path")
-            continue
-        status_path = ROOT / status_rel
-        if not status_path.exists():
-            issues.append(f"registry entry `{slug}` points to missing status page: {status_rel}")
-            continue
-        status_text = status_path.read_text(encoding="utf-8", errors="ignore")
-        registry_rel = f"results_meta/tasks/{slug}.json"
-        if registry_rel not in status_text:
-            issues.append(f"status page `{status_rel}` does not mention its committed registry entry `{registry_rel}`")
-        if run_id not in status_text:
-            issues.append(f"status page `{status_rel}` does not mention registry run id `{run_id}`")
-        for raw in status_text.splitlines():
-            run_ids = RUN_ID_RE.findall(raw)
-            if not run_ids:
-                continue
-            lowered = raw.lower()
-            if any(marker in lowered for marker in ALLOW_NONCANONICAL_MARKERS):
-                continue
-            if CANONICAL_CLAIM_RE.search(raw) and run_id not in raw:
-                issues.append(
-                    f"status page `{status_rel}` contains authoritative-sounding non-registry run line: {raw.strip()}"
-                )
-                break
-
-    if CURRENT_STATUS.exists():
-        current_text = CURRENT_STATUS.read_text(encoding="utf-8", errors="ignore")
-        for slug, entry in registry_entries.items():
-            run_id = str((entry.get("authoritative_run") or {}).get("run_id") or "")
-            if not run_id:
-                continue
-            if run_id in current_text:
-                continue
-            # Accept bundle-root-only summaries for rope perf, but require registry link or task name.
-            bundle_root = str(entry.get("bundle_root") or "")
-            if bundle_root and bundle_root in current_text:
-                continue
+        if row["review_status"] in {"missing", "parse_error", "due"}:
             issues.append(
-                f"current_status.md does not mention registry run id or bundle root for `{slug}`"
+                f"required metadata surface has stale or invalid review metadata: {row['path']} ({row['review_status']})"
             )
     return issues
 
 
-def _issues_from_registry_and_pointers(registry_entries: dict[str, dict[str, Any]]) -> list[str]:
+def _issues_from_generator_story() -> list[str]:
     issues: list[str] = []
-    if not DEPRECATIONS_DOC.exists():
-        issues.append("missing deprecation ledger: docs/generated/harness_deprecations.md")
-    if not HARNESS_AUDIT_DOC.exists():
-        issues.append("missing harness audit: docs/generated/harness_audit.md")
-    for path in (INVENTORY_MD, MD_CLEANUP_REPORT, MD_ORPHANS, MD_DEPRECATION_MATRIX):
+    docs = {
+        "docs/generated/README.md": GENERATED_README.read_text(encoding="utf-8", errors="ignore"),
+        "docs/runbooks/doc_gardening.md": DOC_GARDENING.read_text(encoding="utf-8", errors="ignore"),
+    }
+    for rel, text in docs.items():
+        if PUBLIC_GENERATOR_CMD not in text:
+            issues.append(f"{rel} does not point to the canonical generator entrypoint `{PUBLIC_GENERATOR_CMD}`")
+        if "generate_md_truth_inventory.py" in text:
+            issues.append(f"{rel} still presents generate_md_truth_inventory.py as a public workflow")
+    for path in GENERATED_REQUIRED:
         if not path.exists():
             issues.append(f"missing generated markdown artifact: {_relative(path)}")
+            continue
+        if path.suffix == ".md":
+            text = path.read_text(encoding="utf-8", errors="ignore")
+            if PUBLIC_GENERATOR_CMD not in text:
+                issues.append(f"generated markdown artifact does not cite the public generator entrypoint: {_relative(path)}")
+            if "generate_md_truth_inventory.py" in text:
+                issues.append(f"generated markdown artifact still cites the private generator alias: {_relative(path)}")
+    return issues
 
-    if HARNESS_AUDIT_DOC.exists():
-        audit = HARNESS_AUDIT_DOC.read_text(encoding="utf-8", errors="ignore")
-        if "Root-Level Shadow Docs Competed With Task-Scoped Truth" in audit and "Current status: `resolved`" in audit:
-            for rel in ROOT_SINGLETONS:
-                if (ROOT / rel).exists():
-                    issues.append("harness_audit.md claims root singleton issue is resolved, but a root singleton still exists")
-                    break
-        if "Video Acceptance Was Optimistic And Generator-Coupled" in audit and "Current status: `resolved`" in audit:
-            required = [
-                ROOT / "docs/evals/video_acceptance_rubric.md",
-                ROOT / "docs/evals/video_evaluator_prompt.md",
-                ROOT / "scripts/prepare_video_review_bundle.py",
-                ROOT / "scripts/run_skeptical_video_audit.py",
-            ]
-            missing = [_relative(path) for path in required if not path.exists()]
-            if missing:
-                issues.append(
-                    "harness_audit.md claims skeptical video layer resolved, but files are missing: "
-                    + ", ".join(missing)
-                )
 
-    for slug, entry in registry_entries.items():
-        chain = entry.get("task_chain") or {}
-        for key in ("task_page", "spec", "plan", "implement", "status"):
-            rel = chain.get(key)
-            if not rel:
-                issues.append(f"registry entry `{slug}` missing task_chain field `{key}`")
-                continue
-            if not (ROOT / rel).exists():
-                issues.append(f"registry entry `{slug}` points to missing `{key}` path: {rel}")
-        for rel in entry.get("local_only_surfaces", []):
-            text = ""
-            path = ROOT / rel
-            if path.exists() and path.suffix == ".md":
-                text = path.read_text(encoding="utf-8", errors="ignore")
-                if CANONICAL_CLAIM_RE.search(text) and "local-only" not in text.lower() and "secondary" not in text.lower():
-                    issues.append(f"local-only pointer surface still sounds canonical: {rel}")
-    for path in LOCAL_ONLY_RESULTS_MD:
+def _issues_from_authority_surfaces(fresh_inventory: list[dict[str, Any]], registry_entries: dict[str, dict[str, Any]]) -> list[str]:
+    issues: list[str] = []
+    fresh_by_path = {row["path"]: row for row in fresh_inventory}
+
+    robot_root = fresh_by_path.get("Newton/phystwin_bridge/results/robot_rope_franka/README.md")
+    robot_best = fresh_by_path.get("Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/README.md")
+    for row in (robot_root, robot_best):
+        if row and row["classification"] != "LOCAL_ONLY_SECONDARY":
+            issues.append(f"robot tabletop local result surface must be LOCAL_ONLY_SECONDARY: {row['path']}")
+
+    for rel in (
+        "Newton/phystwin_bridge/results/robot_rope_franka/README.md",
+        "Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/README.md",
+        "results/robot_deformable_demo/runs/README.md",
+        "results/native_robot_rope_drop_release/runs/20260331_232106_native_franka_recoilfix_drag_off_w5/README.md",
+    ):
+        path = ROOT / rel
         if not path.exists():
             continue
-        text = path.read_text(encoding="utf-8", errors="ignore")
-        lowered = text.lower()
-        if "local-only" not in lowered and "local bundle" not in lowered and "local pointer" not in lowered:
-            issues.append(f"tracked local-only results markdown lacks a local-only banner: {_relative(path)}")
+        text = path.read_text(encoding="utf-8", errors="ignore").lower()
+        if "local-only" not in text and "do not use this page as the committed source of truth" not in text:
+            issues.append(f"local result surface lacks explicit local-only truth banner: {rel}")
         if "/home/" in text:
-            issues.append(f"tracked local-only results markdown still contains machine-local paths: {_relative(path)}")
-    expected_success = {
-        _relative(ROOT / "results/bunny_force_visualization/LATEST_SUCCESS.txt"): str((registry_entries.get("bunny_penetration_force_diagnostic", {}).get("authoritative_run") or {}).get("run_id") or ""),
-        _relative(ROOT / "results/native_robot_rope_drop_release/LATEST_SUCCESS.txt"): str((registry_entries.get("native_robot_rope_drop_release", {}).get("authoritative_run") or {}).get("run_id") or ""),
-    }
-    for path in LOCAL_ONLY_RESULTS_TXT:
-        if not path.exists():
-            continue
-        text = path.read_text(encoding="utf-8", errors="ignore").strip()
-        if text.startswith("/home/"):
-            issues.append(f"tracked local-only pointer text uses machine-local absolute path: {_relative(path)}")
-        expected = expected_success.get(_relative(path))
-        if expected and expected not in text:
-            issues.append(f"latest-success pointer does not match results_meta: {_relative(path)}")
-    if CURRENT_STATUS.exists():
-        current_text = CURRENT_STATUS.read_text(encoding="utf-8", errors="ignore")
-        contradictions = {
-            "Committed results metadata mirrors for every major authoritative run family": "current_status.md still claims major results_meta mirrors are missing",
-            "A hard skeptical video evaluator layer separate from optimistic automatic QC": "current_status.md still claims skeptical video evaluator is missing",
-            "One standard harness-consistency lint pass in normal task closeout": "current_status.md still claims harness lint closeout is missing",
+            issues.append(f"local result surface still contains machine-local absolute path: {rel}")
+
+    robot_status = ROOT / "tasks/status/robot_rope_franka_tabletop_push_hero.md"
+    if robot_status.exists():
+        text = robot_status.read_text(encoding="utf-8", errors="ignore")
+        if "results_meta/tasks/robot_rope_franka_tabletop_push_hero.json" not in text:
+            issues.append("robot_rope_franka_tabletop_push_hero status page does not point to its committed registry entry")
+        run_id = str((registry_entries.get("robot_rope_franka_tabletop_push_hero", {}).get("authoritative_run") or {}).get("run_id") or "")
+        if run_id and run_id not in text:
+            issues.append("robot_rope_franka_tabletop_push_hero status page does not mention its current registry run id")
+
+    task_page = ROOT / "docs/bridge/tasks/robot_rope_franka_tabletop_push_hero.md"
+    if task_page.exists():
+        text = task_page.read_text(encoding="utf-8", errors="ignore")
+        if "if this task gains a promoted result" in text:
+            issues.append("robot_rope_franka_tabletop_push_hero task page still treats results_meta mirroring as conditional")
+
+    interactive = ROOT / "docs/bridge/tasks/interactive_playground_profiling.md"
+    if interactive.exists():
+        text = interactive.read_text(encoding="utf-8", errors="ignore")
+        if "collision is the largest single hotspot" in text:
+            issues.append("interactive_playground_profiling.md still carries stale hotspot language that conflicts with the rope benchmark truth")
+        if "results_meta/tasks/rope_perf_apples_to_apples.json" not in text:
+            issues.append("interactive_playground_profiling.md must point to rope_perf_apples_to_apples for committed current result meaning")
+    return issues
+
+
+def _issues_from_registry_json(registry_entries: dict[str, dict[str, Any]]) -> list[str]:
+    issues: list[str] = []
+    robot_entry = registry_entries.get("robot_rope_franka_tabletop_push_hero")
+    if robot_entry:
+        local_only = set(robot_entry.get("local_only_surfaces", []))
+        required = {
+            "Newton/phystwin_bridge/results/robot_rope_franka/README.md",
+            "Newton/phystwin_bridge/results/robot_rope_franka/manifest.json",
+            "Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/README.md",
+            "Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/manifest.json",
         }
-        for needle, message in contradictions.items():
-            if needle in current_text:
-                issues.append(message)
+        missing = sorted(required - local_only)
+        if missing:
+            issues.append(
+                "robot_rope_franka_tabletop_push_hero registry entry is missing local-only surfaces: "
+                + ", ".join(missing)
+            )
+    manifest = ROOT / "Newton/phystwin_bridge/results/robot_rope_franka/manifest.json"
+    if manifest.exists():
+        obj = json.loads(manifest.read_text(encoding="utf-8"))
+        if obj.get("status") == "planned":
+            issues.append("robot_rope_franka root manifest still says planned after promotion")
+    return issues
+
+
+def _issues_from_harness_audit() -> list[str]:
+    issues: list[str] = []
+    if not HARNESS_AUDIT.exists():
+        issues.append("missing docs/generated/harness_audit.md")
+        return issues
+    text = HARNESS_AUDIT.read_text(encoding="utf-8", errors="ignore")
+    if "Current status: `resolved for major task families; future promotions must keep the registry updated`" in text:
+        robot_root = ROOT / "Newton/phystwin_bridge/results/robot_rope_franka/README.md"
+        if robot_root.exists():
+            robot_text = robot_root.read_text(encoding="utf-8", errors="ignore").lower()
+            if "local-only" not in robot_text:
+                issues.append("harness_audit.md still overclaims result-authority resolution while robot tabletop local surfaces sound canonical")
     return issues
 
 
@@ -321,13 +328,24 @@ def _collect_issues() -> list[str]:
     issues: list[str] = []
     active_slugs = active_task_slugs()
     registry_entries = _registry_entries()
-    inventory_entries = _load_inventory()
-    inventory_by_path = {entry["path"]: entry for entry in inventory_entries}
+    fresh_inventory = build_inventory()
 
-    issues.extend(_issues_from_active_chain(active_slugs))
-    issues.extend(_issues_from_root_singletons(inventory_by_path))
-    issues.extend(_issues_from_inventory(inventory_entries, registry_entries))
-    issues.extend(_issues_from_registry_and_pointers(registry_entries))
+    issues.extend(_issues_from_generated_inventory(fresh_inventory))
+    issues.extend(_issues_from_root_singletons())
+    issues.extend(_issues_from_active_task_chain(active_slugs))
+    issues.extend(_issues_from_task_index(active_slugs))
+    issues.extend(_issues_from_current_status(fresh_inventory, registry_entries))
+    issues.extend(_issues_from_metadata(fresh_inventory))
+    issues.extend(_issues_from_generator_story())
+    issues.extend(_issues_from_authority_surfaces(fresh_inventory, registry_entries))
+    issues.extend(_issues_from_registry_json(registry_entries))
+    issues.extend(_issues_from_harness_audit())
+
+    for row in fresh_inventory:
+        if row["classification"] == "ORPHAN":
+            issues.append(f"orphan control-plane surface remains indexed as current: {row['path']}")
+        if row["classification"] in {"CANONICAL", "ACTIVE_SUPPORTING"} and row["contains_machine_local_paths"]:
+            issues.append(f"machine-local absolute path in live control-plane markdown: {row['path']}")
     return issues
 
 

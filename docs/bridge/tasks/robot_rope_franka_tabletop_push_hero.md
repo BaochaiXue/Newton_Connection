@@ -1,3 +1,11 @@
+> status: active
+> canonical_replacement: none
+> owner_surface: `robot_rope_franka_tabletop_push_hero`
+> last_reviewed: `2026-04-01`
+> review_interval: `21d`
+> update_rule: `Update when the task boundary, promoted run meaning, or local-only result-tree policy changes.`
+> notes: Active task page for the tabletop-push hero baseline. Committed promoted-run authority lives in `results_meta/`.
+
 # Task: Native Newton Franka + Native Table + PhysTwin Rope Hero Demo
 
 ## Question
@@ -21,6 +29,8 @@ drop/release baseline:
 ## Current Status
 
 - Accepted on `2026-04-01`.
+- Committed promoted-run authority now lives in:
+  - `results_meta/tasks/robot_rope_franka_tabletop_push_hero.json`
 - Existing entry point remains:
   - `Newton/phystwin_bridge/demos/demo_robot_rope_franka.py`
 - Existing canonical robot result bundle remains the historical reference:
@@ -30,7 +40,7 @@ drop/release baseline:
 - This task is the follow-on hero-demo workstream for a real tabletop push.
 - Accepted run:
   - `Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_081639_fixeddt_c08_gatepass`
-- Promoted mirror:
+- Local convenience mirror:
   - `Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/`
 
 Accepted implementation note:
@@ -48,12 +58,15 @@ Accepted implementation note:
   - `Newton/phystwin_bridge/demos/rope_demo_common.py`
   - `Newton/phystwin_bridge/demos/bridge_deformable_common.py`
   - `Newton/phystwin_bridge/demos/bridge_shared.py`
-- Existing wrapper reference:
-  - `scripts/run_robot_rope_franka.sh`
+- Canonical wrapper:
+  - `scripts/run_robot_rope_franka_tabletop_hero.sh`
 
 ## Canonical Result Root
 
-- `Newton/phystwin_bridge/results/robot_rope_franka/`
+- committed authority:
+  - `results_meta/tasks/robot_rope_franka_tabletop_push_hero.json`
+- local bundle root for navigation only:
+  - `Newton/phystwin_bridge/results/robot_rope_franka/`
 
 Expected layout:
 
@@ -79,10 +92,9 @@ Expected layout:
 - robot performs a slow lateral push rather than a fling or scoop
 - rope visibly deforms and slides because of robot contact
 - presentation clip is between 6 and 12 seconds and readable on first viewing
-- local bundle winner is promoted under
-  `phystwin_bridge/results/robot_rope_franka/BEST_RUN/`, while any committed
-  cross-task authority should be mirrored in `results_meta/` if this task gains
-  a promoted result
+- local bundle mirror may remain under
+  `phystwin_bridge/results/robot_rope_franka/BEST_RUN/`, but committed
+  current/best/promoted meaning must stay in `results_meta/`
 
 ## Related Pages
 

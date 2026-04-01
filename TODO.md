@@ -1,6 +1,14 @@
+> status: active
+> canonical_replacement: none
+> owner_surface: `task_index`
+> last_reviewed: `2026-04-01`
+> review_interval: `30d`
+> update_rule: `Update when the active task set or task-index routing changes.`
+> notes: High-level task map only. Detailed task truth lives under docs/bridge/tasks/ and the execution chain.
+
 # PhysTwin -> Newton Bridge: TODO Index
 
-> Updated: 2026-03-31  
+> Updated: 2026-04-01  
 > This file is now a task index. The detailed source of truth lives under `docs/bridge/tasks/`.
 
 ## How To Use This File
@@ -19,13 +27,9 @@ Operational ledgers:
 
 ## High Priority
 
-### 0. Harness Engineering Upgrade
-- Task page: [harness_engineering_upgrade.md](./docs/bridge/tasks/harness_engineering_upgrade.md)
-- Current goal: upgrade the repo into a durable multi-agent harness with committed results metadata, skeptical video acceptance, and mechanical drift checks.
-
-### 0b. Markdown Truthfulness Cleanup
-- Task page: [markdown_truthfulness_cleanup.md](./docs/bridge/tasks/markdown_truthfulness_cleanup.md)
-- Current goal: turn Markdown control-plane surfaces into a fail-closed truth system with canonical/deprecated/historical convergence and mechanical drift detection.
+### 0. Markdown Harness Maintenance Upgrade
+- Task page: [markdown_harness_maintenance_upgrade.md](./docs/bridge/tasks/markdown_harness_maintenance_upgrade.md)
+- Current goal: keep the existing harness truthful by separating active vs historical task surfaces, shrinking overgrown dashboards, aligning local result pointers with `results_meta/`, and strengthening markdown lint/inventory policy.
 
 ### 1. Slide Deck Overhaul
 - Task page: [slide_deck_overhaul.md](./docs/bridge/tasks/slide_deck_overhaul.md)
@@ -86,6 +90,13 @@ These are still important, but not yet promoted into dedicated bridge task pages
 
 If one of these becomes an active bridge workstream, create a new page from:
 - [docs/bridge/tasks/_task_template.md](./docs/bridge/tasks/_task_template.md)
+
+## Historical / Predecessor Harness Work
+
+- [harness_engineering_upgrade.md](./docs/bridge/tasks/harness_engineering_upgrade.md)
+- [markdown_truthfulness_cleanup.md](./docs/bridge/tasks/markdown_truthfulness_cleanup.md)
+- [delivery_and_profiling_review_20260401.md](./docs/bridge/tasks/delivery_and_profiling_review_20260401.md)
+- [harness_markdown_cleanup_20260401.md](./docs/bridge/tasks/harness_markdown_cleanup_20260401.md)
 
 ## Confirmed / Already Established
 

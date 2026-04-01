@@ -21,6 +21,10 @@ longer the canonical committed truth.
 - `results/native_robot_rope_drop_release/LATEST_SUCCESS.txt`
 - `results/rope_perf_apples_to_apples/README.md`
 - `results/rope_perf_apples_to_apples/BEST_EVIDENCE.md`
+- `Newton/phystwin_bridge/results/robot_rope_franka/README.md`
+- `Newton/phystwin_bridge/results/robot_rope_franka/manifest.json`
+- `Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/README.md`
+- `Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/manifest.json`
 
 ## Canonical Replacement
 

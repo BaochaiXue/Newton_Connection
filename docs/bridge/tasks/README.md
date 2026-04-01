@@ -1,3 +1,11 @@
+> status: canonical
+> canonical_replacement: none
+> owner_surface: `task_index`
+> last_reviewed: `2026-04-01`
+> review_interval: `14d`
+> update_rule: `Update when the active task set, historical task section, or task-index policy changes.`
+> notes: Canonical bridge-task index. Keep active tasks separate from predecessor or one-off historical records.
+
 # Bridge Task Pages
 
 These pages are the working layer between `TODO.md` and implementation.
@@ -12,8 +20,7 @@ Each task page should answer:
 
 ## Active Task Set
 
-- [harness_engineering_upgrade.md](./harness_engineering_upgrade.md)
-- [markdown_truthfulness_cleanup.md](./markdown_truthfulness_cleanup.md)
+- [markdown_harness_maintenance_upgrade.md](./markdown_harness_maintenance_upgrade.md)
 - [slide_deck_overhaul.md](./slide_deck_overhaul.md)
 - [bunny_penetration_force_diagnostic.md](./bunny_penetration_force_diagnostic.md)
 - [video_presentation_quality.md](./video_presentation_quality.md)
@@ -28,6 +35,8 @@ Each task page should answer:
 
 ## One-Off / Historical Task Records
 
+- [harness_engineering_upgrade.md](./harness_engineering_upgrade.md)
+- [markdown_truthfulness_cleanup.md](./markdown_truthfulness_cleanup.md)
 - [delivery_and_profiling_review_20260401.md](./delivery_and_profiling_review_20260401.md)
 - [harness_markdown_cleanup_20260401.md](./harness_markdown_cleanup_20260401.md)
 

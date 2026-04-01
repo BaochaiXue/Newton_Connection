@@ -1,3 +1,11 @@
+> status: historical
+> canonical_replacement: `docs/bridge/tasks/markdown_harness_maintenance_upgrade.md`
+> owner_surface: `markdown_harness_maintenance_upgrade`
+> last_reviewed: `2026-04-01`
+> review_interval: `90d`
+> update_rule: `Do not update for current work; keep only as predecessor context for the current markdown-harness maintenance task.`
+> notes: Historical predecessor cleanup task. The current active maintenance surface is `markdown_harness_maintenance_upgrade`.
+
 # Task: Markdown Truthfulness Cleanup
 
 ## Question
@@ -15,8 +23,7 @@ repeat superseded work, or cite the wrong run as current.
 ## Current Status
 
 - Initial fail-closed cleanup pass completed on `2026-04-01`
-- This task remains the canonical maintenance surface for keeping the
-  control-plane Markdown layer fail-closed:
+- This task is now predecessor context rather than the live maintenance surface:
   - one canonical source per concept
   - explicit deprecated-pointer stubs
   - explicit historical archives

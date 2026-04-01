@@ -1,3 +1,11 @@
+> status: historical
+> canonical_replacement: `docs/bridge/tasks/markdown_harness_maintenance_upgrade.md`
+> owner_surface: `markdown_harness_maintenance_upgrade`
+> last_reviewed: `2026-04-01`
+> review_interval: `90d`
+> update_rule: `Do not update for current work; keep only as predecessor context for the current markdown-harness maintenance task.`
+> notes: Historical predecessor harness-upgrade task. The current active maintenance surface is `markdown_harness_maintenance_upgrade`.
+
 # Task: Harness Engineering Upgrade
 
 ## Question
@@ -15,7 +23,7 @@ docs, or over-trusting optimistic validators.
 
 ## Current Status
 
-- Implemented for the current upgrade pass
+- Historical predecessor task; implemented for the 2026-04-01 harness-upgrade pass
 - This task owns the current harness hardening pass
 - Landed upgrade areas:
   - single-source-of-truth discipline

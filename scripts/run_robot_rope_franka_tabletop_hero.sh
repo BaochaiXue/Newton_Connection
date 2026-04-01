@@ -43,6 +43,7 @@ COMMON_ARGS=(
   --ik-target-blend 0.20
   --auto-set-weight 3.0
   --tabletop-initial-pose tabletop_curve
+  --tabletop-hero-hide-pedestal
   --tabletop-preroll-settle-seconds 2.0
   --tabletop-preroll-damping-scale 6.0
   --tabletop-settle-seconds 0.8
@@ -65,6 +66,7 @@ COMMON_ARGS=(
   --tabletop-push-clearance-z 0.008
   --tabletop-retract-clearance-z 0.05
   --tabletop-ee-offset-z 0.22
+  --rope-line-width 0.024
   "$@"
 )
 

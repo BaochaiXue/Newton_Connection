@@ -10,7 +10,7 @@
 
 ```bash
 python Newton/phystwin_bridge/demos/demo_robot_rope_franka.py --help
-sed -n '1,260p' scripts/run_robot_rope_franka.sh
+sed -n '1,260p' scripts/run_robot_rope_franka_tabletop_hero.sh
 ```
 
 ## Step Sequence

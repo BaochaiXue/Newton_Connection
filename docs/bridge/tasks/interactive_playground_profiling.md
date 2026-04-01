@@ -1,3 +1,11 @@
+> status: active
+> canonical_replacement: none
+> owner_surface: `interactive_playground_profiling`
+> last_reviewed: `2026-04-01`
+> review_interval: `21d`
+> update_rule: `Update when exploratory profiling scope or the boundary against committed rope benchmark truth changes.`
+> notes: Methodology/umbrella profiling page only. Committed same-case rope benchmark truth belongs to `rope_perf_apples_to_apples`.
+
 # Task: Interactive Playground Profiling
 
 ## Question
@@ -24,11 +32,21 @@ The advisor explicitly asked for profiling without guessing.
 
 ## Current Status
 
-A no-render profiling path already exists and has produced early evidence that:
+This task is exploratory methodology, not the committed result-authority surface
+for the rope replay benchmark.
 
-- collision is the largest single hotspot
-- decoupled stepping adds major structural overhead
-- Newton core itself should not be simplistically labeled “slow”
+Use it to hold:
+
+- new profiling hypotheses
+- non-promoted exploratory bundles
+- profiling method questions such as clean replay vs weak-contact scenes
+
+For the committed same-case rope replay benchmark and its current conclusion,
+use:
+
+- `docs/bridge/tasks/rope_perf_apples_to_apples.md`
+- `tasks/status/rope_perf_apples_to_apples.md`
+- `results_meta/tasks/rope_perf_apples_to_apples.json`
 
 ## Required Artifacts
 

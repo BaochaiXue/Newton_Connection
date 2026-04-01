@@ -15,7 +15,7 @@ PhysTwin-loaded rope across a native Newton tabletop.
 
 - `docs/bridge/tasks/robot_rope_franka_tabletop_push_hero.md`
 - `Newton/phystwin_bridge/demos/demo_robot_rope_franka.py`
-- `scripts/run_robot_rope_franka.sh`
+- `scripts/run_robot_rope_franka_tabletop_hero.sh`
 
 ## Outputs
 
