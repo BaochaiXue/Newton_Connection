@@ -20,15 +20,14 @@ It is intentionally narrower than the final two-way-coupling demo.
 
 ## Current Status
 
-- Provisional stage-0 baseline promoted under:
-  - `results/native_robot_rope_drop_release/runs/20260331_040614_native_franka_drag_off_w5_readable`
+- Recoil-fixed stage-0 baseline promoted under:
+  - `results/native_robot_rope_drop_release/runs/20260331_232106_native_franka_recoilfix_drag_off_w5`
 - Matched drag-ON comparison run:
-  - `results/native_robot_rope_drop_release/runs/20260331_041101_native_franka_drag_on_w5_readable`
+  - `results/native_robot_rope_drop_release/runs/20260331_232459_native_franka_recoilfix_drag_on_w5`
 - The old lift-release path remains the historical reference
 - The new milestone should be evaluated as its own evidence bundle, not as a
   continuation of the old lift/push story
-- The actual acceptance target is a recoil-free release/drop baseline that can
-  supersede the provisional promoted run
+- The current promoted run now satisfies the recoil-free acceptance target
 
 ## Code Entry Points
 
@@ -47,19 +46,23 @@ Canonical wrapper:
 
 ```bash
 scripts/run_native_robot_rope_drop_release.sh \
-  --slug drag_off_w5_readable \
+  --slug recoilfix_drag_off_w5 \
   --no-apply-drag \
   --screen-width 1280 \
   --screen-height 720 \
   --render-fps 30 \
   --anchor-height 0.75 \
+  --anchor-count-per-end 2 \
   --auto-set-weight 5.0 \
   --drop-approach-seconds 0.15 \
-  --drop-support-seconds 0.15 \
+  --drop-support-seconds 0.25 \
   --drop-release-seconds 0.05 \
   --drop-freefall-seconds 1.00 \
   --ik-target-blend 0.35 \
-  --rope-line-width 0.03
+  --gripper-hold 0.012 \
+  --drop-preroll-settle-seconds 2.0 \
+  --pre-release-settle-damping-scale 8.0 \
+  --rope-line-width 0.04
 ```
 
 Underlying demo entry point:
@@ -93,10 +96,10 @@ python Newton/phystwin_bridge/demos/demo_robot_rope_franka.py \
 
 ## Open Questions
 
-- For the current 5 kg baseline, drag OFF and drag ON both keep the early fall
-  gravity-like; the remaining question is whether future longer or higher-drop
-  variants should prefer OFF for clearer support storytelling or ON for softer
-  impact/settling.
+- For the current recoil-fixed 5 kg baseline, drag OFF and drag ON both keep
+  the early fall gravity-like and the A/B difference is minor; future variants
+  may still choose OFF for simplicity or ON for slightly softer post-impact
+  behavior.
 - Is the release mechanism simple enough that the robot no longer dominates
   the story after `t_release`?
 

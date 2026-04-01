@@ -174,7 +174,7 @@ ROBOT_DROP_BASELINE_OFF_MP4 = (
     / "results"
     / "native_robot_rope_drop_release"
     / "runs"
-    / "20260331_040614_native_franka_drag_off_w5_readable"
+    / "20260331_232106_native_franka_recoilfix_drag_off_w5"
     / "final_presentation.mp4"
 )
 ROBOT_DROP_BASELINE_ON_MP4 = (
@@ -182,7 +182,7 @@ ROBOT_DROP_BASELINE_ON_MP4 = (
     / "results"
     / "native_robot_rope_drop_release"
     / "runs"
-    / "20260331_041101_native_franka_drag_on_w5_readable"
+    / "20260331_232459_native_franka_recoilfix_drag_on_w5"
     / "final_presentation.mp4"
 )
 ROBOT_DROP_BASELINE_OFF_GIF = MEETING_DIR / "gif" / "robot_drop_release_drag_off.gif"
@@ -366,7 +366,7 @@ RECALL_SLIDES: list[dict] = [
     {
         "kind": "twocol",
         "title": "Hypothesis R0: Native Franka Release/Drop Is A Clean Stage-0 Baseline",
-        "common_settings": "Progress: `demo_robot_rope_franka.py --task drop_release_baseline` now shows support -> release -> free fall -> real ground contact at 1:1 time. OFF is promoted; ON is matched A/B evidence.",
+        "common_settings": "Progress: the recoil-fixed `drop_release_baseline` now passes settle + kick + gravity + real-ground gates at 1:1 time. OFF is promoted; ON is matched A/B evidence.",
         "left_label": "Drag OFF\npromoted best run",
         "left_path": ROBOT_DROP_BASELINE_OFF_GIF,
         "right_label": "Drag ON\nmatched A/B run",
@@ -375,7 +375,8 @@ RECALL_SLIDES: list[dict] = [
             "这一页专门讲清楚 robot demo 到底是什么。",
             "它不是 final robot policy，也不是 full two-way-coupling success；它只是 `demo_robot_rope_franka.py` 里新增的 `drop_release_baseline` task preset。",
             "这个 demo 的作用很窄：先确认 native Franka 在画面里，rope 先被 support，再 release，之后是 gravity-driven free fall，最后落到 real ground collider 上，而且 presentation video 保持 1:1 time。",
-            "右边我保留 matched drag ON 版本，是为了说明 A/B 已经做过。结论不是“drag 把 free fall 救好了”，而是 OFF 和 ON 的 early-fall acceleration 都接近 g，所以 drag 不是这条 baseline 里 free fall 异常的主因。",
+            "这次真正的 progress 不是“又录了一条视频”，而是 release recoil 这个 hard failure 被修掉了：release 前先过 settle gate，release 后 horizontal kick 也过了 hard gate。",
+            "右边我保留 matched drag ON 版本，是为了说明 A/B 已经做过。结论不是“drag 把 free fall 救好了”，而是 OFF 和 ON 的 recoil-fixed baseline 都接近 g，而且差异只剩 minor timing 和 impact variation。",
         ],
     },
     {

@@ -95,3 +95,15 @@
 - Reason: the current provisional promoted run still shows release
   recoil/catapulting, so the bundle should be treated as ready to supersede
   rather than final.
+
+### D-0013
+
+- Decision: promote
+  `results/native_robot_rope_drop_release/runs/20260331_232106_native_franka_recoilfix_drag_off_w5`
+  as the authoritative stage-0 native robot release/drop baseline.
+- Reason: this run keeps the visible holder aligned with the constrained patch,
+  passes the pre-release settle gate, keeps the post-release horizontal kick
+  below the hard threshold, preserves gravity-like early fall, lands on a real
+  ground, and passes the full video QA bundle. The matched drag-ON recoil-fixed
+  run also passes, and the A/B comparison now indicates only a minor drag
+  effect.

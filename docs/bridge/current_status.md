@@ -20,8 +20,8 @@ It should stay current and be updated whenever a task changes state.
   - `results/native_robot_rope_drop_release/`
   - narrow claim boundary: release, free fall, real ground contact, 1:1
     presentation timing
-- A provisional stage-0 native-robot release/drop baseline now exists:
-  - `results/native_robot_rope_drop_release/runs/20260331_040614_native_franka_drag_off_w5_readable`
+- A recoil-fixed stage-0 native-robot release/drop baseline now exists:
+  - `results/native_robot_rope_drop_release/runs/20260331_232106_native_franka_recoilfix_drag_off_w5`
   - `final_presentation.mp4`
   - `final_debug.mp4`
   - `summary.json`
@@ -32,13 +32,11 @@ It should stay current and be updated whenever a task changes state.
   - matched drag comparison:
     - `results/native_robot_rope_drop_release/drag_ab_compare.json`
   - current conclusion:
-    - both drag OFF and drag ON keep the early fall gravity-like
-    - drag changes timing and impact speed, but is not the main cause of slow
-      or non-gravity-like free fall in this baseline
-    - the drag-OFF run is the provisional best because the pre-release support
-      reads more clearly while the run still passes the physics gate
-    - the acceptance target remains a recoil-free release/drop run that can
-      supersede this provisional baseline
+    - both recoil-fixed drag OFF and drag ON runs pass settle, kick, gravity,
+      ground-contact, and video-readability gates
+    - drag effect on the recoil-fixed pair is minor rather than causal
+    - the drag-OFF run is the promoted best because it is the simpler
+      baseline while already passing the full gate set
 - A meeting-ready canonical native Franka result bundle now exists:
   - `results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation`
   - validated `final.mp4`
@@ -195,8 +193,8 @@ It should stay current and be updated whenever a task changes state.
   - finger-span contact proxy now replaces the old gripper-center-only contact summary
   - canonical wrapper + strict video validation now land under `results/robot_deformable_demo/`
   - promoted bundle now includes a run-local `README.md`, a stricter `manifest.json`, and slide-ready bundle templates
-  - the separate stage-0 release/drop bundle is currently provisional and
-    should be superseded by a recoil-free baseline
+  - the separate stage-0 release/drop bundle now has a recoil-fixed promoted
+    baseline with settle and horizontal-kick diagnostics
 
 ## Still Missing
 

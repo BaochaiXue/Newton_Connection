@@ -7,7 +7,7 @@ PHYSICS_VALIDATOR="${ROOT}/scripts/validate_robot_rope_drop_release_physics.py"
 VIDEO_VALIDATOR="${ROOT}/scripts/validate_native_robot_rope_drop_release_video.py"
 RESULT_ROOT="${ROOT}/results/native_robot_rope_drop_release"
 STAMP="$(date +%Y%m%d_%H%M%S)"
-SLUG="drop_release_drag_on"
+SLUG="recoilfix_drag_off_w5"
 
 usage() {
   cat <<EOF
@@ -25,9 +25,16 @@ Default demo settings:
   --task drop_release_baseline
   --slowdown 1.0
   --render-fps 30
-  --anchor-height 1.02
+  --anchor-height 0.75
   --anchor-count-per-end 2
+  --auto-set-weight 5.0
+  --drop-approach-seconds 0.15
+  --drop-support-seconds 0.25
+  --drop-release-seconds 0.05
+  --drop-freefall-seconds 1.00
   --ik-target-blend 0.35
+  --drop-preroll-settle-seconds 2.0
+  --pre-release-settle-damping-scale 8.0
 EOF
 }
 
@@ -72,14 +79,17 @@ COMMON_ARGS=(
   --task drop_release_baseline
   --slowdown 1.0
   --render-fps 30
-  --anchor-height 1.02
+  --anchor-height 0.75
   --anchor-count-per-end 2
+  --auto-set-weight 5.0
   --ik-target-blend 0.35
-  --drop-approach-seconds 0.55
-  --drop-support-seconds 0.40
-  --drop-release-seconds 0.12
-  --drop-freefall-seconds 1.80
+  --drop-approach-seconds 0.15
+  --drop-support-seconds 0.25
+  --drop-release-seconds 0.05
+  --drop-freefall-seconds 1.00
   --gripper-hold 0.012
+  --drop-preroll-settle-seconds 2.0
+  --pre-release-settle-damping-scale 8.0
   --viewer-headless
   --no-make-gif
 )

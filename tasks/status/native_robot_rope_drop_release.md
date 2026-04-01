@@ -2,7 +2,7 @@
 
 ## State
 
-- Status: provisional stage-0 baseline promoted; recoil-free follow-up still target
+- Status: recoil-fixed stage-0 baseline promoted
 - Last updated: 2026-03-31
 
 ## Authoritative Path
@@ -12,16 +12,16 @@
 - Result bundle:
   - `results/native_robot_rope_drop_release/`
 
-## Current Promoted Run
+## Authoritative Best Run
 
 - Run:
-  - `results/native_robot_rope_drop_release/runs/20260331_040614_native_franka_drag_off_w5_readable`
+  - `results/native_robot_rope_drop_release/runs/20260331_232106_native_franka_recoilfix_drag_off_w5`
 - Presentation video:
-  - `results/native_robot_rope_drop_release/runs/20260331_040614_native_franka_drag_off_w5_readable/final_presentation.mp4`
+  - `results/native_robot_rope_drop_release/runs/20260331_232106_native_franka_recoilfix_drag_off_w5/final_presentation.mp4`
 - Physics validation:
-  - `results/native_robot_rope_drop_release/runs/20260331_040614_native_franka_drag_off_w5_readable/physics_validation.json`
+  - `results/native_robot_rope_drop_release/runs/20260331_232106_native_franka_recoilfix_drag_off_w5/physics_validation.json`
 - Video verdict:
-  - `results/native_robot_rope_drop_release/runs/20260331_040614_native_franka_drag_off_w5_readable/qa/verdict.md`
+  - `results/native_robot_rope_drop_release/runs/20260331_232106_native_franka_recoilfix_drag_off_w5/qa/verdict.md`
 - Drag comparison:
   - `results/native_robot_rope_drop_release/drag_ab_compare.json`
 
@@ -32,15 +32,15 @@
 - This milestone is narrower and must be validated on its own terms
 - The promoted result shows release, free fall, real ground contact, and
   1:1 presentation timing without claiming final two-way coupling
-- The current promoted run still shows release recoil/catapulting, so it is
-  only provisional until a recoil-free follow-up supersedes it
 
 ## Key Outcome
 
-- Drag OFF and drag ON both remained gravity-like in the matched 5 kg baseline
-- Drag changed impact timing/speed, but it was not the main cause of slow or
-  non-gravity-like free fall
-- The OFF run remains the provisional promoted baseline because the
-  pre-release support story is clearer and the full QA bundle passes
-- The actual acceptance target is a recoil-free release/drop run that can
-  supersede this provisional baseline
+- Both recoil-fixed OFF and ON runs now pass:
+  - settle before release
+  - low post-release horizontal kick
+  - gravity-like early fall
+  - real ground contact
+  - video readability
+- The drag effect on the recoil-fixed pair is currently minor
+- The OFF run remains authoritative because it is the simpler baseline and
+  already passes the full gate set
