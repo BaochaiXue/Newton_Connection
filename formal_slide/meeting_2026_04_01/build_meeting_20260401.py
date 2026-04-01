@@ -922,8 +922,8 @@ def _prepare_generated_assets() -> None:
         "newton_rope_spring_force",
         _extract_code_segments(
             NEWTON_CORE_SPRING_PATH,
-            [(27, 29), (43, 52)],
-            highlight_lines={27, 28, 46, 47, 50},
+            [(37, 53)],
+            highlight_lines={44, 46, 47, 50, 52},
         ),
         CODE_PERF_PHYSICS_NEWTON_PNG,
     )
@@ -933,7 +933,7 @@ def _prepare_generated_assets() -> None:
         _extract_code_segments(
             PHYSTWIN_SPRING_WARP_CODE_PATH,
             [(121, 132), (156, 160)],
-            highlight_lines={123, 124, 129, 157, 159},
+            highlight_lines={123, 129, 132, 157, 159},
         ),
         CODE_PERF_PHYSICS_PHYSTWIN_PNG,
     )
@@ -990,8 +990,8 @@ def _prepare_generated_assets() -> None:
         "phystwin_object_collision",
         _extract_code_segments(
             PHYSTWIN_SPRING_WARP_CODE_PATH,
-            [(196, 206), (212, 218)],
-            highlight_lines={196, 198, 199, 203, 205, 212, 215, 218},
+            [(203, 205), (212, 216), (294, 296)],
+            highlight_lines={203, 205, 212, 215, 295},
         ),
         CODE_SELFCOLLISION_OBJECT_PNG,
     )
@@ -1001,7 +1001,7 @@ def _prepare_generated_assets() -> None:
         _extract_code_segments(
             PHYSTWIN_SPRING_WARP_CODE_PATH,
             [(156, 160), (323, 333), (343, 344)],
-            highlight_lines={156, 157, 159, 160, 323, 329, 332, 343, 344},
+            highlight_lines={157, 159, 323, 343, 344},
         ),
         CODE_SELFCOLLISION_FORCE_GROUND_PHYSTWIN_PNG,
     )
@@ -1011,7 +1011,7 @@ def _prepare_generated_assets() -> None:
         _extract_code_segments(
             PHYSTWIN_SPRING_WARP_CODE_PATH,
             [(260, 268), (294, 296)],
-            highlight_lines={261, 266, 268, 294, 295, 296},
+            highlight_lines={261, 268, 294, 295, 296},
         ),
         CODE_SELFCOLLISION_MATCHED_PHYSTWIN_PNG,
     )
@@ -1021,7 +1021,7 @@ def _prepare_generated_assets() -> None:
         _extract_code_segments(
             PHYSTWIN_SPRING_WARP_CODE_PATH,
             [(926, 940), (229, 257)],
-            highlight_lines={926, 928, 930, 931, 935, 939, 246, 255, 256, 257},
+            highlight_lines={928, 929, 930, 256, 257},
         ),
         CODE_SELFCOLLISION_TABLE_PHYSTWIN_PNG,
     )
@@ -1032,7 +1032,7 @@ def _prepare_generated_assets() -> None:
         _extract_code_segments(
             bridge_self_contact_code,
             [(537, 545), (549, 557)],
-            highlight_lines={540, 542, 544, 549, 551, 553, 556, 557},
+            highlight_lines={542, 544, 549, 553, 557},
         ),
         CODE_SELFCOLLISION_MATCHED_BRIDGE_PNG,
     )
@@ -1042,7 +1042,7 @@ def _prepare_generated_assets() -> None:
         _extract_code_segments(
             bridge_self_contact_code,
             [(263, 267), (660, 670), (680, 681)],
-            highlight_lines={263, 264, 266, 267, 660, 666, 669, 680, 681},
+            highlight_lines={264, 266, 660, 680, 681},
         ),
         CODE_SELFCOLLISION_FORCE_GROUND_BRIDGE_PNG,
     )
@@ -1053,7 +1053,7 @@ def _prepare_generated_assets() -> None:
         _extract_code_segments(
             bridge_phystwin_stack,
             [(302, 307), (311, 317), (322, 324)],
-            highlight_lines={302, 305, 307, 311, 312, 315, 322, 323, 324},
+            highlight_lines={302, 312, 315, 322, 323},
         ),
         CODE_SELFCOLLISION_TABLE_BRIDGE_PNG,
     )
@@ -1063,7 +1063,7 @@ def _prepare_generated_assets() -> None:
         _extract_code_segments(
             PHYSTWIN_SPRING_WARP_CODE_PATH,
             [(82, 86), (103, 111)],
-            highlight_lines={82, 85, 86, 103, 104, 105, 109, 110, 111},
+            highlight_lines={85, 86, 103, 104, 105},
         ),
         CODE_SELFCOLLISION_CONTROLLER_PHYSTWIN_PNG,
     )
@@ -1074,7 +1074,7 @@ def _prepare_generated_assets() -> None:
         _extract_code_segments(
             bridge_import_code,
             [(1606, 1615), (1616, 1624)],
-            highlight_lines={1606, 1608, 1610, 1613, 1615, 1616, 1619, 1623},
+            highlight_lines={1610, 1613, 1615, 1619, 1620},
         ),
         CODE_SELFCOLLISION_CONTROLLER_BRIDGE_PNG,
     )
@@ -1491,6 +1491,10 @@ def _render_code_png(
 def _extract_code_segments(path: Path, segments: list[tuple[int, int]], *, highlight_lines: set[int] | None = None) -> list[str]:
     source_lines = path.read_text(encoding="utf-8").splitlines()
     highlight_lines = highlight_lines or set()
+    if len(highlight_lines) > 5:
+        raise ValueError(
+            f"{path}: code excerpt highlight exceeds slide rule ({len(highlight_lines)} > 5)"
+        )
     out: list[str] = []
     for seg_i, (start, end) in enumerate(segments):
         for lineno in range(start, end + 1):
