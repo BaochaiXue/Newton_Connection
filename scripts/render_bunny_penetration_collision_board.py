@@ -5,6 +5,8 @@ import argparse
 import json
 from datetime import datetime, timezone
 from pathlib import Path
+import shutil
+import subprocess
 
 import cv2
 import numpy as np
@@ -171,6 +173,32 @@ def _gather_case_data(summary_path: Path) -> dict[str, object]:
         "clip_video_frame_indices": np.asarray(summary["clip_video_frame_indices"], dtype=np.int32),
         "clip_render_sim_frame_indices": np.asarray(summary["clip_render_sim_frame_indices"], dtype=np.int32),
     }
+
+
+def _render_gif_from_mp4(mp4_path: Path, gif_path: Path, *, width: int = 960, fps: int = 8, max_colors: int = 128) -> Path:
+    ffmpeg = shutil.which("ffmpeg")
+    if ffmpeg is None:
+        raise RuntimeError("ffmpeg not found in PATH")
+    gif_path.parent.mkdir(parents=True, exist_ok=True)
+    cmd = [
+        ffmpeg,
+        "-y",
+        "-loglevel",
+        "error",
+        "-i",
+        str(mp4_path),
+        "-vf",
+        (
+            f"fps={int(fps)},scale={int(width)}:-1:flags=lanczos,"
+            f"split[s0][s1];[s0]palettegen=max_colors={int(max_colors)}:stats_mode=diff[p];"
+            "[s1][p]paletteuse=dither=bayer:bayer_scale=4"
+        ),
+        "-loop",
+        "0",
+        str(gif_path),
+    ]
+    subprocess.run(cmd, check=True)
+    return gif_path
 
 
 def _family_cap(case_payloads: list[dict[str, object]], family_key: str, percentile: float) -> float:
@@ -423,6 +451,7 @@ def main() -> int:
     summary = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "board_video": str(board_video_path),
+        "board_gif": str(out_dir / "collision_force_board_2x2.gif"),
         "board_first_frame": str(first_frame_path),
         "render_fps": render_fps,
         "board_width": board_w,
@@ -461,8 +490,16 @@ def main() -> int:
         "cases": per_case,
     }
     summary_path = out_dir / "summary.json"
+    board_gif_path = _render_gif_from_mp4(
+        board_video_path,
+        out_dir / "collision_force_board_2x2.gif",
+        width=960,
+        fps=8,
+        max_colors=128,
+    )
     summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print(f"[render_bunny_penetration_collision_board] video={board_video_path}", flush=True)
+    print(f"[render_bunny_penetration_collision_board] gif={board_gif_path}", flush=True)
     print(f"[render_bunny_penetration_collision_board] summary={summary_path}", flush=True)
     return 0
 

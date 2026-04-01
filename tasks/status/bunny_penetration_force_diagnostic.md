@@ -108,3 +108,9 @@
   - `formal_slide/meeting_2026_04_01/bridge_meeting_20260401.pptx`
   - `formal_slide/meeting_2026_04_01/transcript.md`
   - `formal_slide/meeting_2026_04_01/transcript.pdf`
+- Further slide refresh:
+  - exported four single-panel mp4s from the current canonical board under:
+    - `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/artifacts/collision_force_board/panels/`
+  - rewired `Result F2` so it now uses those current single-panel videos rather
+    than the older historical force-mechanism gifs
+  - kept `Result F3` on the full canonical `2 x 2` board

@@ -12,13 +12,14 @@ Primary source of truth:
 Primary affected slides:
 
 - `Slide 9` — `Source Proof P1: Same Replay, Different Execution Style`
-- `Slide 14` — penetration-analysis source-proof code slide
+- `Slide 18` — `Source Proof S1: PhysTwin Native Contact Scope Is Pairwise Self-Collision + Ground`
 
-The performance `Source Proof` page was also corrected to use upstream source
-evidence instead of bridge-local wrapper arguments:
+The redesigned deck now uses upstream source evidence where the code actually
+participates in the reasoning:
 
 - left: `Newton/newton/asv/benchmarks/benchmark_mujoco.py`
 - right: `PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py`
+- self-collision scope proof: `PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py`
 
 ## What The Old Render Looked Like
 

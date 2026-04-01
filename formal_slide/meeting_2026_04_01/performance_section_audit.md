@@ -1,5 +1,11 @@
 # Performance Section Audit — 2026-04-01
 
+> status: historical
+> canonical_replacement: `formal_slide/meeting_2026_04_01/build_meeting_20260401.py`
+> owner_surface: `slide_deck_overhaul`
+> last_reviewed: `2026-04-01`
+> notes: Earlier performance-only audit pass preserved for traceability. The later full-deck redesign removed the performance data-chart pages and replaced bridge-local code citation with upstream source proof.
+
 ## Scope
 
 Audited the performance / profiling section of the 2026-04-01 meeting deck:

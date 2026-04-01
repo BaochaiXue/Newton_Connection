@@ -167,10 +167,20 @@ HISTORICAL_BUNNY_RUN = (
 ).resolve()
 HISTORICAL_BUNNY_MATRIX_DIR = HISTORICAL_BUNNY_RUN / "artifacts" / "matrix"
 CURRENT_BUNNY_BOARD_MP4 = CURRENT_BUNNY_RUN / "artifacts" / "collision_force_board" / "collision_force_board_2x2.mp4"
+CURRENT_BUNNY_BOARD_SUMMARY = CURRENT_BUNNY_RUN / "artifacts" / "collision_force_board" / "summary.json"
 CURRENT_BUNNY_BOARD_GIF = DECK_GIF_DIR / "bunny_collision_board_2x2.gif"
 CURRENT_BUNNY_BOARD_FIRST_FRAME = (
     CURRENT_BUNNY_RUN / "artifacts" / "collision_force_board" / "collision_force_board_2x2_first_frame.png"
 )
+CURRENT_BUNNY_PANEL_MP4 = {
+    "box_penalty": CURRENT_BUNNY_RUN / "artifacts" / "collision_force_board" / "panels" / "box_penalty.mp4",
+    "box_total": CURRENT_BUNNY_RUN / "artifacts" / "collision_force_board" / "panels" / "box_total.mp4",
+    "bunny_penalty": CURRENT_BUNNY_RUN / "artifacts" / "collision_force_board" / "panels" / "bunny_penalty.mp4",
+    "bunny_total": CURRENT_BUNNY_RUN / "artifacts" / "collision_force_board" / "panels" / "bunny_total.mp4",
+}
+CURRENT_BUNNY_PANEL_GIF = {
+    name: DECK_GIF_DIR / f"{name}.gif" for name in CURRENT_BUNNY_PANEL_MP4
+}
 ACCEPTED_BUNNY_BOARD_PNG = (
     HISTORICAL_BUNNY_MATRIX_DIR / "bunny_penetration_summary_board.png"
     if (HISTORICAL_BUNNY_MATRIX_DIR / "bunny_penetration_summary_board.png").exists()
@@ -238,7 +248,15 @@ SELF_MATRIX_NATIVE_GIF = DECK_GIF_DIR / "self_matrix_native.gif"
 SELF_MATRIX_CUSTOM_H2_GIF = DECK_GIF_DIR / "self_matrix_custom_h2.gif"
 SELF_MATRIX_PHYSTWIN_GIF = DECK_GIF_DIR / "self_matrix_phystwin.gif"
 SELF_HERO_MP4 = SELF_COLLISION_CAMPAIGN_DIR / "selected" / "self_collision_on_cloth_box_phystwin.mp4"
-SELF_PARITY_SUPPORT_MP4 = SELF_COLLISION_CAMPAIGN_DIR / "selected" / "parity_support_demo.mp4"
+SELF_PARITY_SUPPORT_MP4 = (
+    ROOT
+    / "Newton"
+    / "phystwin_bridge"
+    / "results"
+    / "tmp_off_vs_phystwin_302_compare_20260401"
+    / "parity_support_demo"
+    / "parity_support_demo.mp4"
+)
 SELF_HERO_GIF = DECK_GIF_DIR / "self_collision_hero.gif"
 SELF_PARITY_SUPPORT_GIF = DECK_GIF_DIR / "self_collision_parity_support.gif"
 
@@ -479,11 +497,29 @@ RECALL_SLIDES: list[dict] = [
         "kind": "table",
         "title": "Result P1: A1 Is Still 3.30x Slower Than B0",
         "note": "Same `rope_double_hand` replay. No render. RTX 4090.",
-        "columns": ["Config", "Controller / Launch", "ms/substep", "RTF", "Takeaway"],
+        "columns": ["Config", "Replay Path", "ms/substep", "RTF", "Meaning"],
         "rows": [
-            ["Newton A0", "baseline write", _fmt(A0_ROW, "ms_per_substep_mean", ".6f"), _fmt(A0_ROW, "rtf_mean", ".3f"), "bridge tax on"],
-            ["Newton A1", "precomputed write", _fmt(A1_ROW, "ms_per_substep_mean", ".6f"), _fmt(A1_ROW, "rtf_mean", ".3f"), "same replay, tax reduced"],
-            ["PhysTwin B0", "graph headless replay", _fmt(B0_ROW, "ms_per_substep_mean", ".6f"), _fmt(B0_ROW, "rtf_mean", ".3f"), "same replay, graph-enabled"],
+            [
+                "Newton A0",
+                "controller targets uploaded every substep",
+                _fmt(A0_ROW, "ms_per_substep_mean", ".6f"),
+                _fmt(A0_ROW, "rtf_mean", ".3f"),
+                "repeated controller-write overhead is included",
+            ],
+            [
+                "Newton A1",
+                "controller targets precomputed once",
+                _fmt(A1_ROW, "ms_per_substep_mean", ".6f"),
+                _fmt(A1_ROW, "rtf_mean", ".3f"),
+                "controller-write cost is reduced, but Newton is still slower",
+            ],
+            [
+                "PhysTwin B0",
+                "graph-captured headless replay",
+                _fmt(B0_ROW, "ms_per_substep_mean", ".6f"),
+                _fmt(B0_ROW, "rtf_mean", ".3f"),
+                "same replay runs through a graph-launch path",
+            ],
         ],
         "transcript": [
             "这一页保留 table，因为这里的核心就是一个 bounded benchmark result。",
@@ -546,7 +582,7 @@ RECALL_SLIDES: list[dict] = [
     {
         "kind": "grid",
         "title": "Result F1: Global Phenomenon Videos Now Cover The Whole Penetration Process",
-        "common_settings": "All four accepted cases now pass black-screen, motion, and temporal-density QA on the phenomenon video. The point of this page is WHAT happened over time.",
+        "common_settings": None,
         "items": [
             ("Bunny baseline\nfull process", ACCEPTED_PHENO_GIF["bunny_baseline"]),
             ("Box control\nfull process", ACCEPTED_PHENO_GIF["box_control"]),
@@ -562,26 +598,26 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "grid",
-        "title": "Result F2: Force Videos Now Keep The Full Cloth And The Local Patch",
-        "common_settings": "All four accepted force videos now pass black-screen, motion, temporal-density, subject-visibility, and contact-readability QA. Experiment setting for the bunny mechanism workpoint: cloth total mass = 0.1 kg, rigid target mass = 0.5 kg. The point of this page is WHY it happened.",
+        "title": "Result F2: Split Single-Panel Videos Now Match The Current 2x2 Board",
+        "common_settings": "Same workpoint: cloth 0.1 kg, rigid 0.5 kg.",
         "items": [
-            ("Bunny baseline\nforce mechanism", ACCEPTED_FORCE_GIF["bunny_baseline"]),
-            ("Box control\nforce mechanism", ACCEPTED_FORCE_GIF["box_control"]),
-            ("Bunny low inertia\nforce mechanism", ACCEPTED_FORCE_GIF["bunny_low_inertia"]),
-            ("Bunny larger scale\nforce mechanism", ACCEPTED_FORCE_GIF["bunny_larger_scale"]),
+            ("Box penalty\nsingle panel", CURRENT_BUNNY_PANEL_GIF["box_penalty"]),
+            ("Box total\nsingle panel", CURRENT_BUNNY_PANEL_GIF["box_total"]),
+            ("Bunny penalty\nsingle panel", CURRENT_BUNNY_PANEL_GIF["bunny_penalty"]),
+            ("Bunny total\nsingle panel", CURRENT_BUNNY_PANEL_GIF["bunny_total"]),
         ],
         "transcript": [
-            "这一页专门讲 force mechanism。",
+            "这一页现在不再放旧的四个历史 force mechanism 视频了。",
             "这里也把实验设定说清楚：cloth total mass 是 0.1 kg，rigid target mass 是 0.5 kg。",
-            "现在 accepted 的 force video 已经满足一个很关键的视觉要求：左侧主面板仍然能看到 full cloth 和 bunny，右侧 zoom panel 才负责讲 local force patch。",
-            "所以我们不再在 global story 和 local readability 之间二选一。",
-            "从这四个 case 可以直接看出，主要问题不是 outward direction 错了，而是 contact support 太弱，尤其是 bunny baseline、low inertia 和 larger scale 这三条 still point to insufficient contact magnitude。",
+            "现在 F2 里的四个单视频，都是直接从当前 canonical `2 x 2` board 裁出来的单面板。",
+            "也就是说，这一页只负责把四个 panel 单独放大给老师看：box penalty、box total、bunny penalty、bunny total。",
+            "这样 F2 和下一页 F3 就不会再出现“这一页还是旧结果、下一页才是新结果”的割裂了。",
         ],
     },
     {
         "kind": "image",
         "title": "Result F3: The New 2x2 Board Makes The Box-vs-Bunny Comparison Immediate",
-        "note": "Current promoted meeting artifact: TL box penalty, TR box total, BL bunny penalty, BR bunny total. Experiment setting: self-collision OFF, cloth total mass = 0.1 kg, rigid target mass = 0.5 kg. The board uses all rigid force-active cloth nodes from rollout start to one second after first collision.",
+        "note": "TL box penalty, TR box total, BL bunny penalty, BR bunny total.",
         "path": CURRENT_BUNNY_BOARD_GIF,
         "transcript": [
             "这一页就是新的 `2 x 2` board video，我把它直接放进 PPT 里了。",
@@ -610,7 +646,7 @@ RECALL_SLIDES: list[dict] = [
     {
         "kind": "code_twocol_large",
         "title": "Source Proof S1: PhysTwin Native Contact Scope Is Pairwise Self-Collision + Ground",
-        "note": "Real PhysTwin upstream source only. These are the native contact operators that define the strict parity scope.",
+        "note": "PhysTwin upstream source only.",
         "left_label": "PhysTwin object_collision: pairwise self-collision updates velocity from collision impulses.",
         "left_path": CODE_SELFCOLLISION_OBJECT_PNG,
         "right_label": "PhysTwin integrate_ground_collision: implicit ground-plane TOI + velocity update.",
@@ -626,7 +662,7 @@ RECALL_SLIDES: list[dict] = [
     {
         "kind": "grid",
         "title": "Result S1: Native Is Not Enough On The Controlled Cloth+Box Scene",
-        "common_settings": "Controlled cloth+box decision videos. The point is scene-level progress: native is not enough, and bridge-side `phystwin` is the only video-ready candidate we can still defend.",
+        "common_settings": None,
         "items": [
             ("OFF", SELF_MATRIX_OFF_GIF),
             ("Native", SELF_MATRIX_NATIVE_GIF),
@@ -644,7 +680,7 @@ RECALL_SLIDES: list[dict] = [
     {
         "kind": "twocol",
         "title": "Progress S2: The Demo Is Ready, But Strict Parity Is Still Blocked",
-        "common_settings": "Left: the selected cloth+box `phystwin` hero demo already passes QC. Right: the parity support video keeps the in-scope cloth reference visible. Operator exactness already passed, but full rollout parity still stalls around `1e-2`.",
+        "common_settings": None,
         "left_label": "QC-passing cloth+box `phystwin` hero demo",
         "left_path": SELF_HERO_GIF,
         "right_label": "Parity support demo on the in-scope reference path",
@@ -660,7 +696,7 @@ RECALL_SLIDES: list[dict] = [
     {
         "kind": "twocol",
         "title": "Conclusion R1: The Current Robot-Deformable Claim Is A Defendable Native Baseline",
-        "common_settings": "Chapter-5 claim for today: the defendable robot-deformable evidence is a native Franka release/drop baseline with visible support, settle-before-release, gravity-dominated fall, and real ground contact at 1:1 time. This is not yet full manipulation.",
+        "common_settings": "Native Franka release/drop baseline, not full manipulation.",
         "left_label": "Drag OFF\npromoted best run",
         "left_path": ROBOT_DROP_BASELINE_OFF_GIF,
         "right_label": "Drag ON\nmatched A/B run",
@@ -723,35 +759,45 @@ def _prepare_generated_assets() -> None:
         ),
         CODE_GRANULAR_PROFILE_PNG,
     )
-    _render_perf_attribution_png(PERF_ATTRIBUTION_PNG)
-    _render_perf_nsight_png(PERF_NSIGHT_PNG)
-    bunny_force_code = ROOT / "Newton" / "phystwin_bridge" / "demos" / "demo_cloth_bunny_drop_without_self_contact.py"
     _code_excerpt_image(
-        bunny_force_code,
-        "force_diag_capture",
+        PHYSTWIN_SPRING_WARP_CODE_PATH,
+        "phystwin_object_collision",
         _extract_code_segments(
-            bunny_force_code,
-            [(2825, 2830), (3441, 3458)],
-            highlight_lines={2830, 3443, 3454, 3455},
+            PHYSTWIN_SPRING_WARP_CODE_PATH,
+            [(261, 269), (286, 293)],
+            highlight_lines={261, 287, 289, 291},
         ),
-        FORCE_DIAG_CODE_PNG,
+        CODE_SELFCOLLISION_OBJECT_PNG,
     )
     _code_excerpt_image(
-        bunny_force_code,
-        "force_diag_layout",
+        PHYSTWIN_SPRING_WARP_CODE_PATH,
+        "phystwin_ground_collision",
         _extract_code_segments(
-            bunny_force_code,
-            [(1583, 1598), (1600, 1614)],
-            highlight_lines={1583, 1595, 1602, 1611},
+            PHYSTWIN_SPRING_WARP_CODE_PATH,
+            [(303, 307), (319, 324), (342, 347)],
+            highlight_lines={303, 320, 322, 342, 346},
         ),
-        FORCE_LAYOUT_CODE_PNG,
+        CODE_SELFCOLLISION_GROUND_PNG,
     )
     for name, src in ACCEPTED_PHENO_MP4.items():
         _ensure_gif(src, ACCEPTED_PHENO_GIF[name], width=640, fps=8, max_colors=96)
+    if CURRENT_BUNNY_BOARD_MP4.exists():
+        _ensure_current_bunny_panel_mp4s()
+        _ensure_gif(CURRENT_BUNNY_BOARD_MP4, CURRENT_BUNNY_BOARD_GIF, width=960, fps=8, max_colors=128)
+        for name, src in CURRENT_BUNNY_PANEL_MP4.items():
+            _ensure_gif(src, CURRENT_BUNNY_PANEL_GIF[name], width=640, fps=8, max_colors=96)
     for name, src in ACCEPTED_FORCE_MP4.items():
         _ensure_gif(src, ACCEPTED_FORCE_GIF[name], width=640, fps=8, max_colors=96)
-    if CURRENT_BUNNY_BOARD_MP4.exists():
-        _ensure_gif(CURRENT_BUNNY_BOARD_MP4, CURRENT_BUNNY_BOARD_GIF, width=960, fps=8, max_colors=128)
+    for src, out in (
+        (SELF_MATRIX_OFF_MP4, SELF_MATRIX_OFF_GIF),
+        (SELF_MATRIX_NATIVE_MP4, SELF_MATRIX_NATIVE_GIF),
+        (SELF_MATRIX_CUSTOM_H2_MP4, SELF_MATRIX_CUSTOM_H2_GIF),
+        (SELF_MATRIX_PHYSTWIN_MP4, SELF_MATRIX_PHYSTWIN_GIF),
+        (SELF_HERO_MP4, SELF_HERO_GIF),
+        (SELF_PARITY_SUPPORT_MP4, SELF_PARITY_SUPPORT_GIF),
+    ):
+        if src.exists():
+            _ensure_gif(src, out, width=640, fps=8, max_colors=96)
     _ensure_gif(ROBOT_DROP_BASELINE_OFF_MP4, ROBOT_DROP_BASELINE_OFF_GIF, width=640, fps=8, max_colors=96)
     _ensure_gif(ROBOT_DROP_BASELINE_ON_MP4, ROBOT_DROP_BASELINE_ON_GIF, width=640, fps=8, max_colors=96)
 
@@ -1195,6 +1241,24 @@ def _ensure_gif(mp4_path: Path, gif_path: Path, *, width: int = 640, fps: int = 
     return _ensure_transcoded_gif(mp4_path, gif_path, width=width, fps=fps, max_colors=max_colors)
 
 
+def _ensure_current_bunny_panel_mp4s() -> None:
+    if not CURRENT_BUNNY_BOARD_SUMMARY.exists():
+        raise FileNotFoundError(f"missing bunny board summary: {CURRENT_BUNNY_BOARD_SUMMARY}")
+    missing = [path for path in CURRENT_BUNNY_PANEL_MP4.values() if not path.exists()]
+    if not missing:
+        return
+    helper = ROOT / "scripts" / "export_bunny_collision_board_panels.py"
+    subprocess.run(
+        [
+            "python",
+            str(helper),
+            "--board-summary",
+            str(CURRENT_BUNNY_BOARD_SUMMARY),
+        ],
+        check=True,
+    )
+
+
 def _ensure_resized_gif(
     src_path: Path,
     out_path: Path,
@@ -1470,26 +1534,30 @@ def _gif_grid_2x2(
             REF_GRID_COMMON_W,
             REF_GRID_COMMON_H,
             common_settings,
-            font_size=12,
+            font_size=11,
             bold=False,
         )
+    label_w = 3000000
+    label_h = 250000
+    pic_w = 2350000
+    pic_h = 1320000
     label_positions = [
-        (REF_GRID_TL_LABEL_LEFT, REF_GRID_TOP_LABEL_TOP),
-        (REF_GRID_TR_LABEL_LEFT, REF_GRID_TOP_LABEL_TOP),
-        (REF_GRID_TL_LABEL_LEFT, REF_GRID_BOT_LABEL_TOP),
-        (REF_GRID_TR_LABEL_LEFT, REF_GRID_BOT_LABEL_TOP),
+        (520000, 1700000),
+        (4720000, 1700000),
+        (520000, 3380000),
+        (4720000, 3380000),
     ]
     pic_positions = [
-        (REF_GRID_TL_PIC_LEFT, REF_GRID_TOP_PIC_TOP),
-        (REF_GRID_TR_PIC_LEFT, REF_GRID_TOP_PIC_TOP),
-        (REF_GRID_TL_PIC_LEFT, REF_GRID_BOT_PIC_TOP),
-        (REF_GRID_TR_PIC_LEFT, REF_GRID_BOT_PIC_TOP),
+        (1280000, 1980000),
+        (5780000, 1980000),
+        (1280000, 3660000),
+        (5780000, 3660000),
     ]
     for idx, (label, path) in enumerate(items[:4]):
         lx, ly = label_positions[idx]
         px, py = pic_positions[idx]
-        _add_label(slide, lx, ly, REF_GRID_LABEL_W, REF_GRID_LABEL_H, label, font_size=11, bold=False)
-        _add_pic(slide, path, px, py, REF_GRID_PIC_W, REF_GRID_PIC_H)
+        _add_label(slide, lx, ly, label_w, label_h, label, font_size=11, bold=False)
+        _add_pic(slide, path, px, py, pic_w, pic_h)
 
 
 def _gif_twocol(
@@ -1516,15 +1584,25 @@ def _gif_twocol(
             REF_GRID_COMMON_W,
             REF_GRID_COMMON_H,
             common_settings,
-            font_size=12,
+            font_size=11,
             bold=False,
         )
+    label_y = 1730000
+    pic_y = 2010000
+    label_w = 3300000
+    label_h = 250000
+    pic_w = 3000000
+    pic_h = 1760000
+    left_label_x = 520000
+    right_label_x = 4670000
+    left_pic_x = 920000
+    right_pic_x = 5090000
     _add_label(
         slide,
-        REF_GRID_TL_LABEL_LEFT,
-        REF_GRID_TOP_LABEL_TOP,
-        REF_GRID_LABEL_W,
-        REF_GRID_LABEL_H,
+        left_label_x,
+        label_y,
+        label_w,
+        label_h,
         left_label,
         font_size=11,
         bold=False,
@@ -1532,17 +1610,17 @@ def _gif_twocol(
     _add_pic(
         slide,
         left_path,
-        REF_GRID_TL_PIC_LEFT,
-        REF_GRID_TOP_PIC_TOP,
-        REF_GRID_PIC_W,
-        REF_GRID_PIC_H,
+        left_pic_x,
+        pic_y,
+        pic_w,
+        pic_h,
     )
     _add_label(
         slide,
-        REF_GRID_TR_LABEL_LEFT,
-        REF_GRID_TOP_LABEL_TOP,
-        REF_GRID_LABEL_W,
-        REF_GRID_LABEL_H,
+        right_label_x,
+        label_y,
+        label_w,
+        label_h,
         right_label,
         font_size=11,
         bold=False,
@@ -1550,10 +1628,10 @@ def _gif_twocol(
     _add_pic(
         slide,
         right_path,
-        REF_GRID_TR_PIC_LEFT,
-        REF_GRID_TOP_PIC_TOP,
-        REF_GRID_PIC_W,
-        REF_GRID_PIC_H,
+        right_pic_x,
+        pic_y,
+        pic_w,
+        pic_h,
     )
 
 

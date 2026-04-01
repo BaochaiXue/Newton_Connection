@@ -53,6 +53,9 @@ Local scratch validation notes:
   - strict `phystwin` is better only on `first30_rmse` (`0.0005582491285167634` vs `0.0023693302646279335`)
   - OFF is still better on full-rollout `rmse_mean`, `rmse_max`, and `last30_rmse`
   - `Newton/phystwin_bridge/results/tmp_off_vs_phystwin_302_compare_20260401/compare_summary.json`
+- latest parity support comparison video now exists for the updated slide deck:
+  - `Newton/phystwin_bridge/results/tmp_off_vs_phystwin_302_compare_20260401/parity_support_demo/parity_support_demo.mp4`
+  - deck GIF: `formal_slide/meeting_2026_04_01/gif/self_collision_parity_support.gif`
 - controller-spring diagnostic currently reports substantial mismatch:
   - one-step `force_abs_max = 0.006733048971410349`
   - short-rollout `force_abs_max = 389.3789927564146`
