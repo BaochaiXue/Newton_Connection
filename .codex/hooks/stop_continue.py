@@ -13,7 +13,7 @@ VIDEO_TASK_WORDS = re.compile(r"\b(video|mp4|gif|render|visual|demo|slide)\b", r
 SKEPTICAL_WORDS = re.compile(r"\b(skeptical|video audit|review bundle|contact sheet|event sheet)\b", re.IGNORECASE)
 REGISTRY_WORDS = re.compile(r"\b(results_meta|results registry|LATEST\.md|INDEX\.md)\b", re.IGNORECASE)
 MARKDOWN_CHANGE_WORDS = re.compile(r"\b(deprecated|deprecate|archived|archive|historical|renamed|rename|markdown cleanup|truthfulness cleanup)\b", re.IGNORECASE)
-INVENTORY_WORDS = re.compile(r"\b(md_inventory|md_cleanup_report|harness_deprecations|doc_gardening|generate_md_inventory)\b", re.IGNORECASE)
+INVENTORY_WORDS = re.compile(r"\b(md_inventory|md_cleanup_report|md_staleness_report|task_surface_matrix|harness_deprecations|doc_gardening|generate_md_inventory)\b", re.IGNORECASE)
 
 
 def main() -> int:

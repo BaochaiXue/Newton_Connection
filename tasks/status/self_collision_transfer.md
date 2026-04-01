@@ -67,6 +67,8 @@ Local scratch validation notes:
   - what is already matched
   - where the remaining mismatch likely is
   - what we are not claiming
+- updated April 1 deck now removes cloth+box `phystwin` from the strict parity
+  section itself and keeps that section on the in-scope cloth reference path
 - controller-spring diagnostic currently reports substantial mismatch:
   - one-step `force_abs_max = 0.006733048971410349`
   - short-rollout `force_abs_max = 389.3789927564146`

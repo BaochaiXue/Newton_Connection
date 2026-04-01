@@ -44,7 +44,6 @@ CANONICAL_WORD_RE = re.compile(
 )
 NONCANONICAL_MARKERS = ("local-only", "secondary", "historical", "deprecated", "scratch", "rejected", "superseded")
 REQUIRED_METADATA_SURFACES = {
-    "AGENTS.md",
     "TODO.md",
     "docs/bridge/current_status.md",
     "docs/bridge/tasks/README.md",

@@ -16,6 +16,7 @@ WATCH_TERMS = (
     "run_skeptical_video_audit.py",
     "sync_results_registry.py",
     "generate_md_inventory.py",
+    "generate_md_truth_inventory.py",
     "render_bunny_penetration_collision_board",
     "validate_experiment_artifacts.py",
     "validate_bridge_video_qc.py",
@@ -52,6 +53,7 @@ def main() -> int:
                 "and write the result into tasks/status and docs/bridge/current_status.md. "
                 "For meeting-facing video tasks, prepare a skeptical review bundle and do not treat automatic QC as final acceptance."
                 " If this command renamed or deprecated Markdown/control-plane surfaces, refresh docs/generated/md_inventory.*, "
+                "docs/generated/md_staleness_report.md, docs/generated/task_surface_matrix.md, "
                 "update docs/generated/harness_deprecations.md, and rerun scripts/lint_harness_consistency.py. "
                 "If you touched tracked local-only pointers under results/ or subtree status stubs, keep them explicitly local-only "
                 "and aligned with results_meta before you move on."

@@ -284,15 +284,6 @@ ROBOT_DROP_BASELINE_OFF_MP4 = ROBOT_DROP_OFF_ROOT / "final_presentation.mp4"
 ROBOT_DROP_BASELINE_ON_MP4 = ROBOT_DROP_ON_ROOT / "final_presentation.mp4"
 ROBOT_DROP_BASELINE_OFF_GIF = DECK_GIF_DIR / "robot_drop_release_drag_off.gif"
 ROBOT_DROP_BASELINE_ON_GIF = DECK_GIF_DIR / "robot_drop_release_drag_on.gif"
-SELF_MATRIX_OFF_MP4 = SELF_COLLISION_CAMPAIGN_DIR / "matrix" / "off" / "self_off" / "cloth_box_decision_off_m10.mp4"
-SELF_MATRIX_NATIVE_MP4 = SELF_COLLISION_CAMPAIGN_DIR / "matrix" / "native" / "self_native" / "cloth_box_decision_native_m10.mp4"
-SELF_MATRIX_CUSTOM_H2_MP4 = SELF_COLLISION_CAMPAIGN_DIR / "matrix" / "custom_h2" / "self_custom" / "cloth_box_decision_custom_h2_m10.mp4"
-SELF_MATRIX_PHYSTWIN_MP4 = SELF_COLLISION_CAMPAIGN_DIR / "matrix" / "phystwin" / "self_phystwin" / "cloth_box_decision_phystwin_m10.mp4"
-SELF_MATRIX_OFF_GIF = DECK_GIF_DIR / "self_matrix_off.gif"
-SELF_MATRIX_NATIVE_GIF = DECK_GIF_DIR / "self_matrix_native.gif"
-SELF_MATRIX_CUSTOM_H2_GIF = DECK_GIF_DIR / "self_matrix_custom_h2.gif"
-SELF_MATRIX_PHYSTWIN_GIF = DECK_GIF_DIR / "self_matrix_phystwin.gif"
-SELF_HERO_MP4 = SELF_COLLISION_CAMPAIGN_DIR / "selected" / "self_collision_on_cloth_box_phystwin.mp4"
 SELF_PARITY_SUPPORT_MP4 = (
     ROOT
     / "Newton"
@@ -302,7 +293,6 @@ SELF_PARITY_SUPPORT_MP4 = (
     / "parity_support_demo"
     / "parity_support_demo.mp4"
 )
-SELF_HERO_GIF = DECK_GIF_DIR / "self_collision_hero.gif"
 SELF_PARITY_SUPPORT_GIF = DECK_GIF_DIR / "self_collision_parity_support.gif"
 
 RECALL_DIRECT_GIF_SPECS = [

@@ -1,3 +1,11 @@
+> status: active
+> canonical_replacement: none
+> owner_surface: `results_registry`
+> last_reviewed: `2026-04-01`
+> review_interval: `30d`
+> update_rule: `Update when committed result-registry structure or authority rules change.`
+> notes: Canonical committed authority README for result meaning. Local bundle surfaces must defer to this subtree.
+
 # Results Metadata Mirror
 
 This subtree stores committed metadata for authoritative local result bundles.

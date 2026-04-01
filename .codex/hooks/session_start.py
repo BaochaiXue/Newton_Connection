@@ -18,7 +18,7 @@ def main() -> int:
         "tasks use tasks/contracts and tasks/handoffs. If a run becomes authoritative, "
         "update results_meta before claiming completion. If you rename, deprecate, "
         "archive, or supersede a Markdown surface, update docs/generated/md_inventory.*, "
-        "the deprecation ledger, and run scripts/lint_harness_consistency.py before ending. "
+        "md_staleness_report.md, task_surface_matrix.md, the deprecation ledger, and run scripts/lint_harness_consistency.py before ending. "
         "Treat tracked `results/*` pointer docs and `Newton/phystwin_bridge/STATUS.md` as "
         "secondary surfaces only; if they change, keep them aligned with results_meta and the inventory."
     )
