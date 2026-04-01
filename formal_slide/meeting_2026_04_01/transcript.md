@@ -226,21 +226,27 @@ L800-L802 进一步保留了一个专门的 `forward_graph`，说明它不仅有
 所以 strict parity 的 claim boundary 不是拍脑袋收窄，而是直接从 PhysTwin native contact source 推出来的：object self-collision 加 ground collision。
 也正因为这个 source scope，本章后面的 cloth+box scene 只能作为 decision/demo evidence，不能被包装成 strict parity scene。
 
-## Slide 20 — Result S1: Native Is Not Enough On The Controlled Cloth+Box Scene
+## Slide 20 — Source Proof S1b: The Remaining Self-Collision Gap Is The Runtime Collision Table
+这一页专门回答：现在 strict phystwin 在 self-collision 上到底还和 PhysTwin 差在哪里。
+左边是 PhysTwin 原版：每帧先在 `wp_states[0].wp_x` 上 build collision graph，再填 `wp_collision_indices / wp_collision_number`，整帧 substeps 都复用这张表。
+右边是我们当前 bridge strict phystwin：生命周期已经改成 per-frame frozen table，但它还是从 bridge runtime 的 `object_q` 里本地重建，再调用自己的 table builder。
+所以现在 local impulse law 本身已经不是主差异；剩下的 self-collision 差异主要是 candidate table 的 provenance、ordering 和 truncation semantics。
+
+## Slide 21 — Result S1: Native Is Not Enough On The Controlled Cloth+Box Scene
 这一页是 scene-level video evidence，不是源码页。
 这里直接放 controlled cloth+box decision videos：OFF、native、custom H2、phystwin。
 这页要回答的 hypothesis 很窄：native 能不能直接承担 final self-collision claim。
 目前 answer 仍然是否定的。能继续 defend 下去的是 bridge-side phystwin candidate，而不是 native。
 所以这页的 progress 不是“所有问题都 solved”，而是 decision scene 已经把 native 不足这件事视频化、可比较化了。
 
-## Slide 21 — Progress S2: The Demo Is Ready, But Strict Parity Is Still Blocked
+## Slide 22 — Progress S2: The Demo Is Ready, But Strict Parity Is Still Blocked
 最后这一页把当前 self-collision progress 和 blocker 同时讲清楚。
 左边是已经可汇报的 cloth+box `phystwin` hero demo，它通过了 black/blank、motion 和 scene-visibility 的 QC，所以 video claim 已经成立。
 右边是 parity support video，用来提醒老师：strict parity 的 in-scope reference path 仍然在，而且我们不是拿错 scene 在讲 parity。
 同时 exactness 本身也已经过了，`max_abs_dv` 在 1e-6 量级、`median_rel_dv` 在 1e-8 量级。
 但 full rollout parity 仍然停在 1e-2 量级，所以当前 honest progress 应该讲成：demo-ready yes，operator exact yes，strict rollout parity not yet。
 
-## Slide 22 — Conclusion R1: The Current Robot-Deformable Claim Is A Defendable Native Baseline
+## Slide 23 — Conclusion R1: The Current Robot-Deformable Claim Is A Defendable Native Baseline
 最后一段是 robotic with deformable objects。
 这一章今天的可 defend 结论，不是“完整 manipulation 已经完成”，而是 native Franka 的 release/drop baseline 已经成立，所以 robot-deformable chapter 至少有了一个物理上可信、视频上可读的起点。
 更具体地说，它用 `demo_robot_rope_franka.py` 里的 `drop_release_baseline` 证明了：robot visible、rope 先被 support、release 前先过 settle gate、release 后以 gravity-dominated free fall 落到 real ground collider，而且 presentation video 保持 1:1 time。

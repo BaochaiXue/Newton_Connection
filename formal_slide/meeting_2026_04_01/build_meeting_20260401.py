@@ -120,6 +120,8 @@ CODE_PERF_EXECUTION_NEWTON_PNG = IMAGE_DIR / "code_perf_execution_newton.png"
 CODE_PERF_EXECUTION_PHYSTWIN_PNG = IMAGE_DIR / "code_perf_execution_phystwin.png"
 CODE_SELFCOLLISION_OBJECT_PNG = IMAGE_DIR / "code_selfcollision_object.png"
 CODE_SELFCOLLISION_GROUND_PNG = IMAGE_DIR / "code_selfcollision_ground.png"
+CODE_SELFCOLLISION_TABLE_PHYSTWIN_PNG = IMAGE_DIR / "code_selfcollision_table_phystwin.png"
+CODE_SELFCOLLISION_TABLE_BRIDGE_PNG = IMAGE_DIR / "code_selfcollision_table_bridge.png"
 PERF_ATTRIBUTION_PNG = IMAGE_DIR / "perf_attribution_breakdown.png"
 PERF_NSIGHT_PNG = IMAGE_DIR / "perf_nsight_breakdown.png"
 FORCE_DIAG_CODE_PNG = IMAGE_DIR / "code_force_diag_capture.png"
@@ -820,6 +822,21 @@ RECALL_SLIDES: list[dict] = [
         ],
     },
     {
+        "kind": "code_twocol_large",
+        "title": "Source Proof S1b: The Remaining Self-Collision Gap Is The Runtime Collision Table",
+        "note": "PhysTwin runtime table build versus current bridge-side strict `phystwin` rebuild.",
+        "left_label": "PhysTwin: update the collision graph once per frame from `wp_states[0].wp_x`, then reuse `collision_indices / collision_number` across substeps.",
+        "left_path": CODE_SELFCOLLISION_TABLE_PHYSTWIN_PNG,
+        "right_label": "Bridge strict `phystwin`: also freeze per frame, but rebuild a local table from copied `object_q` in the bridge runtime.",
+        "right_path": CODE_SELFCOLLISION_TABLE_BRIDGE_PNG,
+        "transcript": [
+            "这一页专门回答：现在 strict phystwin 在 self-collision 上到底还和 PhysTwin 差在哪里。",
+            "左边是 PhysTwin 原版：每帧先在 `wp_states[0].wp_x` 上 build collision graph，再填 `wp_collision_indices / wp_collision_number`，整帧 substeps 都复用这张表。",
+            "右边是我们当前 bridge strict phystwin：生命周期已经改成 per-frame frozen table，但它还是从 bridge runtime 的 `object_q` 里本地重建，再调用自己的 table builder。",
+            "所以现在 local impulse law 本身已经不是主差异；剩下的 self-collision 差异主要是 candidate table 的 provenance、ordering 和 truncation semantics。",
+        ],
+    },
+    {
         "kind": "grid",
         "title": "Result S1: Native Is Not Enough On The Controlled Cloth+Box Scene",
         "common_settings": None,
@@ -958,6 +975,27 @@ def _prepare_generated_assets() -> None:
             highlight_lines={303, 320, 322, 342, 346},
         ),
         CODE_SELFCOLLISION_GROUND_PNG,
+    )
+    _code_excerpt_image(
+        PHYSTWIN_SPRING_WARP_CODE_PATH,
+        "phystwin_collision_graph",
+        _extract_code_segments(
+            PHYSTWIN_SPRING_WARP_CODE_PATH,
+            [(926, 940), (229, 257)],
+            highlight_lines={926, 928, 930, 931, 935, 939, 246, 255, 256, 257},
+        ),
+        CODE_SELFCOLLISION_TABLE_PHYSTWIN_PNG,
+    )
+    bridge_phystwin_stack = ROOT / "Newton" / "phystwin_bridge" / "tools" / "core" / "phystwin_contact_stack.py"
+    _code_excerpt_image(
+        bridge_phystwin_stack,
+        "bridge_phystwin_collision_table",
+        _extract_code_segments(
+            bridge_phystwin_stack,
+            [(297, 328)],
+            highlight_lines={297, 302, 309, 312, 315, 322, 324, 327},
+        ),
+        CODE_SELFCOLLISION_TABLE_BRIDGE_PNG,
     )
     for name, src in ACCEPTED_PHENO_MP4.items():
         _ensure_gif(src, ACCEPTED_PHENO_GIF[name], width=640, fps=8, max_colors=96)
