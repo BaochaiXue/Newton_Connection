@@ -1,0 +1,81 @@
+{
+  "registry_version": 1,
+  "task_slug": "robot_deformable_demo",
+  "task_chain": {
+    "task_page": "docs/bridge/tasks/robot_deformable_demo.md",
+    "spec": "tasks/spec/robot_deformable_demo.md",
+    "plan": "plans/active/robot_deformable_demo.md",
+    "implement": "tasks/implement/robot_deformable_demo.md",
+    "status": "tasks/status/robot_deformable_demo.md"
+  },
+  "bundle_root": "results/robot_deformable_demo",
+  "authoritative_run": {
+    "run_id": "20260331_030148_native_franka_lift_release_presentation",
+    "authoritative": true,
+    "task_state": "promoted",
+    "claim_boundary": "Native Newton Franka manipulates a PhysTwin-loaded rope through a visibly and measurably two-way lift-release interaction baseline. This does not yet claim strong deformable-resistance sensing.",
+    "local_artifact_root": "results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation",
+    "command_pointer": "results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation/command.txt",
+    "expected_artifacts": [
+      "results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation/summary.json",
+      "results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation/media/final.mp4",
+      "results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation/media/preview.gif",
+      "results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation/qa/ffprobe.json",
+      "results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation/qa/contact_sheet.png",
+      "results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation/qa/event_sheet.png",
+      "results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation/qa/validation.json",
+      "results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation/qa/verdict.md"
+    ],
+    "validator_outputs": [
+      "results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation/qa/validation.json"
+    ],
+    "verdict_pointers": [
+      "results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation/qa/verdict.md"
+    ],
+    "repo_friendly_evidence": {
+      "summary": [
+        "Canonical native Newton robot + deformable baseline under the lift_release task.",
+        "Validated media and QA bundle exist in the promoted run directory."
+      ],
+      "key_metrics": {
+        "first_contact_time_s": 0.0880,
+        "contact_duration_s": 0.2060,
+        "contact_active_frames": 515,
+        "rope_com_displacement_m": 0.2007,
+        "peak_midpoint_lift_mm": 9.1
+      },
+      "thumbnail_paths": [
+        "results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation/qa/contact_sheet.png",
+        "results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation/qa/event_sheet.png"
+      ]
+    },
+    "why_passed": [
+      "Native Franka path replaced the old proxy-robot path.",
+      "Finger-span contact proxy aligned metrics with the visible interaction.",
+      "Promoted run passes the video-validation bundle and remains easy to defend as a meeting baseline."
+    ],
+    "predecessor": "20260330_213045_native_franka_lift_release_presentation",
+    "superseded_by": null
+  },
+  "superseded_runs": [
+    {
+      "run_id": "20260330_213045_native_franka_lift_release_presentation",
+      "status": "superseded",
+      "local_artifact_root": "results/robot_deformable_demo/runs/20260330_213045_native_franka_lift_release_presentation",
+      "why_not_authoritative": "Superseded by the 20260331_030148 run after a stronger validated native-asset bundle and clearer phase-gated drag tuning.",
+      "superseded_by": "20260331_030148_native_franka_lift_release_presentation"
+    },
+    {
+      "run_id": "20260330_212830_native_franka_lift_release_presentation",
+      "status": "rejected",
+      "local_artifact_root": "results/robot_deformable_demo/rejected/20260330_212830_native_franka_lift_release_presentation/artifacts",
+      "why_not_authoritative": "Rejected because the old union-spheres contact proxy reported contact too early and did not match visible timing.",
+      "superseded_by": "20260331_030148_native_franka_lift_release_presentation"
+    }
+  ],
+  "local_only_surfaces": [
+    "results/robot_deformable_demo/BEST_RUN.md",
+    "results/robot_deformable_demo/index.csv"
+  ],
+  "updated_at": "2026-04-01"
+}

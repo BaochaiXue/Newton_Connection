@@ -1,0 +1,84 @@
+{
+  "registry_version": 1,
+  "task_slug": "native_robot_rope_drop_release",
+  "task_chain": {
+    "task_page": "docs/bridge/tasks/native_robot_rope_drop_release.md",
+    "spec": "tasks/spec/native_robot_rope_drop_release.md",
+    "plan": "plans/active/native_robot_rope_drop_release.md",
+    "implement": "tasks/implement/native_robot_rope_drop_release.md",
+    "status": "tasks/status/native_robot_rope_drop_release.md"
+  },
+  "bundle_root": "results/native_robot_rope_drop_release",
+  "authoritative_run": {
+    "run_id": "20260331_232106_native_franka_recoilfix_drag_off_w5",
+    "authoritative": true,
+    "task_state": "promoted",
+    "claim_boundary": "Stage-0 native Newton Franka baseline for support, release, gravity-driven free fall, and real-ground impact. This is not yet the final two-way-coupling robot claim.",
+    "local_artifact_root": "results/native_robot_rope_drop_release/runs/20260331_232106_native_franka_recoilfix_drag_off_w5",
+    "command_pointer": "results/native_robot_rope_drop_release/runs/20260331_232106_native_franka_recoilfix_drag_off_w5/command.txt",
+    "expected_artifacts": [
+      "results/native_robot_rope_drop_release/runs/20260331_232106_native_franka_recoilfix_drag_off_w5/summary.json",
+      "results/native_robot_rope_drop_release/runs/20260331_232106_native_franka_recoilfix_drag_off_w5/physics_validation.json",
+      "results/native_robot_rope_drop_release/runs/20260331_232106_native_franka_recoilfix_drag_off_w5/final_presentation.mp4",
+      "results/native_robot_rope_drop_release/runs/20260331_232106_native_franka_recoilfix_drag_off_w5/final_debug.mp4",
+      "results/native_robot_rope_drop_release/runs/20260331_232106_native_franka_recoilfix_drag_off_w5/qa/contact_sheet.png",
+      "results/native_robot_rope_drop_release/runs/20260331_232106_native_franka_recoilfix_drag_off_w5/qa/event_sheet.png",
+      "results/native_robot_rope_drop_release/runs/20260331_232106_native_franka_recoilfix_drag_off_w5/qa/verdict.md"
+    ],
+    "validator_outputs": [
+      "results/native_robot_rope_drop_release/runs/20260331_232106_native_franka_recoilfix_drag_off_w5/physics_validation.json",
+      "results/native_robot_rope_drop_release/runs/20260331_232106_native_franka_recoilfix_drag_off_w5/qa/validation.json",
+      "results/native_robot_rope_drop_release/drag_ab_compare.json"
+    ],
+    "verdict_pointers": [
+      "results/native_robot_rope_drop_release/runs/20260331_232106_native_franka_recoilfix_drag_off_w5/qa/verdict.md"
+    ],
+    "repo_friendly_evidence": {
+      "summary": [
+        "Promoted recoil-fixed OFF baseline passes settle, kick, gravity, ground-contact, and video-readability gates.",
+        "Matched ON comparison also passes, which bounds the drag claim."
+      ],
+      "key_metrics": {
+        "release_time_s": 0.4000,
+        "first_ground_contact_time_s": 0.7168,
+        "impact_speed_before_first_contact_m_s": 3.1074,
+        "early_fall_acceleration_m_s2": -9.8000,
+        "post_release_horizontal_kick_m_s": 0.0194
+      },
+      "thumbnail_paths": [
+        "results/native_robot_rope_drop_release/runs/20260331_232106_native_franka_recoilfix_drag_off_w5/qa/contact_sheet.png",
+        "results/native_robot_rope_drop_release/runs/20260331_232106_native_franka_recoilfix_drag_off_w5/qa/event_sheet.png"
+      ]
+    },
+    "why_passed": [
+      "Visible holder remains aligned with the constrained patch before release.",
+      "Pre-release settle gate and post-release horizontal-kick gate both pass.",
+      "Early fall is gravity-like and the run lands on a real ground plane with full video QA PASS."
+    ],
+    "predecessor": "20260331_040614_native_franka_drag_off_w5_readable",
+    "superseded_by": null
+  },
+  "superseded_runs": [
+    {
+      "run_id": "20260331_040614_native_franka_drag_off_w5_readable",
+      "status": "superseded",
+      "local_artifact_root": "results/native_robot_rope_drop_release/runs/20260331_040614_native_franka_drag_off_w5_readable",
+      "why_not_authoritative": "Older gravity-like baseline stayed readable but failed the later recoil/settle/horizontal-kick acceptance target.",
+      "superseded_by": "20260331_232106_native_franka_recoilfix_drag_off_w5"
+    },
+    {
+      "run_id": "20260331_232459_native_franka_recoilfix_drag_on_w5",
+      "status": "validated_ab_compare",
+      "local_artifact_root": "results/native_robot_rope_drop_release/runs/20260331_232459_native_franka_recoilfix_drag_on_w5",
+      "why_not_authoritative": "Validated matched drag-ON comparison run; not selected because the OFF run is the simpler promoted baseline and already passes the full hard gate set.",
+      "superseded_by": null
+    }
+  ],
+  "local_only_surfaces": [
+    "results/native_robot_rope_drop_release/BEST_RUN.md",
+    "results/native_robot_rope_drop_release/LATEST_ATTEMPT.txt",
+    "results/native_robot_rope_drop_release/LATEST_SUCCESS.txt",
+    "results/native_robot_rope_drop_release/index.csv"
+  ],
+  "updated_at": "2026-04-01"
+}

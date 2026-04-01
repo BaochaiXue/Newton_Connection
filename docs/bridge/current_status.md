@@ -67,17 +67,16 @@ It should stay current and be updated whenever a task changes state.
   - not a wrong-direction failure
   - not a generic rigid-contact failure
   - a geometry- and momentum-sensitive sparse-contact failure on bunny
-- A canonical result bundle now exists for the finalized 4-case bunny
-  visualization package:
+- A historical full-process synchronized bunny force package exists under:
   - `results/bunny_force_visualization/runs/20260331_231500_fullprocess_sync_matrix_manual_v2`
-  - per-case phenomenon videos
-  - per-case force mechanism videos
-  - per-case QA reports
-  - one 4-case summary board
-  - per-case force mapping reports
-  - all four cases now report exact active-interval synchronization:
-    - `exact_mapping_ratio_active_interval = 1.0`
-    - `reused_mapping_ratio_active_interval = 0.0`
+  - it still supports the older 4-case mechanism claim package
+  - but it is no longer the final meeting visualization target for this task
+  - the bunny task is now reopened for a stricter real-time all-colliding-node
+    `2 x 2` board:
+    - `box penalty`
+    - `box total`
+    - `bunny penalty`
+    - `bunny total`
 - No-render realtime profiling exists for the interactive viewer and already
   separates collision, solver-path, and render interpretations.
 - A canonical apples-to-apples rope performance bundle now exists:
@@ -126,6 +125,7 @@ It should stay current and be updated whenever a task changes state.
 ## Active Workstreams
 
 - Bunny penetration mechanism analysis
+- Bunny real-time all-colliding-node `2 x 2` meeting visualization rework
 - Interactive playground profiling and interpretation
 - Rope apples-to-apples performance investigation
 - Self-collision research / transfer question

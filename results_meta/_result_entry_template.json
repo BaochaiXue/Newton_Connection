@@ -1,0 +1,34 @@
+{
+  "registry_version": 1,
+  "task_slug": "<task_slug>",
+  "task_chain": {
+    "task_page": "docs/bridge/tasks/<task_slug>.md",
+    "spec": "tasks/spec/<task_slug>.md",
+    "plan": "plans/active/<task_slug>.md",
+    "implement": "tasks/implement/<task_slug>.md",
+    "status": "tasks/status/<task_slug>.md"
+  },
+  "bundle_root": "<repo-relative bundle root>",
+  "authoritative_run": {
+    "run_id": "<run_id>",
+    "authoritative": true,
+    "task_state": "promoted",
+    "claim_boundary": "<bounded claim>",
+    "local_artifact_root": "<repo-relative local artifact root>",
+    "command_pointer": "<repo-relative command pointer>",
+    "expected_artifacts": [],
+    "validator_outputs": [],
+    "verdict_pointers": [],
+    "repo_friendly_evidence": {
+      "summary": [],
+      "key_metrics": {},
+      "thumbnail_paths": []
+    },
+    "why_passed": [],
+    "predecessor": null,
+    "superseded_by": null
+  },
+  "superseded_runs": [],
+  "local_only_surfaces": [],
+  "updated_at": "2026-04-01"
+}

@@ -1,0 +1,65 @@
+{
+  "registry_version": 1,
+  "task_slug": "rope_perf_apples_to_apples",
+  "task_chain": {
+    "task_page": "docs/bridge/tasks/rope_perf_apples_to_apples.md",
+    "spec": "tasks/spec/rope_perf_apples_to_apples.md",
+    "plan": "plans/active/rope_perf_apples_to_apples.md",
+    "implement": "tasks/implement/rope_perf_apples_to_apples.md",
+    "status": "tasks/status/rope_perf_apples_to_apples.md"
+  },
+  "bundle_root": "results/rope_perf_apples_to_apples",
+  "authoritative_run": {
+    "run_id": "20260401_rope_perf_meeting_bundle",
+    "authoritative": true,
+    "task_state": "promoted",
+    "claim_boundary": "Same-case, no-render, apples-to-apples rope replay benchmark showing Newton vs PhysTwin throughput and attribution before optimization decisions.",
+    "local_artifact_root": "results/rope_perf_apples_to_apples",
+    "command_pointer": "results/rope_perf_apples_to_apples/newton/A1_precomputed_throughput/command.txt",
+    "expected_artifacts": [
+      "results/rope_perf_apples_to_apples/index.csv",
+      "results/rope_perf_apples_to_apples/summary.json",
+      "results/rope_perf_apples_to_apples/BEST_EVIDENCE.md",
+      "results/rope_perf_apples_to_apples/notes/methodology.md",
+      "results/rope_perf_apples_to_apples/notes/conclusions.md",
+      "results/rope_perf_apples_to_apples/notes/nsight.md"
+    ],
+    "validator_outputs": [
+      "results/rope_perf_apples_to_apples/newton/A0_baseline_throughput/verdict.md",
+      "results/rope_perf_apples_to_apples/newton/A1_precomputed_throughput/verdict.md",
+      "results/rope_perf_apples_to_apples/phystwin/B0_headless_throughput/verdict.md",
+      "results/rope_perf_apples_to_apples/nsight/newton_A1/verdict.md",
+      "results/rope_perf_apples_to_apples/nsight/phystwin_B0/verdict.md"
+    ],
+    "verdict_pointers": [
+      "results/rope_perf_apples_to_apples/BEST_EVIDENCE.md"
+    ],
+    "repo_friendly_evidence": {
+      "summary": [
+        "Clean replay remains slower in Newton even after bridge precompute.",
+        "Remaining gap is better explained by execution structure / launch style than by collision."
+      ],
+      "key_metrics": {
+        "A0_ms_per_substep": 0.066934,
+        "A1_ms_per_substep": 0.035721,
+        "B0_ms_per_substep": 0.010840,
+        "A0_to_A1_speedup_x": 1.874,
+        "A1_vs_B0_slowdown_x": 3.295
+      },
+      "thumbnail_paths": []
+    },
+    "why_passed": [
+      "Same-case parity is established on rope_double_hand.",
+      "No-render throughput and attribution exist on both the Newton and PhysTwin sides.",
+      "Nsight traces support the graph-launch / execution-structure interpretation."
+    ],
+    "predecessor": null,
+    "superseded_by": null
+  },
+  "superseded_runs": [],
+  "local_only_surfaces": [
+    "results/rope_perf_apples_to_apples/BEST_EVIDENCE.md",
+    "results/rope_perf_apples_to_apples/index.csv"
+  ],
+  "updated_at": "2026-04-01"
+}

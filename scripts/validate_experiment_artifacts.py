@@ -28,6 +28,18 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--require-gif", action=argparse.BooleanOptionalAction, default=False)
     p.add_argument("--require-diagnostic", action=argparse.BooleanOptionalAction, default=False)
     p.add_argument(
+        "--require-detector",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Require per-frame collision detector bundles and summaries.",
+    )
+    p.add_argument(
+        "--require-collision-board",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Require the promoted 2x2 collision-force board video and summary.",
+    )
+    p.add_argument(
         "--require-qa",
         action=argparse.BooleanOptionalAction,
         default=False,
@@ -88,6 +100,34 @@ def main() -> int:
     qa_reports = _find_any(root, ["qa/report.json", "**/qa/report.json"])
     qa_verdicts = _find_any(root, ["qa/verdict.md", "**/qa/verdict.md"])
     qa_sheets = _find_any(root, ["qa/contact_sheets/*.png", "**/qa/contact_sheets/*.png"])
+    detector_bundles = _find_any(
+        root,
+        [
+            "detector/collision_force_rollout_bundle.npz",
+            "**/detector/collision_force_rollout_bundle.npz",
+        ],
+    )
+    detector_summaries = _find_any(
+        root,
+        [
+            "detector/summary.json",
+            "**/detector/summary.json",
+        ],
+    )
+    collision_board_videos = _find_any(
+        root,
+        [
+            "artifacts/collision_force_board/collision_force_board_2x2.mp4",
+            "**/artifacts/collision_force_board/collision_force_board_2x2.mp4",
+        ],
+    )
+    collision_board_summaries = _find_any(
+        root,
+        [
+            "artifacts/collision_force_board/summary.json",
+            "**/artifacts/collision_force_board/summary.json",
+        ],
+    )
 
     if args.require_video:
         checks.append(("video", bool(videos), "*.mp4"))
@@ -95,6 +135,12 @@ def main() -> int:
         checks.append(("gif", bool(gifs), "*.gif"))
     if args.require_diagnostic:
         checks.append(("diagnostic", len(diagnostics) >= 3, "force_diagnostic/*"))
+    if args.require_detector:
+        checks.append(("detector_bundle", bool(detector_bundles), "detector/collision_force_rollout_bundle.npz"))
+        checks.append(("detector_summary", bool(detector_summaries), "detector/summary.json"))
+    if args.require_collision_board:
+        checks.append(("collision_board_video", bool(collision_board_videos), "artifacts/collision_force_board/collision_force_board_2x2.mp4"))
+        checks.append(("collision_board_summary", bool(collision_board_summaries), "artifacts/collision_force_board/summary.json"))
     if args.require_qa:
         checks.append(("qa_report", bool(qa_reports), "qa/report.json"))
         checks.append(("qa_verdict", bool(qa_verdicts), "qa/verdict.md"))
@@ -132,6 +178,14 @@ def main() -> int:
         print(f"  - qa verdict: {qa_verdicts[0]}")
     if qa_sheets:
         print(f"  - qa contact sheets: {len(qa_sheets)}")
+    if detector_bundles:
+        print(f"  - detector bundle: {detector_bundles[0]}")
+    if detector_summaries:
+        print(f"  - detector summary: {detector_summaries[0]}")
+    if collision_board_videos:
+        print(f"  - collision board video: {collision_board_videos[0]}")
+    if collision_board_summaries:
+        print(f"  - collision board summary: {collision_board_summaries[0]}")
 
     if summary_field_errors:
         print("  - summary field errors:", ", ".join(summary_field_errors))

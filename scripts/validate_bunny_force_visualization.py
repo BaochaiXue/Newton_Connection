@@ -28,6 +28,7 @@ class FrameSample:
 @dataclass
 class VideoVerdict:
     path: str
+    video_kind: str
     frame_count: int
     fps: float
     duration_s: float
@@ -54,6 +55,14 @@ class VideoVerdict:
     exact_mapping_ratio_active_interval: float | None
     reused_mapping_ratio_active_interval: float | None
     mapping_path: str | None
+    board_contract_pass: bool | None
+    panel_presence_pass: bool | None
+    panel_black_pass: bool | None
+    panel_nonblank_pass: bool | None
+    panel_label_pass: bool | None
+    legend_visibility_pass: bool | None
+    detector_contract_pass: bool | None
+    penalty_total_semantics_pass: bool | None
     verdict: str
     samples: list[FrameSample]
     contact_sheet: str
@@ -570,6 +579,157 @@ def _subject_visibility_metrics(frame_bgr: np.ndarray, *, is_force_video: bool) 
     }
 
 
+def _load_board_summary(video_path: Path) -> dict[str, object] | None:
+    if "collision_force_board_2x2" not in video_path.name:
+        return None
+    candidate = video_path.with_name("summary.json")
+    if not candidate.exists():
+        return None
+    try:
+        return json.loads(candidate.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+
+
+def _panel_quadrants(frame_bgr: np.ndarray) -> dict[str, np.ndarray]:
+    h, w = frame_bgr.shape[:2]
+    mid_h = h // 2
+    mid_w = w // 2
+    return {
+        "top_left": frame_bgr[:mid_h, :mid_w],
+        "top_right": frame_bgr[:mid_h, mid_w:],
+        "bottom_left": frame_bgr[mid_h:, :mid_w],
+        "bottom_right": frame_bgr[mid_h:, mid_w:],
+    }
+
+
+def _legend_visible(panel_bgr: np.ndarray) -> bool:
+    h, w = panel_bgr.shape[:2]
+    x0 = max(0, w - 170)
+    x1 = max(x0 + 1, w - 20)
+    y0 = 60 if h > 120 else max(0, h // 6)
+    y1 = min(h, y0 + 38)
+    crop = panel_bgr[y0:y1, x0:x1]
+    if crop.size == 0:
+        return False
+    std = np.std(crop.astype(np.float32), axis=(0, 1))
+    return bool(float(np.mean(std)) >= 12.0)
+
+
+def _panel_nonblank(panel_bgr: np.ndarray) -> bool:
+    gray = _grayscale(panel_bgr)
+    return bool(float(np.std(gray.astype(np.float32))) >= 10.0)
+
+
+def _panel_arrow_signal(panel_bgr: np.ndarray) -> bool:
+    hsv = cv2.cvtColor(panel_bgr, cv2.COLOR_BGR2HSV)
+    sat = hsv[:, :, 1]
+    val = hsv[:, :, 2]
+    colorful = (sat > 70) & (val > 80)
+    return bool(float(np.mean(colorful.astype(np.float32))) >= 0.003)
+
+
+def _board_video_metrics(
+    *,
+    video_path: Path,
+    sampled_frames: list[np.ndarray],
+    frame_count: int,
+    fps: float,
+    board_summary: dict[str, object] | None,
+) -> dict[str, object]:
+    expected_panel_semantics = {
+        "top_left": "box penalty",
+        "top_right": "box total",
+        "bottom_left": "bunny penalty",
+        "bottom_right": "bunny total",
+    }
+    if not board_summary:
+        return {
+            "board_contract_pass": False,
+            "panel_presence_pass": False,
+            "panel_black_pass": False,
+            "panel_nonblank_pass": False,
+            "panel_label_pass": False,
+            "legend_visibility_pass": False,
+            "detector_contract_pass": False,
+            "penalty_total_semantics_pass": False,
+            "subject_visibility_pass": False,
+            "contact_readability_pass": False,
+            "duration_pass": False,
+        }
+
+    panel_presence_pass = bool(board_summary.get("panel_semantics") == expected_panel_semantics)
+    panel_label_pass = bool(board_summary.get("panel_labels_present", False))
+    legend_flag = bool(board_summary.get("legend_present", False))
+    detector_contract_pass = bool(board_summary.get("node_selection_mode") == "all_force_contact_nodes")
+    force_definitions = board_summary.get("force_definitions", {})
+    penalty_total_semantics_pass = (
+        isinstance(force_definitions, dict)
+        and "f_external_total" in str(force_definitions.get("penalty_force", ""))
+        and "mass * gravity_vec" in str(force_definitions.get("total_force", ""))
+    )
+
+    panel_black_checks: list[bool] = []
+    panel_nonblank_checks: list[bool] = []
+    panel_subject_checks: list[bool] = []
+    panel_contact_checks: list[bool] = []
+    legend_checks: list[bool] = []
+    arrow_checks: list[bool] = []
+    for frame in sampled_frames:
+        quadrants = _panel_quadrants(frame)
+        for panel in quadrants.values():
+            gray = _grayscale(panel)
+            mean_luma = float(gray.mean())
+            dark_ratio = float((gray < 12).mean())
+            panel_black_checks.append(not (mean_luma < 18.0 and dark_ratio > 0.97))
+            panel_nonblank_checks.append(_panel_nonblank(panel))
+            panel_metrics = _subject_visibility_metrics(panel, is_force_video=False)
+            panel_subject_checks.append(bool(panel_metrics["cloth_visible"]) and bool(panel_metrics["rigid_visible"]))
+            panel_contact_checks.append(bool(panel_metrics["contact_readability_pass"]) or _panel_arrow_signal(panel))
+            legend_checks.append(_legend_visible(panel))
+            arrow_checks.append(_panel_arrow_signal(panel))
+
+    panel_black_pass = bool(all(panel_black_checks))
+    panel_nonblank_pass = bool(all(panel_nonblank_checks))
+    subject_visibility_pass = bool(np.mean([1.0 if item else 0.0 for item in panel_subject_checks]) >= 0.70)
+    contact_readability_pass = bool(
+        np.mean([1.0 if item else 0.0 for item in panel_contact_checks]) >= 0.70
+        and np.mean([1.0 if item else 0.0 for item in arrow_checks]) >= 0.70
+    )
+    legend_visibility_pass = bool(legend_flag and np.mean([1.0 if item else 0.0 for item in legend_checks]) >= 0.70)
+
+    expected_frame_count = int(board_summary.get("board_frame_count", 0) or 0)
+    expected_fps = float(board_summary.get("board_fps", fps) or fps)
+    duration_pass = (
+        expected_frame_count > 0
+        and abs(expected_fps - float(fps)) <= 1.0e-6
+        and int(frame_count) == int(expected_frame_count)
+    )
+    board_contract_pass = bool(
+        panel_presence_pass
+        and panel_label_pass
+        and panel_black_pass
+        and panel_nonblank_pass
+        and legend_visibility_pass
+        and detector_contract_pass
+        and penalty_total_semantics_pass
+        and duration_pass
+    )
+    return {
+        "board_contract_pass": board_contract_pass,
+        "panel_presence_pass": panel_presence_pass,
+        "panel_black_pass": panel_black_pass,
+        "panel_nonblank_pass": panel_nonblank_pass,
+        "panel_label_pass": panel_label_pass,
+        "legend_visibility_pass": legend_visibility_pass,
+        "detector_contract_pass": detector_contract_pass,
+        "penalty_total_semantics_pass": penalty_total_semantics_pass,
+        "subject_visibility_pass": subject_visibility_pass,
+        "contact_readability_pass": contact_readability_pass,
+        "duration_pass": duration_pass,
+    }
+
+
 def _build_contact_sheet(
     video_path: Path,
     samples: list[FrameSample],
@@ -665,6 +825,7 @@ def _render_verdict_markdown(run_dir: Path, report: dict[str, object]) -> str:
             [
                 f"### `{video['path']}`",
                 f"- Verdict: **{video['verdict']}**",
+                f"- Video kind: `{video['video_kind']}`",
                 f"- Black-screen pass: `{video['black_screen_pass']}`",
                 f"- Motion pass: `{video['motion_pass']}`",
                 f"- Duration pass: `{video['duration_pass']}`",
@@ -684,6 +845,14 @@ def _render_verdict_markdown(run_dir: Path, report: dict[str, object]) -> str:
                 f"- Rigid visibility fraction: `{video['rigid_visibility_fraction']:.3f}`",
                 f"- Contact readability pass: `{video['contact_readability_pass']}`",
                 f"- Force synchronization pass: `{video['force_sync_pass']}`",
+                f"- Board contract pass: `{video['board_contract_pass']}`",
+                f"- Panel presence pass: `{video['panel_presence_pass']}`",
+                f"- Panel black pass: `{video['panel_black_pass']}`",
+                f"- Panel nonblank pass: `{video['panel_nonblank_pass']}`",
+                f"- Panel label pass: `{video['panel_label_pass']}`",
+                f"- Legend visibility pass: `{video['legend_visibility_pass']}`",
+                f"- Detector contract pass: `{video['detector_contract_pass']}`",
+                f"- Penalty/total semantics pass: `{video['penalty_total_semantics_pass']}`",
                 f"- exact_mapping_ratio_active_interval: `{video['exact_mapping_ratio_active_interval']}`",
                 f"- reused_mapping_ratio_active_interval: `{video['reused_mapping_ratio_active_interval']}`",
                 f"- Mapping report: `{video['mapping_path']}`",
@@ -770,17 +939,23 @@ def main() -> int:
                 )
             )
 
-        is_force_video = "force_diag" in video_path.name.lower() or "force" in video_path.name.lower()
-        geometry_visibility_ctx = None if is_force_video else _load_geometry_visibility_context(
+        is_board_video = "collision_force_board_2x2" in video_path.name.lower()
+        is_force_video = (
+            ("force_diag" in video_path.name.lower() or "force" in video_path.name.lower())
+            and not is_board_video
+        )
+        geometry_visibility_ctx = None if (is_force_video or is_board_video) else _load_geometry_visibility_context(
             video_path,
             frame_width=int(sampled_frames[0].shape[1]),
             frame_height=int(sampled_frames[0].shape[0]),
             frame_count=frame_count,
         )
-        motion_threshold = float(args.motion_threshold if not is_force_video else 0.30)
-        temporal_density_threshold = float(args.temporal_density_threshold if not is_force_video else 0.54)
+        motion_threshold = float(args.motion_threshold if not (is_force_video or is_board_video) else 0.30)
+        temporal_density_threshold = float(args.temporal_density_threshold if not (is_force_video or is_board_video) else 0.54)
         if not is_force_video:
             temporal_density_threshold = min(temporal_density_threshold, 0.15)
+        if is_board_video:
+            temporal_density_threshold = min(temporal_density_threshold, 0.12)
         max_static_run_fraction = float(args.max_static_run_fraction if is_force_video else max(args.max_static_run_fraction, 0.85))
         motion_scores = _pairwise_motion_scores(samples, gray_frames)
         temporal_metrics = _transition_metrics(
@@ -793,7 +968,7 @@ def main() -> int:
         visibility_records: list[dict[str, float | bool]] = []
         for sample, frame in zip(samples, sampled_frames, strict=False):
             metrics = _subject_visibility_metrics(frame, is_force_video=is_force_video)
-            if not is_force_video:
+            if not (is_force_video or is_board_video):
                 cloth_visible_geom = _cloth_visible_from_geometry(geometry_visibility_ctx, sample.index)
                 if cloth_visible_geom is not None:
                     metrics["cloth_visible"] = bool(cloth_visible_geom)
@@ -824,7 +999,33 @@ def main() -> int:
                     force_sync_pass = False
             else:
                 force_sync_pass = False
-        if is_force_video:
+        board_contract_pass = None
+        panel_presence_pass = None
+        panel_black_pass = None
+        panel_nonblank_pass = None
+        panel_label_pass = None
+        legend_visibility_pass = None
+        detector_contract_pass = None
+        penalty_total_semantics_pass = None
+        if is_board_video:
+            board_metrics = _board_video_metrics(
+                video_path=video_path,
+                sampled_frames=sampled_frames,
+                frame_count=frame_count,
+                fps=fps,
+                board_summary=_load_board_summary(video_path),
+            )
+            board_contract_pass = bool(board_metrics["board_contract_pass"])
+            panel_presence_pass = bool(board_metrics["panel_presence_pass"])
+            panel_black_pass = bool(board_metrics["panel_black_pass"])
+            panel_nonblank_pass = bool(board_metrics["panel_nonblank_pass"])
+            panel_label_pass = bool(board_metrics["panel_label_pass"])
+            legend_visibility_pass = bool(board_metrics["legend_visibility_pass"])
+            detector_contract_pass = bool(board_metrics["detector_contract_pass"])
+            penalty_total_semantics_pass = bool(board_metrics["penalty_total_semantics_pass"])
+            subject_visibility_pass = bool(board_metrics["subject_visibility_pass"])
+            contact_readability_pass = bool(board_metrics["contact_readability_pass"])
+        elif is_force_video:
             subject_visibility_pass = cloth_visibility_fraction >= 0.90 and rigid_visibility_fraction >= 0.90
         else:
             subject_visibility_pass = cloth_visibility_fraction >= 0.15 and rigid_visibility_fraction >= 0.90
@@ -835,6 +1036,8 @@ def main() -> int:
         duration_s = (frame_count / fps) if fps > 0.0 else 0.0
         min_duration = float(args.min_force_duration if is_force_video else args.min_phenomenon_duration)
         duration_pass = duration_s >= min_duration
+        if is_board_video:
+            duration_pass = bool(board_metrics["duration_pass"])
         verdict = "PASS" if (
             black_screen_pass
             and motion_pass
@@ -842,10 +1045,11 @@ def main() -> int:
             and temporal_density_pass
             and subject_visibility_pass
             and contact_readability_pass
-            and force_sync_pass
+            and (force_sync_pass if not is_board_video else bool(board_contract_pass))
         ) else "FAIL"
         video_verdict = VideoVerdict(
             path=str(video_path),
+            video_kind="board" if is_board_video else ("force" if is_force_video else "phenomenon"),
             frame_count=frame_count,
             fps=fps,
             duration_s=duration_s,
@@ -872,6 +1076,14 @@ def main() -> int:
             exact_mapping_ratio_active_interval=exact_mapping_ratio_active_interval,
             reused_mapping_ratio_active_interval=reused_mapping_ratio_active_interval,
             mapping_path=mapping_path,
+            board_contract_pass=board_contract_pass,
+            panel_presence_pass=panel_presence_pass,
+            panel_black_pass=panel_black_pass,
+            panel_nonblank_pass=panel_nonblank_pass,
+            panel_label_pass=panel_label_pass,
+            legend_visibility_pass=legend_visibility_pass,
+            detector_contract_pass=detector_contract_pass,
+            penalty_total_semantics_pass=penalty_total_semantics_pass,
             verdict=verdict,
             samples=samples,
             contact_sheet="",

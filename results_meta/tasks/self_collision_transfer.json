@@ -1,0 +1,72 @@
+{
+  "registry_version": 1,
+  "task_slug": "self_collision_transfer",
+  "task_chain": {
+    "task_page": "docs/bridge/tasks/self_collision_transfer.md",
+    "spec": "tasks/spec/self_collision_transfer.md",
+    "plan": "plans/active/self_collision_transfer.md",
+    "implement": "tasks/implement/self_collision_transfer.md",
+    "status": "tasks/status/self_collision_transfer.md"
+  },
+  "bundle_root": "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0",
+  "authoritative_run": {
+    "run_id": "final_self_collision_campaign_20260331_033636_533f3d0",
+    "authoritative": false,
+    "task_state": "blocked",
+    "claim_boundary": "Current bridge-side self-collision campaign root for cloth+box decision evidence, exactness proof, QC-passing hero demo, and blocked strict parity. This is the current focus bundle, not a completed final decision surface.",
+    "local_artifact_root": "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0",
+    "command_pointer": "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/command.sh",
+    "expected_artifacts": [
+      "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/FINAL_STATUS.md",
+      "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/matrix/self_collision_decision.md",
+      "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/equivalence/verify_phystwin_self_collision_equivalence.json",
+      "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/selected/self_collision_on_cloth_box_phystwin.mp4",
+      "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/parity/strict_self_collision_parity_summary.json"
+    ],
+    "validator_outputs": [
+      "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/video_qc/final_video_qc_report.md",
+      "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/video_qc/phystwin_topdown_v3/video_qc.json",
+      "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/equivalence/verify_phystwin_self_collision_equivalence.json",
+      "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/parity/strict_self_collision_parity_summary.json"
+    ],
+    "verdict_pointers": [
+      "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/video_qc/final_video_qc_report.md",
+      "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/FINAL_STATUS.md"
+    ],
+    "repo_friendly_evidence": {
+      "summary": [
+        "Bridge-side PhysTwin exactness passes at operator level.",
+        "QC-passing cloth-box hero demo exists, but strict self-collision parity remains blocked."
+      ],
+      "key_metrics": {
+        "max_abs_dv": 1.1324882507324219e-06,
+        "median_rel_dv": 4.070106739010465e-08,
+        "rmse_mean": 0.025657856836915016,
+        "rmse_max": 0.11557811498641968
+      },
+      "thumbnail_paths": [
+        "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/video_qc/phystwin_topdown_v3/contact_sheet.png"
+      ]
+    },
+    "why_passed": [
+      "Operator-level exactness evidence is strong and the selected cloth-box hero video passes QC.",
+      "The remaining blocker is explicit and documented rather than hidden."
+    ],
+    "predecessor": "final_self_collision_campaign_20260330_205935_4fdef39",
+    "superseded_by": null
+  },
+  "superseded_runs": [
+    {
+      "run_id": "final_self_collision_campaign_20260330_205935_4fdef39",
+      "status": "superseded",
+      "local_artifact_root": "Newton/phystwin_bridge/results/final_self_collision_campaign_20260330_205935_4fdef39",
+      "why_not_authoritative": "Previous campaign reached exactness and demo QC but used out-of-scope rope parity artifacts and was replaced by the stricter 20260331 campaign root.",
+      "superseded_by": "final_self_collision_campaign_20260331_033636_533f3d0"
+    }
+  ],
+  "local_only_surfaces": [
+    "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/FINAL_STATUS.md",
+    "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/matrix/self_collision_decision.md"
+  ],
+  "updated_at": "2026-04-01"
+}

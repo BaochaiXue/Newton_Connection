@@ -1,0 +1,70 @@
+{
+  "registry_version": 1,
+  "task_slug": "bunny_penetration_force_diagnostic",
+  "task_chain": {
+    "task_page": "docs/bridge/tasks/bunny_penetration_force_diagnostic.md",
+    "spec": "tasks/spec/bunny_penetration_force_diagnostic.md",
+    "plan": "plans/active/bunny_penetration_force_diagnostic.md",
+    "implement": "tasks/implement/bunny_penetration_force_diagnostic.md",
+    "status": "tasks/status/bunny_penetration_force_diagnostic.md"
+  },
+  "bundle_root": "results/bunny_force_visualization",
+  "authoritative_run": {
+    "run_id": "20260331_231500_fullprocess_sync_matrix_manual_v2",
+    "authoritative": true,
+    "task_state": "partial",
+    "claim_boundary": "Authoritative historical mechanism package for the four-case bunny force-visualization matrix under the strict sync contract. The task itself is reopened for a new all-colliding-node meeting board, so this run is authoritative for the historical mechanism claim, not for the new final visualization target.",
+    "local_artifact_root": "results/bunny_force_visualization/runs/20260331_231500_fullprocess_sync_matrix_manual_v2",
+    "command_pointer": "results/bunny_force_visualization/runs/20260331_231500_fullprocess_sync_matrix_manual_v2/command.sh",
+    "expected_artifacts": [
+      "results/bunny_force_visualization/runs/20260331_231500_fullprocess_sync_matrix_manual_v2/summary.json",
+      "results/bunny_force_visualization/runs/20260331_231500_fullprocess_sync_matrix_manual_v2/artifacts/matrix/bunny_penetration_summary_board.png"
+    ],
+    "validator_outputs": [
+      "results/bunny_force_visualization/runs/20260331_231500_fullprocess_sync_matrix_manual_v2/artifacts/matrix/bunny_baseline/qa/verdict.md",
+      "results/bunny_force_visualization/runs/20260331_231500_fullprocess_sync_matrix_manual_v2/artifacts/matrix/box_control/qa/verdict.md",
+      "results/bunny_force_visualization/runs/20260331_231500_fullprocess_sync_matrix_manual_v2/artifacts/matrix/bunny_low_inertia/qa/verdict.md",
+      "results/bunny_force_visualization/runs/20260331_231500_fullprocess_sync_matrix_manual_v2/artifacts/matrix/bunny_larger_scale/qa/verdict.md"
+    ],
+    "verdict_pointers": [
+      "results/bunny_force_visualization/runs/20260331_231500_fullprocess_sync_matrix_manual_v2/artifacts/matrix/bunny_baseline/qa/verdict.md"
+    ],
+    "repo_friendly_evidence": {
+      "summary": [
+        "Historical four-case force-mechanism package passes the strict active-interval synchronization gate.",
+        "Current mechanism conclusion remains: not wrong direction, but sparse support / insufficient contact magnitude on bunny."
+      ],
+      "key_metrics": {
+        "bunny_baseline_geom_contact_nodes": 2,
+        "box_control_geom_contact_nodes": 2116,
+        "bunny_baseline_max_mesh_pen_mm": 4.3976,
+        "box_control_max_mesh_pen_mm": 16.2965
+      },
+      "thumbnail_paths": [
+        "results/bunny_force_visualization/runs/20260331_231500_fullprocess_sync_matrix_manual_v2/artifacts/matrix/bunny_penetration_summary_board.png"
+      ]
+    },
+    "why_passed": [
+      "All four cases report exact active-interval mapping for force overlays.",
+      "Phenomenon and force-mechanism videos both pass their QA bundles.",
+      "The package cleanly separates historical mechanism evidence from the reopened newer board request."
+    ],
+    "predecessor": "20260331_033500_baseline_syncfix_v1",
+    "superseded_by": null
+  },
+  "superseded_runs": [
+    {
+      "run_id": "20260330_183245_final_matrix",
+      "status": "superseded",
+      "local_artifact_root": "results/bunny_force_visualization/runs/20260330_183245_final_matrix",
+      "why_not_authoritative": "Older matrix root became stale after the strict sync-safe full-process package was promoted.",
+      "superseded_by": "20260331_231500_fullprocess_sync_matrix_manual_v2"
+    }
+  ],
+  "local_only_surfaces": [
+    "results/bunny_force_visualization/INDEX.md",
+    "results/bunny_force_visualization/LATEST_ATTEMPT.txt",
+    "results/bunny_force_visualization/LATEST_SUCCESS.txt"
+  ],
+  "updated_at": "2026-04-01"
+}
