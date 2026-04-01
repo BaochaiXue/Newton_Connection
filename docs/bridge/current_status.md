@@ -142,6 +142,7 @@ It should stay current and be updated whenever a task changes state.
 ## Active Workstreams
 
 - Harness engineering upgrade
+- Markdown truthfulness cleanup
 - Bunny penetration mechanism analysis
 - Bunny real-time all-colliding-node `2 x 2` meeting visualization rework
 - Interactive playground profiling and interpretation
@@ -217,9 +218,15 @@ It should stay current and be updated whenever a task changes state.
   - wrapper scripts now write `command.sh` and `run.log`
   - validator exists for experiment artifact contracts
   - Codex-specific control plane files now exist in `.codex/`
-  - `results/bunny_force_visualization/` now has a canonical index, pointer
+  - generated markdown truth surfaces now exist under:
+    - `docs/generated/md_inventory.md`
+    - `docs/generated/md_cleanup_report.md`
+    - `docs/generated/md_deprecation_matrix.md`
+    - `docs/generated/md_orphans.md`
+  - `results/bunny_force_visualization/` now has local-only pointer/index
     files, per-run templates, and a lightweight visual QA workflow for bunny
-    force-visualization runs
+    force-visualization runs; canonical committed run meaning lives in
+    `results_meta/`
 - `Newton/phystwin_bridge/demos/demo_robot_rope_franka.py`
   - native Franka Panda asset
   - IK-driven articulation control
@@ -234,9 +241,9 @@ It should stay current and be updated whenever a task changes state.
 
 ## Still Missing
 
-- Committed results metadata mirrors for every major authoritative run family
-- A hard skeptical video evaluator layer separate from optimistic automatic QC
-- One standard harness-consistency lint pass in normal task closeout
+- Results metadata mirrors backfilled beyond the current major promoted task families
+- Skeptical video audit adopted consistently in closeout, not merely available in the repo
+- Harness-consistency lint adopted as a routine closeout step by every task, not merely available in the repo
 - Rope-side force diagnostic at the same level as cloth-side diagnostic
 - Full self-collision decision result across the complete box matrix
 - Final decision on whether strict parity can reach `1e-5` under bridge-only changes
