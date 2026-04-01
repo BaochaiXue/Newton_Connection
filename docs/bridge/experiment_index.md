@@ -66,6 +66,12 @@ Until backfilled, think in two buckets:
 
 The validator should be the default tool for distinguishing these two states.
 
+Canonical committed meaning for promoted local bundles now lives under:
+
+- `results_meta/tasks/*.json`
+- `results_meta/INDEX.md`
+- `results_meta/LATEST.md`
+
 For promoted result bundles that should stay easy to navigate, prefer a
 dedicated folder under `results/<bundle_name>/` with:
 
@@ -81,6 +87,9 @@ Current bundles intentionally vary slightly:
 - `results/bunny_force_visualization/` uses `INDEX.md` plus pointer files
 - `results/robot_deformable_demo/` uses `index.csv` plus `BEST_RUN.md`
 - `results/native_robot_rope_drop_release/` uses `index.csv` plus pointer files
+
+These local surfaces are now secondary/local-only. The committed registry under
+`results_meta/` is the canonical cross-task surface.
 
 ## Experiment Categories
 

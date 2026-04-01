@@ -1,5 +1,8 @@
 # Status: Final Self-Collision Campaign
 
+> Historical task family. Active canonical task: `self_collision_transfer`.  
+> Migration path: use `tasks/status/self_collision_transfer.md` for current state and keep this file as the archived campaign log.
+
 ## 2026-03-30
 
 - Campaign root created at `Newton/phystwin_bridge/results/final_self_collision_campaign_20260330_205935_4fdef39/`.

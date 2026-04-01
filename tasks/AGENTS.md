@@ -12,6 +12,9 @@ For an active task, prefer one canonical slug across:
 - `tasks/status/`
 - `plans/active/`
 
+When a task promotes or blocks a major local result bundle, update the matching
+`results_meta/tasks/<task_slug>.json` entry as part of the same milestone.
+
 ## Deprecated Surfaces
 
 Do not recreate retired root singleton docs such as `Plan.md` or `Status.md`.

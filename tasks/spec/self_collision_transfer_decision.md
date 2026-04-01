@@ -1,5 +1,9 @@
 # Spec: self_collision_transfer_decision
 
+> Deprecated alias. Canonical slug: `self_collision_transfer`.  
+> Canonical replacement: `tasks/spec/self_collision_transfer.md`.  
+> Migration rule: do not add new implementation state under `self_collision_transfer_decision`; update the canonical slug instead.
+
 ## Goal
 
 Turn self-collision into a controlled bridge-side decision task and produce one

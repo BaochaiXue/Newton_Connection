@@ -1,26 +1,26 @@
 ---
 name: skeptical-video-audit
-description: Run a fail-closed evaluator pass for video tasks using review bundles, skeptical verdicts, and explicit evidence.
+description: Run the fail-closed skeptical evaluator workflow for meeting-facing videos using review bundles, rubrics, and a separate verdict surface.
 ---
 
 # Skeptical Video Audit
 
-Use this skill when a task claims success based on video evidence.
+Use this skill for any video task where the final claim depends on what is
+visible in the rendered artifact.
 
-## Required Inputs
+## Goal
 
-- video path
-- contact sheet
-- event sheet when relevant
-- sampled-frame bundle
-- current claim boundary
+Separate generator success from evaluator acceptance.
 
-## Required Outputs
+## Required Surfaces
 
-- structured pass/fail verdict
-- frame/timestamp evidence
-- explicit reasons to reject optimistic passes
+- `docs/evals/video_acceptance_rubric.md`
+- `docs/evals/video_evaluator_prompt.md`
+- `scripts/prepare_video_review_bundle.py`
+- `scripts/run_skeptical_video_audit.py`
 
 ## Rule
 
-Do not accept “probably okay” for video tasks.
+Automatic QC may prepare evidence, but it does not equal final acceptance.
+If the skeptical evaluator cannot defend PASS conservatively, the verdict is
+FAIL.

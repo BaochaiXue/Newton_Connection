@@ -15,14 +15,19 @@ docs, or over-trusting optimistic validators.
 
 ## Current Status
 
-- In progress
+- Implemented for the current upgrade pass
 - This task owns the current harness hardening pass
-- Expected upgrade areas:
+- Landed upgrade areas:
   - single-source-of-truth discipline
   - planner / builder / evaluator / handoff orchestration
   - skeptical multimodal video acceptance
   - committed metadata mirrors for authoritative local results
   - mechanical harness linting and stronger hooks
+- Remaining tradeoffs:
+  - local ignored result-bundle pointer files still exist as secondary
+    convenience surfaces
+  - skeptical video acceptance is intentionally fail-closed and still requires
+    a separate reviewer payload to produce a final PASS
 
 ## Code Entry Points
 
@@ -56,7 +61,7 @@ Audit-first commands:
 
 ```bash
 rg --files -g '*.md'
-rg -n '/home/|Plan.md|Status.md|Prompt.md|DecisionLog.md' AGENTS.md docs plans tasks results
+rg -n 'Plan.md|Status.md|Prompt.md|DecisionLog.md' AGENTS.md docs plans tasks
 ```
 
 ## Required Artifacts

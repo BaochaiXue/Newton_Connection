@@ -9,7 +9,7 @@
 
 ```bash
 python scripts/lint_harness_consistency.py
-rg -n '/home/|Plan.md|Status.md|Prompt.md|DecisionLog.md' AGENTS.md docs plans tasks results
+rg -n 'Plan.md|Status.md|Prompt.md|DecisionLog.md' AGENTS.md docs plans tasks
 ```
 
 ## Step Sequence

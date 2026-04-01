@@ -107,6 +107,20 @@ def _collect_issues() -> list[str]:
     for slug in sorted(expected_registry):
         if slug not in registry_entries:
             issues.append(f"missing results registry entry for `{slug}`")
+    for slug, entry in registry_entries.items():
+        chain = entry.get("task_chain") or {}
+        for key in ("task_page", "spec", "plan", "implement", "status"):
+            rel = chain.get(key)
+            if not rel:
+                issues.append(f"registry entry `{slug}` missing task_chain field `{key}`")
+                continue
+            if not (ROOT / rel).exists():
+                issues.append(f"registry entry `{slug}` points to missing `{key}` path: {rel}")
+
+    if not (RESULTS_META_DIR / "INDEX.md").exists():
+        issues.append("missing generated results registry index: results_meta/INDEX.md")
+    if not (RESULTS_META_DIR / "LATEST.md").exists():
+        issues.append("missing generated results registry latest view: results_meta/LATEST.md")
 
     all_durable_docs = list((ROOT / "docs").rglob("*.md")) + list((ROOT / "tasks").rglob("*.md")) + list((ROOT / "plans").rglob("*.md")) + [ROOT / "AGENTS.md"]
     for path in sorted(all_durable_docs):

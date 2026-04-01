@@ -1,5 +1,9 @@
 # Plan: self_collision_transfer_decision
 
+> Deprecated alias. Canonical slug: `self_collision_transfer`.  
+> Canonical replacement: `plans/active/self_collision_transfer.md`.  
+> Do not keep two active self-collision slugs alive.
+
 ## Goal
 
 Produce a decision-grade self-collision task flow with measurable scene-level,

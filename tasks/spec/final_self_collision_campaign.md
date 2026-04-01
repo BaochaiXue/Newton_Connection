@@ -1,5 +1,8 @@
 # Task Spec: Final Self-Collision Campaign
 
+> Historical task family. Active canonical task: `self_collision_transfer`.  
+> Migration path: use `tasks/spec/self_collision_transfer.md` for current work and treat this file as campaign history only.
+
 ## Goal
 
 Execute a clean bridge-only campaign that:

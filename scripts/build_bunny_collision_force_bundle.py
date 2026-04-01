@@ -231,6 +231,7 @@ def main() -> int:
 
     summary = {
         "bundle_path": str(bundle_path),
+        "detector_npz": str(npz_path),
         "npz_path": str(npz_path),
         "run_out_dir": str(Path(run_args.out_dir).expanduser().resolve()),
         "render_frames_dir": None if render_frames_dir is None else str(render_frames_dir),

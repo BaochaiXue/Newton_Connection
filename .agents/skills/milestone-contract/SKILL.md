@@ -1,19 +1,25 @@
 ---
 name: milestone-contract
-description: Define milestone-level done conditions and evaluator evidence before implementation proceeds.
+description: Define milestone-level acceptance before implementation begins using the repo contract template.
 ---
 
 # Milestone Contract
 
-Use this skill when a task needs a hard acceptance target for the next
-milestone.
+Use this skill when a task needs a bounded acceptance target before major
+implementation or rerun loops begin.
 
-## Required Outputs
+## Goal
 
-- one contract under `tasks/contracts/`
-- explicit hard-fail conditions
-- explicit evaluator evidence requirements
+Create or update a contract under `tasks/contracts/`.
+
+## Required Contents
+
+- scope boundary
+- hard-fail conditions
+- acceptance criteria
+- evaluator evidence required
+- exact next command after acceptance
 
 ## Rule
 
-If a milestone can fail ambiguously, write the contract first.
+Do not start expensive iteration loops without a visible acceptance contract.

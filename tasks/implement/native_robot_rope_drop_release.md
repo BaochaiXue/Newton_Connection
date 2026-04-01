@@ -2,7 +2,7 @@
 
 ## Preconditions
 
-- Repository root is `/home/xinjie/Newton_Connection`
+- Repository root is the current git worktree root
 - `Newton/newton/` stays read-only
 - The previous robot + deformable lift-release bundle is preserved as history
 
@@ -11,7 +11,7 @@
 - eventual demo invocation:
   `python Newton/phystwin_bridge/demos/demo_robot_rope_franka.py --task drop_release_baseline`
 - physics validator:
-  `scripts/validate_robot_deformable_demo.py <run_dir>`
+  `scripts/validate_robot_rope_drop_release_physics.py <run_dir>`
 
 ## Step Sequence
 

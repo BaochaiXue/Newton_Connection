@@ -23,6 +23,8 @@ This page is the shortest possible map of the repository.
   - Active and completed execution plans for long-running work.
 - `tasks/`
   - Execution-facing task specs, runbooks, and status logs.
+- `results_meta/`
+  - Committed metadata mirror for authoritative local result bundles.
 - `scripts/`
   - Canonical wrapper scripts and validators.
 - `.codex/`
@@ -69,6 +71,7 @@ This page is the shortest possible map of the repository.
 - `docs/decisions/`
 - `plans/`
 - `tasks/`
+- `results_meta/`
 - `scripts/`
 - `.codex/`
 - `.agents/skills/`

@@ -164,6 +164,12 @@ def parse_args() -> argparse.Namespace:
         default=4.0,
         help="Minimum acceptable duration [s] for the force mechanism video.",
     )
+    parser.add_argument(
+        "--board-summary",
+        type=Path,
+        default=None,
+        help="Optional explicit summary.json for the collision-force 2x2 board artifact.",
+    )
     return parser.parse_args()
 
 
@@ -638,10 +644,10 @@ def _board_video_metrics(
     board_summary: dict[str, object] | None,
 ) -> dict[str, object]:
     expected_panel_semantics = {
-        "top_left": "box penalty",
-        "top_right": "box total",
-        "bottom_left": "bunny penalty",
-        "bottom_right": "bunny total",
+        "top_left": "box_penalty",
+        "top_right": "box_total",
+        "bottom_left": "bunny_penalty",
+        "bottom_right": "bunny_total",
     }
     if not board_summary:
         return {
@@ -659,9 +665,12 @@ def _board_video_metrics(
         }
 
     panel_presence_pass = bool(board_summary.get("panel_semantics") == expected_panel_semantics)
-    panel_label_pass = bool(board_summary.get("panel_labels_present", False))
-    legend_flag = bool(board_summary.get("legend_present", False))
-    detector_contract_pass = bool(board_summary.get("node_selection_mode") == "all_force_contact_nodes")
+    panel_label_pass = bool(board_summary.get("panel_semantics") == expected_panel_semantics)
+    legend_flag = bool(board_summary.get("colorbar_present", False))
+    detector_contract_pass = bool(
+        board_summary.get("all_colliding_nodes_main_board", False)
+        and str(board_summary.get("node_mask_semantics", "")) == "rigid_force_contact_mask"
+    )
     force_definitions = board_summary.get("force_definitions", {})
     penalty_total_semantics_pass = (
         isinstance(force_definitions, dict)
@@ -699,12 +708,29 @@ def _board_video_metrics(
     legend_visibility_pass = bool(legend_flag and np.mean([1.0 if item else 0.0 for item in legend_checks]) >= 0.70)
 
     expected_frame_count = int(board_summary.get("board_frame_count", 0) or 0)
-    expected_fps = float(board_summary.get("board_fps", fps) or fps)
+    expected_fps = float(board_summary.get("render_fps", fps) or fps)
     duration_pass = (
         expected_frame_count > 0
         and abs(expected_fps - float(fps)) <= 1.0e-6
         and int(frame_count) == int(expected_frame_count)
     )
+    duration_rule_pass = True
+    for case_name in ("box_control", "bunny_baseline"):
+        case = board_summary.get("cases", {}).get(case_name, {})
+        fc = case.get("first_force_contact_frame_index")
+        ce = case.get("clip_end_frame_index")
+        detector_summary_path = case.get("detector_summary_path")
+        if detector_summary_path is None or fc is None or ce is None:
+            duration_rule_pass = False
+            continue
+        try:
+            det = json.loads(Path(str(detector_summary_path)).read_text(encoding="utf-8"))
+        except Exception:
+            duration_rule_pass = False
+            continue
+        target_frames = int(round(1.0 / max(float(det.get("sim_frame_dt_s", 0.0)), 1.0e-12)))
+        if abs((int(ce) - int(fc)) - target_frames) > 1:
+            duration_rule_pass = False
     board_contract_pass = bool(
         panel_presence_pass
         and panel_label_pass
@@ -714,6 +740,7 @@ def _board_video_metrics(
         and detector_contract_pass
         and penalty_total_semantics_pass
         and duration_pass
+        and duration_rule_pass
     )
     return {
         "board_contract_pass": board_contract_pass,
@@ -727,6 +754,7 @@ def _board_video_metrics(
         "subject_visibility_pass": subject_visibility_pass,
         "contact_readability_pass": contact_readability_pass,
         "duration_pass": duration_pass,
+        "duration_rule_pass": duration_rule_pass,
     }
 
 
@@ -804,6 +832,130 @@ def _build_contact_sheet(
 
     canvas.save(sheet_path)
     return sheet_path
+
+
+def _candidate_board_summary(run_dir: Path, explicit: Path | None) -> Path | None:
+    if explicit is not None:
+        return _resolve_path(explicit, run_dir)
+    candidate = run_dir / "artifacts" / "collision_force_board" / "summary.json"
+    return candidate if candidate.exists() else None
+
+
+def _panel_quadrants(frame_bgr: np.ndarray) -> dict[str, np.ndarray]:
+    h, w = frame_bgr.shape[:2]
+    hh = h // 2
+    ww = w // 2
+    return {
+        "top_left": frame_bgr[:hh, :ww],
+        "top_right": frame_bgr[:hh, ww:],
+        "bottom_left": frame_bgr[hh:, :ww],
+        "bottom_right": frame_bgr[hh:, ww:],
+    }
+
+
+def _colorbar_visible(panel_bgr: np.ndarray) -> bool:
+    h, w = panel_bgr.shape[:2]
+    x0 = max(0, w - 214)
+    x1 = max(x0 + 8, min(w, w - 18))
+    y0 = min(max(0, 18), max(0, h - 2))
+    y1 = min(h, y0 + 24)
+    roi = panel_bgr[y0:y1, x0:x1]
+    if roi.size == 0:
+        return False
+    roi_rgb = cv2.cvtColor(roi, cv2.COLOR_BGR2RGB)
+    unique_colors = np.unique(roi_rgb.reshape(-1, 3), axis=0)
+    channel_std = float(np.std(roi_rgb.reshape(-1, 3).astype(np.float32), axis=0).mean())
+    return bool(unique_colors.shape[0] >= 18 and channel_std >= 18.0)
+
+
+def _board_panel_metrics(frame_bgr: np.ndarray) -> dict[str, object]:
+    quadrants = _panel_quadrants(frame_bgr)
+    per_panel: dict[str, dict[str, object]] = {}
+    for name, crop in quadrants.items():
+        gray = _grayscale(crop)
+        mean_luma = float(gray.mean())
+        dark_ratio = float((gray < 12).mean())
+        blank_std = float(np.std(gray.astype(np.float32)))
+        visibility = _subject_visibility_metrics(crop, is_force_video=False)
+        per_panel[name] = {
+            "black_like": bool(mean_luma < 18.0 and dark_ratio > 0.97),
+            "nonblank": bool(blank_std >= 6.0),
+            "cloth_visible": bool(visibility["cloth_visible"]),
+            "rigid_visible": bool(visibility["rigid_visible"]),
+            "colorbar_visible": _colorbar_visible(crop),
+        }
+    return per_panel
+
+
+def _validate_board_summary(
+    *,
+    board_summary_path: Path,
+    board_video_path: Path,
+    sampled_frames: list[np.ndarray],
+    sampled_indices: list[int],
+    fps: float,
+) -> dict[str, object]:
+    payload = json.loads(board_summary_path.read_text(encoding="utf-8"))
+    expected_semantics = {
+        "top_left": "box_penalty",
+        "top_right": "box_total",
+        "bottom_left": "bunny_penalty",
+        "bottom_right": "bunny_total",
+    }
+    semantics_pass = payload.get("panel_semantics", {}) == expected_semantics
+    board_video_pass = Path(str(payload.get("board_video", ""))).resolve() == board_video_path.resolve()
+    all_nodes_pass = bool(payload.get("all_colliding_nodes_main_board", False)) and str(payload.get("node_mask_semantics", "")) == "rigid_force_contact_mask"
+    colorbar_declared = bool(payload.get("colorbar_present", False))
+    sync_pass = float(payload.get("exact_mapping_ratio_full_display_interval", 0.0)) >= 0.95
+
+    box = payload.get("cases", {}).get("box_control", {})
+    bunny = payload.get("cases", {}).get("bunny_baseline", {})
+    duration_rule_pass = True
+    for case in (box, bunny):
+        fc = case.get("first_force_contact_frame_index")
+        ce = case.get("clip_end_frame_index")
+        detector_summary_path = case.get("detector_summary_path")
+        if detector_summary_path is None:
+            duration_rule_pass = False
+            continue
+        try:
+            det = json.loads(Path(str(detector_summary_path)).read_text(encoding="utf-8"))
+        except Exception:
+            duration_rule_pass = False
+            continue
+        if fc is None:
+            duration_rule_pass = False
+            continue
+        delta_frames = int(ce) - int(fc)
+        target_frames = int(round(1.0 / max(float(det.get("sim_frame_dt_s", 0.0)), 1.0e-12)))
+        if abs(delta_frames - target_frames) > 1:
+            duration_rule_pass = False
+
+    panel_metrics_by_sample = [_board_panel_metrics(frame) for frame in sampled_frames]
+    panel_black_pass = True
+    panel_nonblank_pass = True
+    panel_subject_pass = True
+    colorbar_pass = colorbar_declared
+    for sample_metrics in panel_metrics_by_sample:
+        for metrics in sample_metrics.values():
+            panel_black_pass = panel_black_pass and (not bool(metrics["black_like"]))
+            panel_nonblank_pass = panel_nonblank_pass and bool(metrics["nonblank"])
+            panel_subject_pass = panel_subject_pass and bool(metrics["cloth_visible"]) and bool(metrics["rigid_visible"])
+            colorbar_pass = colorbar_pass and bool(metrics["colorbar_visible"])
+
+    return {
+        "summary_path": str(board_summary_path),
+        "board_video_path_matches": bool(board_video_pass),
+        "panel_semantics_pass": bool(semantics_pass),
+        "all_nodes_pass": bool(all_nodes_pass),
+        "colorbar_pass": bool(colorbar_pass),
+        "panel_black_pass": bool(panel_black_pass),
+        "panel_nonblank_pass": bool(panel_nonblank_pass),
+        "panel_subject_pass": bool(panel_subject_pass),
+        "duration_rule_pass": bool(duration_rule_pass),
+        "full_display_sync_pass": bool(sync_pass),
+        "sampled_indices": [int(v) for v in sampled_indices],
+    }
 
 
 def _render_verdict_markdown(run_dir: Path, report: dict[str, object]) -> str:

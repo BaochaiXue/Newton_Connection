@@ -1,20 +1,27 @@
 ---
 name: handoff-resume
-description: Create a structured handoff that lets a fresh agent resume without hidden chat state.
+description: Create a structured handoff so a fresh agent or later session can resume without hidden context.
 ---
 
 # Handoff Resume
 
-Use this skill when work is likely to span sessions or agents.
+Use this skill when work is likely to span sessions, agents, or context resets.
 
-## Required Outputs
+## Goal
 
-- one handoff under `tasks/handoffs/`
+Write one handoff under `tasks/handoffs/` that makes the next step mechanical.
+
+## Required Contents
+
+- current milestone
 - exact next command
-- blocker
-- missing evidence
+- current blocker
+- last failed acceptance criterion
+- key artifact paths
 - what not to redo
+- missing evidence
+- context reset recommendation
 
 ## Rule
 
-Prefer one explicit handoff over a long ambiguous status log.
+If a fresh agent would need chat archaeology, the handoff is not good enough.

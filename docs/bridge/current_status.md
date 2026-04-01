@@ -110,6 +110,7 @@ It should stay current and be updated whenever a task changes state.
   - short root `AGENTS.md`
   - subtree `AGENTS.md` files for bridge / PhysTwin / docs / scripts
   - top-level `plans/` and `tasks/` scaffolding
+  - committed authoritative results metadata under `results_meta/`
   - repo-local `.agents/skills/`
   - repo-local `.codex/` config + hooks
   - canonical wrapper scripts and an artifact validator
@@ -121,9 +122,17 @@ It should stay current and be updated whenever a task changes state.
   - duplicate orphan bunny full-process scaffold docs removed in favor of the
     canonical `bunny_penetration_force_diagnostic` task and its accepted result
     bundle
+  - skeptical video acceptance surfaces now exist under:
+    - `docs/evals/video_acceptance_rubric.md`
+    - `docs/evals/video_evaluator_prompt.md`
+    - `scripts/prepare_video_review_bundle.py`
+    - `scripts/run_skeptical_video_audit.py`
+  - harness drift is now checked mechanically by:
+    - `scripts/lint_harness_consistency.py`
 
 ## Active Workstreams
 
+- Harness engineering upgrade
 - Bunny penetration mechanism analysis
 - Bunny real-time all-colliding-node `2 x 2` meeting visualization rework
 - Interactive playground profiling and interpretation
@@ -206,6 +215,9 @@ It should stay current and be updated whenever a task changes state.
 
 ## Still Missing
 
+- Committed results metadata mirrors for every major authoritative run family
+- A hard skeptical video evaluator layer separate from optimistic automatic QC
+- One standard harness-consistency lint pass in normal task closeout
 - Rope-side force diagnostic at the same level as cloth-side diagnostic
 - Full self-collision decision result across the complete box matrix
 - Final decision on whether strict parity can reach `1e-5` under bridge-only changes

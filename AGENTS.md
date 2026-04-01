@@ -45,6 +45,7 @@ chat window.
 - `docs/bridge/tasks/` contains task-specific working pages.
 - `docs/bridge/current_status.md` is the short operational summary.
 - `docs/bridge/open_questions.md` records unresolved technical questions.
+- `results_meta/` stores committed authoritative metadata for local result bundles.
 
 ### Execution Layer
 

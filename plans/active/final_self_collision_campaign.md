@@ -1,5 +1,8 @@
 # Plan: Final Self-Collision Campaign
 
+> Historical task family. Active canonical task: `self_collision_transfer`.  
+> Migration path: use `plans/active/self_collision_transfer.md` for current planning state.
+
 ## Milestones
 
 1. Read instruction chain and relevant bridge docs.

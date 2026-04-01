@@ -11,6 +11,8 @@
   - `docs/bridge/tasks/native_robot_rope_drop_release.md`
 - Result bundle:
   - `results/native_robot_rope_drop_release/`
+- Committed results metadata:
+  - `results_meta/tasks/native_robot_rope_drop_release.json`
 
 ## Authoritative Best Run
 
@@ -55,3 +57,5 @@
 - Updated the generic artifact validator so `sim/history/` counts as a valid
   rollout artifact for this demo family, instead of incorrectly requiring only
   `scene.npz`
+- The canonical committed meaning for the promoted run now lives in:
+  - `results_meta/tasks/native_robot_rope_drop_release.json`

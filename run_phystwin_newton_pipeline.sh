@@ -4,7 +4,8 @@ set -euo pipefail
 # =========================
 # User-configurable options
 # =========================
-ROOT=/home/xinjie/Newton_Connection
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="${ROOT:-$SCRIPT_DIR}"
 PT="$ROOT/PhysTwin"
 NW="$ROOT/Newton"
 NW_PY="$NW/newton/.venv/bin/python"
@@ -19,8 +20,11 @@ CONDA_BIN="${CONDA_BIN:-}"
 if [ -z "$CONDA_BIN" ]; then
   CONDA_BIN="$(command -v conda || true)"
 fi
-if [ -z "$CONDA_BIN" ] && [ -x "/home/xinjie/miniconda3/bin/conda" ]; then
-  CONDA_BIN="/home/xinjie/miniconda3/bin/conda"
+if [ -z "$CONDA_BIN" ] && [ -x "$HOME/miniconda3/bin/conda" ]; then
+  CONDA_BIN="$HOME/miniconda3/bin/conda"
+fi
+if [ -z "$CONDA_BIN" ] && [ -x "$HOME/anaconda3/bin/conda" ]; then
+  CONDA_BIN="$HOME/anaconda3/bin/conda"
 fi
 if [ -z "$CONDA_BIN" ]; then
   echo "[ERROR] Unable to find conda executable. Set CONDA_BIN explicitly."

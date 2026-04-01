@@ -17,6 +17,9 @@
 ## Current Technical State
 
 - Historical trigger/full-process force diagnostics already exist.
+- Historical committed results metadata now records the sync-safe 4-case
+  mechanism package under:
+  - `results_meta/tasks/bunny_penetration_force_diagnostic.json`
 - Existing board/render code also exists, but it is still short of the stricter
   spec in at least these ways:
   - main board currently follows geometry-contact membership instead of the
@@ -33,3 +36,6 @@
 - extend validator coverage
 - produce a fresh promoted run under a new
   `*_realtime_allcolliding_2x2_v1` directory
+- once promoted, update:
+  - `results_meta/tasks/bunny_penetration_force_diagnostic.json`
+  - `results_meta/LATEST.md`

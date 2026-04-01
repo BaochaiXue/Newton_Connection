@@ -1,5 +1,8 @@
 # Runbook: Final Self-Collision Campaign
 
+> Historical task family. Active canonical task: `self_collision_transfer`.  
+> Migration path: use `tasks/implement/self_collision_transfer.md` for current execution guidance.
+
 ## Campaign Root
 
 - `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/`

@@ -19,6 +19,10 @@ Operational ledgers:
 
 ## High Priority
 
+### 0. Harness Engineering Upgrade
+- Task page: [harness_engineering_upgrade.md](./docs/bridge/tasks/harness_engineering_upgrade.md)
+- Current goal: upgrade the repo into a durable multi-agent harness with committed results metadata, skeptical video acceptance, and mechanical drift checks.
+
 ### 1. Slide Deck Overhaul
 - Task page: [slide_deck_overhaul.md](./docs/bridge/tasks/slide_deck_overhaul.md)
 - Current goal: make each slide defensible in 15-20 seconds and keep the story hypothesis-driven.

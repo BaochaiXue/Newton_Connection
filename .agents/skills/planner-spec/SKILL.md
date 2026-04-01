@@ -1,21 +1,27 @@
 ---
 name: planner-spec
-description: Expand a short task request into a bounded repo-native task spec, plan skeleton, and explicit scope boundary before implementation.
+description: Expand a short task request into a bounded repo-native task spec with clear scope, constraints, and done conditions.
 ---
 
 # Planner Spec
 
-Use this skill when a task arrives as a broad request and needs a bounded spec
-before implementation.
+Use this skill when a task prompt is too short or ambiguous to execute safely
+without a tighter task spec.
+
+## Goal
+
+Turn a loose task request into one bounded `tasks/spec/<task>.md` artifact.
 
 ## Required Outputs
 
-- one canonical task slug
-- one bounded goal
-- one explicit non-goal section
-- one first-pass milestone sequence
+- clarified goal
+- non-goals
+- inputs
+- outputs
+- constraints
+- done criteria
 
 ## Rule
 
-Do not start large implementation work until the task boundary is explicit in
-repo-native files.
+Prefer tightening scope before implementation instead of compensating with chat
+memory later.

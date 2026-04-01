@@ -11,6 +11,8 @@
   - `Newton/phystwin_bridge/demos/demo_robot_rope_franka.py`
 - Canonical wrapper:
   - `scripts/run_robot_rope_franka.sh`
+- Committed results metadata:
+  - `results_meta/tasks/robot_deformable_demo.json`
 
 ## Authoritative Best Run
 
@@ -58,3 +60,5 @@ scripts/run_robot_rope_franka.sh
   a stricter `manifest.json` plus `manifest.template.json`, and a
   `SLIDE_READY.md` checklist so
   future runs can be promoted without guessing the required layout.
+- The canonical committed meaning for this baseline now lives in:
+  - `results_meta/tasks/robot_deformable_demo.json`

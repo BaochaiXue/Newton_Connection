@@ -7,3 +7,8 @@ Rules:
 
 - Do not hand-edit generated files unless clearly marked otherwise.
 - If a generated file becomes authoritative, document how it is regenerated.
+
+High-signal generated/control-plane files currently include:
+
+- `harness_audit.md`
+- `harness_deprecations.md`

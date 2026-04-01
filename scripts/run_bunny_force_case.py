@@ -78,6 +78,7 @@ def main() -> int:
         n_obj_for_io = n_obj_render
 
     scene_npz = demo.save_scene_npz(args, render_sim_data, meta_for_io, n_obj_for_io)
+    detector_npz, detector_summary = demo.save_collision_force_rollout(args, render_sim_data, scene_npz)
     out_mp4: Path | None = None
     if not bool(args.skip_render):
         out_mp4 = args.out_dir / f"{args.prefix}_{demo._mass_tag(args.rigid_mass)}.mp4"
@@ -118,6 +119,8 @@ def main() -> int:
             "trigger_substep_global": int(force_diagnostic.get("trigger_substep_global", -1)),
             "scene_npz_path": str(scene_npz),
             "summary_json_path": str(summary_path),
+            "detector_npz_path": "" if detector_npz is None else str(detector_npz),
+            "detector_summary_path": "" if detector_summary is None else str(detector_summary),
             "video_mp4_path": "" if out_mp4 is None else str(out_mp4),
             "render_frames_dir": (
                 ""
@@ -130,6 +133,9 @@ def main() -> int:
         print(f"Force render bundle: {bundle_path}", flush=True)
 
     print(f"Scene NPZ: {scene_npz}", flush=True)
+    if detector_npz is not None and detector_summary is not None:
+        print(f"Detector NPZ: {detector_npz}", flush=True)
+        print(f"Detector Summary: {detector_summary}", flush=True)
     if out_mp4 is not None:
         print(f"Process video: {out_mp4}", flush=True)
     print(f"Summary: {summary_path}", flush=True)

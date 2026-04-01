@@ -65,14 +65,7 @@ TABLE_NOTE_TOP = 1170720
 TABLE_NOTE_H = 243720
 
 OFFLINE_GIF_DIR = MEETING_DIR / "slides_assets" / "gif"
-SELF_COLLISION_CAMPAIGN_DIR = (
-    ROOT
-    / "Newton"
-    / "phystwin_bridge"
-    / "results"
-    / "final_self_collision_campaign_20260331_033636_533f3d0"
-)
-SELF_COLLISION_SLIDES_DIR = SELF_COLLISION_CAMPAIGN_DIR / "slides_update"
+RESULTS_META_ROOT = ROOT / "results_meta" / "tasks"
 
 RECALL_CLOTH_GIF = OFFLINE_GIF_DIR / "cloth_cmp2x3.gif"
 RECALL_ZEBRA_GIF = OFFLINE_GIF_DIR / "zebra_cmp2x3.gif"
@@ -101,16 +94,39 @@ CODE_GRANULAR_PROFILE_PNG = IMAGE_DIR / "code_granular_profile.png"
 FORCE_DIAG_CODE_PNG = IMAGE_DIR / "code_force_diag_capture.png"
 FORCE_LAYOUT_CODE_PNG = IMAGE_DIR / "code_force_diag_layout.png"
 
-LATEST_BUNNY_RUN_FILE = ROOT / "results" / "bunny_force_visualization" / "LATEST_SUCCESS.txt"
 ROPE_PERF_ROOT = ROOT / "results" / "rope_perf_apples_to_apples"
 ROPE_PERF_SUMMARY_JSON = ROPE_PERF_ROOT / "summary.json"
 
 
+def _load_results_meta(task_slug: str) -> dict:
+    path = RESULTS_META_ROOT / f"{task_slug}.json"
+    if not path.exists():
+        return {}
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _meta_local_root(task_slug: str) -> Path | None:
+    obj = _load_results_meta(task_slug)
+    local_root = (obj.get("authoritative_run") or {}).get("local_artifact_root")
+    if not local_root:
+        return None
+    path = Path(str(local_root))
+    return path if path.is_absolute() else (ROOT / path)
+
+
+def _meta_superseded_root(task_slug: str, *, run_status: str) -> Path | None:
+    obj = _load_results_meta(task_slug)
+    for row in obj.get("superseded_runs", []):
+        if str(row.get("status")) == run_status:
+            path = Path(str(row.get("local_artifact_root")))
+            return path if path.is_absolute() else (ROOT / path)
+    return None
+
+
 def _resolve_latest_bunny_run() -> Path:
-    if LATEST_BUNNY_RUN_FILE.exists():
-        run_dir = Path(LATEST_BUNNY_RUN_FILE.read_text(encoding="utf-8").strip())
-        if run_dir.exists():
-            return run_dir.resolve()
+    meta_root = _meta_local_root("bunny_penetration_force_diagnostic")
+    if meta_root is not None and meta_root.exists():
+        return meta_root.resolve()
     fallback = (
         ROOT
         / "results"
@@ -124,6 +140,8 @@ def _resolve_latest_bunny_run() -> Path:
 ACCEPTED_BUNNY_RUN = _resolve_latest_bunny_run()
 ACCEPTED_BUNNY_MATRIX_DIR = ACCEPTED_BUNNY_RUN / "artifacts" / "matrix"
 ACCEPTED_BUNNY_BOARD_PNG = ACCEPTED_BUNNY_MATRIX_DIR / "bunny_penetration_summary_board.png"
+SELF_COLLISION_CAMPAIGN_DIR = (_meta_local_root("self_collision_transfer") or (ROOT / "Newton" / "phystwin_bridge" / "results" / "final_self_collision_campaign_20260331_033636_533f3d0")).resolve()
+SELF_COLLISION_SLIDES_DIR = SELF_COLLISION_CAMPAIGN_DIR / "slides_update"
 
 
 def _resolve_case_video_maps() -> tuple[dict[str, Path], dict[str, Path]]:
@@ -169,22 +187,10 @@ SLIDE_NATIVE_FAILURE_PNG = SELF_COLLISION_SLIDES_DIR / "03_native_failure_matrix
 SLIDE_EXACTNESS_PNG = SELF_COLLISION_SLIDES_DIR / "04_phystwin_exactness.png"
 SLIDE_FINAL_DEMO_PNG = SELF_COLLISION_SLIDES_DIR / "05_final_demo_frames.png"
 SLIDE_STRICT_PARITY_PNG = SELF_COLLISION_SLIDES_DIR / "06_strict_parity.png"
-ROBOT_DROP_BASELINE_OFF_MP4 = (
-    ROOT
-    / "results"
-    / "native_robot_rope_drop_release"
-    / "runs"
-    / "20260331_232106_native_franka_recoilfix_drag_off_w5"
-    / "final_presentation.mp4"
-)
-ROBOT_DROP_BASELINE_ON_MP4 = (
-    ROOT
-    / "results"
-    / "native_robot_rope_drop_release"
-    / "runs"
-    / "20260331_232459_native_franka_recoilfix_drag_on_w5"
-    / "final_presentation.mp4"
-)
+ROBOT_DROP_OFF_ROOT = (_meta_local_root("native_robot_rope_drop_release") or (ROOT / "results" / "native_robot_rope_drop_release" / "runs" / "20260331_232106_native_franka_recoilfix_drag_off_w5")).resolve()
+ROBOT_DROP_ON_ROOT = (_meta_superseded_root("native_robot_rope_drop_release", run_status="validated_ab_compare") or (ROOT / "results" / "native_robot_rope_drop_release" / "runs" / "20260331_232459_native_franka_recoilfix_drag_on_w5")).resolve()
+ROBOT_DROP_BASELINE_OFF_MP4 = ROBOT_DROP_OFF_ROOT / "final_presentation.mp4"
+ROBOT_DROP_BASELINE_ON_MP4 = ROBOT_DROP_ON_ROOT / "final_presentation.mp4"
 ROBOT_DROP_BASELINE_OFF_GIF = MEETING_DIR / "gif" / "robot_drop_release_drag_off.gif"
 ROBOT_DROP_BASELINE_ON_GIF = MEETING_DIR / "gif" / "robot_drop_release_drag_on.gif"
 

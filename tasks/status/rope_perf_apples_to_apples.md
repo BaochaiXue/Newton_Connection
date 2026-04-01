@@ -43,6 +43,8 @@
 
 - Canonical benchmark tree:
   - `results/rope_perf_apples_to_apples/`
+- Committed results metadata:
+  - `results_meta/tasks/rope_perf_apples_to_apples.json`
 - Key outputs:
   - `results/rope_perf_apples_to_apples/index.csv`
   - `results/rope_perf_apples_to_apples/BEST_EVIDENCE.md`

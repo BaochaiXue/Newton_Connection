@@ -2,7 +2,7 @@
 
 ## Preconditions
 
-- Repository root is `/home/xinjie/Newton_Connection`
+- Repository root is the current git worktree root
 - `Newton/newton/` stays read-only
 - The existing best run has been reviewed as the comparison point
 

@@ -14,7 +14,9 @@ def main() -> int:
     additional = (
         "Load the repo harness before editing: read AGENTS.md, docs/README.md, "
         "TODO.md, then the relevant docs/bridge/tasks page. Use scripts/ wrappers "
-        "when they exist. Update task/status docs for non-trivial work."
+        "when they exist. Update task/status docs for non-trivial work. For long "
+        "tasks use tasks/contracts and tasks/handoffs. If a run becomes authoritative, "
+        "update results_meta before claiming completion."
     )
     out = {
         "hookSpecificOutput": {

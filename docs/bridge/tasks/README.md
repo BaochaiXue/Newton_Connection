@@ -12,6 +12,7 @@ Each task page should answer:
 
 ## Active Task Set
 
+- [harness_engineering_upgrade.md](./harness_engineering_upgrade.md)
 - [slide_deck_overhaul.md](./slide_deck_overhaul.md)
 - [bunny_penetration_force_diagnostic.md](./bunny_penetration_force_diagnostic.md)
 - [video_presentation_quality.md](./video_presentation_quality.md)
