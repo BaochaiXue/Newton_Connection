@@ -115,31 +115,38 @@ A0 和 A1 的差别只是在 controller target 的组织方式，不是换了一
 ## Slide 11 — Source Proof P2: The Slow Path Is Runtime Structure, Not Rope Physics
 这一页回答的是：如果 rope case 的主物理意图已经是可比的，那么 residual gap 更像出在什么层面。
 
-[Newton/newton/newton/examples/cable/example_cable_pile.py : 184-204]
+先把调用链说清楚。我们自己的 realtime viewer 在 `[Newton/phystwin_bridge/demos/demo_rope_control_realtime_viewer.py : 342-347, 738]` 明确实例化并调用的是 `newton.solvers.SolverSemiImplicit`。所以左边这段不是 generic example，而是 rope viewer 真会走到的 Newton core solver path。
+
+[Newton/newton/newton/_src/solvers/semi_implicit/solver_semi_implicit.py : 141-145, 160-165, 172-177]
 ```python
-def capture(self):
-    if wp.get_device().is_cuda:
-        with wp.ScopedCapture() as cap:
-            self.simulate()
-        self.graph = cap.graph
+# damped springs
+eval_spring_forces(model, state_in, particle_f)
+# triangle elastic and lift/drag forces
+eval_triangle_forces(model, state_in, control, particle_f)
 ...
-def simulate(self):
-    for _substep in range(self.sim_substeps):
-        self.state_0.clear_forces()
-        self.viewer.apply_forces(self.state_0)
-        self.model.collide(self.state_0, self.contacts)
-        self.solver.step(
+# particle-particle interactions
+eval_particle_contact_forces(model, state_in, particle_f)
+# triangle/triangle contacts
+if self.enable_tri_contact:
+    eval_triangle_contact_forces(model, state_in, particle_f)
+...
+# particle shape contact
+eval_particle_body_contact_forces(
+    model, state_in, contacts, particle_f, body_f_work, body_f_in_world_frame=False
+)
+self.integrate_particles(model, state_in, state_out, dt)
 ```
 [What]
-L184-L188 表明 Newton rope-side example 的快路径是先把整段 `simulate()` 包进 `ScopedCapture()`，也就是把一帧里的工作捕获成一个 CUDA graph。
-L193-L204 同时又告诉我们，被 capture 的内容本身仍然是显式的 substep loop：每个 substep 都 clear force、apply force、collide、再调用 `solver.step()`。
-这说明 Newton 这边的组织粒度仍然是“frame contains many substeps, each substep calls the solver once”，而不是天生只有一个 monolithic rope kernel。
+L141-L145 说明 `SolverSemiImplicit.step()` 并不是一个单一 rope kernel，而是先后调用多个物理子阶段，其中 rope 相关的第一块就是 damped spring forces。
+L160-L165 说明 solver 内部还会继续串上 particle contact 和 triangle contact 这些阶段；即使当前 rope case 是弱碰撞，这条 stage pipeline 依然存在。
+L172-L177 最后才进入 particle-shape contact 和 `integrate_particles(...)`，也就是力学阶段先累积，再统一推进粒子状态。
+所以左边真正给出的信息是：我们当前 viewer 调到的 Newton core solver path，本身就是 multi-stage step organization，而不是一个只做 rope force 的最小路径。
 [Why]
-这段代码真正参与说理的地方在于，它告诉我们 rope-like Newton core execution 的成本分布首先受 substep organization 影响，而不只是受 spring formula 本身影响。
-因此在 weak-collision rope benchmark 里，如果我们观测到明显 slowdown，就有理由优先怀疑 runtime structure 是否足够 graph-like，而不是先把矛头对准 collision law。
+这段代码真正参与说理的地方在于，它把“Newton core solver actually used by our rope viewer”这件事讲实了。
+既然 viewer 最终落到的是 `SolverSemiImplicit.step()`，而这条 core path 本身是多阶段串行组织，那么 rope slowdown 的第一怀疑对象就可以自然落到 runtime structure，而不是先落到 spring formula 不一致。
 [Risk]
-这里也要诚实：这段是 Newton core 的 rope/cable example，不是我们当前 interactive playground 的直接实现文件。
-所以它证明的是 Newton core rope-side execution idiom，而不是直接证明“我们当前 path 一定就完全等于这个 example”。
+这里要诚实的 caveat 变成另外一个问题：这段代码证明的是 solver 内部 stage organization，但它并不单独量化每个 stage 的 wall time 占比。
+所以它只能和 throughput / profiler 证据一起用，不能单独推出 residual gap 的精确比例。
 
 [PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py : 769-802]
 ```python
