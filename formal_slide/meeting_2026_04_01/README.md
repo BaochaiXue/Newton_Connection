@@ -12,6 +12,8 @@ This folder is the local bundle for the `2026-04-01` formal slide deck.
   - Latest generated transcript source.
 - `transcript.pdf`
   - Latest rendered transcript PDF.
+- `code_render_style_audit.md`
+  - Meeting-local note for the synthetic VSCode-like code-panel renderer.
 - `templates/`
   - Local PPTX template directory.
   - Current generator depends only on `My Adjust.pptx`.

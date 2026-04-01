@@ -10,7 +10,7 @@ from pathlib import Path
 
 import matplotlib
 import markdown
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from pptx import Presentation
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_AUTO_SHAPE_TYPE
@@ -447,10 +447,10 @@ RECALL_SLIDES: list[dict] = [
     {
         "kind": "code_twocol_large",
         "title": "Source Proof P1: Same Replay, Different Execution Style",
-        "note": "Real source excerpts only. The evidence here is replay interface shape, not full implementation detail.",
-        "left_label": "Newton: `--profile-only`, `throughput|attribution`, `baseline|precomputed`.",
+        "note": "Real source only. Read the highlighted lines first: Newton exposes replay/profile knobs; PhysTwin captures and replays a graph.",
+        "left_label": "Newton replay knobs: --profile-only, --profile-mode, --controller-write-mode.",
         "left_path": CODE_REPLAY_SEMANTICS_PNG,
-        "right_label": "PhysTwin: `use_graph=True`, capture once, replay by `forward_graph`.",
+        "right_label": "PhysTwin graph path: use_graph, ScopedCapture, forward_graph.",
         "right_path": CODE_GRANULAR_PROFILE_PNG,
         "transcript": [
             "这一页是 source proof，不是结果页，所以 slide 上只放两段短 code excerpt 和一句短分析。",
@@ -525,10 +525,10 @@ RECALL_SLIDES: list[dict] = [
     {
         "kind": "code_twocol",
         "title": "Source Proof: The Diagnostic Really Splits Contact Forces And Renders A Global+Local Layout",
-        "common_settings": "Left = the trigger substep explicitly stores `f_spring`, `f_internal_total`, and `f_external_total`. Right = the accepted renderer keeps the main global view, draws 3D world-space glyphs, adds a zoom panel, and renders force artifacts in a fresh helper process so the process-video path and force-video path do not contaminate each other.",
-        "left_label": "Bridge diagnostic capture: external force is measured as the incremental particle-body contact contribution on top of the internal force path.",
+        "common_settings": "Left: the trigger substep stores internal vs external force explicitly. Right: the accepted renderer keeps the global view and adds the local zoom in a separate helper pass.",
+        "left_label": "Diagnostic capture: `f_spring`, `f_internal_total`, `f_external_total` are stored separately.",
         "left_path": FORCE_DIAG_CODE_PNG,
-        "right_label": "Bridge render path: keep the manual global camera, draw 3D glyphs, then add the split zoom panel for the local patch.",
+        "right_label": "Render path: keep the global camera, draw 3D glyphs, then add the split zoom panel.",
         "right_path": FORCE_LAYOUT_CODE_PNG,
         "transcript": [
             "这一页是新的 source proof。",
@@ -910,11 +910,21 @@ def _fit_box(iw: int, ih: int, bw: int, bh: int) -> tuple[int, int, int, int]:
 def _load_mono_font(size: int = 18, *, bold: bool = False):
     candidates = (
         [
+            "/usr/share/fonts/truetype/cascadia/CascadiaCode-Bold.ttf",
+            "/usr/share/fonts/truetype/cascadia/CascadiaMono-Bold.ttf",
+            "/usr/share/fonts/truetype/jetbrains-mono/JetBrainsMono-Bold.ttf",
+            "/usr/share/fonts/truetype/msttcorefonts/Consolas Bold.ttf",
+            "/usr/share/fonts/truetype/noto/NotoSansMono-Bold.ttf",
             "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf",
             "/usr/share/fonts/truetype/liberation/LiberationMono-Bold.ttf",
         ]
         if bold
         else [
+            "/usr/share/fonts/truetype/cascadia/CascadiaCode.ttf",
+            "/usr/share/fonts/truetype/cascadia/CascadiaMono.ttf",
+            "/usr/share/fonts/truetype/jetbrains-mono/JetBrainsMono-Regular.ttf",
+            "/usr/share/fonts/truetype/msttcorefonts/Consolas.ttf",
+            "/usr/share/fonts/truetype/noto/NotoSansMono-Regular.ttf",
             "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf",
             "/usr/share/fonts/truetype/liberation/LiberationMono-Regular.ttf",
         ]
@@ -925,60 +935,154 @@ def _load_mono_font(size: int = 18, *, bold: bool = False):
     return ImageFont.load_default()
 
 
-def _render_code_png(out_path: Path, header: str, lines: list[str], font_size: int = 18, max_chars: int = 86) -> Path:
-    mx, my = 28, 22
-    font = _load_mono_font(font_size)
-    font_bold = _load_mono_font(font_size, bold=True)
-    bg, panel = (246, 248, 251), (255, 255, 255)
-    txt_c, hdr_c = (34, 34, 34), (48, 87, 138)
-    gutter_c = (120, 128, 138)
-    line_hl_fill = (255, 219, 77, 92)
+def _middle_truncate(text: str, max_chars: int) -> str:
+    if len(text) <= max_chars:
+        return text
+    keep_left = max(8, (max_chars - 3) // 2)
+    keep_right = max(8, max_chars - keep_left - 3)
+    return f"{text[:keep_left]}...{text[-keep_right:]}"
+
+
+def _trim_code_line(text: str, max_chars: int) -> str:
+    if len(text) <= max_chars:
+        return text
+    if max_chars <= 3:
+        return text[:max_chars]
+    return f"{text[: max_chars - 3]}..."
+
+
+def _render_code_png(
+    out_path: Path,
+    header_title: str,
+    header_subtitle: str,
+    lines: list[str],
+    *,
+    font_size: int = 24,
+    max_chars: int = 76,
+) -> Path:
+    panel_bg = (30, 30, 30)
+    chrome_bg = (37, 37, 38)
+    gutter_bg = (37, 37, 38)
+    border = (58, 58, 58)
+    text_color = (212, 212, 212)
+    path_color = (156, 220, 254)
+    gutter_color = (133, 133, 133)
+    highlight_fill = (38, 79, 120, 150)
+    highlight_accent = (55, 148, 255, 255)
+    shadow_color = (0, 0, 0, 110)
     token_colors = {
-        Comment: txt_c,
-        Keyword: txt_c,
-        Keyword.Constant: txt_c,
-        Name.Builtin: txt_c,
-        Name.Function: txt_c,
-        Name.Class: txt_c,
-        String: txt_c,
-        Number: txt_c,
-        Operator: txt_c,
-        Punctuation: txt_c,
-        Token.Error: (176, 32, 32),
-        Text: txt_c,
+        Comment: (106, 153, 85),
+        Keyword: (86, 156, 214),
+        Keyword.Constant: (86, 156, 214),
+        Keyword.Namespace: (86, 156, 214),
+        Name.Function: (220, 220, 170),
+        Name.Class: (78, 201, 176),
+        Name.Builtin: (78, 201, 176),
+        Name.Builtin.Pseudo: (78, 201, 176),
+        Name.Decorator: (197, 134, 192),
+        Name.Exception: (78, 201, 176),
+        String: (206, 145, 120),
+        Number: (181, 206, 168),
+        Operator.Word: (86, 156, 214),
+        Token.Error: (244, 71, 71),
+        Text: text_color,
     }
 
-    all_lines = [header, ""] + [ln[:max_chars] for ln in lines]
-    probe = Image.new("RGB", (100, 100))
-    d = ImageDraw.Draw(probe)
-    bbox = d.textbbox((0, 0), "M", font=font)
-    cw = max(8, bbox[2] - bbox[0])
-    lh = max(14, bbox[3] - bbox[1] + 4)
-    width = min(max(mx * 2 + max_chars * cw, 980), 1500)
-    height = min(max(my * 2 + len(all_lines) * lh, 340), 980)
-    img = Image.new("RGBA", (width, height), bg + (255,))
+    font = _load_mono_font(font_size)
+    font_bold = _load_mono_font(font_size, bold=True)
+    chrome_font = _load_mono_font(max(14, int(font_size * 0.78)), bold=True)
+    chrome_meta_font = _load_mono_font(max(12, int(font_size * 0.62)))
+    probe = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
+    probe_draw = ImageDraw.Draw(probe)
+    glyph_box = probe_draw.textbbox((0, 0), "Mg", font=font)
+    char_w = max(10, glyph_box[2] - glyph_box[0])
+    line_h = max(24, int(font_size * 1.48))
+
+    gutter_w = 118
+    panel_pad_x = 34
+    panel_pad_bottom = 30
+    title_bar_h = 64
+    code_top_pad = 24
+    max_line_px = 0
+    visible_lines = [_trim_code_line(ln, max_chars) for ln in lines]
+    for raw in visible_lines:
+        highlight = raw.lstrip().startswith(">>>")
+        ln = raw.replace(">>>", "", 1).lstrip() if highlight else raw
+        stripped = ln.lstrip()
+        code = ln
+        if stripped and stripped[0].isdigit():
+            parts = stripped.split(" ", 1)
+            if len(parts) == 2 and parts[0].isdigit():
+                leading = len(ln) - len(stripped)
+                code = " " * leading + parts[1]
+        width_px = int(probe_draw.textlength(code, font=font))
+        max_line_px = max(max_line_px, width_px)
+
+    width = min(max(1720, gutter_w + panel_pad_x * 2 + max_line_px + 120), 2100)
+    height = min(max(980, title_bar_h + code_top_pad + len(visible_lines) * line_h + panel_pad_bottom + 46), 1480)
+
+    img = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+    panel_left, panel_top = 22, 18
+    panel_right, panel_bottom = width - 22, height - 18
+
+    shadow = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+    shadow_draw = ImageDraw.Draw(shadow, "RGBA")
+    shadow_draw.rounded_rectangle(
+        [panel_left + 10, panel_top + 14, panel_right + 8, panel_bottom + 14],
+        radius=28,
+        fill=shadow_color,
+    )
+    shadow = shadow.filter(ImageFilter.GaussianBlur(radius=14))
+    img.alpha_composite(shadow)
+
     draw = ImageDraw.Draw(img, "RGBA")
     draw.rounded_rectangle(
-        [8, 8, width - 8, height - 8],
-        radius=14,
-        fill=panel + (255,),
-        outline=(204, 212, 220, 255),
+        [panel_left, panel_top, panel_right, panel_bottom],
+        radius=24,
+        fill=panel_bg + (255,),
+        outline=border + (255,),
         width=2,
     )
+    draw.rounded_rectangle(
+        [panel_left, panel_top, panel_right, panel_top + title_bar_h],
+        radius=24,
+        fill=chrome_bg + (255,),
+    )
+    draw.rectangle(
+        [panel_left, panel_top + 26, panel_right, panel_top + title_bar_h],
+        fill=chrome_bg + (255,),
+    )
+
+    for idx, color in enumerate(((255, 95, 86), (255, 189, 46), (39, 201, 63))):
+        cx = panel_left + 28 + idx * 26
+        cy = panel_top + title_bar_h // 2
+        draw.ellipse([cx - 7, cy - 7, cx + 7, cy + 7], fill=color + (240,))
+
+    display_title = _middle_truncate(header_title, 34)
+    display_subtitle = _middle_truncate(header_subtitle, 56)
+    draw.text((panel_left + 120, panel_top + 17), display_title, font=chrome_font, fill=(230, 230, 230, 255))
+    subtitle_w = int(draw.textlength(display_subtitle, font=chrome_meta_font))
+    draw.text((panel_right - 26 - subtitle_w, panel_top + 20), display_subtitle, font=chrome_meta_font, fill=path_color + (225,))
+
+    code_top = panel_top + title_bar_h + code_top_pad
+    gutter_left = panel_left + 14
+    gutter_right = gutter_left + gutter_w
+    draw.rounded_rectangle(
+        [gutter_left, code_top - 8, gutter_right, panel_bottom - 18],
+        radius=16,
+        fill=gutter_bg + (255,),
+    )
+    code_x = gutter_right + 26
 
     def _color_for_token(tok):
         for ttype, color in token_colors.items():
             if tok in ttype:
                 return color
-        return txt_c
+        return text_color
 
     lexer = PythonLexer(stripnl=False)
-    y = my + 4
-    for row_idx, raw_line in enumerate(all_lines):
-        if row_idx == 0:
-            draw.text((mx, y), raw_line, font=font_bold, fill=hdr_c)
-            y += lh
-            continue
+    for row_idx, raw_line in enumerate(visible_lines):
+        y = code_top + row_idx * line_h
         highlight = raw_line.lstrip().startswith(">>>")
         ln = raw_line.replace(">>>", "", 1).lstrip() if highlight else raw_line
         line_no = ""
@@ -990,31 +1094,38 @@ def _render_code_png(out_path: Path, header: str, lines: list[str], font_size: i
             if len(parts) == 2 and parts[0].isdigit():
                 line_no = parts[0]
                 code = " " * leading + parts[1]
+        code = _trim_code_line(code, max_chars)
 
-        x = mx
-        x_code_start = x
+        row_top = y - 4
+        row_bottom = y + line_h - 2
+        if highlight:
+            draw.rounded_rectangle(
+                [panel_left + 14, row_top, panel_right - 14, row_bottom],
+                radius=10,
+                fill=highlight_fill,
+            )
+            draw.rounded_rectangle(
+                [panel_left + 14, row_top, panel_left + 20, row_bottom],
+                radius=4,
+                fill=highlight_accent,
+            )
+
         if line_no:
-            draw.text((x, y), f"{line_no:>4}", font=font_bold if highlight else font, fill=gutter_c)
-            x += int(cw * 6.2)
-            x_code_start = x
+            line_no_w = int(draw.textlength(f"{line_no:>4}", font=font))
+            draw.text(
+                (gutter_right - 18 - line_no_w, y),
+                f"{line_no:>4}",
+                font=font_bold if highlight else font,
+                fill=gutter_color + (255,),
+            )
 
-        rendered = []
-        x_probe = x
+        x = code_x
         for tok, value in lex(code, lexer):
             clean = value.replace("\n", "")
             if not clean:
                 continue
-            rendered.append((clean, _color_for_token(tok)))
-            x_probe += int(draw.textlength(clean, font=font))
-
-        if highlight and x_probe > x_code_start:
-            stroke_y = y + int(lh * 0.62)
-            draw.line([(x_code_start - 2, stroke_y), (x_probe + 4, stroke_y)], fill=line_hl_fill, width=10)
-
-        for clean, color in rendered:
-            draw.text((x, y), clean, font=font, fill=color)
+            draw.text((x, y), clean, font=font, fill=_color_for_token(tok) + (255,))
             x += int(draw.textlength(clean, font=font))
-        y += lh
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     img.save(out_path)
@@ -1039,8 +1150,12 @@ def _code_excerpt_image(path: Path, title: str, lines: list[str], out_path: Path
         rel_path = path.relative_to(ROOT)
     except ValueError:
         rel_path = path
-    header = f"# {rel_path}"
-    return _render_code_png(out_path, header, lines)
+    return _render_code_png(
+        out_path,
+        path.name,
+        str(rel_path),
+        lines,
+    )
 
 
 def _ensure_transcoded_gif(
@@ -1488,7 +1603,7 @@ def _code_twocol_large(
     slide = prs.slides.add_slide(_layout(prs))
     _clear_placeholders(slide)
     title_box = slide.shapes.add_textbox(REF_TITLE_LEFT, REF_TITLE_TOP, REF_TITLE_W, REF_TITLE_H)
-    _set_title_textbox(title_box, title, size_pt=26)
+    _set_title_textbox(title_box, title, size_pt=24)
     if note:
         _add_label(
             slide,
@@ -1497,18 +1612,18 @@ def _code_twocol_large(
             REF_GRID_COMMON_W,
             REF_GRID_COMMON_H,
             note,
-            font_size=11,
+            font_size=10,
             bold=False,
         )
-    left_x = 520000
-    right_x = 4760000
-    label_y = 1580000
-    pic_y = 1860000
-    pic_w = 3520000
-    pic_h = 2480000
-    _add_label(slide, left_x, label_y, pic_w, 220000, left_label, font_size=10, bold=False)
+    left_x = 420000
+    right_x = 4550000
+    label_y = 1560000
+    pic_y = 1815000
+    pic_w = 3900000
+    pic_h = 2950000
+    _add_label(slide, left_x, label_y, pic_w, 200000, left_label, font_size=10, bold=False)
     _add_pic(slide, left_path, left_x, pic_y, pic_w, pic_h)
-    _add_label(slide, right_x, label_y, pic_w, 220000, right_label, font_size=10, bold=False)
+    _add_label(slide, right_x, label_y, pic_w, 200000, right_label, font_size=10, bold=False)
     _add_pic(slide, right_path, right_x, pic_y, pic_w, pic_h)
 
 
@@ -1577,14 +1692,14 @@ def build_recall_only_deck(prs: Presentation, slides: list[dict] | None = None) 
                 common_settings=slide.get("common_settings"),
             )
         elif kind == "code_twocol":
-            _gif_twocol(
+            _code_twocol_large(
                 prs,
                 slide["title"],
                 slide["left_label"],
                 slide["left_path"],
                 slide["right_label"],
                 slide["right_path"],
-                common_settings=slide.get("common_settings"),
+                note=slide.get("common_settings") or slide.get("note"),
             )
         elif kind == "code_twocol_large":
             _code_twocol_large(

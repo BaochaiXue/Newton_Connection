@@ -47,6 +47,12 @@ Local scratch validation notes:
   - `rmse_mean = 0.010103434324264526`
   - `last30_rmse = 0.014149246737360954`
   - `Newton/phystwin_bridge/results/tmp_strict_phystwin_default302_postsync/strict_phystwin_default302_rollout_report.json`
+- matched OFF vs strict `phystwin` 302-frame comparison on the same cloth+ground case:
+  - OFF `rmse_mean = 0.009786468930542469`
+  - strict `phystwin` `rmse_mean = 0.010103434324264526`
+  - strict `phystwin` is better only on `first30_rmse` (`0.0005582491285167634` vs `0.0023693302646279335`)
+  - OFF is still better on full-rollout `rmse_mean`, `rmse_max`, and `last30_rmse`
+  - `Newton/phystwin_bridge/results/tmp_off_vs_phystwin_302_compare_20260401/compare_summary.json`
 - controller-spring diagnostic currently reports substantial mismatch:
   - one-step `force_abs_max = 0.006733048971410349`
   - short-rollout `force_abs_max = 389.3789927564146`

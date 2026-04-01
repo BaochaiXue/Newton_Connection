@@ -7,21 +7,22 @@ PPTX size-budget gate on the 2026-04-01 deck builder.
 
 ## Last Completed Step
 
-Installed PPTX size control on the 2026-04-01 deck build:
+Upgraded the meeting deck's synthetic code-render pipeline to a VSCode-like
+Dark+ style and regenerated the 2026-04-01 source-proof slides:
 
-- rerouted oversized recall GIF inputs through generated deck-sized copies under
-  `formal_slide/meeting_2026_04_01/gif/`
-- added a hard `100 MB` PPTX budget gate to
-  `build_meeting_20260401.py`
-- regenerated `formal_slide/meeting_2026_04_01/bridge_meeting_20260401.pptx`
-  at `32.2 MB`
-- verified the gate fails closed when invoked with a stricter budget
+- replaced the old light-theme code render with a reusable dark editor panel
+  renderer in `formal_slide/meeting_2026_04_01/build_meeting_20260401.py`
+- added VSCode-like chrome, gutter, syntax colors, and soft line highlights
+- enlarged the `Source Proof` code panels so the code reads as evidence instead
+  of thumbnail decoration
+- regenerated the full deck plus the performance-only review slice
+- wrote a short style audit note under
+  `formal_slide/meeting_2026_04_01/code_render_style_audit.md`
 
 ## Next Step
 
-Audit the remaining non-performance sections for the same readability /
-evidence split if another external-review pass is needed, while preserving the
-new size budget.
+Apply the same readability audit to any remaining slide that still uses a code
+panel or dense visual evidence block, while preserving the PPTX size budget.
 
 ## Blocking Issues
 
@@ -32,4 +33,5 @@ new size budget.
 - `formal_slide/meeting_2026_03_25/`
 - `formal_slide/meeting_2026_04_01/`
 - `formal_slide/meeting_2026_04_01/performance_section_audit.md`
+- `formal_slide/meeting_2026_04_01/code_render_style_audit.md`
 - `tmp_vis/performance_analysis_20260401/`
