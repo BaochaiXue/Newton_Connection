@@ -5,31 +5,38 @@
 Tracked as an active task with a canonical slug and a backfilled authoritative
 chain.
 
+The bridge now has a shared strict `phystwin` contact-stack implementation for
+the PhysTwin-native cloth parity scene:
+
+- pairwise self-collision uses the bridge-side PhysTwin operator
+- ground contact uses a bridge-side implicit `z=0` PhysTwin-style integrator
+- `off/native/custom` stay on their existing compatibility paths
+- cloth+box `phystwin` is intentionally guarded as unsupported
+
 ## Last Completed Step
 
-Normalized the active slug to `self_collision_transfer`, marked the older
-`self_collision_transfer_decision` files as deprecated aliases, and attached
-the current campaign root to the committed results registry.
+Landed the first shared strict `phystwin` stack wiring:
+
+- `tools/core/phystwin_contact_stack.py`
+- shared importer path via `tools/core/newton_import_ir.py`
+- thin `tools/other/newton_import_ir_phystwin.py` wrapper
+- cloth+box demo guard for unsupported `phystwin`
 
 ## Next Step
 
-Write the decision-grade current state into this canonical status file:
+Record the post-refactor validation state:
 
-- current campaign root:
-  - `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0`
-- current selected final mode:
-  - `phystwin`
-- blocker:
-  - strict self-collision parity still fails the in-scope cloth reference gate
-- next missing deliverable:
-  - one explicit A/B/C decision state written here instead of only in the
-    historical campaign folder
+- strict 60-frame cloth parity metrics
+- full-length strict cloth parity metrics
+- OFF non-regression results
+- updated slide/task wording for the narrowed strict `phystwin` scope
 
 ## Blocking Issues
 
-- final A/B/C decision state is still not represented in a concise canonical
-  task status file
-- strict self-collision parity remains blocked in the current campaign root
+- strict self-collision parity still needs a fresh post-refactor full-length
+  measurement against the `1e-5` gate
+- strict `phystwin` scope is intentionally narrow and does not yet cover box or
+  other Newton-only rigid-support contacts
 
 ## Artifact Paths
 

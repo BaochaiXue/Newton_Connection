@@ -557,6 +557,7 @@ RECALL_SLIDES: list[dict] = [
             "这一页是源码证据，不是实验结果。",
             "第一段代码说明 bridge 会把 PhysTwin pairwise collision distance 映射成 Newton particle radius 语义，所以 native path 一开始就不是原封不动的 PhysTwin collision law。",
             "第二段代码说明 cloth-box ON 场景里，off、native、custom、phystwin 四条路径是明确分开的；第三段代码说明 exact PhysTwin-style velocity correction 是 bridge-side 引入，而不是改 Newton core。",
+            "同时这里也要把边界说清楚：PhysTwin 这条 cloth spring-mass 源码原生只定义了 pairwise object_collision 和 implicit z=0 ground collision，没有 generic box-support contact。",
         ],
     },
     {
@@ -567,6 +568,7 @@ RECALL_SLIDES: list[dict] = [
         "transcript": [
             "这一页是 controlled scene-level evidence。",
             "cloth-box matrix 的作用不是证明 phystwin 已经完美，而是证明 native 不足以直接被当成最终 claim。",
+            "所以 box scene 在这里是 scene evidence，不是 strict phystwin parity scene。",
             "这里我只保留 cloth-box scope，不再把 bunny 或其他 scene 混进最终结论里。",
         ],
     },
@@ -589,6 +591,7 @@ RECALL_SLIDES: list[dict] = [
         "transcript": [
             "这一页放最终 cloth-box phystwin hero demo。",
             "我最后选的是 top-down presentation 视角，因为它同时保住了 cloth、box、接触区和后续 settle 过程。",
+            "但这个视频的作用是 demo evidence，不是 strict parity 的 claim scope。",
             "这条视频已经通过 black/blank、motion 和 scene-visibility 的 QC gate，所以它是当前可以直接汇报的 self-collision ON 最终 demo。",
         ],
     },
@@ -600,6 +603,7 @@ RECALL_SLIDES: list[dict] = [
         "transcript": [
             "最后这一页专门讲最终 blocker，不粉饰。",
             "现在 blocker 不是缺 reference，因为 cloth self-collision reference case 已经明确存在，而且我们就是拿它做的 strict parity。",
+            "这里的 strict scope 也收紧得很明确：只覆盖 PhysTwin 原生的 object_collision 加 implicit z=0 ground，不把 box scene 混进去。",
             "真正的问题是：在当前 PhysTwin 到 Newton 的 rollout 语义下，这个 cloth case 连 self-collision off baseline 都远离 PhysTwin，所以 bridge-side phystwin operator 虽然 operator-level exact，整条 rollout 仍然达不到 1e-5 gate。",
         ],
     },

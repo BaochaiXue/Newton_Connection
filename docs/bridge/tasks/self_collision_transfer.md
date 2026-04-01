@@ -24,6 +24,7 @@ This task is **not** trying to:
 - prove Newton native self-collision is universally correct
 - rewrite the entire collision stack for one bunny/thin-geometry failure
 - keep doing broad black-box parameter sweeps
+- silently mix Newton-only rigid/shape contacts into a mode called `phystwin`
 
 ## Why This Matters
 
@@ -43,13 +44,18 @@ So the real deliverable is a **defendable engineering decision**:
 The repo already contains the right scaffolding for a decision:
 
 - `Newton/phystwin_bridge/demos/demo_cloth_box_drop_with_self_contact.py`
-  - main self-contact experiment entry point
-  - controlled box-support scenario to isolate cloth self-contact
+  - box-support decision demo for `off/native/custom`
+  - `phystwin` is intentionally unsupported there because strict PhysTwin contact
+    semantics do not define generic box-support contact
 - `Newton/phystwin_bridge/demos/self_contact_bridge_kernels.py`
   - graph-hop exclusion
   - filtered bridge-side penalty pairs
   - bridge-side PhysTwin-style velocity correction
-  - final-frame overlap statistics
+  - PhysTwin-order force update and implicit ground-plane integration
+- `Newton/phystwin_bridge/tools/core/phystwin_contact_stack.py`
+  - shared strict bridge-side `phystwin` contact stack
+  - reusable validation, context construction, and substep hook for the
+    PhysTwin-native cloth case
 - `Newton/phystwin_bridge/demos/demo_cloth_bunny_drop_without_self_contact.py`
   - force-diagnostic path for external rigid-contact sanity checks
 - `Newton/phystwin_bridge/demos/demo_cloth_bunny_realtime_viewer.py`
@@ -84,9 +90,16 @@ Run the box self-contact task under:
 - `--self-contact-mode native`
 - `--self-contact-mode custom --custom-self-contact-hops 1`
 - `--self-contact-mode custom --custom-self-contact-hops 2`
-- `--self-contact-mode phystwin`
 
-This is the core decision matrix. The entire task should be able to conclude from this group.
+This is the core cloth+box decision matrix. Strict `phystwin` parity is tracked
+separately on the PhysTwin-native cloth case because the PhysTwin source only
+defines:
+
+- pairwise `object_collision`
+- implicit `z=0` `integrate_ground_collision`
+
+It does **not** define generic box / rigid-shape contact for this spring-mass
+path.
 
 ## Follow-Up Sanity Check
 
@@ -182,6 +195,8 @@ This rule prevents overfitting the project onto the most invasive option.
 - final-frame overlap statistics can hide transient failure
 - graph-hop exclusion is not the same as true geometric-neighbor exclusion
 - if `phystwin` wins, that is a bridge-side result, not a Newton-native claim
+- strict `phystwin` parity currently applies only to the PhysTwin-native cloth
+  contact set (self-collision + implicit ground plane)
 - bunny should not be the primary decision scene because it mixes self-contact with thin rigid geometry
 - inflating particle radius is not a valid replacement for a self-collision decision
 

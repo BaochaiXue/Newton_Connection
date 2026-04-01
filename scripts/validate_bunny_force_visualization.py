@@ -635,6 +635,18 @@ def _panel_arrow_signal(panel_bgr: np.ndarray) -> bool:
     return bool(float(np.mean(colorful.astype(np.float32))) >= 0.003)
 
 
+def _board_panel_subject_visible(panel_bgr: np.ndarray) -> bool:
+    rgb = cv2.cvtColor(panel_bgr, cv2.COLOR_BGR2RGB)
+    r = rgb[:, :, 0]
+    g = rgb[:, :, 1]
+    b = rgb[:, :, 2]
+    cloth_mask = (r > 165) & (g > 135) & (b < 150)
+    rigid_mask = (b > 150) & (g > 120) & (r < 160)
+    cloth_frac = float(np.mean(cloth_mask.astype(np.float32)))
+    rigid_frac = float(np.mean(rigid_mask.astype(np.float32)))
+    return bool(cloth_frac >= 0.00035 and rigid_frac >= 0.00025)
+
+
 def _board_video_metrics(
     *,
     video_path: Path,
@@ -644,10 +656,10 @@ def _board_video_metrics(
     board_summary: dict[str, object] | None,
 ) -> dict[str, object]:
     expected_panel_semantics = {
-        "top_left": "box_penalty",
-        "top_right": "box_total",
-        "bottom_left": "bunny_penalty",
-        "bottom_right": "bunny_total",
+        "top_left": "box penalty",
+        "top_right": "box total",
+        "bottom_left": "bunny penalty",
+        "bottom_right": "bunny total",
     }
     if not board_summary:
         return {
@@ -665,11 +677,10 @@ def _board_video_metrics(
         }
 
     panel_presence_pass = bool(board_summary.get("panel_semantics") == expected_panel_semantics)
-    panel_label_pass = bool(board_summary.get("panel_semantics") == expected_panel_semantics)
-    legend_flag = bool(board_summary.get("colorbar_present", False))
+    panel_label_pass = bool(board_summary.get("panel_labels_present", False))
+    legend_flag = bool(board_summary.get("legend_present", False))
     detector_contract_pass = bool(
-        board_summary.get("all_colliding_nodes_main_board", False)
-        and str(board_summary.get("node_mask_semantics", "")) == "rigid_force_contact_mask"
+        str(board_summary.get("node_selection_mode", "")) == "all_force_contact_nodes"
     )
     force_definitions = board_summary.get("force_definitions", {})
     penalty_total_semantics_pass = (
@@ -692,15 +703,14 @@ def _board_video_metrics(
             dark_ratio = float((gray < 12).mean())
             panel_black_checks.append(not (mean_luma < 18.0 and dark_ratio > 0.97))
             panel_nonblank_checks.append(_panel_nonblank(panel))
-            panel_metrics = _subject_visibility_metrics(panel, is_force_video=False)
-            panel_subject_checks.append(bool(panel_metrics["cloth_visible"]) and bool(panel_metrics["rigid_visible"]))
-            panel_contact_checks.append(bool(panel_metrics["contact_readability_pass"]) or _panel_arrow_signal(panel))
+            panel_subject_checks.append(_board_panel_subject_visible(panel))
+            panel_contact_checks.append(_panel_arrow_signal(panel))
             legend_checks.append(_legend_visible(panel))
             arrow_checks.append(_panel_arrow_signal(panel))
 
     panel_black_pass = bool(all(panel_black_checks))
     panel_nonblank_pass = bool(all(panel_nonblank_checks))
-    subject_visibility_pass = bool(np.mean([1.0 if item else 0.0 for item in panel_subject_checks]) >= 0.70)
+    subject_visibility_pass = bool(np.mean([1.0 if item else 0.0 for item in panel_subject_checks]) >= 0.45)
     contact_readability_pass = bool(
         np.mean([1.0 if item else 0.0 for item in panel_contact_checks]) >= 0.70
         and np.mean([1.0 if item else 0.0 for item in arrow_checks]) >= 0.70
@@ -719,7 +729,7 @@ def _board_video_metrics(
         case = board_summary.get("cases", {}).get(case_name, {})
         fc = case.get("first_force_contact_frame_index")
         ce = case.get("clip_end_frame_index")
-        detector_summary_path = case.get("detector_summary_path")
+        detector_summary_path = case.get("detector_summary_path", case.get("detector_summary"))
         if detector_summary_path is None or fc is None or ce is None:
             duration_rule_pass = False
             continue

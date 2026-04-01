@@ -105,6 +105,8 @@ def main() -> int:
         [
             "detector/collision_force_rollout_bundle.npz",
             "**/detector/collision_force_rollout_bundle.npz",
+            "artifacts/source_cases/*/collision_force_rollout_bundle.npz",
+            "**/artifacts/source_cases/*/collision_force_rollout_bundle.npz",
         ],
     )
     detector_summaries = _find_any(
@@ -112,6 +114,8 @@ def main() -> int:
         [
             "detector/summary.json",
             "**/detector/summary.json",
+            "artifacts/source_cases/*/summary.json",
+            "**/artifacts/source_cases/*/summary.json",
         ],
     )
     collision_board_videos = _find_any(

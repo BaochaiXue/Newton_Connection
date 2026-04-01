@@ -168,17 +168,24 @@ It should stay current and be updated whenever a task changes state.
 - self-collision decision tooling
   - box matrix runner now exists
   - operator-level PhysTwin-style equivalence verifier now exists
+  - shared strict bridge-side `phystwin` contact stack now exists:
+    - `Newton/phystwin_bridge/tools/core/phystwin_contact_stack.py`
+    - strict scope: pairwise self-collision + implicit `z=0` ground plane
+    - no Newton core change
   - final self-collision campaign now exists under:
     - `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0`
   - bridge-side PhysTwin exactness passed in that campaign:
     - `max_abs_dv = 1.1324882507324219e-06`
     - `median_rel_dv = 4.070106739010465e-08`
+  - cloth+box `phystwin` is now intentionally guarded as unsupported in the demo:
+    - strict `phystwin` parity is not claimed on Newton-only box-support scenes
   - QC-passing cloth-box `phystwin` hero video now exists:
     - `selected/self_collision_on_cloth_box_phystwin.mp4`
   - QC-passing parity support demo now exists:
     - `selected/parity_support_demo.mp4`
   - strict self-collision parity on the in-scope cloth reference case is currently blocked:
-    - `rmse_mean = 0.025657856836915016`
+    - old campaign bundle: `rmse_mean = 0.025657856836915016`
+    - latest shared-stack scratch run improves that to about `0.010737196542322636` on the full 302-frame case, but still misses the `1e-5` gate
     - blocker doc:
       - `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/BLOCKER_strict_self_collision_parity_bridge_rollout_mismatch.md`
 - `docs/`
