@@ -48,14 +48,20 @@ radius 变大确实会帮忙，但 thin-ear geometry 仍然会留下 penetration
 所以 profiling 的价值不是证明『rope viewer 完全跑不动』，而是更准确地回答：如果这个 viewer 还需要更多 headroom，优先级到底应该放在 rendering，还是放在 simulator replay 本身。
 这页的边界也要讲清楚：E1 只回答当前 rope case 的 real-viewer relation。它不代表所有更重的 contact scene 都已经没问题，也不替代后面和 PhysTwin 的 apples-to-apples benchmark。
 
-## Slide 9 — H2: What is the controlled rope benchmark?
-这一页的目的，是把实验对象讲清楚，避免听众只看到 A0、A1、B0 这些内部缩写。
-这四行其实都在测同一个对象：`rope_double_hand` 这条 rope replay。区别不在任务本身，而在我们是不是打开 rendering，以及 Newton 这边怎么把同一条 replay trajectory 喂进 simulator。
-Newton viewer 也就是 E1，是 visible render ON 的 end-to-end rope viewer。Newton A0 是 render OFF，但是保留 baseline controller replay path。Newton A1 还是 render OFF，不过把每个 substep 都要重复做的 replay feeding 预先展开。PhysTwin B0 则是同 case、同 trajectory、同 `dt`、同 `667` substeps 的 headless replay reference。
-公平性这里不是口头假设。当前 benchmark 保存的 parity check 里，PhysTwin controller trajectory 和 IR 的 max abs diff 是 0.0e+00，所以它不是在比较两条不同的 control history。
-这页对 real viewer 的意义是：一旦把这四行定义讲清楚，后面观众才能分得出哪些数字是在回答 viewer 本身，哪些数字是在回答 simulator-only benchmark。它的边界是，这里只锁定 benchmark design，不先下结论。
+## Slide 9 — H2: What stays fixed in the controlled rope benchmark?
+这一页先只讲 fairness controls，不急着解释 E1、A0、A1、B0 这些名字。
+我要先让观众知道：后面所有 rope profiling row 都是同一个 `rope_double_hand`，同一条 controller trajectory，同样的 `dt=5e-05` 和 `667` 个 substeps，而且都在同一张 RTX 4090 上跑。
+这里最关键的一句是：主 apples-to-apples comparison 把 rendering 关掉，不是因为我们不关心 viewer，而是因为要先隔离 simulator replay 本身。与此同时，same-trajectory 也不是口头假设，当前 benchmark 记录的 IR 与 PhysTwin controller trajectory max abs diff 是 0.0e+00。
+这页对 real viewer 的意义是，它告诉听众后面那个 no-render benchmark 到底是在控制什么变量。边界是：这里只定义 fairness，不解释每个 benchmark row 的具体含义。
 
-## Slide 10 — H3: Under the same rope replay, how far is Newton from PhysTwin?
+## Slide 10 — H2b: What do E1, A0, A1, and B0 mean?
+这一页再把 benchmark rows 的名字讲成人话，避免听众只看到一堆内部缩写。
+E1 是 visible render ON 的 real viewer row，所以它回答 practical question：viewer 本身现在跑得怎么样。A0 和 A1 都是同一个 no-render rope replay，只是 Newton 侧 feeding 同一条 trajectory 的方式不同。B0 则是同 case、同 trajectory 的 PhysTwin headless reference。
+所以 A0/A1/B0 不是三个不同任务，而是同一个 controlled rope benchmark 上的三个 measurement row。真正不同的是：有没有打开 rendering，以及 Newton 这边 controller replay overhead 有没有被预先压掉。
+这页对 real viewer 的意义是，把 practical row 和 simulator-only rows 的角色分清楚。这样后面看结果表时，观众才不会把 viewer FPS 和 ms/substep 混成一回事。
+边界同样要讲清楚：E1 不是拿来和 PhysTwin B0 直接比 wall time 的；它是 viewer-facing context row。真正 apples-to-apples 的 throughput 对照还是 A0/A1 对 B0。
+
+## Slide 11 — H3: Under the same rope replay, how far is Newton from PhysTwin?
 这一页只回答数字本身，不先解释原因。
 先看 practical row：E1 这个 visible rope viewer 大约是 `37.85 FPS`，`RTF` 是 `1.262x`。所以它回答的是『viewer 现在能不能跑』这个问题。
 再看 apples-to-apples rows：Newton A0 是 `0.066934 ms/substep`，Newton A1 是 `0.035721 ms/substep`，PhysTwin B0 是 `0.010840 ms/substep`。
@@ -63,14 +69,14 @@ Newton viewer 也就是 E1，是 visible render ON 的 end-to-end rope viewer。
 这页对 real viewer 的意义在于，它把两个问题分开了：viewer 今天能不能跑，是一回事；如果我们要更大 headroom，Newton 和 PhysTwin 在相同 replay benchmark 下还差多远，又是另一回事。
 边界也要讲清楚：viewer row 和 no-render rows 不应该被混成一个数。viewer row讲 end-to-end practical speed；A0/A1/B0 讲的是 simulator throughput。
 
-## Slide 11 — H4: What does A0 -> A1 actually isolate?
+## Slide 12 — H4: What does A0 -> A1 actually isolate?
 这一页专门把 A0 和 A1 讲清楚，因为如果这里讲不明白，后面的推导都会很含糊。
 A0 和 A1 不是两个随便取的配置名。它们测的是同一条 rope replay、同一套 physics、同一组 `dt` 和 substeps。唯一想隔离出来的问题是：把同一条 replay trajectory 喂进 Newton，本身要花多少额外时间。
 结果是 A0 到 A1 有 `1.87x` 的 speedup，所以 controller replay overhead 的确存在。同步 attribution 里，这部分大约是 `0.037 ms/substep`。
 但这不是全部答案，因为把这部分降下来以后，Newton A1 相对 PhysTwin B0 还是慢 `3.30x`。而且 viewer ON 相对 A1 render OFF 只慢 `1.11x`，这说明 replay overhead 和 runtime organization 的问题，量级上比单纯 render cost 更值得先看。
 这页对 real viewer 的价值很直接：如果只优化 controller feeding，viewer 会变好一些，但不会把同 case 的 Newton-vs-PhysTwin headroom gap 自动消掉。它的边界是，这个结论只针对 clean rope replay，不是对所有 scene 的一刀切判断。
 
-## Slide 12 — H5: What the residual gap suggests — and what it does NOT prove
+## Slide 13 — H5: What the residual gap suggests — and what it does NOT prove
 这一页回答最后一个最容易被说过头的问题：残余差距到底说明了什么，又不说明什么。
 
 [Newton/newton/newton/_src/solvers/semi_implicit/solver_semi_implicit.py : 141-145, 160-165, 172-177]
@@ -95,7 +101,7 @@ L800-L802 又单独保留了 `forward_graph`，说明它不只是一次性 captu
 所以这页最后的人话结论是：在 clean rope replay 里，残余 gap 更像 Newton 这边还保留了 many separated launches，而 PhysTwin 这边已经有 graph-based replay path。
 但这页也必须明确说不证明什么：它不证明 full physics parity；它不消除 self-collision 或 bunny-contact mismatch 这些别的层次的问题；它也不意味着 collision 在所有场景里都不重要。它只说明在这个 controlled rope replay benchmark 里，controller replay overhead 不是全部答案。
 
-## Slide 13 — H6: What should we optimize next for the real viewer?
+## Slide 14 — H6: What should we optimize next for the real viewer?
 最后一页只讲这整段 profiling 对 real viewer 到底有什么实际价值。
 第一，A0 到 A1 已经告诉我们：如果目标是 viewer diagnosis，就不应该继续拿更重的 baseline feed path 当默认基线，因为光这一项就已经差了大约 `1.87x`。
 第二，E1 对 A1 的比较又告诉我们：在这个 rope case 上，render ON 相对同 replay 的 render OFF 只多了大约 `1.11x` wall time，所以如果我们要争取更多 viewer headroom，优先级不应该只放在 rendering。
@@ -104,74 +110,86 @@ L800-L802 又单独保留了 `forward_graph`，说明它不只是一次性 captu
 所以 profiling 这一段最后服务的不是一个抽象 benchmark，而是一个很实际的判断：如果 real viewer 还想要更多余量，我们下一步应该把工程时间先花在 replay path organization 上。
 它的边界仍然不变：这里说的是 controlled rope replay benchmark，不是 robot，不是 self-collision，也不是 bunny penetration。
 
-## Slide 14 — Hypothesis F1: A Force Video Must Preserve Both Global Cloth Behavior And Local Contact Mechanism
+## Slide 15 — Hypothesis F1: A Force Video Must Preserve Both Global Cloth Behavior And Local Contact Mechanism
 这里开始进入第三段 penetration analysis。
 这一页先把新的 hypothesis 说清楚。
 教授要的不是一个只剩局部 probe 的 force patch，也不是一个 static trigger snapshot。
 真正需要的是两件事同时成立：第一，看到整块 cloth 相对于 bunny 的整体 penetration 过程；第二，在 local patch 里看到 outward normal、external force、internal force 和 acceleration 的机制解释。
 所以这次我把输出正式拆成 phenomenon video 和 force mechanism video，但 force mechanism 本身仍然保留 global panel 加 local zoom panel，而不是只放局部 close-up。
 
-## Slide 15 — Result F1: Global Phenomenon Videos Now Cover The Whole Penetration Process
+## Slide 16 — Result F1: Global Phenomenon Videos Now Cover The Whole Penetration Process
 这一页只讲 phenomenon，不讲 force。
 现在四个 case 都有 accepted 的 global process video，而且都过了 black-screen、motion 和 temporal-density 的 QA。
 从这里可以清楚看到四种情况里，pre-contact、first contact、penetration growth 和后续 settle 的整体行为。
 也就是说，我们现在已经不再依赖单帧截图来讲 penetration，而是真正有了 meeting-ready 的过程视频。
 
-## Slide 16 — Result F2: Split Single-Panel Videos Now Match The Current 2x2 Board
+## Slide 17 — Result F2: Split Single-Panel Videos Now Match The Current 2x2 Board
 这一页现在不再放旧的四个历史 force mechanism 视频了。
 这里也把实验设定说清楚：cloth total mass 是 0.1 kg，rigid target mass 是 0.5 kg。
 现在 F2 里的四个单视频，都是直接从当前 canonical `2 x 2` board 裁出来的单面板。
 也就是说，这一页只负责把四个 panel 单独放大给老师看：box penalty、box total、bunny penalty、bunny total。
 这样 F2 和下一页 F3 就不会再出现“这一页还是旧结果、下一页才是新结果”的割裂了。
 
-## Slide 17 — Result F3: The New 2x2 Board Makes The Box-vs-Bunny Comparison Immediate
+## Slide 18 — Result F3: The New 2x2 Board Makes The Box-vs-Bunny Comparison Immediate
 这一页就是新的 `2 x 2` board video，我把它直接放进 PPT 里了。
 这里必须把实验设定写明：self-collision 是 OFF，cloth total mass 是 0.1 kg，rigid target mass 是 0.5 kg。
 它的结构非常直接：左上是 box penalty，右上是 box total，左下是 bunny penalty，右下是 bunny total。
 所以这一页的价值不是再讲一个局部 mechanism patch，而是把 box versus bunny、penalty versus total 这两个对比同时压进一个 meeting-readable clip。
 如果现场只想停一页讲 penetration，我现在会优先停这一页，因为它最接近老师要的最终 visual comparison。
 
-## Slide 18 — Result F4: A 4x Slow-Motion Board Makes Contact Development Easier To Read
+## Slide 19 — Result F4: A 4x Slow-Motion Board Makes Contact Development Easier To Read
 这一页是 F3 的补充版本，不改实验设定，只改播放节奏。
 也就是说，self-collision 还是 OFF，cloth total mass 还是 0.1 kg，rigid target mass 还是 0.5 kg。
 这里放的是同一套 `2 x 2` board，但是视频整体放慢四倍，而且每个 panel 里都显式写了 `4x slow motion`。
 这页的作用不是替代正常速度版本，而是让老师在会议里更容易看清 pre-contact、first contact 和 penetration growth 的过渡。
 
-## Slide 19 — Scope: Strict `phystwin`
-这里开始进入第四段 self-collision, Newton way。
-这一页先把 target scene 说清楚，避免把不在 scope 里的 scene 混进 strict parity。
-现在我们只 claim PhysTwin 原生 cloth contact scope，也就是 pairwise self-collision 加 implicit z 等于零 ground plane。
-这条实现完全在 bridge 层，没有改 Newton core，而且 parity validator 也是围绕这条 cloth reference path 组织的。
-所以这一页的 take-home message 很简单：strict phystwin 只针对 in-scope cloth reference case。
+## Slide 20 — Scope: Strict `phystwin`
+先把场景边界说死。这里的 strict `phystwin` 只指 cloth reference case，物理范围只有 pairwise self-collision 和 implicit z-equals-zero ground。
+实现入口在 `phystwin_contact_stack.py`，rollout 入口在 `newton_import_ir.py`，full-rollout gate 由 `validate_parity.py` 执行。所以后面的分析都是在这一条 cloth-reference path 上进行，不是在讲 generic rigid-support contact。
+这一步的作用是固定问题定义。只有问题定义先固定，后面才能判断到底是哪一层机制已经对齐，哪一层机制还没有对齐。
 
-## Slide 20 — Matched: Contact Law
-第二页直接拿代码对代码，不再用抽象名词。
-左边是 PhysTwin 原生的 `object_collision` 和 `integrate_ground_collision`，右边是我们 bridge 里的 strict phystwin 对应实现。
-这页要说的结论很窄但很重要：strict scope 里的 self-collision law 和 ground contact law 已经对齐到 operator level。
-所以 blocked parity 现在不应该再被描述成 self-collision 或 ground law 本身还没抄对。
+## Slide 21 — Mechanism Table A: Scope + Matched Mechanisms
+这一页是总表的第一部分，只放 scope 和已经对齐的机制。
+Shape contact penalty force 指的是按 penetration depth 连续施加接触力，通常是 stiffness 乘深度再加上法向 damping。这类机制属于 generic rigid-support contact，不属于当前 strict cloth mode。
+Force-to-velocity injection 指的是先把 spring force 和 gravity 注入速度，代码形式就是 `v1 = v0 + a * dt`，然后再用 drag 去缩放这个速度。也就是说，contact 看到的是已经更新过的 velocity，而不是原始速度。
+Point-plane TOI collision 指的是先判断这一小步里粒子是否跨过平面，再解 `toi = -x_z / v_z` 得到撞击时刻，然后在撞击点更新法向和切向速度，最后分别积分撞击前后两段轨迹。这是 velocity event update，不是 penetration-depth penalty force。
+这一页的结论很简单：strict scope 自身是清楚的，而且 strict scope 内最核心的 contact mechanisms 已经对齐。
 
-## Slide 21 — Difference 1: Collision Table Runtime
-第三页继续只看代码，而且只看 collision table 这一个点。
-左边是 PhysTwin 原版：每帧先 build collision graph，再填 `collision_indices / collision_number`，整帧 substeps 复用这张表。
-右边是我们当前 strict phystwin：生命周期已经同步成 per-frame frozen table，但这张表还是 bridge runtime 自己重建的。
-所以这页的结论是：collision table 这边已经更像 PhysTwin 了，但 provenance 和 runtime 语义还没有完全一样。
+## Slide 22 — Mechanism Table B: Primary Mismatches + Final Gate
+这一页是总表的第二部分，只放 primary mismatches 和最终 gate。
+现在最值得盯住的源码差异就是两类：collision table runtime，以及 controller spring handling。
+再往下的所有源码页，都是顺着这两类 primary mismatch 展开。
+最后一行把 full-rollout A/B gate 直接摆出来，提醒大家：现在的问题不是局部 operator 是否 exact，而是整段 rollout 还没有过线。
 
-## Slide 22 — Difference 2: Controller Handling
-第四页还是代码对代码，但这次看 controller handling。
-左边 PhysTwin 的 spring path 直接吃 `control_x / control_v`；右边我们当前 bridge 还是把 controller 点写进 Newton particle state 里。
-这也是为什么 current status 现在把 controller-spring diagnostic 当成下一阶段最像 blocker 的信号。
-所以这页的结论是：如果还要继续压 full-rollout parity，这一层比继续纠缠 self-collision law 更值得先改。
+## Slide 23 — Matched 1: Self-Collision Impulse Law
+现在开始按总表逐项推演。第一项是 self-collision impulse law。
+这两段代码都在做同一件事：先算相对速度的法向分量，再算 collision impulse，再算切向 friction correction，最后在所有有效 pair 上求平均，用 `J_sum / valid_count` 去修正 velocity。
+这说明 local self-collision law 在 strict scope 内已经对齐到 operator level。也正因为这一点，当前 blocked parity 不能再简单归因为 self-collision kernel 还没抄对。
 
-## Slide 23 — A/B Result: Full Rollout
-最后一页只看 in-scope cloth reference case 的 full-rollout A/B，不再混 box scene。
-右边是最新 302-frame parity support video，左边的表直接列 OFF 和 strict phystwin 的 full-rollout 数字。
-现在 strict phystwin 只在前 30 帧更好，但 full-rollout 的 rmse_mean 还没有低于 OFF。
-同时我们也把短窗口 improvement 和 controller-spring diagnostic 放进这一页的 note 里，所以这页已经足够把 blocker 讲完整。
-所以这一页的 take-home message 很直接：当前 strict phystwin 还没有通过 full-rollout A/B gate。
+## Slide 24 — Matched 2: Force-to-Velocity Injection + Point-Plane TOI Ground
+第二项和第三项是 force-to-velocity injection 和 point-plane TOI ground collision。
+从代码上看，两边都是先把 force 注入 velocity，再进入 contact 处理；ground 这一块也都是先判定是否跨过 z-equals-zero 平面，再解 TOI，再更新法向和切向 velocity。
+所以在 strict scope 内，ground event update 也已经基本同步了。这意味着现在最值得怀疑的地方，已经不再是 strict scope 内这两条局部 contact formula。
 
-## Slide 24 — Conclusion R1: The Current Robot-Deformable Claim Is A Defendable Native Baseline
+## Slide 25 — Mismatch 1: Collision Table Runtime
+第一个 primary mismatch 是 collision table runtime。
+PhysTwin 的做法是：在每个 frame 开头基于自己的 object state 构建 collision graph，填好 `collision_indices / collision_number`，然后整帧 substeps 都复用这张表。
+我们现在虽然也改成了 per-frame frozen table，所以 lifecycle 已经更像 PhysTwin，但这张表仍然是 bridge runtime 自己重建的。也就是说，现在这边真正还没完全同步的，是 runtime table 的 provenance、ordering 和 truncation semantics，而不是前面那条 local impulse law。
+
+## Slide 26 — Mismatch 2: Controller Spring Handling
+第二个 primary mismatch 是 controller handling，而且现在它是更强的 blocker 信号。
+在 PhysTwin 里，controller motion 是通过单独的 `control_x / control_v` 数组进入 spring system 的。也就是说，controller 是一个独立的 prescribed channel。
+在我们当前 bridge 里，controller target 会先写进 Newton particle state，然后 spring path 从这个 state 里继续读。这会改变 controller-connected springs 参与 whole step 的方式。
+这正是为什么 controller-spring diagnostic 现在这么重要：如果 full-rollout parity 还要继续往下压，这一层比继续打磨 isolated self-collision law 更值得先改。
+
+## Slide 27 — A/B Result: Full Rollout
+最后用 full-rollout A/B gate 把前面的源码分析收口。
+60-frame frozen-table sync 确实让短窗口变好了，但 302-frame full-rollout 还是没过线：strict `phystwin` 只在前 30 帧更好，整段 rollout 的 `rmse_mean` 仍然高于 OFF。
+所以现在的结论必须跟前面的源码分析一致。不能说 self-collision law 还错，更准确的说法是：strict-scope contact operator 已经很接近 PhysTwin，但 whole-step cloth rollout 还没有完全同步，而当前最强的下一个 blocker 是 controller-spring path。
+
+## Slide 28 — Conclusion R1: Native Tabletop Push Is Now Defendable
 最后一段是 robotic with deformable objects。
-这一章今天的可 defend 结论，不是“完整 manipulation 已经完成”，而是 native Franka 的 release/drop baseline 已经成立，所以 robot-deformable chapter 至少有了一个物理上可信、视频上可读的起点。
-更具体地说，它用 `demo_robot_rope_franka.py` 里的 `drop_release_baseline` 证明了：robot visible、rope 先被 support、release 前先过 settle gate、release 后以 gravity-dominated free fall 落到 real ground collider，而且 presentation video 保持 1:1 time。
-所以这页不是把 robot 章节降格成一个无关小 demo，而是把它收敛成当前最能 defend 的子结论。
-右边保留 matched drag ON 版本，只是为了说明 A/B 已经做过。结论不是“drag 救了 free fall”，而是 OFF 和 ON 都通过主 gate，所以 drag 不是这个 baseline 的根因解释。
+这一章今天的可 defend 结论不再是 release/drop baseline，而是 native tabletop push baseline 已经成立，所以 robot-deformable chapter 至少有了一个更直接的 contact story。
+更具体地说，它用 `demo_robot_rope_franka.py` 里的 `tabletop_push_hero` 证明了：native Franka、native tabletop、PhysTwin rope 同时可见，rope 在 visible clip 开始前已经 settle，然后 robot 的 own finger / claw 在桌面高度接近、接触、再推动 rope lateral motion。
+这次比旧版更关键的一点，是 contact-causality 做过修复。新的 promoted `c10` 把 visible first contact 提前，所以“rope 先动、手指后到”的观感明显减弱。
+所以这页的结论是，robotic with deformable objects 这一章现在至少有了一个 native tabletop finger-push baseline，可以保守 defend，但仍然不 overclaim full manipulation。

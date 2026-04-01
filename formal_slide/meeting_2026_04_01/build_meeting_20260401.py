@@ -116,6 +116,8 @@ CODE_SELFCOLLISION_TABLE_PHYSTWIN_PNG = IMAGE_DIR / "code_selfcollision_table_ph
 CODE_SELFCOLLISION_TABLE_BRIDGE_PNG = IMAGE_DIR / "code_selfcollision_table_bridge.png"
 CODE_SELFCOLLISION_MATCHED_PHYSTWIN_PNG = IMAGE_DIR / "code_selfcollision_matched_phystwin.png"
 CODE_SELFCOLLISION_MATCHED_BRIDGE_PNG = IMAGE_DIR / "code_selfcollision_matched_bridge.png"
+CODE_SELFCOLLISION_FORCE_GROUND_PHYSTWIN_PNG = IMAGE_DIR / "code_selfcollision_force_ground_phystwin.png"
+CODE_SELFCOLLISION_FORCE_GROUND_BRIDGE_PNG = IMAGE_DIR / "code_selfcollision_force_ground_bridge.png"
 CODE_SELFCOLLISION_CONTROLLER_PHYSTWIN_PNG = IMAGE_DIR / "code_selfcollision_controller_phystwin.png"
 CODE_SELFCOLLISION_CONTROLLER_BRIDGE_PNG = IMAGE_DIR / "code_selfcollision_controller_bridge.png"
 FORCE_DIAG_CODE_PNG = IMAGE_DIR / "code_force_diag_capture.png"
@@ -284,6 +286,14 @@ ROBOT_DROP_BASELINE_OFF_MP4 = ROBOT_DROP_OFF_ROOT / "final_presentation.mp4"
 ROBOT_DROP_BASELINE_ON_MP4 = ROBOT_DROP_ON_ROOT / "final_presentation.mp4"
 ROBOT_DROP_BASELINE_OFF_GIF = DECK_GIF_DIR / "robot_drop_release_drag_off.gif"
 ROBOT_DROP_BASELINE_ON_GIF = DECK_GIF_DIR / "robot_drop_release_drag_on.gif"
+ROBOT_TABLETOP_ROOT = (
+    _meta_local_root("robot_rope_franka_tabletop_push_hero")
+    or (ROOT / "Newton" / "phystwin_bridge" / "results" / "robot_rope_franka" / "BEST_RUN")
+).resolve()
+ROBOT_TABLETOP_HERO_MP4 = ROBOT_TABLETOP_ROOT / "hero_presentation.mp4"
+ROBOT_TABLETOP_VALIDATION_MP4 = ROBOT_TABLETOP_ROOT / "validation_camera.mp4"
+ROBOT_TABLETOP_HERO_GIF = DECK_GIF_DIR / "robot_tabletop_push_hero.gif"
+ROBOT_TABLETOP_VALIDATION_GIF = DECK_GIF_DIR / "robot_tabletop_push_validation.gif"
 SELF_PARITY_SUPPORT_MP4 = (
     ROOT
     / "Newton"
@@ -519,23 +529,44 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "table_gif",
-        "title": "H2: What is the controlled rope benchmark?",
-        "note": "All rows below use the same rope case, same replay trajectory, same `dt=5e-05`, same `667` substeps, and the same RTX 4090.",
+        "title": "H2: What stays fixed in the controlled rope benchmark?",
+        "note": "This page defines the fairness controls only. The benchmark-row names are explained on the next slide.",
         "gif_label": "Controlled rope replay",
+        "gif_path": PERF_ROPE_CASE_GIF,
+        "columns": ["Control", "Setting", "Why it matters"],
+        "rows": [
+            ["Case", "`rope_double_hand`", "same rope object and spring graph"],
+            ["Replay", "same controller trajectory", "same input history, not two different tasks"],
+            ["Physics", "`dt=5e-05`, `667` substeps", "same time resolution on both sides"],
+            ["Hardware", "same RTX 4090", "same GPU / same workstation"],
+            ["Primary comparison", "render OFF", "viewer/UI cost does not pollute the simulator benchmark"],
+        ],
+        "transcript": [
+            "这一页先只讲 fairness controls，不急着解释 E1、A0、A1、B0 这些名字。",
+            "我要先让观众知道：后面所有 rope profiling row 都是同一个 `rope_double_hand`，同一条 controller trajectory，同样的 `dt=5e-05` 和 `667` 个 substeps，而且都在同一张 RTX 4090 上跑。",
+            f"这里最关键的一句是：主 apples-to-apples comparison 把 rendering 关掉，不是因为我们不关心 viewer，而是因为要先隔离 simulator replay 本身。与此同时，same-trajectory 也不是口头假设，当前 benchmark 记录的 IR 与 PhysTwin controller trajectory max abs diff 是 {B0_PAYLOAD.get('trajectory_parity', {}).get('controller_traj_max_abs_diff', 0.0):.1e}。",
+            "这页对 real viewer 的意义是，它告诉听众后面那个 no-render benchmark 到底是在控制什么变量。边界是：这里只定义 fairness，不解释每个 benchmark row 的具体含义。",
+        ],
+    },
+    {
+        "kind": "table_gif",
+        "title": "H2b: What do E1, A0, A1, and B0 mean?",
+        "note": "This page defines the benchmark rows in plain language.",
+        "gif_label": "Same rope replay object",
         "gif_path": PERF_ROPE_CASE_GIF,
         "columns": ["Name", "Plain-language meaning", "Question answered"],
         "rows": [
-            ["Newton viewer (E1)", "same rope replay, visible render ON", "what the practical rope viewer speed is"],
+            ["Newton viewer (E1)", "same rope replay, visible render ON", "how the practical rope viewer behaves end to end"],
             ["Newton A0", "same replay, render OFF, baseline controller replay path", "how fast Newton is before replay-overhead reduction"],
             ["Newton A1", "same replay, render OFF, precomputed controller replay path", "how much replay overhead we can remove on Newton"],
             ["PhysTwin B0", "same replay, render OFF, headless reference path", "the apples-to-apples throughput target"],
         ],
         "transcript": [
-            "这一页的目的，是把实验对象讲清楚，避免听众只看到 A0、A1、B0 这些内部缩写。",
-            "这四行其实都在测同一个对象：`rope_double_hand` 这条 rope replay。区别不在任务本身，而在我们是不是打开 rendering，以及 Newton 这边怎么把同一条 replay trajectory 喂进 simulator。",
-            "Newton viewer 也就是 E1，是 visible render ON 的 end-to-end rope viewer。Newton A0 是 render OFF，但是保留 baseline controller replay path。Newton A1 还是 render OFF，不过把每个 substep 都要重复做的 replay feeding 预先展开。PhysTwin B0 则是同 case、同 trajectory、同 `dt`、同 `667` substeps 的 headless replay reference。",
-            f"公平性这里不是口头假设。当前 benchmark 保存的 parity check 里，PhysTwin controller trajectory 和 IR 的 max abs diff 是 {B0_PAYLOAD.get('trajectory_parity', {}).get('controller_traj_max_abs_diff', 0.0):.1e}，所以它不是在比较两条不同的 control history。",
-            "这页对 real viewer 的意义是：一旦把这四行定义讲清楚，后面观众才能分得出哪些数字是在回答 viewer 本身，哪些数字是在回答 simulator-only benchmark。它的边界是，这里只锁定 benchmark design，不先下结论。",
+            "这一页再把 benchmark rows 的名字讲成人话，避免听众只看到一堆内部缩写。",
+            "E1 是 visible render ON 的 real viewer row，所以它回答 practical question：viewer 本身现在跑得怎么样。A0 和 A1 都是同一个 no-render rope replay，只是 Newton 侧 feeding 同一条 trajectory 的方式不同。B0 则是同 case、同 trajectory 的 PhysTwin headless reference。",
+            "所以 A0/A1/B0 不是三个不同任务，而是同一个 controlled rope benchmark 上的三个 measurement row。真正不同的是：有没有打开 rendering，以及 Newton 这边 controller replay overhead 有没有被预先压掉。",
+            "这页对 real viewer 的意义是，把 practical row 和 simulator-only rows 的角色分清楚。这样后面看结果表时，观众才不会把 viewer FPS 和 ms/substep 混成一回事。",
+            "边界同样要讲清楚：E1 不是拿来和 PhysTwin B0 直接比 wall time 的；它是 viewer-facing context row。真正 apples-to-apples 的 throughput 对照还是 A0/A1 对 B0。",
         ],
     },
     {
@@ -719,66 +750,114 @@ RECALL_SLIDES: list[dict] = [
             "**Bridge-only implementation:** `Newton/phystwin_bridge/tools/core/phystwin_contact_stack.py`.",
             "**No Newton core change:** this mode lives outside `Newton/newton/`.",
             "**Parity target:** the PhysTwin-native cloth reference case only.",
-            "**Code/doc paths on this section:** `docs/bridge/current_status.md`, `docs/bridge/tasks/self_collision_transfer.md`, `Newton/phystwin_bridge/tools/core/newton_import_ir.py`, `Newton/phystwin_bridge/tools/core/validate_parity.py`.",
-            "**Takeaway:** This mode only targets the in-scope cloth reference path.",
+            "**Control plane paths:** `docs/bridge/current_status.md`, `docs/bridge/tasks/self_collision_transfer.md`, `Newton/phystwin_bridge/tools/core/newton_import_ir.py`, `Newton/phystwin_bridge/tools/core/validate_parity.py`.",
+            "**Takeaway:** The self-collision section below refers only to the in-scope cloth reference path.",
         ],
         "transcript": [
-            "这里开始进入第四段 self-collision, Newton way。",
-            "这一页先把 target scene 说清楚，避免把不在 scope 里的 scene 混进 strict parity。",
-            "现在我们只 claim PhysTwin 原生 cloth contact scope，也就是 pairwise self-collision 加 implicit z 等于零 ground plane。",
-            "这条实现完全在 bridge 层，没有改 Newton core，而且 parity validator 也是围绕这条 cloth reference path 组织的。",
-            "所以这一页的 take-home message 很简单：strict phystwin 只针对 in-scope cloth reference case。",
+            "先把场景边界说死。这里的 strict `phystwin` 只指 cloth reference case，物理范围只有 pairwise self-collision 和 implicit z-equals-zero ground。",
+            "实现入口在 `phystwin_contact_stack.py`，rollout 入口在 `newton_import_ir.py`，full-rollout gate 由 `validate_parity.py` 执行。所以后面的分析都是在这一条 cloth-reference path 上进行，不是在讲 generic rigid-support contact。",
+            "这一步的作用是固定问题定义。只有问题定义先固定，后面才能判断到底是哪一层机制已经对齐，哪一层机制还没有对齐。",
+        ],
+    },
+    {
+        "kind": "table",
+        "title": "Mechanism Table A: Scope + Matched Mechanisms",
+        "note": "Index table, part 1. Scope: in-scope cloth reference case only. This page only lists what is already aligned inside the strict scope.",
+        "columns": ["Mechanism", "PhysTwin native", "Our strict `phystwin`", "Status", "Why it matters"],
+        "rows": [
+            ["Strict scope", "pairwise self-collision + implicit z=0 ground", "same target scope", "MATCHED", "this is the only parity target"],
+            ["Shape contact penalty force", "not used on this cloth path", "not used in strict mode", "OUTSIDE", "generic rigid-support penalty contact is not part of this section"],
+            ["Force-to-velocity injection", "`v1 = v0 + a*dt`, then drag multiplies velocity before contact", "same bridge kernel order", "MATCHED", "contact starts from the same velocity-level update idea"],
+            ["Self-collision impulse law", "pairwise impulse average on candidate pairs", "same bridge-side impulse-style law", "MATCHED", "operator exactness already passed"],
+            ["Point-plane TOI ground collision", "solve `toi = -x_z / v_z`, then update normal/tangent velocity", "same bridge-side ground integrator", "MATCHED", "ground inside strict scope is not the main blocker"],
+        ],
+        "transcript": [
+            "这一页是总表的第一部分，只放 scope 和已经对齐的机制。",
+            "Shape contact penalty force 指的是按 penetration depth 连续施加接触力，通常是 stiffness 乘深度再加上法向 damping。这类机制属于 generic rigid-support contact，不属于当前 strict cloth mode。",
+            "Force-to-velocity injection 指的是先把 spring force 和 gravity 注入速度，代码形式就是 `v1 = v0 + a * dt`，然后再用 drag 去缩放这个速度。也就是说，contact 看到的是已经更新过的 velocity，而不是原始速度。",
+            "Point-plane TOI collision 指的是先判断这一小步里粒子是否跨过平面，再解 `toi = -x_z / v_z` 得到撞击时刻，然后在撞击点更新法向和切向速度，最后分别积分撞击前后两段轨迹。这是 velocity event update，不是 penetration-depth penalty force。",
+            "这一页的结论很简单：strict scope 自身是清楚的，而且 strict scope 内最核心的 contact mechanisms 已经对齐。",
+        ],
+    },
+    {
+        "kind": "table",
+        "title": "Mechanism Table B: Primary Mismatches + Final Gate",
+        "note": "Index table, part 2. This page only lists the current strongest mismatches and the final A/B gate. It is not trying to enumerate every low-confidence secondary possibility.",
+        "columns": ["Mechanism", "PhysTwin native", "Our strict `phystwin`", "Status", "Why it matters"],
+        "rows": [
+            ["Collision table lifecycle", "build once per frame, reuse within substeps", "same default now", "PARTIAL", "60-frame parity improved after this sync"],
+            ["Collision table provenance", "table built inside PhysTwin runtime", "table rebuilt inside bridge runtime", "DIFF", "remaining self-collision-side difference lives here"],
+            ["Controller spring handling", "springs read separate `control_x / control_v`", "controllers written into Newton particle state", "DIFF", "this is the strongest current rollout-level blocker signal"],
+            ["Full-rollout A/B", "reference target", "strict `phystwin` still worse than OFF on 302 frames", "BLOCKED", "the final gate still fails"],
+        ],
+        "transcript": [
+            "这一页是总表的第二部分，只放 primary mismatches 和最终 gate。",
+            "现在最值得盯住的源码差异就是两类：collision table runtime，以及 controller spring handling。",
+            "再往下的所有源码页，都是顺着这两类 primary mismatch 展开。",
+            "最后一行把 full-rollout A/B gate 直接摆出来，提醒大家：现在的问题不是局部 operator 是否 exact，而是整段 rollout 还没有过线。",
         ],
     },
     {
         "kind": "code_twocol_large",
-        "title": "Matched: Contact Law",
-        "note": "Left: PhysTwin native contact code. Right: our strict `phystwin` contact code. Files: `PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py`, `Newton/phystwin_bridge/demos/self_contact_bridge_kernels.py`.",
-        "left_label": "PhysTwin native: `object_collision` + `integrate_ground_collision`",
-        "left_path": CODE_SELFCOLLISION_MATCHED_PHYSTWIN_PNG,
-        "right_label": "Our strict `phystwin`: bridge-side self-collision + ground integrator",
+        "title": "Matched 1: Self-Collision Impulse Law",
+        "note": "Mechanism rows: `Self-collision impulse law` | status: `MATCHED` | files: `PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py`, `Newton/phystwin_bridge/demos/self_contact_bridge_kernels.py` | takeaway: local self-collision law already matches at operator level.",
+        "left_label": "PhysTwin native: impulse average over candidate pairs",
+        "left_path": CODE_SELFCOLLISION_OBJECT_PNG,
+        "right_label": "Our strict `phystwin`: same impulse-style velocity correction",
         "right_path": CODE_SELFCOLLISION_MATCHED_BRIDGE_PNG,
         "transcript": [
-            "第二页直接拿代码对代码，不再用抽象名词。",
-            "左边是 PhysTwin 原生的 `object_collision` 和 `integrate_ground_collision`，右边是我们 bridge 里的 strict phystwin 对应实现。",
-            "这页要说的结论很窄但很重要：strict scope 里的 self-collision law 和 ground contact law 已经对齐到 operator level。",
-            "所以 blocked parity 现在不应该再被描述成 self-collision 或 ground law 本身还没抄对。",
+            "现在开始按总表逐项推演。第一项是 self-collision impulse law。",
+            "这两段代码都在做同一件事：先算相对速度的法向分量，再算 collision impulse，再算切向 friction correction，最后在所有有效 pair 上求平均，用 `J_sum / valid_count` 去修正 velocity。",
+            "这说明 local self-collision law 在 strict scope 内已经对齐到 operator level。也正因为这一点，当前 blocked parity 不能再简单归因为 self-collision kernel 还没抄对。",
         ],
     },
     {
         "kind": "code_twocol_large",
-        "title": "Difference 1: Collision Table Runtime",
-        "note": "Left: PhysTwin builds `collision_indices / collision_number` inside its runtime. Right: our strict `phystwin` now also freezes one table per frame, but rebuilds it inside the bridge runtime. Files: `PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py`, `Newton/phystwin_bridge/tools/core/phystwin_contact_stack.py`.",
-        "left_label": "PhysTwin native: `update_collision_graph()` + `update_potential_collision`",
+        "title": "Matched 2: Force-to-Velocity Injection + Point-Plane TOI Ground",
+        "note": "Mechanism rows: `Force-to-velocity injection`, `Point-plane TOI ground collision` | status: `MATCHED` | files: `PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py`, `Newton/phystwin_bridge/demos/self_contact_bridge_kernels.py` | takeaway: strict-scope velocity update and ground event update already match.",
+        "left_label": "PhysTwin native: update velocity from force, then solve ground TOI",
+        "left_path": CODE_SELFCOLLISION_FORCE_GROUND_PHYSTWIN_PNG,
+        "right_label": "Our strict `phystwin`: same order and same point-plane TOI idea",
+        "right_path": CODE_SELFCOLLISION_FORCE_GROUND_BRIDGE_PNG,
+        "transcript": [
+            "第二项和第三项是 force-to-velocity injection 和 point-plane TOI ground collision。",
+            "从代码上看，两边都是先把 force 注入 velocity，再进入 contact 处理；ground 这一块也都是先判定是否跨过 z-equals-zero 平面，再解 TOI，再更新法向和切向 velocity。",
+            "所以在 strict scope 内，ground event update 也已经基本同步了。这意味着现在最值得怀疑的地方，已经不再是 strict scope 内这两条局部 contact formula。",
+        ],
+    },
+    {
+        "kind": "code_twocol_large",
+        "title": "Mismatch 1: Collision Table Runtime",
+        "note": "Mechanism rows: `Collision table lifecycle`, `Collision table provenance` | status: `PARTIAL / DIFF` | files: `PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py`, `Newton/phystwin_bridge/tools/core/phystwin_contact_stack.py` | takeaway: lifecycle is closer, but runtime table provenance and ordering still differ.",
+        "left_label": "PhysTwin native: build `collision_indices / collision_number` inside PhysTwin runtime",
         "left_path": CODE_SELFCOLLISION_TABLE_PHYSTWIN_PNG,
-        "right_label": "Our strict `phystwin`: `prepare_strict_phystwin_contact_frame()`",
+        "right_label": "Our strict `phystwin`: freeze per frame, but rebuild table in bridge runtime",
         "right_path": CODE_SELFCOLLISION_TABLE_BRIDGE_PNG,
         "transcript": [
-            "第三页继续只看代码，而且只看 collision table 这一个点。",
-            "左边是 PhysTwin 原版：每帧先 build collision graph，再填 `collision_indices / collision_number`，整帧 substeps 复用这张表。",
-            "右边是我们当前 strict phystwin：生命周期已经同步成 per-frame frozen table，但这张表还是 bridge runtime 自己重建的。",
-            "所以这页的结论是：collision table 这边已经更像 PhysTwin 了，但 provenance 和 runtime 语义还没有完全一样。",
+            "第一个 primary mismatch 是 collision table runtime。",
+            "PhysTwin 的做法是：在每个 frame 开头基于自己的 object state 构建 collision graph，填好 `collision_indices / collision_number`，然后整帧 substeps 都复用这张表。",
+            "我们现在虽然也改成了 per-frame frozen table，所以 lifecycle 已经更像 PhysTwin，但这张表仍然是 bridge runtime 自己重建的。也就是说，现在这边真正还没完全同步的，是 runtime table 的 provenance、ordering 和 truncation semantics，而不是前面那条 local impulse law。",
         ],
     },
     {
         "kind": "code_twocol_large",
-        "title": "Difference 2: Controller Handling",
-        "note": "Left: PhysTwin spring code reads separate `control_x / control_v`. Right: our bridge still writes controller points into Newton particle state. Files: `PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py`, `Newton/phystwin_bridge/tools/core/newton_import_ir.py`.",
-        "left_label": "PhysTwin native: `eval_springs(..., control_x, control_v, ...)`",
+        "title": "Mismatch 2: Controller Spring Handling",
+        "note": "Mechanism row: `Controller spring handling` | status: `DIFF` | files: `PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py`, `Newton/phystwin_bridge/tools/core/newton_import_ir.py`, `Newton/phystwin_bridge/tools/other/diagnose_controller_spring_semantics.py` | takeaway: this is the strongest current rollout-level blocker signal.",
+        "left_label": "PhysTwin native: springs read separate `control_x / control_v` arrays",
         "left_path": CODE_SELFCOLLISION_CONTROLLER_PHYSTWIN_PNG,
-        "right_label": "Our bridge: write controller particle positions into `state_in.particle_q / qd`",
+        "right_label": "Our bridge: controller points are written into Newton particle state",
         "right_path": CODE_SELFCOLLISION_CONTROLLER_BRIDGE_PNG,
         "transcript": [
-            "第四页还是代码对代码，但这次看 controller handling。",
-            "左边 PhysTwin 的 spring path 直接吃 `control_x / control_v`；右边我们当前 bridge 还是把 controller 点写进 Newton particle state 里。",
-            "这也是为什么 current status 现在把 controller-spring diagnostic 当成下一阶段最像 blocker 的信号。",
-            "所以这页的结论是：如果还要继续压 full-rollout parity，这一层比继续纠缠 self-collision law 更值得先改。",
+            "第二个 primary mismatch 是 controller handling，而且现在它是更强的 blocker 信号。",
+            "在 PhysTwin 里，controller motion 是通过单独的 `control_x / control_v` 数组进入 spring system 的。也就是说，controller 是一个独立的 prescribed channel。",
+            "在我们当前 bridge 里，controller target 会先写进 Newton particle state，然后 spring path 从这个 state 里继续读。这会改变 controller-connected springs 参与 whole step 的方式。",
+            "这正是为什么 controller-spring diagnostic 现在这么重要：如果 full-rollout parity 还要继续往下压，这一层比继续打磨 isolated self-collision law 更值得先改。",
         ],
     },
     {
         "kind": "table_gif",
         "title": "A/B Result: Full Rollout",
-        "note": "Source paths used on this page: `docs/bridge/current_status.md`, `Newton/phystwin_bridge/tools/core/validate_parity.py`, `Newton/phystwin_bridge/results/tmp_off_vs_phystwin_302_compare_20260401/compare_summary.json`. 60-frame frozen-table improved (`0.001314889290370047` vs dynamic `0.001589029561728239`), but the 302-frame A/B still fails and the controller-spring diagnostic remains the next blocker signal.",
+        "note": "Source paths: `docs/bridge/current_status.md`, `Newton/phystwin_bridge/tools/core/validate_parity.py`, `Newton/phystwin_bridge/results/tmp_off_vs_phystwin_302_compare_20260401/compare_summary.json`, `Newton/phystwin_bridge/tools/other/diagnose_controller_spring_semantics.py`, `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/BLOCKER_strict_self_collision_parity_bridge_rollout_mismatch.md`.",
         "columns": ["Mode", "rmse_mean", "rmse_max", "first30_rmse", "last30_rmse"],
         "rows": [
             ["OFF", "0.009786468930542469", "0.01691424660384655", "0.0023693302646279335", "0.012819756753742695"],
@@ -787,27 +866,25 @@ RECALL_SLIDES: list[dict] = [
         "gif_path": SELF_PARITY_SUPPORT_GIF,
         "gif_label": "302-frame parity support video",
         "transcript": [
-            "最后一页只看 in-scope cloth reference case 的 full-rollout A/B，不再混 box scene。",
-            "右边是最新 302-frame parity support video，左边的表直接列 OFF 和 strict phystwin 的 full-rollout 数字。",
-            "现在 strict phystwin 只在前 30 帧更好，但 full-rollout 的 rmse_mean 还没有低于 OFF。",
-            "同时我们也把短窗口 improvement 和 controller-spring diagnostic 放进这一页的 note 里，所以这页已经足够把 blocker 讲完整。",
-            "所以这一页的 take-home message 很直接：当前 strict phystwin 还没有通过 full-rollout A/B gate。",
+            "最后用 full-rollout A/B gate 把前面的源码分析收口。",
+            "60-frame frozen-table sync 确实让短窗口变好了，但 302-frame full-rollout 还是没过线：strict `phystwin` 只在前 30 帧更好，整段 rollout 的 `rmse_mean` 仍然高于 OFF。",
+            "所以现在的结论必须跟前面的源码分析一致。不能说 self-collision law 还错，更准确的说法是：strict-scope contact operator 已经很接近 PhysTwin，但 whole-step cloth rollout 还没有完全同步，而当前最强的下一个 blocker 是 controller-spring path。",
         ],
     },
     {
         "kind": "twocol",
-        "title": "Conclusion R1: The Current Robot-Deformable Claim Is A Defendable Native Baseline",
-        "common_settings": "Native Franka release/drop baseline, not full manipulation.",
-        "left_label": "Drag OFF\npromoted best run",
-        "left_path": ROBOT_DROP_BASELINE_OFF_GIF,
-        "right_label": "Drag ON\nmatched A/B run",
-        "right_path": ROBOT_DROP_BASELINE_ON_GIF,
+        "title": "Conclusion R1: Native Tabletop Push Is Now Defendable",
+        "common_settings": "`demo_robot_rope_franka.py` | `tabletop_push_hero` | fixed `sim_dt=5e-5`, `substeps=667` | native finger push baseline, not full manipulation.",
+        "left_label": "Hero view\npromoted `c10` contact-fix run",
+        "left_path": ROBOT_TABLETOP_HERO_GIF,
+        "right_label": "Validation view\nsame promoted run",
+        "right_path": ROBOT_TABLETOP_VALIDATION_GIF,
         "transcript": [
             "最后一段是 robotic with deformable objects。",
-            "这一章今天的可 defend 结论，不是“完整 manipulation 已经完成”，而是 native Franka 的 release/drop baseline 已经成立，所以 robot-deformable chapter 至少有了一个物理上可信、视频上可读的起点。",
-            "更具体地说，它用 `demo_robot_rope_franka.py` 里的 `drop_release_baseline` 证明了：robot visible、rope 先被 support、release 前先过 settle gate、release 后以 gravity-dominated free fall 落到 real ground collider，而且 presentation video 保持 1:1 time。",
-            "所以这页不是把 robot 章节降格成一个无关小 demo，而是把它收敛成当前最能 defend 的子结论。",
-            "右边保留 matched drag ON 版本，只是为了说明 A/B 已经做过。结论不是“drag 救了 free fall”，而是 OFF 和 ON 都通过主 gate，所以 drag 不是这个 baseline 的根因解释。",
+            "这一章今天的可 defend 结论不再是 release/drop baseline，而是 native tabletop push baseline 已经成立，所以 robot-deformable chapter 至少有了一个更直接的 contact story。",
+            "更具体地说，它用 `demo_robot_rope_franka.py` 里的 `tabletop_push_hero` 证明了：native Franka、native tabletop、PhysTwin rope 同时可见，rope 在 visible clip 开始前已经 settle，然后 robot 的 own finger / claw 在桌面高度接近、接触、再推动 rope lateral motion。",
+            "这次比旧版更关键的一点，是 contact-causality 做过修复。新的 promoted `c10` 把 visible first contact 提前，所以“rope 先动、手指后到”的观感明显减弱。",
+            "所以这页的结论是，robotic with deformable objects 这一章现在至少有了一个 native tabletop finger-push baseline，可以保守 defend，但仍然不 overclaim full manipulation。",
         ],
     },
 ]
@@ -913,28 +990,28 @@ def _prepare_generated_assets() -> None:
         "phystwin_object_collision",
         _extract_code_segments(
             PHYSTWIN_SPRING_WARP_CODE_PATH,
-            [(261, 269), (286, 293)],
-            highlight_lines={261, 287, 289, 291},
+            [(196, 206), (212, 218)],
+            highlight_lines={196, 198, 199, 203, 205, 212, 215, 218},
         ),
         CODE_SELFCOLLISION_OBJECT_PNG,
     )
     _code_excerpt_image(
         PHYSTWIN_SPRING_WARP_CODE_PATH,
-        "phystwin_ground_collision",
+        "phystwin_force_ground",
         _extract_code_segments(
             PHYSTWIN_SPRING_WARP_CODE_PATH,
-            [(303, 307), (319, 324), (342, 347)],
-            highlight_lines={303, 320, 322, 342, 346},
+            [(156, 160), (323, 333), (343, 344)],
+            highlight_lines={156, 157, 159, 160, 323, 329, 332, 343, 344},
         ),
-        CODE_SELFCOLLISION_GROUND_PNG,
+        CODE_SELFCOLLISION_FORCE_GROUND_PHYSTWIN_PNG,
     )
     _code_excerpt_image(
         PHYSTWIN_SPRING_WARP_CODE_PATH,
         "phystwin_matched_contact_scope",
         _extract_code_segments(
             PHYSTWIN_SPRING_WARP_CODE_PATH,
-            [(260, 297), (301, 350)],
-            highlight_lines={261, 268, 281, 295, 302, 323, 332, 343, 349},
+            [(260, 268), (294, 296)],
+            highlight_lines={261, 266, 268, 294, 295, 296},
         ),
         CODE_SELFCOLLISION_MATCHED_PHYSTWIN_PNG,
     )
@@ -954,10 +1031,20 @@ def _prepare_generated_assets() -> None:
         "bridge_matched_contact_scope",
         _extract_code_segments(
             bridge_self_contact_code,
-            [(521, 557), (629, 687)],
-            highlight_lines={523, 540, 544, 556, 629, 660, 669, 680, 686},
+            [(537, 545), (549, 557)],
+            highlight_lines={540, 542, 544, 549, 551, 553, 556, 557},
         ),
         CODE_SELFCOLLISION_MATCHED_BRIDGE_PNG,
+    )
+    _code_excerpt_image(
+        bridge_self_contact_code,
+        "bridge_force_ground",
+        _extract_code_segments(
+            bridge_self_contact_code,
+            [(263, 267), (660, 670), (680, 681)],
+            highlight_lines={263, 264, 266, 267, 660, 666, 669, 680, 681},
+        ),
+        CODE_SELFCOLLISION_FORCE_GROUND_BRIDGE_PNG,
     )
     bridge_phystwin_stack = ROOT / "Newton" / "phystwin_bridge" / "tools" / "core" / "phystwin_contact_stack.py"
     _code_excerpt_image(
@@ -965,8 +1052,8 @@ def _prepare_generated_assets() -> None:
         "bridge_phystwin_collision_table",
         _extract_code_segments(
             bridge_phystwin_stack,
-            [(297, 328)],
-            highlight_lines={297, 302, 309, 312, 315, 322, 324, 327},
+            [(302, 307), (311, 317), (322, 324)],
+            highlight_lines={302, 305, 307, 311, 312, 315, 322, 323, 324},
         ),
         CODE_SELFCOLLISION_TABLE_BRIDGE_PNG,
     )
@@ -975,8 +1062,8 @@ def _prepare_generated_assets() -> None:
         "phystwin_controller_springs",
         _extract_code_segments(
             PHYSTWIN_SPRING_WARP_CODE_PATH,
-            [(64, 78), (82, 137)],
-            highlight_lines={64, 69, 74, 75, 85, 86, 103, 105, 109, 111, 129, 132},
+            [(82, 86), (103, 111)],
+            highlight_lines={82, 85, 86, 103, 104, 105, 109, 110, 111},
         ),
         CODE_SELFCOLLISION_CONTROLLER_PHYSTWIN_PNG,
     )
@@ -986,8 +1073,8 @@ def _prepare_generated_assets() -> None:
         "bridge_controller_particles",
         _extract_code_segments(
             bridge_import_code,
-            [(1591, 1600), (1606, 1626)],
-            highlight_lines={1591, 1596, 1606, 1608, 1610, 1615, 1619, 1623},
+            [(1606, 1615), (1616, 1624)],
+            highlight_lines={1606, 1608, 1610, 1613, 1615, 1616, 1619, 1623},
         ),
         CODE_SELFCOLLISION_CONTROLLER_BRIDGE_PNG,
     )
@@ -1022,6 +1109,10 @@ def _prepare_generated_assets() -> None:
         _ensure_gif(SELF_PARITY_SUPPORT_MP4, SELF_PARITY_SUPPORT_GIF, width=640, fps=8, max_colors=96)
     _ensure_gif(ROBOT_DROP_BASELINE_OFF_MP4, ROBOT_DROP_BASELINE_OFF_GIF, width=640, fps=8, max_colors=96)
     _ensure_gif(ROBOT_DROP_BASELINE_ON_MP4, ROBOT_DROP_BASELINE_ON_GIF, width=640, fps=8, max_colors=96)
+    if ROBOT_TABLETOP_HERO_MP4.exists():
+        _ensure_gif(ROBOT_TABLETOP_HERO_MP4, ROBOT_TABLETOP_HERO_GIF, width=720, fps=8, max_colors=96)
+    if ROBOT_TABLETOP_VALIDATION_MP4.exists():
+        _ensure_gif(ROBOT_TABLETOP_VALIDATION_MP4, ROBOT_TABLETOP_VALIDATION_GIF, width=720, fps=8, max_colors=96)
 
 
 def parse_args() -> argparse.Namespace:

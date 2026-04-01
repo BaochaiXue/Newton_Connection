@@ -29,6 +29,11 @@ Prepared the 2026-04-01 bundle for review release:
   - current deck: `25` slides
   - current review PDF: `25` paired review pages
   - resent the refreshed review PDF to the same default recipient
+- refreshed the bundle again after the latest slide/transcript edits:
+  - current deck: `24` slides
+  - current review PDF: `24` paired review pages
+  - current review layout: `review_wide_landscape`
+  - resent the refreshed review PDF to the same default recipient
 
 ## Next Step
 
