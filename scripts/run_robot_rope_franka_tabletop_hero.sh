@@ -30,7 +30,6 @@ MANUAL_REVIEW_JSON="${RUN_DIR}/manual_review.json"
 
 COMMON_ARGS=(
   --task tabletop_push_hero
-  --tabletop-control-mode ik
   --sim-dt 5.0e-5
   --substeps 667
   --slowdown 1.0
