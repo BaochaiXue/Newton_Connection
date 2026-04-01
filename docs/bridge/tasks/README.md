@@ -30,7 +30,6 @@ Each task page should answer:
 
 - [delivery_and_profiling_review_20260401.md](./delivery_and_profiling_review_20260401.md)
 - [harness_markdown_cleanup_20260401.md](./harness_markdown_cleanup_20260401.md)
-- [markdown_truthfulness_cleanup.md](./markdown_truthfulness_cleanup.md)
 
 Task template:
 

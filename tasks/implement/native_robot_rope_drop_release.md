@@ -24,11 +24,13 @@
 
 - run metadata is self-describing
 - release and impact timing are explicit in `summary.json`
-- the bundle-level status files distinguish this baseline from the older lift-release run
+- any promoted current baseline is recorded in
+  `results_meta/tasks/native_robot_rope_drop_release.json`
 
 ## Output Paths
 
 - `results/native_robot_rope_drop_release/README.md`
-- `results/native_robot_rope_drop_release/BEST_RUN.md`
+- `results_meta/tasks/native_robot_rope_drop_release.json`
+- `results/native_robot_rope_drop_release/BEST_RUN.md` as a secondary local-only pointer
 - `results/native_robot_rope_drop_release/index.csv`
 - `results/native_robot_rope_drop_release/runs/<run_id>/`

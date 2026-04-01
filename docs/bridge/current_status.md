@@ -90,6 +90,8 @@ It should stay current and be updated whenever a task changes state.
   separates collision, solver-path, and render interpretations.
 - A canonical apples-to-apples rope performance bundle now exists:
   - `results/rope_perf_apples_to_apples/`
+  - committed registry run id:
+    - `20260401_rope_perf_meeting_bundle`
   - Newton A0/A1 throughput
   - Newton A2/A3 attribution
   - PhysTwin B0 headless throughput
@@ -123,7 +125,7 @@ It should stay current and be updated whenever a task changes state.
   - repo-local `.agents/skills/`
   - repo-local `.codex/` config + hooks
   - canonical wrapper scripts and an artifact validator
-  - retired root singleton task docs removed
+  - retired root singleton task docs are absent from the repo root
     - `Plan.md`
     - `Status.md`
     - `Prompt.md`

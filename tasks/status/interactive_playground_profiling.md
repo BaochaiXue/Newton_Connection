@@ -2,7 +2,13 @@
 
 ## Current State
 
-Tracked as an active task with a backfilled authoritative chain.
+Tracked as an active exploratory task.
+
+The committed current rope benchmark truth does not live here. For the
+authoritative same-case replay benchmark, use:
+
+- `results_meta/tasks/rope_perf_apples_to_apples.json`
+- `tasks/status/rope_perf_apples_to_apples.md`
 
 ## Last Completed Step
 
@@ -11,8 +17,11 @@ upgrade.
 
 ## Next Step
 
-Record the current authoritative no-render profiling output and whether the
-open question is clean replay, weak-contact rope, or both.
+Keep the scope split explicit:
+
+- clean replay truth remains under `rope_perf_apples_to_apples`
+- this task should only hold new exploratory profiling work until a new result
+  is promoted into `results_meta/`
 
 ## Blocking Issues
 
@@ -20,5 +29,6 @@ open question is clean replay, weak-contact rope, or both.
 
 ## Artifact Paths
 
-- profiling result bundles
+- `results_meta/tasks/rope_perf_apples_to_apples.json`
+- profiling result bundles for non-promoted exploratory runs
 - related slide/report assets

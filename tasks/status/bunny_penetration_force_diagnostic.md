@@ -90,7 +90,7 @@
   - `qa/report.json` -> `PASS`
   - `qa/verdict.md`
   - `scripts/validate_experiment_artifacts.py` -> `PASS`
-- Result pointers updated:
+- Secondary local-only pointer surfaces updated:
   - `results/bunny_force_visualization/LATEST_SUCCESS.txt`
   - `results/bunny_force_visualization/LATEST_ATTEMPT.txt`
   - `results/bunny_force_visualization/INDEX.md`

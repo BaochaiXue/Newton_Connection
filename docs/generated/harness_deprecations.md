@@ -1,5 +1,11 @@
 # Harness Deprecations
 
+> status: generated
+> canonical_replacement: `docs/generated/md_deprecation_matrix.md`
+> owner_surface: `markdown_truthfulness_cleanup`
+> last_reviewed: `2026-04-01`
+> notes: Generated deprecation ledger for harness/control-plane surfaces. Regenerate rather than treating this as a free-form scratchpad.
+
 Updated: 2026-04-01
 
 This ledger records harness surfaces that are intentionally no longer
@@ -7,7 +13,7 @@ canonical.
 
 ## Root Singleton Task Docs
 
-- Deprecated:
+- Retired and currently absent from the repo root:
   - `Plan.md`
   - `Status.md`
   - `Prompt.md`
@@ -18,6 +24,10 @@ canonical.
   - `plans/active/<task>.md`
   - `tasks/implement/<task>.md`
   - `tasks/status/<task>.md`
+- Migration rule:
+  - do not recreate these files
+  - if a discoverability stub is ever needed, it must be an explicit deprecated
+    pointer and must not carry standalone current state
 
 ## Self-Collision Slug Alias
 
@@ -36,6 +46,18 @@ canonical.
   - `self_collision_transfer`
 - Migration path:
   - treat `final_self_collision_campaign` files as historical campaign records
+
+## Historical One-Off Review / Cleanup Surfaces
+
+- Historical task families:
+  - `delivery_and_profiling_review_20260401`
+  - `harness_markdown_cleanup_20260401`
+- Canonical replacement:
+  - `delivery_and_profiling_review_20260401`: none; keep as a historical review record only
+  - `harness_markdown_cleanup_20260401`: `markdown_truthfulness_cleanup`
+- Migration path:
+  - move completed plans to `plans/completed/`
+  - keep any remaining task/spec/implement/status files only with explicit `status: historical` metadata blocks
 
 ## Local Result-Bundle Authority Surfaces
 

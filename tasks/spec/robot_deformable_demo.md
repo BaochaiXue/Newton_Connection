@@ -23,7 +23,9 @@ Make the native Franka rope demo more physically defensible by reducing rope-thr
   `Newton/phystwin_bridge/demos/demo_robot_rope_franka.py`
 - canonical wrapper:
   `scripts/run_robot_rope_franka.sh`
-- best-run reference:
+- committed run authority:
+  `results_meta/tasks/robot_deformable_demo.json`
+- local-only best-run convenience pointer:
   `results/robot_deformable_demo/BEST_RUN.md`
 
 ## Outputs
@@ -46,4 +48,5 @@ Make the native Franka rope demo more physically defensible by reducing rope-thr
 - the tuned run completes without crash or NaN
 - rope motion is visually less prone to table intersection / odd sweeps
 - summary metrics still show a meaningful interaction
-- the run is validated and promoted as the current best tuning candidate
+- the run is validated and any promoted current baseline is recorded in
+  `results_meta/tasks/robot_deformable_demo.json`

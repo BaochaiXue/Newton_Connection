@@ -18,7 +18,8 @@ sed -n '1,260p' scripts/run_robot_rope_franka.sh
 1. Add or tune a dedicated tabletop-push hero path in `demo_robot_rope_franka.py`
 2. Write candidate outputs into `Newton/phystwin_bridge/results/robot_rope_franka/candidates/`
 3. Validate every candidate with ffprobe, keyframes, contact sheet, and YES/NO QA
-4. Promote the winner into `BEST_RUN/` and update status/docs
+4. Promote the local winner into `BEST_RUN/`, then update status/docs and
+   `results_meta/` if the task gains a committed promoted result
 
 ## Required Outputs
 

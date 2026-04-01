@@ -25,6 +25,8 @@ keeps contact, looks less abrupt, and reduces rope-through-table artifacts.
 
 ## Notes
 
-- The best-run reference remains `results/robot_deformable_demo/BEST_RUN.md`
+- The local-only best-run convenience pointer remains
+  `results/robot_deformable_demo/BEST_RUN.md`
 - If the tuned run regresses contact or interaction quality, keep the previous
-  best run as the canonical fallback
+  run as the local fallback while updating `results_meta/` for any committed
+  authoritative change

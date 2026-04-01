@@ -15,6 +15,7 @@ WATCH_TERMS = (
     "prepare_video_review_bundle.py",
     "run_skeptical_video_audit.py",
     "sync_results_registry.py",
+    "generate_md_inventory.py",
     "render_bunny_penetration_collision_board",
     "validate_experiment_artifacts.py",
     "validate_bridge_video_qc.py",
@@ -23,6 +24,10 @@ WATCH_TERMS = (
     "validate_native_robot_rope_drop_release_video.py",
     "formal_slide",
     "result_for_slides",
+    "git mv ",
+    " mv ",
+    "results_meta/",
+    "plans/completed/",
 )
 
 
@@ -43,12 +48,14 @@ def main() -> int:
             "hookSpecificOutput": {
                 "hookEventName": "PostToolUse",
                 "additionalContext": (
-                    "If this command produced deliverables, run scripts/validate_experiment_artifacts.py when relevant "
-                    "and write the result into tasks/status and docs/bridge/current_status.md. "
-                    "For meeting-facing video tasks, prepare a skeptical review bundle and do not treat automatic QC as final acceptance."
-                ),
-            },
-        }
+                "If this command produced deliverables, run scripts/validate_experiment_artifacts.py when relevant "
+                "and write the result into tasks/status and docs/bridge/current_status.md. "
+                "For meeting-facing video tasks, prepare a skeptical review bundle and do not treat automatic QC as final acceptance."
+                " If this command renamed or deprecated Markdown/control-plane surfaces, refresh docs/generated/md_inventory.*, "
+                "update docs/generated/harness_deprecations.md, and rerun scripts/lint_harness_consistency.py."
+            ),
+        },
+    }
         json.dump(out, sys.stdout)
     return 0
 

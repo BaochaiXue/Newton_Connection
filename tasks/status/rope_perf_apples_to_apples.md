@@ -3,8 +3,12 @@
 ## Current State
 
 - Completed for the current rope meeting scope
+- Committed current run id:
+  - `20260401_rope_perf_meeting_bundle`
 - Canonical result root:
   - `results/rope_perf_apples_to_apples/`
+- Committed results metadata:
+  - `results_meta/tasks/rope_perf_apples_to_apples.json`
 - Slides/transcript updated:
   - `formal_slide/meeting_2026_04_01/bridge_meeting_20260401.pptx`
   - `formal_slide/meeting_2026_04_01/transcript.md`
@@ -47,7 +51,7 @@
   - `results_meta/tasks/rope_perf_apples_to_apples.json`
 - Key outputs:
   - `results/rope_perf_apples_to_apples/index.csv`
-  - `results/rope_perf_apples_to_apples/BEST_EVIDENCE.md`
+  - `results/rope_perf_apples_to_apples/BEST_EVIDENCE.md` (local-only pointer)
   - `results/rope_perf_apples_to_apples/notes/methodology.md`
   - `results/rope_perf_apples_to_apples/notes/conclusions.md`
   - `results/rope_perf_apples_to_apples/notes/nsight.md`

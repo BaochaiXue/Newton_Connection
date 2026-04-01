@@ -1,5 +1,11 @@
 # Harness Audit
 
+> status: generated
+> canonical_replacement: `python scripts/lint_harness_consistency.py` plus the repo control-plane files it checks
+> owner_surface: `harness_engineering_upgrade`
+> last_reviewed: `2026-04-01`
+> notes: Machine-maintained audit ledger. Update this file only when the harness audit itself changes.
+
 Updated: 2026-04-01
 
 This audit records the harness issues that materially affected long-running

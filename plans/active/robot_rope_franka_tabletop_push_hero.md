@@ -21,4 +21,4 @@ clean candidate management and explicit visual validation.
 
 - ffprobe and keyframe artifacts exist for every serious candidate
 - validation answers explicit YES/NO questions
-- BEST_RUN docs explain why the winner beat the other candidates
+- local `BEST_RUN/` docs explain why the winner beat the other candidates

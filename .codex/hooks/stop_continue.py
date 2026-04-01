@@ -12,6 +12,8 @@ VERDICT_WORDS = re.compile(r"\b(verdict|pass|passed|fail|failed)\b", re.IGNORECA
 VIDEO_TASK_WORDS = re.compile(r"\b(video|mp4|gif|render|visual|demo|slide)\b", re.IGNORECASE)
 SKEPTICAL_WORDS = re.compile(r"\b(skeptical|video audit|review bundle|contact sheet|event sheet)\b", re.IGNORECASE)
 REGISTRY_WORDS = re.compile(r"\b(results_meta|results registry|LATEST\.md|INDEX\.md)\b", re.IGNORECASE)
+MARKDOWN_CHANGE_WORDS = re.compile(r"\b(deprecated|deprecate|archived|archive|historical|renamed|rename|markdown cleanup|truthfulness cleanup)\b", re.IGNORECASE)
+INVENTORY_WORDS = re.compile(r"\b(md_inventory|md_cleanup_report|harness_deprecations|doc_gardening|generate_md_inventory)\b", re.IGNORECASE)
 
 
 def main() -> int:
@@ -49,6 +51,15 @@ def main() -> int:
             "decision": "block",
             "reason": (
                 "If you claim something is authoritative or promoted, mention the results registry update explicitly before ending the turn."
+            ),
+        }
+        json.dump(out, sys.stdout)
+        return 0
+    if DONE_WORDS.search(msg) and MARKDOWN_CHANGE_WORDS.search(msg) and not (INVENTORY_WORDS.search(msg) and VALIDATION_WORDS.search(msg)):
+        out = {
+            "decision": "block",
+            "reason": (
+                "Markdown cleanup / deprecation / archive claims must mention the inventory refresh and lint outcome explicitly before ending the turn."
             ),
         }
         json.dump(out, sys.stdout)

@@ -16,7 +16,9 @@ def main() -> int:
         "TODO.md, then the relevant docs/bridge/tasks page. Use scripts/ wrappers "
         "when they exist. Update task/status docs for non-trivial work. For long "
         "tasks use tasks/contracts and tasks/handoffs. If a run becomes authoritative, "
-        "update results_meta before claiming completion."
+        "update results_meta before claiming completion. If you rename, deprecate, "
+        "archive, or supersede a Markdown surface, update docs/generated/md_inventory.*, "
+        "the deprecation ledger, and run scripts/lint_harness_consistency.py before ending."
     )
     out = {
         "hookSpecificOutput": {

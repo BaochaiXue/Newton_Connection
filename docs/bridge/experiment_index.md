@@ -58,7 +58,8 @@ bundle is now:
 - `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5`
 
 and the bundle-level latest pointers under `results/bunny_force_visualization/`
-should be treated as the fast local entrypoint.
+should be treated only as the fast local entrypoint, not as the canonical
+committed source of truth.
 
 ## Legacy vs Canonical
 
@@ -87,14 +88,15 @@ dedicated folder under `results/<bundle_name>/` with:
 - `README.template.md` when templating is useful
 - `manifest.template.json` when the bundle uses manifests
 - `INDEX.md` and/or `index.csv` depending on the bundle
-- `LATEST_ATTEMPT.txt` and `LATEST_SUCCESS.txt` when the bundle promotes runs by pointer
+- `LATEST_ATTEMPT.txt` and `LATEST_SUCCESS.txt` as secondary local-only
+  convenience pointers when the bundle promotes runs by pointer
 - a `runs/<run_id>/` subtree for the actual artifacts
 
 Current bundles intentionally vary slightly:
 
-- `results/bunny_force_visualization/` uses `INDEX.md` plus pointer files
-- `results/robot_deformable_demo/` uses `index.csv` plus `BEST_RUN.md`
-- `results/native_robot_rope_drop_release/` uses `index.csv` plus pointer files
+- `results/bunny_force_visualization/` uses `INDEX.md` plus local-only pointer files
+- `results/robot_deformable_demo/` uses `index.csv` plus local-only `BEST_RUN.md`
+- `results/native_robot_rope_drop_release/` uses `index.csv` plus local-only pointer files
 
 These local surfaces are now secondary/local-only. The committed registry under
 `results_meta/` is the canonical cross-task surface.
@@ -124,17 +126,21 @@ Examples:
 - Franka + rope
 - control/replay viewers
 
-Canonical promoted bundle:
+Canonical local result root:
 
 - `results/robot_deformable_demo/`
-  - `BEST_RUN.md`
+  - local-only `BEST_RUN.md`
   - `index.csv`
   - `runs/<run_id>/`
 - `rejected/<run_id>/`
 
-Current authoritative robot + deformable run:
+Current committed authoritative robot + deformable run:
 
 - `results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation`
+
+Committed authority for that run lives in:
+
+- `results_meta/tasks/robot_deformable_demo.json`
 
 Its required review artifacts are:
 
@@ -149,7 +155,7 @@ Its required review artifacts are:
 Separate stage-0 sanity baseline bundle:
 
 - `results/native_robot_rope_drop_release/`
-  - `BEST_RUN.md`
+  - local-only `BEST_RUN.md`
   - `index.csv`
   - `README.template.md`
   - `manifest.template.json`
@@ -178,13 +184,17 @@ Matched drag-ON comparison:
   - `summary.json`
   - `physics_validation.json`
 
-The promoted robot bundle also keeps bundle-level helpers so future runs can
+The promoted robot bundle also keeps local bundle helpers so future runs can
 be promoted without rediscovering the layout:
 
 - `results/robot_deformable_demo/README.template.md`
 - `results/robot_deformable_demo/manifest.template.json`
 - `results/robot_deformable_demo/SLIDE_READY.md`
 - a run-local `README.md` in each promoted `runs/<run_id>/` directory
+
+Committed authority for the stage-0 baseline lives in:
+
+- `results_meta/tasks/native_robot_rope_drop_release.json`
 
 ### Profiling
 

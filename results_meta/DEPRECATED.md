@@ -7,13 +7,19 @@ longer the canonical committed truth.
 
 ## Secondary / Local-Only Result Surfaces
 
+- `results/README.md`
+- `results/bunny_force_visualization/README.md`
 - `results/bunny_force_visualization/INDEX.md`
 - `results/bunny_force_visualization/LATEST_ATTEMPT.txt`
 - `results/bunny_force_visualization/LATEST_SUCCESS.txt`
+- `results/robot_deformable_demo/README.md`
 - `results/robot_deformable_demo/BEST_RUN.md`
+- `results/robot_deformable_demo/LEGACY_CANDIDATES.md`
+- `results/native_robot_rope_drop_release/README.md`
 - `results/native_robot_rope_drop_release/BEST_RUN.md`
 - `results/native_robot_rope_drop_release/LATEST_ATTEMPT.txt`
 - `results/native_robot_rope_drop_release/LATEST_SUCCESS.txt`
+- `results/rope_perf_apples_to_apples/README.md`
 - `results/rope_perf_apples_to_apples/BEST_EVIDENCE.md`
 
 ## Canonical Replacement

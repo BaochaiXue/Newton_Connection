@@ -46,7 +46,7 @@ drop/release baseline:
 
 Expected layout:
 
-- `BEST_RUN/`
+- local-only `BEST_RUN/`
 - `candidates/<timestamp>_<short_tag>/`
 - per candidate:
   - `manifest.json`
@@ -68,7 +68,10 @@ Expected layout:
 - robot performs a slow lateral push rather than a fling or scoop
 - rope visibly deforms and slides because of robot contact
 - presentation clip is between 6 and 12 seconds and readable on first viewing
-- best run is promoted under `phystwin_bridge/results/robot_rope_franka/BEST_RUN/`
+- local bundle winner is promoted under
+  `phystwin_bridge/results/robot_rope_franka/BEST_RUN/`, while any committed
+  cross-task authority should be mirrored in `results_meta/` if this task gains
+  a promoted result
 
 ## Related Pages
 

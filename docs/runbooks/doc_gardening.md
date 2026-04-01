@@ -1,8 +1,8 @@
 # Doc Gardening Runbook
 
-## Purpose
+This runbook is the standard closeout flow for Markdown truth surfaces.
 
-Use this runbook whenever a task, result, or Markdown control-plane surface is:
+Use it whenever a task or result surface is:
 
 - renamed
 - deprecated
@@ -10,69 +10,86 @@ Use this runbook whenever a task, result, or Markdown control-plane surface is:
 - promoted
 - superseded
 
-Markdown truthfulness is part of the harness. Do not treat it as optional
-cleanup after the fact.
+## Rule
 
-## Metadata Convention
+Markdown truthfulness is part of the harness control system.
 
-For non-trivial deprecated or historical Markdown files, add a top-of-file
-front matter block:
+If a file sounds authoritative, it must be one of:
 
-```yaml
----
-status: deprecated
-canonical_replacement: docs/bridge/tasks/example.md
-owner_surface: example_task
-last_reviewed: 2026-04-01
-notes: Kept only as a discoverability stub. Do not use as source of truth.
----
-```
+- canonical
+- deprecated pointer stub
+- historical record
+- generated surface
 
-Allowed `status` values for control-plane Markdown:
-
-- `active`
-- `deprecated`
-- `historical`
-- `generated`
+Do not leave an ambiguous live-looking fourth state.
 
 ## Closeout Flow
 
-1. Update the relevant task status page.
-2. If the change affects result meaning, update `results_meta/tasks/<task_slug>.json`.
-3. Run `python scripts/sync_results_registry.py` when a registry entry changed.
-4. Add or update deprecation / historical metadata and a strong banner.
-5. Refresh the Markdown inventory:
-   - `python scripts/generate_md_inventory.py`
-6. Run the harness/doc lint:
-   - `python scripts/lint_harness_consistency.py`
-7. Refresh only secondary local pointers optionally:
-   - `BEST_RUN.md`
-   - `LATEST_SUCCESS.txt`
-   - `LATEST_ATTEMPT.txt`
+1. Update the task status file.
+2. Update the canonical task page if the task question, scope, or state changed.
+3. If the slug or surface changed, add or update the deprecation marker:
+   - top-of-file metadata block with:
+     - `status`
+     - `canonical_replacement`
+     - `owner_surface`
+     - `last_reviewed`
+     - `notes`
+4. Move completed plans out of `plans/active/` into `plans/completed/`.
+5. Update `docs/generated/harness_deprecations.md` if the change adds a new deprecated or historical family.
+6. If authoritative result meaning changed, update:
+   - `results_meta/tasks/<task_slug>.json`
+   - `results_meta/INDEX.md`
+   - `results_meta/LATEST.md`
+7. Refresh the Markdown truth inventory:
 
-## Rename Rule
+```bash
+python scripts/generate_md_inventory.py
+```
 
-When renaming a task slug:
+8. Run the harness/doc lint:
 
-- keep one canonical slug,
-- convert the old slug family into deprecated pointers,
-- update `docs/bridge/tasks/README.md`,
-- update task-chain links,
-- update `results_meta/` if the task has committed result meaning.
+```bash
+python scripts/lint_harness_consistency.py
+```
 
-## Promotion Rule
+9. Refresh local-only bundle pointers optionally, but never treat them as the canonical committed truth.
 
-When promoting a result:
+## Status Markers
 
-- `results_meta/` is the committed authority,
-- task status pages may summarize the promotion,
-- local bundle pointers are secondary convenience surfaces only.
+### Canonical
 
-## Archive Rule
+Canonical files may sound authoritative.
 
-If a file is no longer live but still useful:
+### Deprecated Pointer Stub
 
-- either keep it in place as a deprecated stub,
-- or move it under `docs/archive/` as a historical record.
+Keep a deprecated file only when discoverability still matters.
 
-Do not leave a fourth ambiguous state.
+Required properties:
+
+- strong top-of-file metadata block
+- explicit `status: deprecated`
+- explicit canonical replacement
+- explicit note that no new current state belongs there
+
+### Historical
+
+Historical files may preserve details, but they must stop sounding live.
+
+Required properties:
+
+- strong top-of-file metadata block
+- `status: historical`
+- canonical replacement if one exists, otherwise `none`
+- note explaining why the file still exists
+
+### Generated
+
+Generated files must say how they are regenerated.
+
+## Common Failure Modes
+
+- completed plans left in `plans/active/`
+- review-only task files that still say `In progress`
+- local-only bundle README/BEST_RUN pages that sound more authoritative than `results_meta/`
+- stale `current_status.md` claims that contradict registry state
+- deprecated task aliases left without a replacement path

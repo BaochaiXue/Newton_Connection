@@ -5,29 +5,51 @@
 Tracked as an active task with a canonical slug and a backfilled authoritative
 chain.
 
+Committed current-bundle meaning lives in:
+
+- `results_meta/tasks/self_collision_transfer.json`
+
+That committed surface is still the source of truth for the current blocked
+bundle. The scratch validation notes below are local exploratory evidence only
+unless a new run is promoted into `results_meta/`.
+
 The bridge now has a shared strict `phystwin` contact-stack implementation for
 the PhysTwin-native cloth parity scene:
 
 - pairwise self-collision uses the bridge-side PhysTwin operator
 - ground contact uses a bridge-side implicit `z=0` PhysTwin-style integrator
+- strict `phystwin` now defaults to a frame-frozen explicit collision table
+  with object-only candidate semantics
 - `off/native/custom` stay on their existing compatibility paths
 - cloth+box `phystwin` is intentionally guarded as unsupported
 
-Latest post-refactor validation:
+Local scratch validation notes:
 
 - operator exactness still passes:
   - `Newton/phystwin_bridge/results/tmp_verify_phystwin_equivalence_after_refactor.json`
-- strict cloth parity 60-frame smoke improved to:
-  - `rmse_mean = 0.0015035003889352083`
-  - `Newton/phystwin_bridge/results/tmp_strict_self_collision_refactor_60_v2/strict_self_collision/strict_self_collision_parity_rollout_report.json`
-- strict cloth parity full 302-frame run improved to:
-  - `rmse_mean = 0.010737196542322636`
-  - `Newton/phystwin_bridge/results/tmp_strict_self_collision_refactor_full/strict_self_collision_parity_full_rollout_report.json`
-- frozen candidate-table experiment:
-  - 60-frame dynamic query: `rmse_mean = 0.002392382826656103`
-  - 60-frame frame-frozen table: `rmse_mean = 0.0014532922068610787`
-  - 302-frame frame-frozen table: `rmse_mean = 0.010684290900826454`
-  - current read: frame-frozen candidate-table semantics help early/60-frame parity, but do not resolve the full-rollout blocker by themselves
+- strict cloth parity 60-frame default frozen-table run:
+  - `rmse_mean = 0.001314889290370047`
+  - `first30_rmse = 0.00038029628922231495`
+  - `last30_rmse = 0.0022494823206216097`
+  - `Newton/phystwin_bridge/results/tmp_strict_phystwin_default60_postsync/strict_phystwin_default60_rollout_report.json`
+- strict cloth parity 60-frame dynamic-query debug run:
+  - `rmse_mean = 0.001589029561728239`
+  - `first30_rmse = 0.0004093373427167535`
+  - `last30_rmse = 0.002768721431493759`
+  - `Newton/phystwin_bridge/results/tmp_strict_phystwin_dynamic60_postsync/strict_phystwin_dynamic60_rollout_report.json`
+- table-ordering diagnostic:
+  - frozen beats dynamic on `rmse_mean`, `first30_rmse`, and `last30_rmse`
+  - no 500-cap truncation observed in the audited 60-frame comparison
+  - `Newton/phystwin_bridge/results/tmp_collision_table_diag_v1/collision_table_diagnostic.json`
+- strict cloth parity full 302-frame default frozen-table run:
+  - `rmse_mean = 0.010103434324264526`
+  - `last30_rmse = 0.014149246737360954`
+  - `Newton/phystwin_bridge/results/tmp_strict_phystwin_default302_postsync/strict_phystwin_default302_rollout_report.json`
+- controller-spring diagnostic currently reports substantial mismatch:
+  - one-step `force_abs_max = 0.006733048971410349`
+  - short-rollout `force_abs_max = 389.3789927564146`
+  - `pass = false`
+  - `Newton/phystwin_bridge/results/tmp_controller_spring_diag_v2/controller_spring_diagnostic.json`
 - OFF regression remains acceptable:
   - `Newton/phystwin_bridge/results/tmp_off_ground_regression_60/off_ground_regression60_rollout_report.json`
 - rope OFF importer smoke still passes:
@@ -35,26 +57,31 @@ Latest post-refactor validation:
 
 ## Last Completed Step
 
-Landed the first shared strict `phystwin` stack wiring:
+Promoted frozen explicit collision-table semantics to the strict `phystwin`
+default and added dedicated table/controller diagnosis harnesses:
 
 - `tools/core/phystwin_contact_stack.py`
 - shared importer path via `tools/core/newton_import_ir.py`
 - thin `tools/other/newton_import_ir_phystwin.py` wrapper
+- `tools/other/diagnose_phystwin_collision_table.py`
+- `tools/other/diagnose_controller_spring_semantics.py`
 - cloth+box demo guard for unsupported `phystwin`
 
 ## Next Step
 
-Record the post-refactor validation state:
+Use the new diagnostics to determine whether controller-spring semantics are the
+next dominant blocker after candidate-table sync:
 
-- strict 60-frame cloth parity metrics
-- full-length strict cloth parity metrics
-- OFF non-regression results
-- updated slide/task wording for the narrowed strict `phystwin` scope
+- validate the controller-spring harness itself if needed
+- decide whether to rework strict `phystwin` controller representation
+- rerun full strict parity after that change
+- update `results_meta/tasks/self_collision_transfer.json` only if a new
+  committed current bundle is actually promoted
 
 ## Blocking Issues
 
-- strict self-collision parity still needs a fresh post-refactor full-length
-  measurement against the `1e-5` gate
+- strict self-collision parity still misses the `1e-5` gate even after default
+  frame-frozen explicit-table sync
 - strict `phystwin` scope is intentionally narrow and does not yet cover box or
   other Newton-only rigid-support contacts
 
@@ -65,3 +92,5 @@ Record the post-refactor validation state:
 - `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/matrix/self_collision_decision.md`
 - `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/parity/strict_self_collision_parity_summary.json`
 - `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/video_qc/final_video_qc_report.md`
+- local scratch validation notes under `Newton/phystwin_bridge/results/tmp_*`
+  are secondary/local-only unless promoted into `results_meta/`
