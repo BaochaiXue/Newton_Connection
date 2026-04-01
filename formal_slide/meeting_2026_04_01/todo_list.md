@@ -16,6 +16,7 @@
     - Newton A1 remains about `3.295x` slower than PhysTwin B0 on the clean rope replay baseline
     - controller bridge tax explains part of the gap (`A0 -> A1` gives about `1.874x` speedup)
     - the residual gap points to execution structure / graph launch, not collision
+    - optimization discussion should come only after the fair benchmark and bottleneck explanation are established
   - `What remains outside Todo 2:`
     - optimize Newton replay only after this benchmark conclusion
     - keep weak-contact rope profiling as a separate workstream

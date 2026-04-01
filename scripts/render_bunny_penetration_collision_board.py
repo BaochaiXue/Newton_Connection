@@ -46,6 +46,19 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--board-width", type=int, default=1920)
     parser.add_argument("--board-height", type=int, default=1080)
+    parser.add_argument("--output-stem", type=str, default="collision_force_board_2x2")
+    parser.add_argument(
+        "--slowdown-factor",
+        type=int,
+        default=1,
+        help="Playback slowdown factor implemented by frame repetition. 1 keeps real-time playback.",
+    )
+    parser.add_argument(
+        "--playback-label",
+        type=str,
+        default="",
+        help="Optional label burned into every panel, for example '4x slow motion'.",
+    )
     return parser.parse_args()
 
 
@@ -118,10 +131,30 @@ def _draw_header_block(
     title: str,
     subtitle: str,
     footer: str,
+    badge_text: str | None = None,
 ) -> None:
     cv2.rectangle(panel, (0, 0), (panel.shape[1], 74), (0, 0, 0), thickness=-1)
     cv2.putText(panel, title, (14, 28), cv2.FONT_HERSHEY_SIMPLEX, 0.82, (255, 255, 255), 2, cv2.LINE_AA)
     cv2.putText(panel, subtitle, (14, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.54, (220, 220, 220), 1, cv2.LINE_AA)
+    if badge_text:
+        (text_w, text_h), baseline = cv2.getTextSize(badge_text, cv2.FONT_HERSHEY_SIMPLEX, 0.48, 1)
+        pad_x = 10
+        x1 = panel.shape[1] - 14
+        x0 = x1 - text_w - 2 * pad_x
+        y0 = 12
+        y1 = y0 + text_h + baseline + 8
+        cv2.rectangle(panel, (x0, y0), (x1, y1), (28, 28, 28), thickness=-1)
+        cv2.rectangle(panel, (x0, y0), (x1, y1), (255, 225, 120), thickness=1)
+        cv2.putText(
+            panel,
+            badge_text,
+            (x0 + pad_x, y1 - 6),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.48,
+            (255, 225, 120),
+            1,
+            cv2.LINE_AA,
+        )
     cv2.rectangle(panel, (0, panel.shape[0] - 34), (panel.shape[1], panel.shape[0]), (0, 0, 0), thickness=-1)
     cv2.putText(
         panel,
@@ -372,6 +405,7 @@ def _render_panel(
     colliding_count: int,
     first_contact_frame: int | None,
     hold: bool,
+    playback_label: str,
 ) -> np.ndarray:
     panel = _load_frame(frame_dir, int(video_frame_index), panel_size)
     particle_q = np.asarray(detector_npz["particle_q"][int(sim_frame_index)], dtype=np.float32)
@@ -397,6 +431,7 @@ def _render_panel(
             f"sim frame {int(sim_frame_index)} | colliding nodes {int(colliding_count)}"
             + (f" | first collision {int(first_contact_frame)}" if first_contact_frame is not None else "")
         ),
+        badge_text=playback_label or None,
     )
     _draw_colorbar(panel, label=f"{family_label} magnitude", cap=float(force_cap))
     if hold:
@@ -410,6 +445,8 @@ def _render_panel(
 
 def main() -> int:
     args = parse_args()
+    slowdown_factor = max(1, int(args.slowdown_factor))
+    playback_label = str(args.playback_label).strip()
     out_dir = args.out_dir.expanduser().resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -434,7 +471,8 @@ def main() -> int:
         int(bunny_case["clip_video_frame_indices"].shape[0]),
     )
 
-    board_video_path = out_dir / "collision_force_board_2x2.mp4"
+    output_stem = str(args.output_stem).strip() or "collision_force_board_2x2"
+    board_video_path = out_dir / f"{output_stem}.mp4"
     writer = cv2.VideoWriter(
         str(board_video_path),
         cv2.VideoWriter_fourcc(*"mp4v"),
@@ -444,7 +482,7 @@ def main() -> int:
     if not writer.isOpened():
         raise RuntimeError(f"failed to open video writer: {board_video_path}")
 
-    first_frame_path = out_dir / "collision_force_board_2x2_first_frame.png"
+    first_frame_path = out_dir / f"{output_stem}_first_frame.png"
     board_frames_written = 0
     try:
         for board_idx in range(board_frame_count):
@@ -476,12 +514,14 @@ def main() -> int:
                     colliding_count=int(np.sum(np.asarray(case_payload["npz"]["rigid_force_contact_mask"][sim_frame_index], dtype=np.int32))),
                     first_contact_frame=case_payload["summary"].get("first_force_contact_frame_index"),
                     hold=hold,
+                    playback_label=playback_label,
                 )
                 board[y0 : y0 + panel_h, x0 : x0 + panel_w] = panel
-            writer.write(board)
+            for _ in range(slowdown_factor):
+                writer.write(board)
+                board_frames_written += 1
             if board_idx == 0:
                 cv2.imwrite(str(first_frame_path), board)
-            board_frames_written += 1
             if (board_idx + 1) % 15 == 0 or board_idx + 1 == board_frame_count:
                 print(f"[render_bunny_penetration_collision_board] frame {board_idx + 1}/{board_frame_count}", flush=True)
     finally:
@@ -515,14 +555,21 @@ def main() -> int:
     summary = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "board_video": str(board_video_path),
-        "board_gif": str(out_dir / "collision_force_board_2x2.gif"),
+        "board_gif": str(out_dir / f"{output_stem}.gif"),
         "board_first_frame": str(first_frame_path),
         "render_fps": render_fps,
+        "source_board_frame_count": board_frame_count,
         "board_width": board_w,
         "board_height": board_h,
         "panel_width": panel_w,
         "panel_height": panel_h,
         "board_frame_count": board_frames_written,
+        "playback": {
+            "slowdown_factor": slowdown_factor,
+            "playback_label": playback_label,
+            "source_duration_seconds": float(board_frame_count) / max(render_fps, 1.0e-12),
+            "display_duration_seconds": float(board_frames_written) / max(render_fps, 1.0e-12),
+        },
         "panel_order": ["top_left", "top_right", "bottom_left", "bottom_right"],
         "panel_semantics": {
             "top_left": "box_penalty",
@@ -556,7 +603,7 @@ def main() -> int:
     summary_path = out_dir / "summary.json"
     board_gif_path = _render_gif_from_mp4(
         board_video_path,
-        out_dir / "collision_force_board_2x2.gif",
+        out_dir / f"{output_stem}.gif",
         max_size_mb=BOARD_GIF_MAX_MB,
         quality_profiles=BOARD_GIF_PROFILES,
     )

@@ -161,6 +161,12 @@ Timing:
 - if one case ends earlier, its last valid frame may be held but the hold must
   be annotated
 
+Recommended meeting supplement:
+
+- one additional `4x` slow-motion replay of the same `2 x 2` board
+- same panel semantics and force definitions as the main real-time board
+- the video itself must be explicitly labeled as slow motion
+
 ### 3. Validation Deliverables
 
 - board validator outputs

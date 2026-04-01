@@ -105,11 +105,19 @@ RECALL_THIN_EAR_5X_GIF = PREV_GIF_DIR / "thin_ear_ccd5x_v3.gif"
 RECALL_THIN_EAR_10X_GIF = PREV_GIF_DIR / "thin_ear_ccd10x_v3.gif"
 
 VIEWER_CODE_PATH = ROOT / "Newton" / "phystwin_bridge" / "demos" / "demo_rope_control_realtime_viewer.py"
+RENDER_BUNNY_BOARD_PATH = ROOT / "scripts" / "render_bunny_penetration_collision_board.py"
 NEWTON_CORE_BENCHMARK_PATH = ROOT / "Newton" / "newton" / "asv" / "benchmarks" / "benchmark_mujoco.py"
+NEWTON_CORE_SOLVER_PATH = ROOT / "Newton" / "newton" / "newton" / "_src" / "solvers" / "solver.py"
+NEWTON_CORE_CABLE_EXAMPLE_PATH = ROOT / "Newton" / "newton" / "newton" / "examples" / "cable" / "example_cable_pile.py"
+NEWTON_CORE_SEMIIMPLICIT_PATH = ROOT / "Newton" / "newton" / "newton" / "_src" / "solvers" / "semi_implicit" / "solver_semi_implicit.py"
 PHYSTWIN_SPRING_WARP_CODE_PATH = ROOT / "PhysTwin" / "qqtt" / "model" / "diff_simulator" / "spring_mass_warp.py"
 IMAGE_DIR = MEETING_DIR / "images"
 CODE_REPLAY_SEMANTICS_PNG = IMAGE_DIR / "code_replay_semantics.png"
 CODE_GRANULAR_PROFILE_PNG = IMAGE_DIR / "code_granular_profile.png"
+CODE_PERF_PHYSICS_NEWTON_PNG = IMAGE_DIR / "code_perf_physics_newton.png"
+CODE_PERF_PHYSICS_PHYSTWIN_PNG = IMAGE_DIR / "code_perf_physics_phystwin.png"
+CODE_PERF_EXECUTION_NEWTON_PNG = IMAGE_DIR / "code_perf_execution_newton.png"
+CODE_PERF_EXECUTION_PHYSTWIN_PNG = IMAGE_DIR / "code_perf_execution_phystwin.png"
 CODE_SELFCOLLISION_OBJECT_PNG = IMAGE_DIR / "code_selfcollision_object.png"
 CODE_SELFCOLLISION_GROUND_PNG = IMAGE_DIR / "code_selfcollision_ground.png"
 PERF_ATTRIBUTION_PNG = IMAGE_DIR / "perf_attribution_breakdown.png"
@@ -174,6 +182,12 @@ CURRENT_BUNNY_BOARD_GIF = DECK_GIF_DIR / "bunny_collision_board_2x2.gif"
 CURRENT_BUNNY_BOARD_FIRST_FRAME = (
     CURRENT_BUNNY_RUN / "artifacts" / "collision_force_board" / "collision_force_board_2x2_first_frame.png"
 )
+CURRENT_BUNNY_SLOW_BOARD_DIR = CURRENT_BUNNY_RUN / "artifacts" / "collision_force_board_slow4x"
+CURRENT_BUNNY_SLOW_BOARD_STEM = "collision_force_board_2x2_slow4x"
+CURRENT_BUNNY_SLOW_BOARD_MP4 = CURRENT_BUNNY_SLOW_BOARD_DIR / f"{CURRENT_BUNNY_SLOW_BOARD_STEM}.mp4"
+CURRENT_BUNNY_SLOW_BOARD_SUMMARY = CURRENT_BUNNY_SLOW_BOARD_DIR / "summary.json"
+CURRENT_BUNNY_SLOW_BOARD_PUBLISH_GIF = CURRENT_BUNNY_SLOW_BOARD_DIR / f"{CURRENT_BUNNY_SLOW_BOARD_STEM}.gif"
+CURRENT_BUNNY_SLOW_BOARD_GIF = DECK_GIF_DIR / "bunny_collision_board_2x2_slow4x.gif"
 CURRENT_BUNNY_PANEL_MP4 = {
     "box_penalty": CURRENT_BUNNY_RUN / "artifacts" / "collision_force_board" / "panels" / "box_penalty.mp4",
     "box_total": CURRENT_BUNNY_RUN / "artifacts" / "collision_force_board" / "panels" / "box_total.mp4",
@@ -195,6 +209,7 @@ CURRENT_BUNNY_BOARD_PUBLISH_GIF_PROFILES = [
     (960, 10, 160),
     (960, 8, 128),
 ]
+CURRENT_BUNNY_SLOW_BOARD_PUBLISH_GIF_PROFILES = list(CURRENT_BUNNY_BOARD_PUBLISH_GIF_PROFILES)
 CURRENT_BUNNY_PANEL_PUBLISH_GIF_PROFILES = [
     (960, 15, 224),
     (960, 12, 192),
@@ -209,6 +224,7 @@ CURRENT_BUNNY_BOARD_GIF_PROFILES = [
     (960, 10, 160),
     (960, 8, 128),
 ]
+CURRENT_BUNNY_SLOW_BOARD_GIF_PROFILES = list(CURRENT_BUNNY_BOARD_GIF_PROFILES)
 CURRENT_BUNNY_PANEL_GIF_PROFILES = [
     (832, 10, 160),
     (768, 10, 160),
@@ -489,47 +505,95 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "perf_gif_bullets",
-        "title": "Hypothesis P1: Fair Benchmark Before Optimization",
-        "gif_label": "Same `rope_double_hand` replay case used later for the no-render benchmark.",
+        "title": "H1: On The Same Rope Replay, How Far Is Newton From PhysTwin?",
+        "gif_label": "Same rope case: `rope_double_hand`.",
         "gif_path": PERF_ROPE_CASE_GIF,
-        "note": "Visual anchor only: the speed claim still comes from the no-render benchmark, not from this GIF.",
+        "note": None,
         "bullets": [
-            "**Same replay:** one rope case, one controller trajectory, one `dt/substeps`, one GPU, no render.",
-            "**Throughput first:** A0/A1 vs B0 answer who is slower.",
-            "**Attribution second:** A2/A3/B1 explain why.",
-            "**Optimization last:** no fixes before the benchmark is fair.",
+            "**Question:** on the same rope replay, is Newton slower or faster when render is removed?",
+            "**Controls:** same rope case, same replay, same `dt/substeps`, same GPU, no render.",
+            "**Order:** benchmark first, locate the slow stage second, optimize last.",
         ],
         "transcript": [
-            "这里开始进入第二段 performance analysis。",
-            "这一页现在只保留 hypothesis 和 benchmark contract，本来放在 slide 上的很多解释都移回 transcript。",
-            "左边这个 GIF 只是 visual anchor，提醒老师后面所有 profiling 数字对应的是同一个 `rope_double_hand` replay case，而不是另一个 playground scene。",
-            "真正的 speed claim 不是从 GIF 看出来的，而是从 no-render benchmark 里算出来的。",
-            "这里最重要的 methodological point 只有四个：same case、same controller trajectory、same `dt/substeps`、same GPU，而且主比较必须把 rendering 排除掉。",
-            "所以这次 profiling section 的逻辑固定成两步：先用 Newton A0、Newton A1、PhysTwin B0 回答谁快谁慢；再用 A2、A3、B1 和 Nsight 解释为什么慢。",
-            "这样做是为了避免把 attribution 模式自己的同步开销误当成真实吞吐，也避免把不公平的 GUI path 混进主表。",
-            f"另外 same-case identity 不是口头假设，而是已经检查到 PhysTwin controller trajectory 和 IR 的 max abs diff 是 {B0_PAYLOAD.get('trajectory_parity', {}).get('controller_traj_max_abs_diff', 0.0):.1e}，所以 benchmark 的输入本身是对上的。",
+            "这里开始进入第二段 Newton Interactive Playground 性能 Profiling，而且这次只讲 rope case，不再讲 robot case。",
+            "教授要求的研究顺序很清楚：先建立 apples-to-apples benchmark，再解释 gap，最后才谈优化。",
+            "因此第一步不是优化，而是问一个简单的问题：在同一个 `rope_double_hand` replay、完全一致的物理设定下，去掉 rendering 之后，Newton 到底比 PhysTwin 快还是慢。",
+            "rope case 之所以适合作为这个 benchmark，是因为它是弱碰撞 path。也就是说，如果这里仍然有明显 slowdown，第一嫌疑不应该自动落到 collision model 上。",
+            "公平条件必须写死：same rope case、same controller replay、same `dt`、same `substeps`、same GPU、no render。",
+            f"同 case identity 不是口头假设。当前 committed benchmark 里，PhysTwin controller trajectory 和 IR 的 max abs diff 是 {B0_PAYLOAD.get('trajectory_parity', {}).get('controller_traj_max_abs_diff', 0.0):.1e}，所以输入轨迹本身已经对齐。",
         ],
     },
     {
         "kind": "code_twocol_large",
-        "title": "Source Proof P1: Same Replay, Different Execution Style",
-        "note": "Real upstream source only. Newton core shows the optional CUDA-graph path; PhysTwin rope source captures and replays a forward graph.",
-        "left_label": "Newton core benchmark: optional CUDA graph path, otherwise a substep loop + solver.step.",
-        "left_path": CODE_REPLAY_SEMANTICS_PNG,
-        "right_label": "PhysTwin rope source: use_graph, ScopedCapture, graph, forward_graph.",
-        "right_path": CODE_GRANULAR_PROFILE_PNG,
+        "title": "Source Proof P1: The Rope Core Is Spring Force + Semi-Implicit Update",
+        "note": "Core source only. Both sides advance rope state through spring force and semi-implicit time stepping.",
+        "left_label": "Newton core: particle state is advanced by semi-implicit Euler.",
+        "left_path": CODE_PERF_PHYSICS_NEWTON_PNG,
+        "right_label": "PhysTwin core: rope force is spring + dashpot, then velocity is updated from force.",
+        "right_path": CODE_PERF_PHYSICS_PHYSTWIN_PNG,
         "transcript": [
-            "这一页我按你的反馈改成了真正有意义的 upstream source proof，不再引用我们自己写的 wrapper CLI。",
-            "左边现在引用的是 Newton core 里的 `asv/benchmarks/benchmark_mujoco.py`。它同时保留了三件关键事情：`if self.use_cuda_graph`、`with wp.ScopedCapture()`、以及 fallback 的 `for sim_substeps -> solver.step -> self.simulate()` 路径。",
-            "这段代码的作用不是说 rope benchmark 就是跑这个 benchmark 文件，而是说明 Newton upstream 自己就已经有一套 graph-capture execution idiom；如果不用这条 idiom，默认结构仍然像 repeated substep loop。",
-            "右边保留的是 PhysTwin `spring_mass_warp.py` 里的 upstream source code，而且只保留 `cfg.use_graph`、`ScopedCapture`、`self.graph`、`self.forward_graph` 这些最能说明 execution style 的行。",
-            "所以这页真正要证明的不是我们的 wrapper 参数，而是 upstream code 层面上，两边对 graph replay 的组织方式本来就不同；这才是后面 Nsight interpretation 的源码背景。",
+            "这一页先不谈 graph，不谈优化，只回答一个更基础的问题：rope case 两边是不是在做可比的 spring-driven semi-implicit update。",
+            "",
+            "[Newton/newton/newton/_src/solvers/solver.py : 38-46]",
+            "```python",
+            "# simple semi-implicit Euler. v1 = v0 + a dt, x1 = x0 + v1 dt",
+            "v1 = v0 + (f0 * inv_mass + world_g * wp.step(-inv_mass)) * dt",
+            "v1_mag = wp.length(v1)",
+            "if v1_mag > v_max:",
+            "    v1 *= v_max / v1_mag",
+            "x1 = x0 + v1 * dt",
+            "x_new[tid] = x1",
+            "v_new[tid] = v1",
+            "```",
+            "[What]",
+            "L38 明确把 Newton 粒子积分写成 semi-implicit Euler：先速度、后位置，这给出了最核心的时间推进骨架。",
+            "L39 真正的速度更新是 `v1 = v0 + a dt`，其中加速度来自力除以质量再加重力项，所以它是力驱动更新，不是位置投影黑盒。",
+            "L41-L43 是速度限幅稳定化，它不改变“先求新速度、再推进位置”的积分结构，但会在极端高速时截断数值爆炸。",
+            "L44 把新位置写成 `x1 = x0 + v1 dt`，这正是 semi-implicit Euler 和 explicit Euler 的关键差异：位置用的是新速度而不是旧速度。",
+            "L46-L47 把 `x1` 和 `v1` 写回 state，所以这一段不是抽象描述，而是 Newton core 真正落地的粒子推进算子。",
+            "[Why]",
+            "这段代码的说服力在于，它把 Newton 这一侧的核心时间推进直接对应到物理公式 `v_{t+1}=v_t+a_t\\Delta t, x_{t+1}=x_t+v_{t+1}\\Delta t`。",
+            "也就是说，如果 rope case 的主要工作量确实来自 spring force 和粒子推进，那么 Newton 这边的核心数学并不是一开始就和 PhysTwin 完全不同的另一套东西。",
+            "[Risk]",
+            "这里要诚实地降 claim：这段代码证明的是 Newton core 采用可比的 semi-implicit particle update intent，不是逐字符证明 Newton rope implementation 和 PhysTwin rope implementation 完全同构。",
+            "所以这页不能单独推出“所有公式完全一样”，但足以支撑一个更窄、更诚实的判断：弱碰撞 rope case 的主更新结构不是天然 collision-first。",
+            "",
+            "[PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py : 123-132, 156-160]",
+            "```python",
+            "spring_force = (",
+            "    wp.clamp(wp.exp(spring_Y[tid]), low=spring_Y_min, high=spring_Y_max)",
+            "    * (dis_len / rest - 1.0)",
+            "    * d",
+            ")",
+            "v_rel = wp.dot(v2 - v1, d)",
+            "dashpot_forces = dashpot_damping * v_rel * d",
+            "overall_force = spring_force + dashpot_forces",
+            "...",
+            "all_force = f0 + m0 * wp.vec3(0.0, 0.0, -9.8) * reverse_factor",
+            "a = all_force / m0",
+            "v1 = v0 + a * dt",
+            "v2 = v1 * drag_damping_factor",
+            "```",
+            "[What]",
+            "L123-L127 把 PhysTwin rope 的主内力写成 spring term：弹簧模量乘以应变 `(dis_len / rest - 1)` 再沿当前边方向 `d` 施加。",
+            "L129-L130 再加上 dashpot 阻尼项，也就是相对速度在边方向上的投影乘阻尼系数，这对应一维 Kelvin-Voigt 式的阻尼弹簧近似。",
+            "L132 把 spring 和 dashpot 合成 `overall_force`，说明这一侧的主动力学不是 contact impulse，而是 internal spring-damper force。",
+            "L156-L158 把总力加上重力再除以质量得到加速度 `a`，这一段直接把力学公式 `a = F/m` 写成代码。",
+            "L159 用 `v1 = v0 + a dt` 更新速度，L160 再施加 drag 衰减，所以 PhysTwin 这边的核心推进同样是 force-driven velocity update。",
+            "[Why]",
+            "这段源码真正参与说理的地方在于，它明确告诉我们 rope case 的主要物理量是 spring force、dashpot damping、gravity 和基于 `dt` 的速度推进。",
+            "因此如果当前 benchmark 选的是 weak-collision rope replay，那么首先应该怀疑的是 spring/integration path 的 runtime organization，而不是把 slowdown 直接归罪给 collision model。",
+            "[Risk]",
+            "这里同样要诚实：PhysTwin 这段代码比 Newton 侧展示得更具体，因为它直接把 spring force kernel 写出来了；Newton 侧我们目前展示的是 core integrator，而不是 rope-specific force assembly。",
+            "所以我们在 slide 上只能写“closely comparable semi-implicit rope update intent”，不能夸张成“逐项完全同一个 kernel”。",
         ],
     },
     {
-        "kind": "table",
-        "title": "Result P1: A1 Is Still 3.30x Slower Than B0",
-        "note": "Same `rope_double_hand` replay. No render. RTX 4090.",
+        "kind": "table_gif",
+        "title": "Result P1: On The Fair Rope Replay, Newton A1 Is Still 3.30x Slower",
+        "note": "Same rope case. No render. Same `dt/substeps`. RTX 4090.",
+        "gif_label": "Rope benchmark object",
+        "gif_path": PERF_ROPE_CASE_GIF,
         "columns": ["Config", "Replay Path", "ms/substep", "RTF", "Meaning"],
         "rows": [
             [
@@ -555,44 +619,96 @@ RECALL_SLIDES: list[dict] = [
             ],
         ],
         "transcript": [
-            "这一页保留 table，因为这里的核心就是一个 bounded benchmark result。",
-            "我把 slide note 压短了，只保留同 case、no render、RTX 4090 这三个最重要的 reading keys；更细的 methodology 现在都回到 transcript。",
+            "这张表只回答 throughput gap 本身，不提前解释原因。",
             "完整 rope replay 现在已经做成 same-case apples-to-apples throughput table。264 个 trajectory frame 展开以后是 175421 个 substep，对应 8.77 秒物理时间。",
             f"authoritative 数字很直接：Newton A0 `{_fmt(A0_ROW, 'ms_per_substep_mean', '.6f')} ms/substep`，Newton A1 `{_fmt(A1_ROW, 'ms_per_substep_mean', '.6f')} ms/substep`，PhysTwin B0 `{_fmt(B0_ROW, 'ms_per_substep_mean', '.6f')} ms/substep`。",
-            f"所以这里的结论仍然不变：即使把 controller bridge tax 降下去，Newton 在 clean rope replay 上仍然比 PhysTwin 慢 `{_fmt(A1_ROW, 'slowdown_vs_phystwin_headless', '.3f')}x`。",
-            "这一页不再重复太多 caveat，因为 fairness caveat 已经在前两页讲完了。",
+            "A0 和 A1 的差别只是在 controller target 的组织方式，不是换了一套物理任务。",
+            f"所以这页给出的核心事实是：即使把 repeated controller write 降下来，Newton A1 仍然比 PhysTwin B0 慢 `{_fmt(A1_ROW, 'slowdown_vs_phystwin_headless', '.3f')}x`。",
+        ],
+    },
+    {
+        "kind": "code_twocol_large",
+        "title": "Source Proof P2: The Slow Path Is Runtime Structure, Not Rope Physics",
+        "note": "Core source only. Newton rope-side examples still loop over substeps; PhysTwin rope replay directly captures a graph path.",
+        "left_label": "Newton core solver actually used by the rope viewer: SolverSemiImplicit.step() still executes multiple force/contact stages before integrate_particles.",
+        "left_path": CODE_PERF_EXECUTION_NEWTON_PNG,
+        "right_label": "PhysTwin rope source: use_graph captures replay and keeps a forward_graph path.",
+        "right_path": CODE_PERF_EXECUTION_PHYSTWIN_PNG,
+        "transcript": [
+            "这一页回答的是：如果 rope case 的主物理意图已经是可比的，那么 residual gap 更像出在什么层面。",
+            "",
+            "先把调用链说清楚。我们自己的 realtime viewer 在 `[Newton/phystwin_bridge/demos/demo_rope_control_realtime_viewer.py : 342-347, 738]` 明确实例化并调用的是 `newton.solvers.SolverSemiImplicit`。所以左边这段不是 generic example，而是 rope viewer 真会走到的 Newton core solver path。",
+            "",
+            "[Newton/newton/newton/_src/solvers/semi_implicit/solver_semi_implicit.py : 141-145, 160-165, 172-177]",
+            "```python",
+            "# damped springs",
+            "eval_spring_forces(model, state_in, particle_f)",
+            "# triangle elastic and lift/drag forces",
+            "eval_triangle_forces(model, state_in, control, particle_f)",
+            "...",
+            "# particle-particle interactions",
+            "eval_particle_contact_forces(model, state_in, particle_f)",
+            "# triangle/triangle contacts",
+            "if self.enable_tri_contact:",
+            "    eval_triangle_contact_forces(model, state_in, particle_f)",
+            "...",
+            "# particle shape contact",
+            "eval_particle_body_contact_forces(",
+            "    model, state_in, contacts, particle_f, body_f_work, body_f_in_world_frame=False",
+            ")",
+            "self.integrate_particles(model, state_in, state_out, dt)",
+            "```",
+            "[What]",
+            "L141-L145 说明 `SolverSemiImplicit.step()` 并不是一个单一 rope kernel，而是先后调用多个物理子阶段，其中 rope 相关的第一块就是 damped spring forces。",
+            "L160-L165 说明 solver 内部还会继续串上 particle contact 和 triangle contact 这些阶段；即使当前 rope case 是弱碰撞，这条 stage pipeline 依然存在。",
+            "L172-L177 最后才进入 particle-shape contact 和 `integrate_particles(...)`，也就是力学阶段先累积，再统一推进粒子状态。",
+            "所以左边真正给出的信息是：我们当前 viewer 调到的 Newton core solver path，本身就是 multi-stage step organization，而不是一个只做 rope force 的最小路径。",
+            "[Why]",
+            "这段代码真正参与说理的地方在于，它把“Newton core solver actually used by our rope viewer”这件事讲实了。",
+            "既然 viewer 最终落到的是 `SolverSemiImplicit.step()`，而这条 core path 本身是多阶段串行组织，那么 rope slowdown 的第一怀疑对象就可以自然落到 runtime structure，而不是先落到 spring formula 不一致。",
+            "[Risk]",
+            "这里要诚实的 caveat 变成另外一个问题：这段代码证明的是 solver 内部 stage organization，但它并不单独量化每个 stage 的 wall time 占比。",
+            "所以它只能和 throughput / profiler 证据一起用，不能单独推出 residual gap 的精确比例。",
+            "",
+            "[PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py : 769-802]",
+            "```python",
+            "if cfg.use_graph:",
+            "    if cfg.data_type == \"real\":",
+            "        with wp.ScopedCapture() as capture:",
+            "            self.step()",
+            "            self.calculate_loss()",
+            "        self.graph = capture.graph",
+            "...",
+            "with wp.ScopedCapture() as forward_capture:",
+            "    self.step()",
+            "self.forward_graph = forward_capture.graph",
+            "```",
+            "[What]",
+            "L769-L782 表明 PhysTwin rope source 在 `use_graph` 打开时，会直接把核心 step path capture 成 graph，并保存在 `self.graph` 里。",
+            "L800-L802 进一步保留了一个专门的 `forward_graph`，说明它不仅有训练路径 graph，还有一个明确的前向 replay graph。",
+            "[Why]",
+            "这段代码直接参与后面的 bottleneck 判断，因为它说明 PhysTwin rope core 本身就把 graph replay 当成一等执行路径，而不是外部 profiling harness 临时包出来的技巧。",
+            "结合前一页的 throughput 结果，它给我们的不是最终证明，而是一个很强的结构性解释方向：两边的主要差异更像 runtime organization，而不是 rope physics 本身。",
+            "[Risk]",
+            "这里同样不能过度宣称：这段源码只能证明 PhysTwin core 明确拥有 graph replay 路径，不能单独证明 Newton residual gap 的全部比例都来自 launch structure。",
+            "最后仍然要结合系统级 timing 证据，也就是上一轮 benchmark 里的 A0/A1/B0/B1 和 profiler 结果。",
         ],
     },
     {
         "kind": "body",
-        "title": "Conclusion P2: Bridge Tax Exists, But Collision Is Still Tiny",
+        "title": "Takeaway P1: Measure The Gap First, Locate The Slow Stage Second",
         "bullets": [
-            "**Observation:** precomputing controller targets makes Newton `1.87x` faster.",
-            "**Observation:** collision is only about `0.004 ms/substep`; most cost is elsewhere.",
-            "**Takeaway:** the remaining gap is not mainly a collision problem.",
+            "**Measured gap:** on the same rope replay, Newton A1 is still `3.30x` slower than PhysTwin B0.",
+            "**Partial answer:** A0 -> A1 gives `1.87x` speedup, so controller-write overhead is real but not the whole gap.",
+            "**Takeaway:** in this weak-collision rope case, profile runtime organization before any targeted optimization.",
         ],
         "transcript": [
-            "这一页不再用数据图，而是只保留 progress statement。",
-            f"首先 H1 还是一样硬：A0 到 A1 是 `{A0_ROW.get('ms_per_substep_mean', 0.0) / max(A1_ROW.get('ms_per_substep_mean', 1.0e-12), 1.0e-12):.3f}x` 的提升，所以 controller bridge tax 是真实存在的。",
-            f"但 bridge tax 不是全部。Newton A3 的 precomputed attribution 里，bridge 是 `{A3_BRIDGE_MS:.3f} ms/substep`，internal force `{A3_INTERNAL_MS:.3f}`，integration `{A3_INTEGRATION_MS:.3f}`，collision 只有 `{A3_COLLISION_MS:.3f}`，还剩 `{A3_UNEXPLAINED_MS:.3f}` 的 runtime overhead。",
-            f"右边的 PhysTwin B1 frame-level attribution 则说明它的大头基本就是 simulator launch，本身大约 `{B1_SIM_LAUNCH_MS:.3f} ms/frame`；controller target `{B1_CONTROLLER_FRAME_MS:.3f}` 和 state reset `{B1_STATE_RESET_MS:.3f}` 都是小头。",
-            "所以这一页的真正 point 还是结构：bridge tax 确实存在，但 clean rope replay 的 remaining gap 不是 collision story。",
-        ],
-    },
-    {
-        "kind": "body",
-        "title": "Conclusion P3: The Residual Gap Still Looks Like Launch Structure",
-        "bullets": [
-            "**Newton:** `cuLaunchKernel 77.2%`, `cudaMemsetAsync 21.5%`.",
-            "**PhysTwin:** `cudaGraphLaunch 92.6%`, `cuCtxSynchronize 2.9%`.",
-            "**Takeaway:** optimize batching / graph-like replay before blaming collision.",
-        ],
-        "transcript": [
-            "这一页也不再用数据图，只保留最终解释。",
-            "Newton A1 的 CUDA API 时间里，`cuLaunchKernel` 占到 77.2%，其余主要是 `cudaMemsetAsync` 21.5%。这说明 Newton replay 仍然像 many decoupled launches。",
-            "PhysTwin B0 的 CUDA API 时间里，92.6% 是 `cudaGraphLaunch`，`cuCtxSynchronize` 只有 2.9%。所以它不是 GUI path，而是 graph-captured replay execution style。",
-            "这页真正要堵住的反驳是：如果 residual gap 主要来自 collision，Nsight 不会长成现在这样；现在它长成了 launch structure 的样子。",
-            "因此 optimization implication 保持不变：先保留 precomputed writes，再优先研究更 graph-like 或更 batched 的 Newton replay，弱接触 rope profiling 继续独立处理。",
+            "这一页把 profiling 逻辑收束成真正的研究顺序，而不是内部优化待办。",
+            f"第一，公平 benchmark 已经把 gap 定量出来：Newton A1 相对 PhysTwin B0 的 slowdown 是 `{_fmt(A1_ROW, 'slowdown_vs_phystwin_headless', '.3f')}x`。",
+            f"第二，A0 到 A1 的 speedup 是 `{A0_ROW.get('ms_per_substep_mean', 0.0) / max(A1_ROW.get('ms_per_substep_mean', 1.0e-12), 1.0e-12):.3f}x`，所以 controller-write overhead 确实存在，但它不能独自解释全部差距。",
+            f"第三，A3 里 collision 只有 `{A3_COLLISION_MS:.3f} ms/substep`，而 rope case 本身又是弱碰撞，这使得 collision-first explanation 没有说服力。",
+            "所以这段 profiling 的正确收束方式不是“马上去优化”，而是先承认研究顺序：先 benchmark，后定位 bottleneck，再做针对性优化。",
+            "只有当 bottleneck explanation 被讲清楚以后，后面的优化目标，例如更 graph-like 的 replay、更少的 launch、更少的 host/device 往返，才会有说服力。",
         ],
     },
     {
@@ -657,6 +773,18 @@ RECALL_SLIDES: list[dict] = [
             "它的结构非常直接：左上是 box penalty，右上是 box total，左下是 bunny penalty，右下是 bunny total。",
             "所以这一页的价值不是再讲一个局部 mechanism patch，而是把 box versus bunny、penalty versus total 这两个对比同时压进一个 meeting-readable clip。",
             "如果现场只想停一页讲 penetration，我现在会优先停这一页，因为它最接近老师要的最终 visual comparison。",
+        ],
+    },
+    {
+        "kind": "image",
+        "title": "Result F4: A 4x Slow-Motion Board Makes Contact Development Easier To Read",
+        "note": "Same board as F3, but the video is slowed 4x and labeled `4x slow motion` inside the clip.",
+        "path": CURRENT_BUNNY_SLOW_BOARD_GIF,
+        "transcript": [
+            "这一页是 F3 的补充版本，不改实验设定，只改播放节奏。",
+            "也就是说，self-collision 还是 OFF，cloth total mass 还是 0.1 kg，rigid target mass 还是 0.5 kg。",
+            "这里放的是同一套 `2 x 2` board，但是视频整体放慢四倍，而且每个 panel 里都显式写了 `4x slow motion`。",
+            "这页的作用不是替代正常速度版本，而是让老师在会议里更容易看清 pre-contact、first contact 和 penetration growth 的过渡。",
         ],
     },
     {
@@ -772,24 +900,44 @@ def _prepare_generated_assets() -> None:
         _ensure_resized_gif(src, out, width=width, fps=fps, max_colors=max_colors)
     _ensure_resized_gif(RECALL_ROPE_GIF_SRC, PERF_ROPE_CASE_GIF, width=720, fps=8, max_colors=96)
     _code_excerpt_image(
-        NEWTON_CORE_BENCHMARK_PATH,
-        "newton_core_graph_path",
+        NEWTON_CORE_SOLVER_PATH,
+        "newton_core_particle_update",
         _extract_code_segments(
-            NEWTON_CORE_BENCHMARK_PATH,
-            [(338, 345), (348, 352), (358, 362)],
-            highlight_lines={339, 344, 349, 351, 360},
+            NEWTON_CORE_SOLVER_PATH,
+            [(38, 46)],
+            highlight_lines={38, 39, 44, 46},
         ),
-        CODE_REPLAY_SEMANTICS_PNG,
+        CODE_PERF_PHYSICS_NEWTON_PNG,
     )
     _code_excerpt_image(
         PHYSTWIN_SPRING_WARP_CODE_PATH,
-        "phystwin_graph_capture",
+        "phystwin_rope_force_update",
         _extract_code_segments(
             PHYSTWIN_SPRING_WARP_CODE_PATH,
-            [(768, 780), (800, 802)],
-            highlight_lines={769, 772, 779, 800, 802},
+            [(123, 132), (156, 160)],
+            highlight_lines={123, 130, 132, 157, 159},
         ),
-        CODE_GRANULAR_PROFILE_PNG,
+        CODE_PERF_PHYSICS_PHYSTWIN_PNG,
+    )
+    _code_excerpt_image(
+        NEWTON_CORE_SEMIIMPLICIT_PATH,
+        "newton_semimplicit_step_path",
+        _extract_code_segments(
+            NEWTON_CORE_SEMIIMPLICIT_PATH,
+            [(141, 145), (160, 165), (172, 177)],
+            highlight_lines={141, 145, 160, 173, 177},
+        ),
+        CODE_PERF_EXECUTION_NEWTON_PNG,
+    )
+    _code_excerpt_image(
+        PHYSTWIN_SPRING_WARP_CODE_PATH,
+        "phystwin_graph_replay_path",
+        _extract_code_segments(
+            PHYSTWIN_SPRING_WARP_CODE_PATH,
+            [(769, 782), (800, 802)],
+            highlight_lines={769, 772, 780, 782, 802},
+        ),
+        CODE_PERF_EXECUTION_PHYSTWIN_PNG,
     )
     _code_excerpt_image(
         PHYSTWIN_SPRING_WARP_CODE_PATH,
@@ -815,12 +963,20 @@ def _prepare_generated_assets() -> None:
         _ensure_gif(src, ACCEPTED_PHENO_GIF[name], width=640, fps=8, max_colors=96)
     if CURRENT_BUNNY_BOARD_MP4.exists():
         _ensure_current_bunny_publish_gifs()
+        _ensure_current_bunny_slow_board()
         _ensure_gif(
             CURRENT_BUNNY_BOARD_MP4,
             CURRENT_BUNNY_BOARD_GIF,
             max_size_mb=DEFAULT_MAX_GIF_MB,
             quality_profiles=CURRENT_BUNNY_BOARD_GIF_PROFILES,
         )
+        if CURRENT_BUNNY_SLOW_BOARD_MP4.exists():
+            _ensure_gif(
+                CURRENT_BUNNY_SLOW_BOARD_MP4,
+                CURRENT_BUNNY_SLOW_BOARD_GIF,
+                max_size_mb=DEFAULT_MAX_GIF_MB,
+                quality_profiles=CURRENT_BUNNY_SLOW_BOARD_GIF_PROFILES,
+            )
         for name, src in CURRENT_BUNNY_PANEL_MP4.items():
             _ensure_gif(
                 src,
@@ -1389,6 +1545,46 @@ def _ensure_current_bunny_publish_gifs() -> None:
         )
 
 
+def _ensure_current_bunny_slow_board() -> None:
+    if not CURRENT_BUNNY_BOARD_SUMMARY.exists():
+        return
+    main_summary = json.loads(CURRENT_BUNNY_BOARD_SUMMARY.read_text(encoding="utf-8"))
+    box_summary = Path(str(main_summary["cases"]["box_control"]["detector_summary_path"])).expanduser().resolve()
+    bunny_summary = Path(str(main_summary["cases"]["bunny_baseline"]["detector_summary_path"])).expanduser().resolve()
+    slow_inputs = [CURRENT_BUNNY_BOARD_SUMMARY, box_summary, bunny_summary, RENDER_BUNNY_BOARD_PATH]
+    newest_input_mtime = max(path.stat().st_mtime for path in slow_inputs if path.exists())
+    slow_outputs = [CURRENT_BUNNY_SLOW_BOARD_MP4, CURRENT_BUNNY_SLOW_BOARD_PUBLISH_GIF, CURRENT_BUNNY_SLOW_BOARD_SUMMARY]
+    needs_render = any((not path.exists()) or path.stat().st_mtime < newest_input_mtime for path in slow_outputs)
+    if needs_render:
+        CURRENT_BUNNY_SLOW_BOARD_DIR.mkdir(parents=True, exist_ok=True)
+        subprocess.run(
+            [
+                "python",
+                str(RENDER_BUNNY_BOARD_PATH),
+                "--box-summary",
+                str(box_summary),
+                "--bunny-summary",
+                str(bunny_summary),
+                "--out-dir",
+                str(CURRENT_BUNNY_SLOW_BOARD_DIR),
+                "--output-stem",
+                CURRENT_BUNNY_SLOW_BOARD_STEM,
+                "--slowdown-factor",
+                "4",
+                "--playback-label",
+                "4x slow motion",
+            ],
+            check=True,
+        )
+    elif CURRENT_BUNNY_SLOW_BOARD_MP4.exists():
+        _ensure_gif(
+            CURRENT_BUNNY_SLOW_BOARD_MP4,
+            CURRENT_BUNNY_SLOW_BOARD_PUBLISH_GIF,
+            max_size_mb=DEFAULT_MAX_GIF_MB,
+            quality_profiles=CURRENT_BUNNY_SLOW_BOARD_PUBLISH_GIF_PROFILES,
+        )
+
+
 def _ensure_resized_gif(
     src_path: Path,
     out_path: Path,
@@ -1640,6 +1836,82 @@ def _table(prs: Presentation, title: str, columns: list[str], rows: list[list[st
                 bold=(c == 0),
                 align_center=(c != 0),
                 fill_color=fill,
+            )
+
+
+def _table_with_gif(
+    prs: Presentation,
+    title: str,
+    columns: list[str],
+    rows: list[list[str]],
+    gif_path: Path,
+    gif_label: str,
+    *,
+    note: str | None = None,
+) -> None:
+    slide = prs.slides.add_slide(_layout(prs))
+    _clear_placeholders(slide)
+    title_box = slide.shapes.add_textbox(REF_TITLE_LEFT, REF_TITLE_TOP, REF_TITLE_W, REF_TITLE_H)
+    _set_title_textbox(title_box, title, size_pt=28)
+    if note:
+        _add_label(slide, 420000, 1180000, 5600000, 220000, note, font_size=11, bold=False)
+    _add_label(slide, 6670000, 1500000, 1900000, 220000, gif_label, font_size=11, bold=False)
+    _add_pic(slide, gif_path, 6420000, 1780000, 2250000, 1380000)
+
+    table_left = 420000
+    table_top = 1540000
+    table_w = 5750000
+    table_h = 3150000
+    table_shape = slide.shapes.add_table(len(rows) + 1, len(columns), table_left, table_top, table_w, table_h)
+    table = table_shape.table
+    widths = [
+        int(table_w * 0.14),
+        int(table_w * 0.34),
+        int(table_w * 0.16),
+        int(table_w * 0.12),
+        int(table_w * 0.24),
+    ]
+    for idx, width in enumerate(widths[: len(columns)]):
+        table.columns[idx].width = width
+
+    def set_cell_text(
+        cell,
+        text: str,
+        *,
+        bold: bool,
+        align_center: bool = False,
+        fill_color: RGBColor | None = None,
+    ) -> None:
+        cell.fill.solid()
+        cell.fill.fore_color.rgb = fill_color or RGBColor(0xFF, 0xFF, 0xFF)
+        cell.text_frame.clear()
+        cell.text_frame.word_wrap = True
+        p = cell.text_frame.paragraphs[0]
+        _set_marked_paragraph(
+            p,
+            text,
+            font_name="Arial",
+            font_size=13,
+            color=RGBColor(0x22, 0x22, 0x22),
+            accent_color=RGBColor(0x1F, 0x4E, 0x79),
+            bold_default=bold,
+        )
+        if align_center:
+            p.alignment = 1
+
+    for c, heading in enumerate(columns):
+        header = table.cell(0, c)
+        header.fill.solid()
+        header.fill.fore_color.rgb = RGBColor(0xD9, 0xE2, 0xF3)
+        set_cell_text(header, heading, bold=True, align_center=True)
+
+    for r, row in enumerate(rows, start=1):
+        for c, value in enumerate(row):
+            set_cell_text(
+                table.cell(r, c),
+                str(value),
+                bold=(c == 0),
+                align_center=(c != 0),
             )
 
 
@@ -1933,6 +2205,16 @@ def build_recall_only_deck(prs: Presentation, slides: list[dict] | None = None) 
                 slide["title"],
                 slide["columns"],
                 slide["rows"],
+                note=slide.get("note"),
+            )
+        elif kind == "table_gif":
+            _table_with_gif(
+                prs,
+                slide["title"],
+                slide["columns"],
+                slide["rows"],
+                slide["gif_path"],
+                slide["gif_label"],
                 note=slide.get("note"),
             )
         elif kind == "image":

@@ -162,3 +162,44 @@
     directory
   - separately transcodes slide-local deck GIFs from the same mp4 sources
   - avoids using deck compression as the only surviving GIF copy
+
+## 2026-04-01 Slow-Motion Supplement
+
+- Added a supplemental `4x` slow-motion bunny `2 x 2` board under the current
+  canonical run:
+  - `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/artifacts/collision_force_board_slow4x/`
+- Artifact paths:
+  - publish mp4:
+    `.../collision_force_board_2x2_slow4x.mp4`
+  - publish gif:
+    `.../collision_force_board_2x2_slow4x.gif`
+  - summary:
+    `.../summary.json`
+  - local replay helpers:
+    - `.../README.md`
+    - `.../command.sh`
+- Slow-motion semantics:
+  - same `box penalty / box total / bunny penalty / bunny total` board as the
+    canonical real-time version
+  - same detector bundles and force definitions
+  - playback slowed by frame repetition with:
+    - `slowdown_factor = 4`
+    - `playback_label = 4x slow motion`
+  - source duration:
+    `2.9 s`
+  - displayed duration:
+    `11.6 s`
+- Slide deck update:
+  - added a new supplemental bunny slide using the slow-motion board gif:
+    - `Result F4: A 4x Slow-Motion Board Makes Contact Development Easier To Read`
+  - regenerated:
+    - `formal_slide/meeting_2026_04_01/bridge_meeting_20260401.pptx`
+    - `formal_slide/meeting_2026_04_01/transcript.md`
+    - `formal_slide/meeting_2026_04_01/transcript.pdf`
+- Size checks:
+  - publish slow gif:
+    `8.19 MB`
+  - deck slow gif:
+    `4.39 MB`
+  - updated pptx:
+    `55.7 MB`

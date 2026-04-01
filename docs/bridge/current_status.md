@@ -86,6 +86,12 @@ It should stay current and be updated whenever a task changes state.
     `rigid_force_contact_mask = geom_contact_mask AND target_force_contact_mask`
   - penalty force now uses target-only explicit re-evaluation with
     `add_ground_plane=False`
+  - supplemental slow-motion board now also exists under:
+    - `artifacts/collision_force_board_slow4x/`
+    - same four-panel semantics
+    - same force definitions
+    - `4x slow motion` label burned into the video
+    - slide deck now includes this as an extra meeting-readable replay page
 - No-render realtime profiling exists for the interactive viewer and already
   separates collision, solver-path, and render interpretations.
 - A canonical apples-to-apples rope performance bundle now exists:

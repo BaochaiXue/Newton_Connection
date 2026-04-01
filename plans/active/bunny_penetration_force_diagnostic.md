@@ -38,6 +38,15 @@
   - `scripts/validate_bunny_force_visualization.py --run-dir <run_dir>`
   - `scripts/validate_experiment_artifacts.py <run_dir> ...`
 
+## Artifact Delivery Rule
+
+- promoted result bundles must keep publish-quality GIFs alongside the promoted
+  mp4 artifacts, with each single GIF `< 40 MB`
+- slide builders may generate separate deck-local GIFs under the meeting
+  `gif/` directory to keep the final `pptx` `< 100 MB`
+- deck compression must not replace or downscale the publish-quality GIFs in
+  the result bundle
+
 ## Stop-And-Fix Rule
 
 If any of these fail, do not promote the run:

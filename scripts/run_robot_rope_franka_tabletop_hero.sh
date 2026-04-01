@@ -39,25 +39,31 @@ COMMON_ARGS=(
   --viewer-headless
   --no-make-gif
   --anchor-count-per-end 2
-  --ik-target-blend 0.35
+  --ik-target-blend 0.20
   --auto-set-weight 3.0
-  --tabletop-preroll-settle-seconds 0.0
+  --tabletop-initial-pose tabletop_curve
+  --tabletop-preroll-settle-seconds 2.0
   --tabletop-preroll-damping-scale 6.0
-  --tabletop-settle-seconds 0.5
-  --tabletop-approach-seconds 0.8
-  --tabletop-push-seconds 0.8
-  --tabletop-hold-seconds 0.2
-  --tabletop-retract-seconds 0.5
-  --tabletop-rope-height 0.19
+  --tabletop-settle-seconds 0.8
+  --tabletop-approach-seconds 1.4
+  --tabletop-push-seconds 2.4
+  --tabletop-hold-seconds 0.4
+  --tabletop-retract-seconds 1.0
+  --tabletop-rope-height 0.156
   --tabletop-table-top-z 0.120
   --tabletop-table-hx 0.42
   --tabletop-table-hy 0.24
   --tabletop-table-hz 0.020
-  --tabletop-robot-base-offset -0.56 -0.24 0.10
-  --tabletop-push-start-offset -0.42 -0.22 0.24
-  --tabletop-push-contact-offset -0.16 -0.12 0.08
-  --tabletop-push-end-offset 0.08 -0.10 0.08
-  --tabletop-retract-offset 0.18 -0.24 0.18
+  --tabletop-robot-base-offset -0.56 -0.22 0.10
+  --tabletop-push-start-offset -0.10 0.06 0.0
+  --tabletop-push-contact-offset -0.04 0.04 0.0
+  --tabletop-push-end-offset 0.10 0.04 0.0
+  --tabletop-retract-offset 0.14 -0.06 0.0
+  --tabletop-approach-clearance-z 0.18
+  --tabletop-contact-clearance-z 0.025
+  --tabletop-push-clearance-z 0.018
+  --tabletop-retract-clearance-z 0.14
+  --tabletop-ee-offset-z 0.22
   "$@"
 )
 
