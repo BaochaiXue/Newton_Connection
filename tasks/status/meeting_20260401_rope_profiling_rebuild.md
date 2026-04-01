@@ -10,6 +10,13 @@
 
 - Created a dedicated viewer end-to-end benchmark script:
   - `scripts/benchmark_newton_rope_viewer_end_to_end.py`
+- Added an explicit old-vs-new visible viewer comparison:
+  - old baseline viewer path:
+    - `results/rope_perf_apples_to_apples/newton/E0_viewer_baseline_end_to_end/`
+    - `RTF ≈ 0.692x`
+  - current precomputed viewer path:
+    - `results/rope_perf_apples_to_apples/newton/E1_viewer_end_to_end/`
+    - `RTF ≈ 1.262x`
 - Refreshed canonical E1 under:
   - `results/rope_perf_apples_to_apples/newton/E1_viewer_end_to_end/`
 - Regenerated the rope apples-to-apples summary so the profiling section can

@@ -126,6 +126,7 @@ PERF_ROPE_CASE_GIF = DECK_GIF_DIR / "rope_perf_case_anchor.gif"
 
 ROPE_PERF_ROOT = ROOT / "results" / "rope_perf_apples_to_apples"
 ROPE_PERF_SUMMARY_JSON = ROPE_PERF_ROOT / "summary.json"
+ROPE_PERF_E0_VIEWER_SUMMARY_JSON = ROPE_PERF_ROOT / "newton" / "E0_viewer_baseline_end_to_end" / "summary.json"
 
 
 def _load_results_meta(task_slug: str) -> dict:
@@ -325,7 +326,14 @@ def _load_rope_perf_summary() -> dict:
     return json.loads(ROPE_PERF_SUMMARY_JSON.read_text(encoding="utf-8"))
 
 
+def _load_optional_json(path: Path) -> dict:
+    if not path.exists():
+        return {}
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 ROPE_PERF_SUMMARY = _load_rope_perf_summary()
+E0_VIEWER_SUMMARY = _load_optional_json(ROPE_PERF_E0_VIEWER_SUMMARY_JSON)
 ROPE_PERF_ROWS = {row["stage"]: row for row in ROPE_PERF_SUMMARY.get("rows", [])}
 
 
@@ -394,11 +402,15 @@ A3_UNEXPLAINED_MS = max(
 B1_CONTROLLER_FRAME_MS = float(B1_AGG.get("controller_target", {}).get("mean_of_run_means_ms", 0.0))
 B1_SIM_LAUNCH_MS = float(B1_AGG.get("simulator_launch", {}).get("mean_of_run_means_ms", 0.0))
 B1_STATE_RESET_MS = float(B1_AGG.get("state_reset", {}).get("mean_of_run_means_ms", 0.0))
+E0_VIEWER_FPS = float(E0_VIEWER_SUMMARY.get("viewer_fps_mean", 0.0))
+E0_VIEWER_RTF = float(E0_VIEWER_SUMMARY.get("rtf_mean", 0.0))
+E0_VIEWER_WALL_MS = float(E0_VIEWER_SUMMARY.get("wall_ms_mean", 0.0))
 E1_VIEWER_FPS = float(E1_PAYLOAD.get("viewer_fps_mean", 0.0))
 A0_VS_B0 = float(A0_ROW.get("ms_per_substep_mean", 0.0)) / max(float(B0_ROW.get("ms_per_substep_mean", 1.0e-12)), 1.0e-12)
 A1_VS_B0 = float(A1_ROW.get("ms_per_substep_mean", 0.0)) / max(float(B0_ROW.get("ms_per_substep_mean", 1.0e-12)), 1.0e-12)
 A0_TO_A1 = float(A0_ROW.get("ms_per_substep_mean", 0.0)) / max(float(A1_ROW.get("ms_per_substep_mean", 1.0e-12)), 1.0e-12)
 A1_TO_E1 = float(E1_ROW.get("wall_ms_mean", 0.0)) / max(float(A1_ROW.get("wall_ms_mean", 1.0e-12)), 1.0e-12)
+E0_TO_E1 = E0_VIEWER_WALL_MS / max(float(E1_ROW.get("wall_ms_mean", 1.0e-12)), 1.0e-12)
 A3_POST_BRIDGE_MS = A3_INTERNAL_MS + A3_INTEGRATION_MS + A3_UNEXPLAINED_MS
 
 RECALL_SLIDES: list[dict] = [
@@ -509,22 +521,23 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "table_gif",
-        "title": "H1: Why is rope profiling relevant to the real viewer?",
-        "note": "Same rope case and same replay semantics. E1 uses the visible `ViewerGL` render path; E2 removes rendering but keeps the same replay.",
+        "title": "H1: Why did the rope viewer miss realtime before, and why does it reach realtime now?",
+        "note": "All three rows use the same rope case and the same replay semantics. Only the replay path or rendering setting changes.",
         "gif_label": "Same rope replay object",
         "gif_path": PERF_ROPE_CASE_GIF,
         "columns": ["Measurement", "Value", "What it means"],
         "rows": [
-            ["Visible viewer, render ON (E1)", f"FPS={E1_VIEWER_FPS:.3f} / RTF={_fmt(E1_ROW, 'rtf_mean', '.3f')}x", "the practical viewer path is already slightly faster than real time on this rope case"],
-            ["Same replay, render OFF (E2 = A1)", f"RTF={_fmt(A1_ROW, 'rtf_mean', '.3f')}x", "turning rendering off adds only modest headroom"],
-            ["Viewer ON vs render OFF", f"{A1_TO_E1:.2f}x wall-time slowdown", "rendering is not the main source of cost on this rope replay"],
+            ["Old viewer path, render ON", f"FPS={E0_VIEWER_FPS:.2f} / RTF={E0_VIEWER_RTF:.3f}x", "baseline controller replay path misses realtime"],
+            ["Current viewer path, render ON", f"FPS={E1_VIEWER_FPS:.2f} / RTF={_fmt(E1_ROW, 'rtf_mean', '.3f')}x", "precomputed controller replay path reaches realtime"],
+            ["Current path, render OFF", f"RTF={_fmt(A1_ROW, 'rtf_mean', '.3f')}x", "rendering adds only a modest extra cost"],
         ],
         "transcript": [
-            "这一页先回答第一个最实际的问题：为什么 rope profiling 值得讲，而且它和 real viewer 到底有什么关系。",
-            "这次我先做了一个新的 E1 experiment。它不是 no-render benchmark，而是同一个 `rope_double_hand`、同一条 replay trajectory、同样的 `dt` 和 `667` 个 substeps，但是把 visible `ViewerGL` render path 打开，直接量 end-to-end viewer speed。",
-            f"结果先说人话：这个 rope viewer 在当前 workstation 上并没有掉到 real time 以下。E1 的 `viewer FPS` 大约是 `{E1_VIEWER_FPS:.2f}`，`RTF` 大约是 `{_fmt(E1_ROW, 'rtf_mean', '.3f')}x`。把同一条 replay 换成 render OFF 的 A1 以后，wall time 只再快了大约 `{A1_TO_E1:.2f}x`。",
-            "所以 profiling 的价值不是证明『rope viewer 完全跑不动』，而是更准确地回答：如果这个 viewer 还需要更多 headroom，优先级到底应该放在 rendering，还是放在 simulator replay 本身。",
-            "这页的边界也要讲清楚：E1 只回答当前 rope case 的 real-viewer relation。它不代表所有更重的 contact scene 都已经没问题，也不替代后面和 PhysTwin 的 apples-to-apples benchmark。",
+            "这一页先直接回答你刚才提的 practical question：为什么我们原来的 rope viewer 到不了 realtime，现在又为什么能到 realtime。",
+            "这里我专门补了一个旧路径对照实验。三行都还是同一个 `rope_double_hand`、同一条 replay trajectory、同样的 `dt` 和 `667` 个 substeps。区别只在于 Newton 侧 replay feeding 的实现，以及有没有把 rendering 打开。",
+            f"旧的 visible viewer 路径，也就是 baseline controller replay path，`viewer FPS` 大约是 `{E0_VIEWER_FPS:.2f}`，`RTF` 只有 `{E0_VIEWER_RTF:.3f}x`，所以它确实达不到 realtime。现在的 visible viewer 路径换成 precomputed controller replay 以后，`viewer FPS` 大约是 `{E1_VIEWER_FPS:.2f}`，`RTF` 变成 `{_fmt(E1_ROW, 'rtf_mean', '.3f')}x`，所以它已经能过 realtime。",
+            f"这两条 visible-viewer row 的核心区别，不是 physics 变了，也不是场景变了，而是 controller replay feeding 变了。我们把原来每个 substep 都要重复做的 interpolation 和 state write 预先展开，所以 viewer end-to-end wall time 大约改善了 `{E0_TO_E1:.2f}x`。",
+            f"再和当前 path 的 render OFF 行放在一起看，A1 的 `RTF` 还能到 `{_fmt(A1_ROW, 'rtf_mean', '.3f')}x`。这说明现在 viewer 能过 realtime，不是因为突然把 rendering 变得特别轻了，而是因为 replay path 本身已经先被减负。",
+            "所以 profiling 的价值就非常直接：它不是在绕开 real viewer，而是在解释 real viewer 为什么以前慢，以及为什么现在终于能过 realtime。边界是，这个结论只针对当前 clean rope replay case，不自动推广到所有更复杂的 contact scene。",
         ],
     },
     {
@@ -607,7 +620,7 @@ RECALL_SLIDES: list[dict] = [
         "transcript": [
             "这一页专门把 A0 和 A1 讲清楚，因为如果这里讲不明白，后面的推导都会很含糊。",
             "A0 和 A1 不是两个随便取的配置名。它们测的是同一条 rope replay、同一套 physics、同一组 `dt` 和 substeps。唯一想隔离出来的问题是：把同一条 replay trajectory 喂进 Newton，本身要花多少额外时间。",
-            f"结果是 A0 到 A1 有 `{A0_TO_A1:.2f}x` 的 speedup，所以 controller replay overhead 的确存在。同步 attribution 里，这部分大约是 `{A3_BRIDGE_MS:.3f} ms/substep`。",
+            f"结果是 A0 到 A1 有 `{A0_TO_A1:.2f}x` 的 speedup，所以 controller replay overhead 的确存在。这里所谓的方法，不是换 physics，而是把 controller target 和 velocity 先按 substep 预计算好，避免每一步都重复做 interpolation 和写状态。同步 attribution 里，这部分大约是 `{A3_BRIDGE_MS:.3f} ms/substep`。",
             f"但这不是全部答案，因为把这部分降下来以后，Newton A1 相对 PhysTwin B0 还是慢 `{A1_VS_B0:.2f}x`。而且 viewer ON 相对 A1 render OFF 只慢 `{A1_TO_E1:.2f}x`，这说明 replay overhead 和 runtime organization 的问题，量级上比单纯 render cost 更值得先看。",
             "这页对 real viewer 的价值很直接：如果只优化 controller feeding，viewer 会变好一些，但不会把同 case 的 Newton-vs-PhysTwin headroom gap 自动消掉。它的边界是，这个结论只针对 clean rope replay，不是对所有 scene 的一刀切判断。",
         ],
@@ -873,8 +886,8 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "twocol",
-        "title": "Conclusion R1: Native Tabletop Push Is Now Defendable",
-        "common_settings": "`demo_robot_rope_franka.py` | `tabletop_push_hero` | fixed `sim_dt=5e-5`, `substeps=667` | native finger push baseline, not full manipulation.",
+        "title": "Conclusion R1: Native Tabletop Push Is Defendable, Not Full 2-Way Coupling",
+        "common_settings": "`demo_robot_rope_franka.py` | `tabletop_push_hero` | fixed `sim_dt=5e-5`, `substeps=667` | real native finger contact, but robot motion is still commanded open-loop.",
         "left_label": "Hero view\npromoted `c10` contact-fix run",
         "left_path": ROBOT_TABLETOP_HERO_GIF,
         "right_label": "Validation view\nsame promoted run",
@@ -883,8 +896,9 @@ RECALL_SLIDES: list[dict] = [
             "最后一段是 robotic with deformable objects。",
             "这一章今天的可 defend 结论不再是 release/drop baseline，而是 native tabletop push baseline 已经成立，所以 robot-deformable chapter 至少有了一个更直接的 contact story。",
             "更具体地说，它用 `demo_robot_rope_franka.py` 里的 `tabletop_push_hero` 证明了：native Franka、native tabletop、PhysTwin rope 同时可见，rope 在 visible clip 开始前已经 settle，然后 robot 的 own finger / claw 在桌面高度接近、接触、再推动 rope lateral motion。",
+            "但这页也必须明确写清楚：它还不是 full two-way coupling。当前 robot motion 仍然是 demo-side commanded open-loop joint trajectory，rope 会在 Newton 里因为真实接触而响应，但 rope 还不会反过来改变 robot command。",
             "这次比旧版更关键的一点，是 contact-causality 做过修复。新的 promoted `c10` 把 visible first contact 提前，所以“rope 先动、手指后到”的观感明显减弱。",
-            "所以这页的结论是，robotic with deformable objects 这一章现在至少有了一个 native tabletop finger-push baseline，可以保守 defend，但仍然不 overclaim full manipulation。",
+            "所以这页的结论是，robotic with deformable objects 这一章现在至少有了一个 native tabletop finger-push baseline，可以保守 defend 为 real contact baseline，但不能 overclaim 成 full manipulation 或 full bidirectional coupling。",
         ],
     },
 ]
@@ -990,8 +1004,8 @@ def _prepare_generated_assets() -> None:
         "phystwin_object_collision",
         _extract_code_segments(
             PHYSTWIN_SPRING_WARP_CODE_PATH,
-            [(203, 205), (212, 216), (294, 296)],
-            highlight_lines={203, 205, 212, 215, 295},
+            [(196, 200), (203, 205), (212, 220), (294, 296)],
+            highlight_lines={196, 203, 205, 220, 295},
         ),
         CODE_SELFCOLLISION_OBJECT_PNG,
     )
@@ -1000,8 +1014,8 @@ def _prepare_generated_assets() -> None:
         "phystwin_force_ground",
         _extract_code_segments(
             PHYSTWIN_SPRING_WARP_CODE_PATH,
-            [(156, 160), (323, 333), (343, 344)],
-            highlight_lines={157, 159, 323, 343, 344},
+            [(156, 160), (323, 323), (329, 330), (332, 339), (343, 344)],
+            highlight_lines={157, 159, 323, 332, 344},
         ),
         CODE_SELFCOLLISION_FORCE_GROUND_PHYSTWIN_PNG,
     )
@@ -1020,8 +1034,8 @@ def _prepare_generated_assets() -> None:
         "phystwin_collision_graph",
         _extract_code_segments(
             PHYSTWIN_SPRING_WARP_CODE_PATH,
-            [(926, 940), (229, 257)],
-            highlight_lines={928, 929, 930, 256, 257},
+            [(928, 930), (934, 939), (246, 247), (255, 257)],
+            highlight_lines={928, 930, 246, 255, 256},
         ),
         CODE_SELFCOLLISION_TABLE_PHYSTWIN_PNG,
     )
@@ -1031,8 +1045,8 @@ def _prepare_generated_assets() -> None:
         "bridge_matched_contact_scope",
         _extract_code_segments(
             bridge_self_contact_code,
-            [(537, 545), (549, 557)],
-            highlight_lines={542, 544, 549, 553, 557},
+            [(537, 540), (542, 544), (549, 553), (556, 557)],
+            highlight_lines={540, 542, 544, 553, 557},
         ),
         CODE_SELFCOLLISION_MATCHED_BRIDGE_PNG,
     )
@@ -1041,8 +1055,8 @@ def _prepare_generated_assets() -> None:
         "bridge_force_ground",
         _extract_code_segments(
             bridge_self_contact_code,
-            [(263, 267), (660, 670), (680, 681)],
-            highlight_lines={264, 266, 660, 680, 681},
+            [(263, 267), (660, 660), (666, 667), (669, 676), (680, 681)],
+            highlight_lines={264, 266, 660, 669, 681},
         ),
         CODE_SELFCOLLISION_FORCE_GROUND_BRIDGE_PNG,
     )
@@ -1052,8 +1066,8 @@ def _prepare_generated_assets() -> None:
         "bridge_phystwin_collision_table",
         _extract_code_segments(
             bridge_phystwin_stack,
-            [(302, 307), (311, 317), (322, 324)],
-            highlight_lines={302, 312, 315, 322, 323},
+            [(302, 307), (311, 315), (318, 324)],
+            highlight_lines={305, 312, 315, 319, 323},
         ),
         CODE_SELFCOLLISION_TABLE_BRIDGE_PNG,
     )
@@ -1062,8 +1076,8 @@ def _prepare_generated_assets() -> None:
         "phystwin_controller_springs",
         _extract_code_segments(
             PHYSTWIN_SPRING_WARP_CODE_PATH,
-            [(82, 86), (103, 111)],
-            highlight_lines={85, 86, 103, 104, 105},
+            [(82, 86), (103, 105), (109, 111)],
+            highlight_lines={85, 86, 104, 105, 110},
         ),
         CODE_SELFCOLLISION_CONTROLLER_PHYSTWIN_PNG,
     )
@@ -1073,8 +1087,8 @@ def _prepare_generated_assets() -> None:
         "bridge_controller_particles",
         _extract_code_segments(
             bridge_import_code,
-            [(1606, 1615), (1616, 1624)],
-            highlight_lines={1610, 1613, 1615, 1619, 1620},
+            [(1606, 1610), (1613, 1616), (1619, 1623)],
+            highlight_lines={1608, 1610, 1616, 1619, 1620},
         ),
         CODE_SELFCOLLISION_CONTROLLER_BRIDGE_PNG,
     )

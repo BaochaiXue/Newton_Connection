@@ -50,11 +50,20 @@
 
 ## 2026-04-01 Real-Viewer Relevance Update
 
+- Added an explicit old visible-viewer baseline:
+  - `results/rope_perf_apples_to_apples/newton/E0_viewer_baseline_end_to_end/`
+  - old visible viewer path was sub-realtime:
+    - `viewer FPS ≈ 20.75`
+    - `RTF ≈ 0.692x`
 - Added a new E1 benchmark row:
   - `results/rope_perf_apples_to_apples/newton/E1_viewer_end_to_end/`
 - E1 now uses the visible `ViewerGL` render path on the same rope replay:
   - `viewer FPS ≈ 37.85`
   - `RTF ≈ 1.26x`
+- The key enabling method is now stated explicitly in the deck:
+  - switch from the baseline controller replay path to precomputed controller
+    replay feeding, so each substep no longer repeats controller interpolation
+    and state writes
 - The rebuilt deck now makes the practical point explicit:
   - on this rope case, render ON is only about `1.11x` slower than the same
     replay with render OFF
