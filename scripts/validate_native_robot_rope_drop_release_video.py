@@ -1093,12 +1093,26 @@ def main() -> int:
     physics_gate = _assess_physics_gate(summary_payload, physics_payload, ground_tol_mm=args.ground_penetration_tol_mm)
     event_frames = dict(presentation_meta["event_frames"])
     event_frames_with_impact = dict(event_frames)
+    summary_frame_count = int(
+        summary_payload.get("frames")
+        or physics_payload.get("frames")
+        or presentation_report.decoded_frame_count
+        or 0
+    )
     impact_override = physics_gate.get("ground_contact_frame")
     release_override = physics_gate.get("release_frame")
     if impact_override is not None:
-        event_frames_with_impact["impact"] = int(impact_override)
+        mapped = _map_summary_frame_to_video_frame(
+            int(impact_override), summary_frames=summary_frame_count, video_frames=presentation_report.decoded_frame_count
+        )
+        if mapped is not None:
+            event_frames_with_impact["impact"] = int(mapped)
     if release_override is not None:
-        event_frames_with_impact["release"] = int(release_override)
+        mapped = _map_summary_frame_to_video_frame(
+            int(release_override), summary_frames=summary_frame_count, video_frames=presentation_report.decoded_frame_count
+        )
+        if mapped is not None:
+            event_frames_with_impact["release"] = int(mapped)
     event_frames_with_impact["settle"] = event_frames.get("settle")
 
     event_frames_rgb, event_labels, event_keyframes = _event_sheet_frames(
@@ -1119,7 +1133,6 @@ def main() -> int:
         cols=max(1, min(4, len(event_frames_rgb))),
     )
 
-    summary_frames = int(summary_payload.get("frames") or physics_payload.get("frames") or presentation_report.decoded_frame_count or 0)
     release_frame = physics_gate.get("release_frame")
     impact_frame = physics_gate.get("ground_contact_frame")
     release_time_s = physics_gate.get("release_time_s")
@@ -1158,7 +1171,7 @@ def main() -> int:
         "ground_penetration_tolerance_mm": float(args.ground_penetration_tol_mm),
         "presentation_event_frames": event_frames,
         "release_dynamics": presentation_meta["release_dynamics"],
-        "summary_frame_count": summary_frames,
+        "summary_frame_count": summary_frame_count,
         "contact_sheet_path": str(contact_sheet_path),
         "event_sheet_path": str(event_sheet_path),
         "keyframes_dir": str(keyframes_dir),

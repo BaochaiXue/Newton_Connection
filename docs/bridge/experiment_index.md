@@ -141,7 +141,7 @@ lift-release evidence chain.
 
 Current promoted stage-0 run:
 
-- `results/native_robot_rope_drop_release/runs/20260331_040614_native_franka_drag_off_w5_readable`
+- `results/native_robot_rope_drop_release/runs/20260331_232106_native_franka_recoilfix_drag_off_w5`
   - `final_presentation.mp4`
   - `final_debug.mp4`
   - `summary.json`
@@ -149,6 +149,13 @@ Current promoted stage-0 run:
   - `qa/contact_sheet.png`
   - `qa/event_sheet.png`
   - `qa/verdict.md`
+
+Matched drag-ON comparison:
+
+- `results/native_robot_rope_drop_release/runs/20260331_232459_native_franka_recoilfix_drag_on_w5`
+  - `final_presentation.mp4`
+  - `summary.json`
+  - `physics_validation.json`
 
 The promoted robot bundle also keeps bundle-level helpers so future runs can
 be promoted without rediscovering the layout:

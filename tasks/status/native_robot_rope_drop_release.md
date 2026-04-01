@@ -44,3 +44,14 @@
 - The drag effect on the recoil-fixed pair is currently minor
 - The OFF run remains authoritative because it is the simpler baseline and
   already passes the full gate set
+
+## Latest Validation Pass
+
+- Re-ran physics A/B validation into:
+  - `results/native_robot_rope_drop_release/drag_ab_compare.json`
+- Re-ran strict video validation on both promoted runs:
+  - OFF: `runs/20260331_232106_native_franka_recoilfix_drag_off_w5/qa/verdict.md`
+  - ON: `runs/20260331_232459_native_franka_recoilfix_drag_on_w5/qa/verdict.md`
+- Updated the generic artifact validator so `sim/history/` counts as a valid
+  rollout artifact for this demo family, instead of incorrectly requiring only
+  `scene.npz`

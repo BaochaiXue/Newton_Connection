@@ -61,7 +61,16 @@ def main() -> int:
     checks.append(("summary", bool(summaries), "summary.json"))
 
     scenes = _find_any(root, ["scene.npz", "*_scene.npz", "**/scene.npz", "**/*_scene.npz"])
-    checks.append(("scene", bool(scenes), "scene.npz"))
+    rollout_histories = _find_any(
+        root,
+        [
+            "sim/history",
+            "**/sim/history",
+            "sim/history/*.npy",
+            "**/sim/history/*.npy",
+        ],
+    )
+    checks.append(("scene_or_rollout", bool(scenes) or bool(rollout_histories), "scene.npz or sim/history/"))
 
     videos = _find_any(root, ["*.mp4", "**/*.mp4"])
     gifs = _find_any(root, ["*.gif", "**/*.gif"])
@@ -111,6 +120,8 @@ def main() -> int:
         print(f"  - {name}: {status} ({expected})")
     if summaries:
         print(f"  - first summary: {summaries[0]}")
+    if rollout_histories:
+        print(f"  - rollout history: {rollout_histories[0]}")
     if videos:
         print(f"  - video count: {len(videos)}")
     if gifs:

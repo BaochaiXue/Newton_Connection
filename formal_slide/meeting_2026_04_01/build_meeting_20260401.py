@@ -365,14 +365,14 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "twocol",
-        "title": "Hypothesis R0: Native Franka Release/Drop Is A Clean Stage-0 Baseline",
+        "title": "Hypothesis R0: Native Franka Recoil-Fixed Release/Drop Is A Clean Stage-0 Baseline",
         "common_settings": "Progress: the recoil-fixed `drop_release_baseline` now passes settle + kick + gravity + real-ground gates at 1:1 time. OFF is promoted; ON is matched A/B evidence.",
         "left_label": "Drag OFF\npromoted best run",
         "left_path": ROBOT_DROP_BASELINE_OFF_GIF,
         "right_label": "Drag ON\nmatched A/B run",
         "right_path": ROBOT_DROP_BASELINE_ON_GIF,
         "transcript": [
-            "这一页专门讲清楚 robot demo 到底是什么。",
+            "这一页专门讲清楚 recoil-fixed 的 robot demo 到底是什么。",
             "它不是 final robot policy，也不是 full two-way-coupling success；它只是 `demo_robot_rope_franka.py` 里新增的 `drop_release_baseline` task preset。",
             "这个 demo 的作用很窄：先确认 native Franka 在画面里，rope 先被 support，再 release，之后是 gravity-driven free fall，最后落到 real ground collider 上，而且 presentation video 保持 1:1 time。",
             "这次真正的 progress 不是“又录了一条视频”，而是 release recoil 这个 hard failure 被修掉了：release 前先过 settle gate，release 后 horizontal kick 也过了 hard gate。",
