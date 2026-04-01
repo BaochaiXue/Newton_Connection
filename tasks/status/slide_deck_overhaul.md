@@ -25,6 +25,10 @@ Prepared the 2026-04-01 bundle for review release:
   `tmp_vis/review_pdf_20260401/review_manifest.json`
 - sent the validated review PDF to the repo-configured default recipient via
   `send_pdf_via_yahoo.py`
+- refreshed the bundle again after later slide/transcript edits:
+  - current deck: `25` slides
+  - current review PDF: `25` paired review pages
+  - resent the refreshed review PDF to the same default recipient
 
 ## Next Step
 

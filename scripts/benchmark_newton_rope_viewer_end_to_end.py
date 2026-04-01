@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -65,6 +66,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--json-out", type=Path, default=None)
     p.add_argument("--csv-out", type=Path, default=None)
     p.add_argument("--headless", action=argparse.BooleanOptionalAction, default=True)
+    p.add_argument("--worker-once", action="store_true", help=argparse.SUPPRESS)
     return p.parse_args()
 
 
@@ -175,23 +177,78 @@ def _write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
             writer.writerow({k: row.get(k) for k in fieldnames})
 
 
+def _worker_argv(args: argparse.Namespace, *, json_out: Path, csv_out: Path) -> list[str]:
+    argv = [
+        sys.executable,
+        str(Path(__file__).resolve()),
+        "--out-dir",
+        str(args.out_dir),
+        "--prefix",
+        str(args.prefix),
+        "--runs",
+        "1",
+        "--warmup-runs",
+        "0",
+        "--controller-write-mode",
+        str(args.controller_write_mode),
+        "--runtime-device",
+        str(args.runtime_device),
+        "--ir",
+        str(args.ir),
+        "--sim-dt",
+        str(args.sim_dt),
+        "--segment-substeps",
+        str(args.segment_substeps),
+        "--steps-per-render",
+        str(args.steps_per_render),
+        "--json-out",
+        str(json_out),
+        "--csv-out",
+        str(csv_out),
+        "--worker-once",
+    ]
+    if args.trajectory_frame_limit is not None:
+        argv.extend(["--trajectory-frame-limit", str(int(args.trajectory_frame_limit))])
+    argv.append("--headless" if bool(args.headless) else "--no-headless")
+    return argv
+
+
 def main() -> int:
     args = parse_args()
     args.out_dir = args.out_dir.expanduser().resolve()
     args.out_dir.mkdir(parents=True, exist_ok=True)
     args.ir = args.ir.expanduser().resolve()
-    demo_args = _build_demo_args(args)
+    json_out = args.json_out.resolve() if args.json_out is not None else (args.out_dir / "summary.json")
+    csv_out = args.csv_out.resolve() if args.csv_out is not None else (args.out_dir / "profile.csv")
 
-    wp.init()
+    if not bool(args.worker_once):
+        worker_dir = args.out_dir / "_worker"
+        worker_dir.mkdir(parents=True, exist_ok=True)
+        for warmup_idx in range(max(0, int(args.warmup_runs))):
+            warmup_json = worker_dir / f"warmup_{warmup_idx:02d}.json"
+            warmup_csv = worker_dir / f"warmup_{warmup_idx:02d}.csv"
+            subprocess.run(_worker_argv(args, json_out=warmup_json, csv_out=warmup_csv), check=True)
 
-    for _ in range(max(0, int(args.warmup_runs))):
-        _run_episode(demo_args)
-
-    runs: list[dict[str, Any]] = []
-    for idx in range(max(1, int(args.runs))):
-        payload = _run_episode(demo_args)
-        payload["run_index"] = idx
-        runs.append(payload)
+        runs: list[dict[str, Any]] = []
+        for run_idx in range(max(1, int(args.runs))):
+            run_json = worker_dir / f"run_{run_idx:02d}.json"
+            run_csv = worker_dir / f"run_{run_idx:02d}.csv"
+            subprocess.run(_worker_argv(args, json_out=run_json, csv_out=run_csv), check=True)
+            payload = json.loads(run_json.read_text(encoding="utf-8"))
+            run = dict(payload["runs"][0])
+            run["run_index"] = run_idx
+            runs.append(run)
+        sim_dt = float(args.sim_dt)
+        segment_substeps = int(args.segment_substeps)
+        steps_per_render = int(args.steps_per_render)
+    else:
+        demo_args = _build_demo_args(args)
+        wp.init()
+        runs = [_run_episode(demo_args)]
+        runs[0]["run_index"] = 0
+        sim_dt = float(demo_args.sim_dt)
+        segment_substeps = int(demo_args.segment_substeps)
+        steps_per_render = int(demo_args.steps_per_render)
 
     wall_values = [float(r["wall_ms"]) for r in runs]
     fps_values = [float(r["viewer_fps"]) for r in runs]
@@ -207,9 +264,9 @@ def main() -> int:
         "render_on": True,
         "runtime_device": str(args.runtime_device),
         "controller_write_mode": str(args.controller_write_mode),
-        "sim_dt": float(demo_args.sim_dt),
-        "segment_substeps": int(demo_args.segment_substeps),
-        "steps_per_render": int(demo_args.steps_per_render),
+        "sim_dt": sim_dt,
+        "segment_substeps": segment_substeps,
+        "steps_per_render": steps_per_render,
         "trajectory_frame_limit": args.trajectory_frame_limit,
         "profile_runs": int(args.runs),
         "warmup_runs": int(args.warmup_runs),
@@ -227,8 +284,6 @@ def main() -> int:
         "ir": str(args.ir),
     }
 
-    json_out = args.json_out.resolve() if args.json_out is not None else (args.out_dir / "summary.json")
-    csv_out = args.csv_out.resolve() if args.csv_out is not None else (args.out_dir / "profile.csv")
     json_out.write_text(json.dumps(summary, indent=2), encoding="utf-8")
     _write_csv(csv_out, runs)
     print(f"Summary JSON: {json_out}")
