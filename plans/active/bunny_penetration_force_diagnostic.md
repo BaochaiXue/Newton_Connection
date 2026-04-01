@@ -7,6 +7,12 @@
 3. Render and validate baseline until it passes strict gates
 4. Propagate the accepted pipeline to the other three cases
 5. Refresh canonical result pointers and summary board
+6. For the contact-mechanism review request, add an OFF-only `2 x 2` board
+   workflow:
+   - rerun `box_control` + `bunny_baseline` without ground
+   - detect every rigid-contact cloth node on every displayed frame
+   - render penalty-force and total-force panels separately
+   - compose one board video over the exact requested time window
 
 ## Canonical Commands
 
@@ -16,6 +22,8 @@
   `scripts/render_bunny_force_artifacts.py --bundle ... --force-dump-dir ...`
 - QA:
   `scripts/validate_bunny_force_visualization.py --run-dir <case_root>`
+- board workflow:
+  `scripts/run_bunny_penetration_collision_board.sh [run_id] [extra demo args...]`
 
 ## Stop-And-Fix Rule
 

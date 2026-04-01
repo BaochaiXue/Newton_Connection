@@ -73,6 +73,14 @@ This page is the shortest possible map of the repository.
 - `.codex/`
 - `.agents/skills/`
 
+Retired root singleton docs:
+
+- do not recreate `Plan.md`
+- do not recreate `Status.md`
+- do not recreate `Prompt.md`
+- do not recreate `DecisionLog.md`
+- use task-local files under `docs/bridge/tasks/`, `plans/`, and `tasks/`
+
 ## Main Demo Families
 
 - Cloth vs bunny / box

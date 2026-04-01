@@ -6,15 +6,17 @@
   - `Status: Completed`
   - `Todo 2 已完成（scope: rope replay case）`
   - `What is finished:`
-    - rendering-off throughput profiling
-    - operator-level attribution profiling
-    - full rope replay throughput result
-    - weak-contact rope bottleneck localization
+    - fair rope replay throughput benchmark
+    - Newton A0/A1 throughput comparison
+    - Newton A2/A3 attribution breakdown
+    - PhysTwin B0/B1 headless replay benchmark
+    - Nsight A1/B0 launch-structure evidence
   - `Current conclusion:`
-    - full rope replay is still about `3x` slower than realtime in the no-render full-trajectory profile
-    - clean rope replay is solver-bound, not collision-bound
-    - weak-contact rope is still bottlenecked by collision/contact
+    - fair rope replay benchmark is complete
+    - Newton A1 remains about `3.295x` slower than PhysTwin B0 on the clean rope replay baseline
+    - controller bridge tax explains part of the gap (`A0 -> A1` gives about `1.874x` speedup)
+    - the residual gap points to execution structure / graph launch, not collision
   - `What remains outside Todo 2:`
-    - further optimize weak-contact rope to approach realtime
-    - decide separately whether a shorter replay scope or viewer-side batching should be used for any realtime claim
-    - extend the same methodology to other interactive playground cases if needed
+    - optimize Newton replay only after this benchmark conclusion
+    - keep weak-contact rope profiling as a separate workstream
+    - extend the same methodology to other playground cases if needed

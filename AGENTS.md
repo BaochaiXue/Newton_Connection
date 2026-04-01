@@ -113,3 +113,16 @@ Do not say a task is done unless:
 - Prefer explicit task/status artifacts over hidden conversational state.
 - If the same confusion happens twice, improve the harness rather than restating
   the answer in chat.
+
+## Retired Root Docs
+
+The root-level singleton task files below are retired and should not be
+recreated:
+
+- `Plan.md`
+- `Status.md`
+- `Prompt.md`
+- `DecisionLog.md`
+
+Use `docs/bridge/tasks/` plus `tasks/spec/`, `plans/active/`,
+`tasks/implement/`, and `tasks/status/` instead.

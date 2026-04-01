@@ -22,3 +22,27 @@
   - `exact_mapping_ratio_active_interval = 1.0`
   - `reused_mapping_ratio_active_interval = 0.0`
 - updated canonical result pointers and index to the new sync-safe run
+
+## 2026-04-01
+
+- A new visualization change request was added under the same bunny task:
+  - stop focusing on top-k probes only
+  - render all rigid-contact cloth nodes on every displayed frame
+  - produce a self-collision-OFF `2 x 2` board:
+    - box penalty
+    - box total
+    - bunny penalty
+    - bunny total
+- Chosen implementation path:
+  - keep using `demo_cloth_bunny_drop_without_self_contact.py` for both
+    `--rigid-shape box` and `--rigid-shape bunny`
+  - add a new board renderer:
+    `scripts/render_bunny_penetration_collision_board.py`
+  - add a canonical wrapper:
+    `scripts/run_bunny_penetration_collision_board.sh`
+- Pending at this checkpoint:
+  - smoke-run the new wrapper
+  - verify the shell wrapper argument handling and the board renderer on a real
+    bundle
+  - keep the standard support setup because removing the ground plane caused the
+    bunny baseline to miss contact entirely during smoke testing

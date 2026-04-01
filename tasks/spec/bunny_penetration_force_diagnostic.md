@@ -37,6 +37,10 @@ stricter full-process criteria:
 - QA contact sheets and verdict
 - propagated 4-case package only after baseline passes
 - updated `INDEX.md`, `LATEST_ATTEMPT.txt`, and `LATEST_SUCCESS.txt`
+- when the mechanism review asks for all-contact-node evidence:
+  - an OFF-only `2 x 2` board video under the same result family
+  - per-frame rigid-contact-node detection, not top-k probe thinning
+  - separate penalty-force and total-force panels with magnitude-coded arrows
 
 ## Done When
 
@@ -44,3 +48,7 @@ stricter full-process criteria:
 - full-process force video is not trigger-only and keeps the full cloth visible
 - the 4-case package exists and is organized under one canonical run
 - the result folder README explains why the run passes
+- if the board workflow is requested:
+  - the board video exists
+  - summary JSON records the force normalization caps and case frame counts
+  - every displayed arrow corresponds to a currently rigid-contact cloth node

@@ -1,6 +1,6 @@
 # Experiment Index
 
-Last updated: 2026-03-31
+Last updated: 2026-04-01
 
 This page explains how experiment outputs should be organized and indexed.
 
@@ -69,14 +69,18 @@ The validator should be the default tool for distinguishing these two states.
 For promoted result bundles that should stay easy to navigate, prefer a
 dedicated folder under `results/<bundle_name>/` with:
 
-- `INDEX.md`
-- `README.template.md`
-- `manifest.template.json`
-- `LATEST_ATTEMPT.txt`
-- `LATEST_SUCCESS.txt`
+- `README.md`
+- `README.template.md` when templating is useful
+- `manifest.template.json` when the bundle uses manifests
+- `INDEX.md` and/or `index.csv` depending on the bundle
+- `LATEST_ATTEMPT.txt` and `LATEST_SUCCESS.txt` when the bundle promotes runs by pointer
 - a `runs/<run_id>/` subtree for the actual artifacts
 
-That pattern is what the bunny force-visualization bundle uses.
+Current bundles intentionally vary slightly:
+
+- `results/bunny_force_visualization/` uses `INDEX.md` plus pointer files
+- `results/robot_deformable_demo/` uses `index.csv` plus `BEST_RUN.md`
+- `results/native_robot_rope_drop_release/` uses `index.csv` plus pointer files
 
 ## Experiment Categories
 

@@ -1,6 +1,6 @@
 # Current Status
 
-Last updated: 2026-03-31
+Last updated: 2026-04-01
 
 This page is the shortest operational summary of the bridge project.
 It should stay current and be updated whenever a task changes state.
@@ -114,6 +114,14 @@ It should stay current and be updated whenever a task changes state.
   - repo-local `.agents/skills/`
   - repo-local `.codex/` config + hooks
   - canonical wrapper scripts and an artifact validator
+  - retired root singleton task docs removed
+    - `Plan.md`
+    - `Status.md`
+    - `Prompt.md`
+    - `DecisionLog.md`
+  - duplicate orphan bunny full-process scaffold docs removed in favor of the
+    canonical `bunny_penetration_force_diagnostic` task and its accepted result
+    bundle
 
 ## Active Workstreams
 

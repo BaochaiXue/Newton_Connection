@@ -71,6 +71,15 @@ Required visualization outputs:
 - a close-up snapshot
 - at least one full-rollout support / sanity video
 - a 4-case comparison board or slide
+- when requested for contact-mechanism review:
+  - a self-collision-OFF `2 x 2` board video covering:
+    - `box + cloth` penalty force on every cloth node colliding with the box
+    - `box + cloth` total force on the same contact-node set
+    - `bunny + cloth` penalty force on every cloth node colliding with the bunny
+    - `bunny + cloth` total force on the same contact-node set
+  - each panel must run from rollout start through `1.0 s` after first rigid contact
+  - node selection must be framewise and exhaustive over the rigid-contact set,
+    not top-k only
 
 ## Required Experiment Matrix
 
@@ -242,6 +251,12 @@ Current evidence-backed conclusion:
   - `force_diag_trigger_window_mapping.json`
   - `exact_mapping_ratio_active_interval = 1.0`
   - `reused_mapping_ratio_active_interval = 0.0`
+- A new requested add-on workflow is now in progress for mechanism review:
+  - self-collision remains OFF
+  - box control and bunny baseline stay on the standard support setup so the
+    rigid target remains physically stable during the clip
+  - a new board render path is being added to visualize all rigid-contact cloth
+    nodes per displayed frame instead of only top-k probes
 
 ## Definition Of Done
 
