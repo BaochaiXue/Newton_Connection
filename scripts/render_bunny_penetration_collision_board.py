@@ -73,6 +73,18 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Optional explicit path for the first composited board frame.",
     )
+    parser.add_argument(
+        "--panel-width",
+        type=int,
+        default=None,
+        help="Optional output width for each panel after overlay rendering.",
+    )
+    parser.add_argument(
+        "--panel-height",
+        type=int,
+        default=None,
+        help="Optional output height for each panel after overlay rendering.",
+    )
     return parser.parse_args()
 
 
@@ -453,6 +465,14 @@ def _compose_board_frame(
     return canvas
 
 
+def _resize_panel(frame: np.ndarray, width: int | None, height: int | None) -> np.ndarray:
+    if width is None or height is None:
+        return np.asarray(frame, dtype=np.uint8)
+    image = Image.fromarray(np.asarray(frame, dtype=np.uint8), mode="RGB")
+    resized = image.resize((int(width), int(height)), resample=Image.Resampling.LANCZOS)
+    return np.asarray(resized, dtype=np.uint8)
+
+
 def _write_video(frames: list[np.ndarray], out_path: Path, fps: float) -> Path:
     if not frames:
         raise RuntimeError("No frames available for collision board rendering.")
@@ -524,7 +544,11 @@ def main() -> int:
         float(args.post_contact_seconds),
     )
 
-    if (box_case.width, box_case.height) != (bunny_case.width, bunny_case.height):
+    if (
+        args.panel_width is None
+        and args.panel_height is None
+        and (box_case.width, box_case.height) != (bunny_case.width, bunny_case.height)
+    ):
         raise ValueError("Box and bunny cases must use the same render resolution for 2x2 composition.")
 
     penalty_cap = max(
@@ -563,6 +587,7 @@ def main() -> int:
                 max_arrow_world_len=float(args.max_arrow_world_len),
                 demo_module=demo,
             )
+            box_last_penalty = _resize_panel(box_last_penalty, args.panel_width, args.panel_height)
             box_last_total = _overlay_case_panel(
                 case=box_case,
                 snapshot=box_snapshot,
@@ -572,6 +597,7 @@ def main() -> int:
                 max_arrow_world_len=float(args.max_arrow_world_len),
                 demo_module=demo,
             )
+            box_last_total = _resize_panel(box_last_total, args.panel_width, args.panel_height)
         if board_idx < len(bunny_case.snapshots):
             bunny_snapshot = bunny_case.snapshots[board_idx]
             bunny_frame = bunny_case.frame_paths[bunny_case.selected_video_frame_indices[board_idx]]
@@ -584,6 +610,7 @@ def main() -> int:
                 max_arrow_world_len=float(args.max_arrow_world_len),
                 demo_module=demo,
             )
+            bunny_last_penalty = _resize_panel(bunny_last_penalty, args.panel_width, args.panel_height)
             bunny_last_total = _overlay_case_panel(
                 case=bunny_case,
                 snapshot=bunny_snapshot,
@@ -593,6 +620,7 @@ def main() -> int:
                 max_arrow_world_len=float(args.max_arrow_world_len),
                 demo_module=demo,
             )
+            bunny_last_total = _resize_panel(bunny_last_total, args.panel_width, args.panel_height)
 
         if box_last_penalty is None or box_last_total is None or bunny_last_penalty is None or bunny_last_total is None:
             raise RuntimeError("Board composition could not initialize all four panels.")
@@ -616,8 +644,11 @@ def main() -> int:
         "board_first_frame_png": str(preview_path),
         "render_fps": fps,
         "board_frame_count": int(board_frame_count),
-        "panel_resolution": [int(box_case.width), int(box_case.height)],
-        "board_resolution": [int(box_case.width * 2), int(box_case.height * 2)],
+        "panel_resolution": [
+            int(args.panel_width if args.panel_width is not None else box_last_penalty.shape[1]),
+            int(args.panel_height if args.panel_height is not None else box_last_penalty.shape[0]),
+        ],
+        "board_resolution": [int(board_frames[0].shape[1]), int(board_frames[0].shape[0])],
         "normalization_caps": {
             "penalty_force_cap_n": float(penalty_cap),
             "total_force_cap_n": float(total_cap),
