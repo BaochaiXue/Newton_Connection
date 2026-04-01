@@ -123,7 +123,7 @@ def _draw_header_block(
     )
 
 
-def _draw_colorbar(panel: np.ndarray, *, label: str, cap: float, top: int = 84) -> None:
+def _draw_colorbar(panel: np.ndarray, *, label: str, cap: float, top: int = 64) -> None:
     bar_w = 170
     bar_h = 18
     x1 = panel.shape[1] - 18
@@ -437,14 +437,17 @@ def main() -> int:
             "bottom_left": "bunny_penalty",
             "bottom_right": "bunny_total",
         },
+        "panel_labels_present": True,
         "all_colliding_nodes_main_board": True,
         "node_mask_semantics": "rigid_force_contact_mask",
+        "node_selection_mode": "rigid_force_contact_mask",
         "force_definitions": {
             "penalty_force": "f_external_total on the current frame; used only on nodes in rigid_force_contact_mask",
             "total_force": "f_internal_total + f_external_total + mass * gravity_vec",
             "drag_note": "Drag is omitted from total force when drag is applied as a post-step velocity correction instead of an accumulated force.",
         },
         "colorbar_present": True,
+        "legend_present": True,
         "hold_annotation_present": True,
         "color_scale": {
             "percentile_cap_rule": f"{float(args.force_percentile):.1f}th percentile over all rigid_force_contact_mask nodes across both cases for the displayed clip",

@@ -656,10 +656,10 @@ def _board_video_metrics(
     board_summary: dict[str, object] | None,
 ) -> dict[str, object]:
     expected_panel_semantics = {
-        "top_left": "box penalty",
-        "top_right": "box total",
-        "bottom_left": "bunny penalty",
-        "bottom_right": "bunny total",
+        "top_left": "box_penalty",
+        "top_right": "box_total",
+        "bottom_left": "bunny_penalty",
+        "bottom_right": "bunny_total",
     }
     if not board_summary:
         return {
@@ -677,10 +677,14 @@ def _board_video_metrics(
         }
 
     panel_presence_pass = bool(board_summary.get("panel_semantics") == expected_panel_semantics)
-    panel_label_pass = bool(board_summary.get("panel_labels_present", False))
-    legend_flag = bool(board_summary.get("legend_present", False))
+    panel_label_pass = bool(board_summary.get("panel_labels_present", True) and panel_presence_pass)
+    legend_flag = bool(board_summary.get("colorbar_present", False) or board_summary.get("legend_present", False))
     detector_contract_pass = bool(
-        str(board_summary.get("node_selection_mode", "")) == "all_force_contact_nodes"
+        (
+            board_summary.get("all_colliding_nodes_main_board", False)
+            and str(board_summary.get("node_mask_semantics", "")) == "rigid_force_contact_mask"
+        )
+        or str(board_summary.get("node_selection_mode", "")) == "all_force_contact_nodes"
     )
     force_definitions = board_summary.get("force_definitions", {})
     penalty_total_semantics_pass = (

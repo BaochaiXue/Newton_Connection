@@ -13,6 +13,21 @@ the PhysTwin-native cloth parity scene:
 - `off/native/custom` stay on their existing compatibility paths
 - cloth+box `phystwin` is intentionally guarded as unsupported
 
+Latest post-refactor validation:
+
+- operator exactness still passes:
+  - `Newton/phystwin_bridge/results/tmp_verify_phystwin_equivalence_after_refactor.json`
+- strict cloth parity 60-frame smoke improved to:
+  - `rmse_mean = 0.0015035003889352083`
+  - `Newton/phystwin_bridge/results/tmp_strict_self_collision_refactor_60_v2/strict_self_collision/strict_self_collision_parity_rollout_report.json`
+- strict cloth parity full 302-frame run improved to:
+  - `rmse_mean = 0.010737196542322636`
+  - `Newton/phystwin_bridge/results/tmp_strict_self_collision_refactor_full/strict_self_collision_parity_full_rollout_report.json`
+- OFF regression remains acceptable:
+  - `Newton/phystwin_bridge/results/tmp_off_ground_regression_60/off_ground_regression60_rollout_report.json`
+- rope OFF importer smoke still passes:
+  - `Newton/phystwin_bridge/results/tmp_rope_off_smoke_30/rope_off_smoke30_rollout_report.json`
+
 ## Last Completed Step
 
 Landed the first shared strict `phystwin` stack wiring:

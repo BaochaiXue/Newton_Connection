@@ -161,6 +161,8 @@ It should stay current and be updated whenever a task changes state.
     videos
   - phenomenon HUD penetration metric is now labeled as mesh penetration rather
     than the older ambiguous proxy wording
+  - live per-frame collision-force rollout bundles now exist for the reopened
+    board workflow
 - `demo_cloth_box_drop_with_self_contact.py`
   - rollout-peak self-overlap metrics
   - particle-radius reference stats
@@ -226,6 +228,14 @@ It should stay current and be updated whenever a task changes state.
 - A hard skeptical video evaluator layer separate from optimistic automatic QC
 - One standard harness-consistency lint pass in normal task closeout
 - Rope-side force diagnostic at the same level as cloth-side diagnostic
+- Strict target-only penalty-force decomposition for the reopened bunny
+  `2 x 2` board is still missing
+  - current attempt run:
+    - `results/bunny_force_visualization/runs/20260401_011336_realtime_allcolliding_2x2_v1`
+  - blocker:
+    - `f_external_total` is not yet decomposed per target shape, so the board
+      can still mix target contact with other shape-contact contributors such as
+      ground support
 - Full self-collision decision result across the complete box matrix
 - Final decision on whether strict parity can reach `1e-5` under bridge-only changes
   - current campaign evidence says the best bridge-only result is still around `1.95e-5`

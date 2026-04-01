@@ -234,6 +234,8 @@ def main() -> int:
         "detector_npz": str(npz_path),
         "npz_path": str(npz_path),
         "run_out_dir": str(Path(run_args.out_dir).expanduser().resolve()),
+        "source_scene_path": str(Path(str(bundle.get("scene_npz_path", ""))).expanduser().resolve()) if str(bundle.get("scene_npz_path", "")).strip() else None,
+        "source_summary_path": str(Path(str(bundle.get("summary_json_path", ""))).expanduser().resolve()) if str(bundle.get("summary_json_path", "")).strip() else None,
         "render_frames_dir": None if render_frames_dir is None else str(render_frames_dir),
         "rigid_shape": str(meta.get("rigid_shape", "")),
         "camera": {
