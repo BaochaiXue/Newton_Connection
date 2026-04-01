@@ -57,6 +57,17 @@ PY
   fi
 }
 
+VIEWER_COMMON=(
+  python
+  "${ROOT}/scripts/benchmark_newton_rope_viewer_end_to_end.py"
+  --runtime-device cuda:0
+  --ir "${ROOT}/Newton/phystwin_bridge/ir/rope_double_hand/phystwin_ir_v2_bf_strict.npz"
+  --sim-dt 5e-05
+  --segment-substeps 667
+  --steps-per-render 667
+  --headless
+)
+
 NEWTON_COMMON=(
   python
   "${ROOT}/Newton/phystwin_bridge/demos/demo_rope_control_realtime_viewer.py"
@@ -80,12 +91,27 @@ PHYSTWIN_COMMON=(
 )
 
 if [[ -n "${FRAME_LIMIT}" ]]; then
+  VIEWER_FRAME_ARGS=(--trajectory-frame-limit "${FRAME_LIMIT}")
   NEWTON_FRAME_ARGS=(--trajectory-frame-limit "${FRAME_LIMIT}")
   PHYSTWIN_FRAME_ARGS=(--frame-limit "${FRAME_LIMIT}")
 else
+  VIEWER_FRAME_ARGS=()
   NEWTON_FRAME_ARGS=()
   PHYSTWIN_FRAME_ARGS=()
 fi
+
+run_stage \
+  "${OUT_ROOT}/newton/E1_viewer_end_to_end" \
+  "." \
+  "${VIEWER_COMMON[@]}" \
+  --runs 5 \
+  --warmup-runs 1 \
+  --controller-write-mode precomputed \
+  --out-dir "${OUT_ROOT}/newton/E1_viewer_end_to_end" \
+  --prefix E1_viewer_end_to_end \
+  --json-out "${OUT_ROOT}/newton/E1_viewer_end_to_end/summary.json" \
+  --csv-out "${OUT_ROOT}/newton/E1_viewer_end_to_end/profile.csv" \
+  "${VIEWER_FRAME_ARGS[@]}"
 
 run_stage \
   "${OUT_ROOT}/newton/A0_baseline_throughput" \

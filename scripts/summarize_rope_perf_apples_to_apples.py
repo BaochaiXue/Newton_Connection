@@ -14,6 +14,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 
 EXPECTED_STAGE_DIRS = {
+    "E1_viewer_end_to_end": ("newton", "E1_viewer_end_to_end"),
     "A0_baseline_throughput": ("newton", "A0_baseline_throughput"),
     "A1_precomputed_throughput": ("newton", "A1_precomputed_throughput"),
     "A2_baseline_attribution": ("newton", "A2_baseline_attribution"),
@@ -91,7 +92,7 @@ def _normalize_stage(stage_name: str, stage_dir: Path, payload: dict[str, Any]) 
     rtf = sim_time_sec / max(wall_mean / 1000.0, 1.0e-12)
     slowdown_vs_realtime = 1.0 / max(rtf, 1.0e-12)
 
-    family = "newton" if stage_name.startswith("A") else "phystwin"
+    family = "newton" if stage_name.startswith(("A", "E")) else "phystwin"
     mode = payload.get("profile_mode", payload.get("mode"))
     device = payload.get("runtime_device", payload.get("device"))
     git_rev = payload.get("phystwin_git_rev", payload.get("newton_git_rev"))
@@ -241,6 +242,7 @@ def main() -> int:
 
     index_csv = _write_index_csv(root, rows)
 
+    e1 = rows_by_stage.get("E1_viewer_end_to_end")
     a0 = rows_by_stage.get("A0_baseline_throughput")
     a1 = rows_by_stage.get("A1_precomputed_throughput")
     a2 = stage_payloads.get("A2_baseline_attribution")
@@ -273,6 +275,7 @@ def main() -> int:
     methodology_md = f"""
 # Rope Apples-To-Apples Methodology
 
+- E1 = Newton real viewer end-to-end on the same rope replay (`ViewerGL` render path ON, automated headless measurement)
 - Same case: `rope_double_hand`
 - Same controller trajectory: IR vs PhysTwin controller trajectory max abs diff = `{parity.get('controller_traj_max_abs_diff', 'n/a')}`
 - Same dt: Newton IR `sim_dt = {parity.get('sim_dt_ir', 'n/a')}`
@@ -284,6 +287,7 @@ def main() -> int:
 
 Primary benchmark rows:
 
+- E1 = Newton real viewer end-to-end
 - A0 = Newton baseline controller-write throughput
 - A1 = Newton precomputed controller-write throughput
 - A2 = Newton baseline attribution
@@ -293,6 +297,10 @@ Primary benchmark rows:
 """
 
     comparison_lines: list[str] = []
+    if e1:
+        comparison_lines.append(
+            f"- Newton E1 real viewer end-to-end: `{e1['wall_ms_mean']:.3f} ms` total, `viewer FPS={e1['payload'].get('viewer_fps_mean', 0.0):.3f}`, `RTF={e1['rtf_mean']:.3f}`"
+        )
     if a0:
         comparison_lines.append(
             f"- Newton A0 baseline throughput: `{a0['wall_ms_mean']:.3f} ms` total, `{a0['ms_per_substep_mean']:.6f} ms/substep`, `RTF={a0['rtf_mean']:.3f}`"
@@ -308,6 +316,10 @@ Primary benchmark rows:
     if speedup_precomputed_vs_baseline is not None:
         comparison_lines.append(
             f"- Newton precomputed vs baseline bridge speedup: `{speedup_precomputed_vs_baseline:.3f}x`"
+        )
+    if e1 and a1:
+        comparison_lines.append(
+            f"- Newton viewer-on vs no-render slowdown on the same precomputed replay path: `{e1['wall_ms_mean'] / max(a1['wall_ms_mean'], 1.0e-12):.3f}x`"
         )
     if a1 and b0:
         comparison_lines.append(
@@ -408,6 +420,9 @@ Primary benchmark rows:
     summary_payload = {
         "rows": rows,
         "missing_stages": missing,
+        "e1_viewer_fps_mean": None if e1 is None else float(e1["payload"].get("viewer_fps_mean", 0.0)),
+        "e1_viewer_rtf_mean": None if e1 is None else float(e1["rtf_mean"]),
+        "viewer_on_vs_no_render_slowdown": None if (e1 is None or a1 is None) else float(e1["wall_ms_mean"] / max(a1["wall_ms_mean"], 1.0e-12)),
         "speedup_precomputed_vs_baseline": speedup_precomputed_vs_baseline,
         "a3_bridge_ms": a3_bridge_ms,
         "a3_internal_ms": a3_internal_ms,

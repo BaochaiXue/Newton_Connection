@@ -21,7 +21,7 @@ Detailed result meaning belongs in:
 ## Current Priorities
 
 - `markdown_harness_maintenance_upgrade`
-  - finish the fail-closed markdown truth pass: dashboard scope, inventory generation, local-only result wording, and lint enforcement
+  - keep the markdown/control-plane harness fail-closed: dashboard scope, inventory generation, local-only result wording, and lint enforcement
 - `slide_deck_overhaul`
   - keep the 2026-04-01 meeting deck hypothesis-driven and evidence-first
 - `rope_perf_apples_to_apples`

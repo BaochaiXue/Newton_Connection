@@ -728,7 +728,7 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "body",
-        "title": "What Strict `phystwin` Now Means",
+        "title": "Strict `phystwin` = The In-Scope Cloth Reference Mode",
         "bullets": [
             "**Strict scope:** pairwise self-collision + implicit `z=0` ground plane.",
             "**Bridge-only implementation:** `Newton/phystwin_bridge/tools/core/phystwin_contact_stack.py`.",
@@ -747,7 +747,7 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "code_twocol_large",
-        "title": "Code Compare A: What Is Already Aligned",
+        "title": "Code Compare A: What Is Already Matched",
         "note": "Left: PhysTwin native contact code. Right: our strict `phystwin` contact code. Files: `PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py`, `Newton/phystwin_bridge/demos/self_contact_bridge_kernels.py`.",
         "left_label": "PhysTwin native: `object_collision` + `integrate_ground_collision`",
         "left_path": CODE_SELFCOLLISION_MATCHED_PHYSTWIN_PNG,
@@ -762,7 +762,7 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "code_twocol_large",
-        "title": "Code Compare B: Collision Table Is Closer, But Not Yet The Same Runtime",
+        "title": "Code Compare B: Collision Table Still Uses A Different Runtime Path",
         "note": "Left: PhysTwin builds `collision_indices / collision_number` inside its runtime. Right: our strict `phystwin` now also freezes one table per frame, but rebuilds it inside the bridge runtime. Files: `PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py`, `Newton/phystwin_bridge/tools/core/phystwin_contact_stack.py`.",
         "left_label": "PhysTwin native: `update_collision_graph()` + `update_potential_collision`",
         "left_path": CODE_SELFCOLLISION_TABLE_PHYSTWIN_PNG,
@@ -777,7 +777,7 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "code_twocol_large",
-        "title": "Code Compare C: Controller Handling Is Still Not PhysTwin-Native",
+        "title": "Code Compare C: Controller Handling Still Differs",
         "note": "Left: PhysTwin spring code reads separate `control_x / control_v`. Right: our bridge still writes controller points into Newton particle state. Files: `PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py`, `Newton/phystwin_bridge/tools/core/newton_import_ir.py`.",
         "left_label": "PhysTwin native: `eval_springs(..., control_x, control_v, ...)`",
         "left_path": CODE_SELFCOLLISION_CONTROLLER_PHYSTWIN_PNG,
@@ -791,27 +791,9 @@ RECALL_SLIDES: list[dict] = [
         ],
     },
     {
-        "kind": "body",
-        "title": "Where The Full-Rollout Mismatch Now Shows Up",
-        "bullets": [
-            "**Strict parity is still blocked on the in-scope cloth reference case:** `docs/bridge/current_status.md`.",
-            "**60-frame frozen-table result improved:** `0.001314889290370047` vs dynamic `0.001589029561728239`.",
-            "**302-frame strict run still stalls around `1e-2`:** `rmse_mean = 0.010103434324264526`, `last30_rmse = 0.014149246737360954`.",
-            "**Full-rollout A/B still fails:** OFF `rmse_mean = 0.009786468930542469`, strict `phystwin` `rmse_mean = 0.010103434324264526`.",
-            "**Current next blocker signal:** controller-spring diagnostic in `docs/bridge/current_status.md` reports `one-step force_abs_max = 0.006733048971410349`, `short-rollout force_abs_max = 389.3789927564146`, `pass = false`.",
-            "**Takeaway:** The remaining gap is now better described as whole-step cloth rollout mismatch, especially the controller-spring side, not simply “self-collision law still wrong”.",
-        ],
-        "transcript": [
-            "第五页才讲数字，而且只讲 full rollout blocker。",
-            "现在 frozen-table 默认已经把短窗口拉得更好了，但 full 302-frame strict run 还是停在 1e-2 量级。",
-            "更关键的是 full-rollout A/B 现在仍然没过线，而且 controller-spring diagnostic 已经给出一个更像主因的信号。",
-            "所以这一页的 take-home message 是：剩下的 gap 更像是 whole-step cloth rollout mismatch，尤其是 controller-spring side，而不是一句话说成 self-collision law 还错。",
-        ],
-    },
-    {
         "kind": "table_gif",
-        "title": "Full-Rollout A/B On The In-Scope Cloth Reference Case",
-        "note": "Source paths used on this page: `docs/bridge/current_status.md`, `Newton/phystwin_bridge/tools/core/validate_parity.py`, `Newton/phystwin_bridge/results/tmp_off_vs_phystwin_302_compare_20260401/compare_summary.json`.",
+        "title": "Full-Rollout A/B: Strict `phystwin` Is Still Not Better Than OFF",
+        "note": "Source paths used on this page: `docs/bridge/current_status.md`, `Newton/phystwin_bridge/tools/core/validate_parity.py`, `Newton/phystwin_bridge/results/tmp_off_vs_phystwin_302_compare_20260401/compare_summary.json`. 60-frame frozen-table improved (`0.001314889290370047` vs dynamic `0.001589029561728239`), but the 302-frame A/B still fails and the controller-spring diagnostic remains the next blocker signal.",
         "columns": ["Mode", "rmse_mean", "rmse_max", "first30_rmse", "last30_rmse"],
         "rows": [
             ["OFF", "0.009786468930542469", "0.01691424660384655", "0.0023693302646279335", "0.012819756753742695"],
@@ -823,6 +805,7 @@ RECALL_SLIDES: list[dict] = [
             "最后一页只看 in-scope cloth reference case 的 full-rollout A/B，不再混 box scene。",
             "右边是最新 302-frame parity support video，左边的表直接列 OFF 和 strict phystwin 的 full-rollout 数字。",
             "现在 strict phystwin 只在前 30 帧更好，但 full-rollout 的 rmse_mean 还没有低于 OFF。",
+            "同时我们也把短窗口 improvement 和 controller-spring diagnostic 放进这一页的 note 里，所以这页已经足够把 blocker 讲完整。",
             "所以这一页的 take-home message 很直接：当前 strict phystwin 还没有通过 full-rollout A/B gate。",
         ],
     },
