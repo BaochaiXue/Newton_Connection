@@ -146,3 +146,19 @@
   - `formal_slide/meeting_2026_04_01/bridge_meeting_20260401.pptx`
   - `formal_slide/meeting_2026_04_01/transcript.md`
   - `formal_slide/meeting_2026_04_01/transcript.pdf`
+
+## 2026-04-01 GIF Delivery Split
+
+- Clarified the delivery rule:
+  - single `pptx` must stay `< 100 MB`
+  - single `gif` must stay `< 40 MB`
+- Split bunny GIF handling into two tiers:
+  - publish GIFs live in the promoted result bundle and keep the higher-quality
+    profiles for release/sharing
+  - deck GIFs live under `formal_slide/meeting_2026_04_01/gif/` and may use a
+    smaller profile so the meeting `pptx` stays within budget
+- `build_meeting_20260401.py` now explicitly:
+  - ensures publish-quality board/panel GIFs exist under the canonical result
+    directory
+  - separately transcodes slide-local deck GIFs from the same mp4 sources
+  - avoids using deck compression as the only surviving GIF copy
