@@ -1,28 +1,22 @@
 # Docs Archive Policy
 
-This subtree is reserved for historical Markdown that should no longer appear
-as live control-plane guidance.
+This subtree is reserved for documentation that still has historical value but
+is no longer part of the live control plane.
 
-## Use This Archive When
+## Rule
 
-- a historical file no longer needs its original live-looking path
-- a task family has completed and the old narrative is still worth keeping
-- a long review or campaign record would otherwise distract from current docs
+Archived files must not compete with current instructions.
 
-## Do Not Use This Archive For
+They should:
 
-- active task pages
-- canonical run/state ledgers
-- generated reports that still belong under `docs/generated/`
+- preserve historical context,
+- carry explicit historical/deprecated metadata,
+- and point readers back to the canonical live surface when one exists.
 
-## Historical File Rule
+## When To Move A File Here
 
-Archived files should begin with a top-of-file metadata block that makes the
-historical status explicit and points to a canonical replacement when one
-exists.
+Move a file here when:
 
-## Discoverability Rule
-
-If people are still likely to look up the old path directly, keep a short
-historical or deprecated pointer stub in place instead of silently deleting the
-surface.
+- it is historically useful,
+- its original path makes it look active or canonical,
+- and an in-place deprecated pointer stub is no longer enough.

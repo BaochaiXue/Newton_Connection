@@ -28,6 +28,8 @@ MEETING_DIR = Path(__file__).resolve().parent
 ROOT = MEETING_DIR.parents[1]
 TEMPLATE_PPTX = MEETING_DIR / "templates" / "My Adjust.pptx"
 OUT_PPTX = MEETING_DIR / "bridge_meeting_20260401.pptx"
+DECK_GIF_DIR = MEETING_DIR / "gif"
+DEFAULT_MAX_PPTX_MB = 100.0
 
 REF_TITLE_LEFT = 311760
 REF_TITLE_TOP = 444960
@@ -71,16 +73,27 @@ TABLE_NOTE_H = 243720
 OFFLINE_GIF_DIR = MEETING_DIR / "slides_assets" / "gif"
 RESULTS_META_ROOT = ROOT / "results_meta" / "tasks"
 
-RECALL_CLOTH_GIF = OFFLINE_GIF_DIR / "cloth_cmp2x3.gif"
-RECALL_ZEBRA_GIF = OFFLINE_GIF_DIR / "zebra_cmp2x3.gif"
-RECALL_SLOTH_GIF = OFFLINE_GIF_DIR / "sloth_cmp2x3.gif"
-RECALL_ROPE_GIF = OFFLINE_GIF_DIR / "rope_drag_on_cmp2x3.gif"
-RECALL_CLOTH_OVERLAY_GIF = OFFLINE_GIF_DIR / "cloth_overlay1x3.gif"
-RECALL_ZEBRA_OVERLAY_GIF = OFFLINE_GIF_DIR / "zebra_overlay1x3.gif"
-RECALL_SLOTH_OVERLAY_GIF = OFFLINE_GIF_DIR / "sloth_overlay1x3.gif"
-RECALL_ROPE_OVERLAY_GIF = OFFLINE_GIF_DIR / "rope_drag_on_overlay1x3.gif"
-RECALL_BUNNY_M5_GIF = OFFLINE_GIF_DIR / "bunny_drop_m5.gif"
-RECALL_BUNNY_M500_GIF = OFFLINE_GIF_DIR / "bunny_drop_m500.gif"
+RECALL_CLOTH_GIF_SRC = OFFLINE_GIF_DIR / "cloth_cmp2x3.gif"
+RECALL_ZEBRA_GIF_SRC = OFFLINE_GIF_DIR / "zebra_cmp2x3.gif"
+RECALL_SLOTH_GIF_SRC = OFFLINE_GIF_DIR / "sloth_cmp2x3.gif"
+RECALL_ROPE_GIF_SRC = OFFLINE_GIF_DIR / "rope_drag_on_cmp2x3.gif"
+RECALL_CLOTH_OVERLAY_GIF_SRC = OFFLINE_GIF_DIR / "cloth_overlay1x3.gif"
+RECALL_ZEBRA_OVERLAY_GIF_SRC = OFFLINE_GIF_DIR / "zebra_overlay1x3.gif"
+RECALL_SLOTH_OVERLAY_GIF_SRC = OFFLINE_GIF_DIR / "sloth_overlay1x3.gif"
+RECALL_ROPE_OVERLAY_GIF_SRC = OFFLINE_GIF_DIR / "rope_drag_on_overlay1x3.gif"
+RECALL_BUNNY_M5_GIF_SRC = OFFLINE_GIF_DIR / "bunny_drop_m5.gif"
+RECALL_BUNNY_M500_GIF_SRC = OFFLINE_GIF_DIR / "bunny_drop_m500.gif"
+
+RECALL_CLOTH_GIF = DECK_GIF_DIR / "cloth_cmp2x3_deck.gif"
+RECALL_ZEBRA_GIF = DECK_GIF_DIR / "zebra_cmp2x3_deck.gif"
+RECALL_SLOTH_GIF = DECK_GIF_DIR / "sloth_cmp2x3_deck.gif"
+RECALL_ROPE_GIF = DECK_GIF_DIR / "rope_drag_on_cmp2x3_deck.gif"
+RECALL_CLOTH_OVERLAY_GIF = DECK_GIF_DIR / "cloth_overlay1x3_deck.gif"
+RECALL_ZEBRA_OVERLAY_GIF = DECK_GIF_DIR / "zebra_overlay1x3_deck.gif"
+RECALL_SLOTH_OVERLAY_GIF = DECK_GIF_DIR / "sloth_overlay1x3_deck.gif"
+RECALL_ROPE_OVERLAY_GIF = DECK_GIF_DIR / "rope_drag_on_overlay1x3_deck.gif"
+RECALL_BUNNY_M5_GIF = DECK_GIF_DIR / "bunny_drop_m5_deck.gif"
+RECALL_BUNNY_M500_GIF = DECK_GIF_DIR / "bunny_drop_m500_deck.gif"
 
 PREV_GIF_DIR = ROOT / "formal_slide" / "meeting_2026_03_25" / "gif"
 RECALL_ROPE_WEIGHT_1KG_GIF = PREV_GIF_DIR / "rope_bunny_total1kg_m5_v1.gif"
@@ -99,7 +112,7 @@ PERF_ATTRIBUTION_PNG = IMAGE_DIR / "perf_attribution_breakdown.png"
 PERF_NSIGHT_PNG = IMAGE_DIR / "perf_nsight_breakdown.png"
 FORCE_DIAG_CODE_PNG = IMAGE_DIR / "code_force_diag_capture.png"
 FORCE_LAYOUT_CODE_PNG = IMAGE_DIR / "code_force_diag_layout.png"
-PERF_ROPE_CASE_GIF = MEETING_DIR / "gif" / "rope_perf_case_anchor.gif"
+PERF_ROPE_CASE_GIF = DECK_GIF_DIR / "rope_perf_case_anchor.gif"
 
 ROPE_PERF_ROOT = ROOT / "results" / "rope_perf_apples_to_apples"
 ROPE_PERF_SUMMARY_JSON = ROPE_PERF_ROOT / "summary.json"
@@ -151,7 +164,7 @@ HISTORICAL_BUNNY_RUN = (
 ).resolve()
 HISTORICAL_BUNNY_MATRIX_DIR = HISTORICAL_BUNNY_RUN / "artifacts" / "matrix"
 CURRENT_BUNNY_BOARD_MP4 = CURRENT_BUNNY_RUN / "artifacts" / "collision_force_board" / "collision_force_board_2x2.mp4"
-CURRENT_BUNNY_BOARD_GIF = MEETING_DIR / "gif" / "bunny_collision_board_2x2.gif"
+CURRENT_BUNNY_BOARD_GIF = DECK_GIF_DIR / "bunny_collision_board_2x2.gif"
 CURRENT_BUNNY_BOARD_FIRST_FRAME = (
     CURRENT_BUNNY_RUN / "artifacts" / "collision_force_board" / "collision_force_board_2x2_first_frame.png"
 )
@@ -199,8 +212,8 @@ def _resolve_case_video_maps() -> tuple[dict[str, Path], dict[str, Path]]:
 
 
 ACCEPTED_PHENO_MP4, ACCEPTED_FORCE_MP4 = _resolve_case_video_maps()
-ACCEPTED_PHENO_GIF = {name: MEETING_DIR / "gif" / f"{name}_phenomenon.gif" for name in ACCEPTED_PHENO_MP4}
-ACCEPTED_FORCE_GIF = {name: MEETING_DIR / "gif" / f"{name}_force.gif" for name in ACCEPTED_FORCE_MP4}
+ACCEPTED_PHENO_GIF = {name: DECK_GIF_DIR / f"{name}_phenomenon.gif" for name in ACCEPTED_PHENO_MP4}
+ACCEPTED_FORCE_GIF = {name: DECK_GIF_DIR / f"{name}_force.gif" for name in ACCEPTED_FORCE_MP4}
 SLIDE_QUESTION_CLAIM_PNG = SELF_COLLISION_SLIDES_DIR / "01_question_and_claim.png"
 SLIDE_SOURCE_EVIDENCE_PNG = SELF_COLLISION_SLIDES_DIR / "02_native_source_code_evidence.png"
 SLIDE_NATIVE_FAILURE_PNG = SELF_COLLISION_SLIDES_DIR / "03_native_failure_matrix.png"
@@ -211,8 +224,21 @@ ROBOT_DROP_OFF_ROOT = (_meta_local_root("native_robot_rope_drop_release") or (RO
 ROBOT_DROP_ON_ROOT = (_meta_superseded_root("native_robot_rope_drop_release", run_status="validated_ab_compare") or (ROOT / "results" / "native_robot_rope_drop_release" / "runs" / "20260331_232459_native_franka_recoilfix_drag_on_w5")).resolve()
 ROBOT_DROP_BASELINE_OFF_MP4 = ROBOT_DROP_OFF_ROOT / "final_presentation.mp4"
 ROBOT_DROP_BASELINE_ON_MP4 = ROBOT_DROP_ON_ROOT / "final_presentation.mp4"
-ROBOT_DROP_BASELINE_OFF_GIF = MEETING_DIR / "gif" / "robot_drop_release_drag_off.gif"
-ROBOT_DROP_BASELINE_ON_GIF = MEETING_DIR / "gif" / "robot_drop_release_drag_on.gif"
+ROBOT_DROP_BASELINE_OFF_GIF = DECK_GIF_DIR / "robot_drop_release_drag_off.gif"
+ROBOT_DROP_BASELINE_ON_GIF = DECK_GIF_DIR / "robot_drop_release_drag_on.gif"
+
+RECALL_DIRECT_GIF_SPECS = [
+    (RECALL_CLOTH_GIF_SRC, RECALL_CLOTH_GIF, 800, 6, 80),
+    (RECALL_ZEBRA_GIF_SRC, RECALL_ZEBRA_GIF, 800, 6, 80),
+    (RECALL_SLOTH_GIF_SRC, RECALL_SLOTH_GIF, 800, 6, 80),
+    (RECALL_ROPE_GIF_SRC, RECALL_ROPE_GIF, 800, 6, 80),
+    (RECALL_CLOTH_OVERLAY_GIF_SRC, RECALL_CLOTH_OVERLAY_GIF, 800, 6, 80),
+    (RECALL_ZEBRA_OVERLAY_GIF_SRC, RECALL_ZEBRA_OVERLAY_GIF, 800, 6, 80),
+    (RECALL_SLOTH_OVERLAY_GIF_SRC, RECALL_SLOTH_OVERLAY_GIF, 800, 6, 80),
+    (RECALL_ROPE_OVERLAY_GIF_SRC, RECALL_ROPE_OVERLAY_GIF, 800, 6, 80),
+    (RECALL_BUNNY_M5_GIF_SRC, RECALL_BUNNY_M5_GIF, 800, 8, 96),
+    (RECALL_BUNNY_M500_GIF_SRC, RECALL_BUNNY_M500_GIF, 800, 8, 96),
+]
 
 
 def _load_rope_perf_summary() -> dict:
@@ -638,7 +664,8 @@ RECALL_SLIDES: list[dict] = [
             "最后这一页专门讲最终 blocker，不粉饰。",
             "现在 blocker 不是缺 reference，因为 cloth self-collision reference case 已经明确存在，而且我们就是拿它做的 strict parity。",
             "这里的 strict scope 也收紧得很明确：只覆盖 PhysTwin 原生的 object_collision 加 implicit z=0 ground，不把 box scene 混进去。",
-            "真正的问题是：在当前 PhysTwin 到 Newton 的 rollout 语义下，这个 cloth case 连 self-collision off baseline 都远离 PhysTwin，所以 bridge-side phystwin operator 虽然 operator-level exact，整条 rollout 仍然达不到 1e-5 gate。",
+            "最近一轮 bridge-side 同步已经把 strict phystwin 默认切成 frame-frozen explicit collision table，而且 60-frame parity 确实比 dynamic-query 更好。",
+            "但 full rollout 仍然停在 1e-2 量级，所以现在最像主因的已经不是 local self-collision operator，而是更长程的 rollout mismatch，尤其是 controller-spring semantics 这一层。",
         ],
     },
     {
@@ -683,8 +710,10 @@ def _build_transcript_md(slides: list[dict] | None = None) -> str:
 
 def _prepare_generated_assets() -> None:
     IMAGE_DIR.mkdir(parents=True, exist_ok=True)
-    (MEETING_DIR / "gif").mkdir(parents=True, exist_ok=True)
-    _ensure_resized_gif(RECALL_ROPE_GIF, PERF_ROPE_CASE_GIF, width=720, fps=8)
+    DECK_GIF_DIR.mkdir(parents=True, exist_ok=True)
+    for src, out, width, fps, max_colors in RECALL_DIRECT_GIF_SPECS:
+        _ensure_resized_gif(src, out, width=width, fps=fps, max_colors=max_colors)
+    _ensure_resized_gif(RECALL_ROPE_GIF_SRC, PERF_ROPE_CASE_GIF, width=720, fps=8, max_colors=96)
     _code_excerpt_image(
         VIEWER_CODE_PATH,
         "rope_benchmark_modes",
@@ -752,6 +781,12 @@ def parse_args() -> argparse.Namespace:
         type=str,
         default=None,
         help="Optional 1-based inclusive slide range like 8-12. When omitted, build the full deck.",
+    )
+    parser.add_argument(
+        "--max-pptx-mb",
+        type=float,
+        default=DEFAULT_MAX_PPTX_MB,
+        help="Hard size budget for the generated PPTX in MB. Set <= 0 to disable the size gate.",
     )
     return parser.parse_args()
 
@@ -1008,44 +1043,69 @@ def _code_excerpt_image(path: Path, title: str, lines: list[str], out_path: Path
     return _render_code_png(out_path, header, lines)
 
 
-def _ensure_gif(mp4_path: Path, gif_path: Path, *, width: int = 640, fps: int = 8, max_colors: int = 96) -> Path:
+def _ensure_transcoded_gif(
+    src_path: Path,
+    gif_path: Path,
+    *,
+    width: int = 640,
+    fps: int = 8,
+    max_colors: int = 96,
+) -> Path:
     gif_path.parent.mkdir(parents=True, exist_ok=True)
-    if gif_path.exists() and gif_path.stat().st_mtime >= mp4_path.stat().st_mtime:
+    if gif_path.exists() and gif_path.stat().st_mtime >= src_path.stat().st_mtime:
         return gif_path
-    script = ROOT / "scripts" / "render_gif.sh"
-    subprocess.run(
-        [
-            str(script),
-            str(mp4_path),
-            str(gif_path),
-            str(width),
-            str(fps),
-            str(max_colors),
-        ],
-        check=True,
-    )
-    return gif_path
-
-
-def _ensure_resized_gif(src_path: Path, out_path: Path, *, width: int = 720, fps: int = 8) -> Path:
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    if out_path.exists() and out_path.stat().st_mtime >= src_path.stat().st_mtime:
-        return out_path
     subprocess.run(
         [
             "ffmpeg",
             "-y",
+            "-loglevel",
+            "error",
             "-i",
             str(src_path),
             "-vf",
-            f"fps={fps},scale={width}:-1:flags=lanczos",
-            str(out_path),
+            (
+                f"fps={fps},scale={width}:-1:flags=lanczos,"
+                f"split[s0][s1];[s0]palettegen=max_colors={max_colors}:stats_mode=diff[p];"
+                "[s1][p]paletteuse=dither=bayer:bayer_scale=4"
+            ),
+            "-loop",
+            "0",
+            str(gif_path),
         ],
         check=True,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
     )
-    return out_path
+    return gif_path
+
+
+def _ensure_gif(mp4_path: Path, gif_path: Path, *, width: int = 640, fps: int = 8, max_colors: int = 96) -> Path:
+    return _ensure_transcoded_gif(mp4_path, gif_path, width=width, fps=fps, max_colors=max_colors)
+
+
+def _ensure_resized_gif(
+    src_path: Path,
+    out_path: Path,
+    *,
+    width: int = 720,
+    fps: int = 8,
+    max_colors: int = 96,
+) -> Path:
+    return _ensure_transcoded_gif(src_path, out_path, width=width, fps=fps, max_colors=max_colors)
+
+
+def _mb(byte_count: int) -> float:
+    return float(byte_count) / 1_000_000.0
+
+
+def _validate_pptx_size(pptx_path: Path, *, max_pptx_mb: float) -> None:
+    if max_pptx_mb <= 0.0:
+        return
+    actual_mb = _mb(pptx_path.stat().st_size)
+    if actual_mb > max_pptx_mb:
+        raise RuntimeError(
+            f"PPTX size gate failed: {pptx_path} is {actual_mb:.1f} MB, above the {max_pptx_mb:.1f} MB budget."
+        )
 
 
 def _render_perf_attribution_png(out_path: Path) -> Path:
@@ -1632,8 +1692,10 @@ def main() -> int:
     transcript_html = out_dir / "transcript.html"
     transcript_pdf = out_dir / "transcript.pdf"
     _markdown_to_pdf(transcript_text, transcript_html, transcript_pdf)
+    _validate_pptx_size(out_pptx, max_pptx_mb=float(args.max_pptx_mb))
 
     print(f"PPTX: {out_pptx}")
+    print(f"PPTX size: {_mb(out_pptx.stat().st_size):.1f} MB (budget {float(args.max_pptx_mb):.1f} MB)")
     print(f"Transcript MD: {transcript_md}")
     print(f"Transcript PDF: {transcript_pdf}")
     print(f"Slides: {len(prs.slides)}")

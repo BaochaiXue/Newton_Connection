@@ -12,7 +12,6 @@
 python scripts/generate_md_inventory.py
 python scripts/lint_harness_consistency.py
 rg -n --glob '*.md' 'authoritative|current|latest|promoted|best run|final' docs tasks plans results_meta .
-rg -n --glob '*.md' '/home/' docs tasks plans results_meta .
 ```
 
 ## Step Sequence

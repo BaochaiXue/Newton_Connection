@@ -2,23 +2,26 @@
 
 ## Current State
 
-Tracked as an active task with a backfilled authoritative chain.
+Tracked as an active task with a backfilled authoritative chain and an active
+PPTX size-budget gate on the 2026-04-01 deck builder.
 
 ## Last Completed Step
 
-Audited and revised the 2026-04-01 performance / profiling section:
+Installed PPTX size control on the 2026-04-01 deck build:
 
-- reduced slide text on slides `8-12`
-- regenerated code evidence assets from real source excerpts
-- added a rope-case GIF anchor for the benchmark slide
-- replaced dense attribution / Nsight prose with chart assets
-- regenerated the full deck, transcript, and a performance-only slide slice
-- wrote `formal_slide/meeting_2026_04_01/performance_section_audit.md`
+- rerouted oversized recall GIF inputs through generated deck-sized copies under
+  `formal_slide/meeting_2026_04_01/gif/`
+- added a hard `100 MB` PPTX budget gate to
+  `build_meeting_20260401.py`
+- regenerated `formal_slide/meeting_2026_04_01/bridge_meeting_20260401.pptx`
+  at `32.2 MB`
+- verified the gate fails closed when invoked with a stricter budget
 
 ## Next Step
 
 Audit the remaining non-performance sections for the same readability /
-evidence split if another external-review pass is needed.
+evidence split if another external-review pass is needed, while preserving the
+new size budget.
 
 ## Blocking Issues
 

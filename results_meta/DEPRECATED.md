@@ -35,5 +35,6 @@ When a task promotes, supersedes, or blocks a run:
 1. update the task status file
 2. update `results_meta/tasks/<task_slug>.json`
 3. run `python scripts/sync_results_registry.py`
-4. run `python scripts/lint_harness_consistency.py`
-5. optionally refresh local bundle pointers for convenience
+4. run `python scripts/generate_md_inventory.py`
+5. run `python scripts/lint_harness_consistency.py`
+6. optionally refresh local bundle pointers for convenience

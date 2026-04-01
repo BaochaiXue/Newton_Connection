@@ -47,6 +47,26 @@ canonical.
 - Migration path:
   - treat `final_self_collision_campaign` files as historical campaign records
 
+## Historical One-Off Cleanup / Review Tasks
+
+- Historical task families:
+  - `harness_markdown_cleanup_20260401`
+  - `delivery_and_profiling_review_20260401`
+- Canonical replacement:
+  - `markdown_truthfulness_cleanup` for the broader markdown cleanup line
+  - none for the completed one-off review
+- Migration path:
+  - keep these files only as historical records with explicit metadata blocks
+
+## Deprecated Subtree Status Surface
+
+- Deprecated file:
+  - `Newton/phystwin_bridge/STATUS.md`
+- Canonical replacement:
+  - `docs/bridge/current_status.md`
+- Migration path:
+  - keep it only as an explicit pointer stub for subtree entry
+
 ## Historical One-Off Review / Cleanup Surfaces
 
 - Historical task families:

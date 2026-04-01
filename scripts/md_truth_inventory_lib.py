@@ -23,15 +23,22 @@ CONTROL_DIRS = [
 ]
 
 EXTRA_CONTROL_SURFACES = [
+    ROOT / "results/README.md",
     ROOT / "Newton/phystwin_bridge/STATUS.md",
     ROOT / "Newton/phystwin_bridge/AGENTS.md",
     ROOT / "Newton/phystwin_bridge/demos/AGENTS.md",
     ROOT / "results/bunny_force_visualization/README.md",
     ROOT / "results/bunny_force_visualization/INDEX.md",
+    ROOT / "results/bunny_force_visualization/QA_WORKFLOW.md",
+    ROOT / "results/bunny_force_visualization/VERDICT_TEMPLATE.md",
+    ROOT / "results/bunny_force_visualization/archive/README.md",
     ROOT / "results/native_robot_rope_drop_release/README.md",
     ROOT / "results/native_robot_rope_drop_release/BEST_RUN.md",
+    ROOT / "results/native_robot_rope_drop_release/SLIDE_READY.md",
     ROOT / "results/robot_deformable_demo/README.md",
     ROOT / "results/robot_deformable_demo/BEST_RUN.md",
+    ROOT / "results/robot_deformable_demo/LEGACY_CANDIDATES.md",
+    ROOT / "results/robot_deformable_demo/SLIDE_READY.md",
     ROOT / "results/rope_perf_apples_to_apples/README.md",
     ROOT / "results/rope_perf_apples_to_apples/BEST_EVIDENCE.md",
     ROOT / "Newton/phystwin_bridge/results/robot_rope_franka/README.md",
@@ -121,7 +128,7 @@ def _active_task_slugs() -> list[str]:
         if line == "## Active Task Set":
             in_active = True
             continue
-        if in_active and line.startswith("Task template"):
+        if in_active and line.startswith("## "):
             break
         if not in_active:
             continue
@@ -133,6 +140,10 @@ def _active_task_slugs() -> list[str]:
             continue
         active.append(slug)
     return active
+
+
+def active_task_slugs() -> list[str]:
+    return _active_task_slugs()
 
 
 def _registry_entries() -> dict[str, dict]:
@@ -235,6 +246,10 @@ def iter_control_plane_markdown() -> list[Path]:
         seen.add(rel)
         paths.append(path)
     return sorted(paths, key=lambda p: _relative(p))
+
+
+def build_inventory_paths() -> list[Path]:
+    return iter_control_plane_markdown()
 
 
 def build_inventory() -> list[dict]:

@@ -34,19 +34,22 @@ This encyclopedia is split into three layers:
 
 Supporting harness sections:
 
-- `runbooks/`
+- [runbooks/README.md](./runbooks/README.md)
   - reusable operational instructions
-- `evals/`
+- [evals/README.md](./evals/README.md)
   - evaluator rubrics and validation standards
-- `decisions/`
+- [decisions/README.md](./decisions/README.md)
   - durable decision records
-- `generated/`
+- [generated/README.md](./generated/README.md)
   - machine-generated docs or indexes that should still live in-repo
+- [archive/README.md](./archive/README.md)
+  - explicit historical docs that are no longer canonical
 
 There are also two cross-cutting pages:
 
 - [PROJECT_MAP.md](./PROJECT_MAP.md)
 - [STYLE_GUIDE.md](./STYLE_GUIDE.md)
+- [AGENTS.md](./AGENTS.md)
 - [bridge/current_status.md](./bridge/current_status.md)
 - [bridge/open_questions.md](./bridge/open_questions.md)
 
@@ -58,7 +61,8 @@ If you are new to the project:
 2. Read [bridge/README.md](./bridge/README.md)
 3. Read [phystwin/README.md](./phystwin/README.md)
 4. Read [newton/README.md](./newton/README.md)
-5. Read [runbooks/local_dev.md](./runbooks/local_dev.md)
+5. Read [runbooks/README.md](./runbooks/README.md)
+6. Read [runbooks/local_dev.md](./runbooks/local_dev.md)
 
 If you are debugging bridge behavior:
 

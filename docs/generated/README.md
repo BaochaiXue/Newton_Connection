@@ -17,3 +17,9 @@ High-signal generated/control-plane files currently include:
 - `md_cleanup_report.md`
 - `md_orphans.md`
 - `md_deprecation_matrix.md`
+
+Regenerate the Markdown truth artifacts with:
+
+```bash
+python scripts/generate_md_inventory.py
+```

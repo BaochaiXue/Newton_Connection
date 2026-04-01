@@ -199,8 +199,18 @@ It should stay current and be updated whenever a task changes state.
     - `selected/parity_support_demo.mp4`
   - strict self-collision parity on the in-scope cloth reference case is currently blocked:
     - old campaign bundle: `rmse_mean = 0.025657856836915016`
-    - latest shared-stack scratch run improves that to about `0.010737196542322636` on the full 302-frame case, but still misses the `1e-5` gate
-    - a follow-up frozen-candidate-table experiment improves 60-frame parity (`~0.00239 -> ~0.00145`) but does not materially fix the full 302-frame blocker (`~0.01068`)
+    - strict `phystwin` now defaults to a frame-frozen explicit collision table with object-only candidate semantics
+    - latest post-sync 60-frame comparison:
+      - default frozen-table: `rmse_mean = 0.001314889290370047`
+      - dynamic-query debug override: `rmse_mean = 0.001589029561728239`
+    - latest post-sync full 302-frame default frozen-table run:
+      - `rmse_mean = 0.010103434324264526`
+      - `last30_rmse = 0.014149246737360954`
+    - dedicated table diagnostic confirms frozen-table is better than dynamic on the 60-frame case and observed no `500`-cap truncation in that audited window
+    - dedicated controller-spring diagnostic now points to the next likely blocker:
+      - one-step `force_abs_max = 0.006733048971410349`
+      - short-rollout `force_abs_max = 389.3789927564146`
+      - `pass = false`
     - blocker doc:
       - `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/BLOCKER_strict_self_collision_parity_bridge_rollout_mismatch.md`
 - `docs/`
@@ -225,6 +235,10 @@ It should stay current and be updated whenever a task changes state.
     - `docs/generated/md_cleanup_report.md`
     - `docs/generated/md_deprecation_matrix.md`
     - `docs/generated/md_orphans.md`
+  - markdown truth inventory now explicitly covers tracked local-only
+    `results/*` pointer docs plus `Newton/phystwin_bridge/STATUS.md`
+  - canonical docs/readmes were relinked so `md_orphans.md` now reports zero
+    canonical control-plane orphans
   - `results/bunny_force_visualization/` now has local-only pointer/index
     files, per-run templates, and a lightweight visual QA workflow for bunny
     force-visualization runs; canonical committed run meaning lives in
@@ -249,7 +263,8 @@ It should stay current and be updated whenever a task changes state.
 - Rope-side force diagnostic at the same level as cloth-side diagnostic
 - Full self-collision decision result across the complete box matrix
 - Final decision on whether strict parity can reach `1e-5` under bridge-only changes
-  - current campaign evidence says the best bridge-only result is still around `1.95e-5`
+  - current bridge-only scratch evidence still stalls around `1.01e-2` on the full
+    302-frame strict cloth run even after the default frozen-table sync
 - Canonical experiment templates applied consistently across existing `tmp/`
 - Existing experiment directories backfilled so the artifact validator passes
 - Standard run scripts adopted as the default workflow by everyone

@@ -6,7 +6,8 @@ Drive self-collision work to one explicit engineering decision.
 
 Current engineering milestone: land a shared strict bridge-side `phystwin`
 contact stack for the PhysTwin-native cloth self-collision case without
-changing any default `off` behavior.
+changing any default `off` behavior, then use the new diagnostics to identify
+the next rollout mismatch after candidate-table sync.
 
 ## Constraints
 
@@ -21,9 +22,10 @@ changing any default `off` behavior.
 
 1. run the controlled box decision matrix
 2. land the shared strict `phystwin` bridge stack and wire it into the importer
-3. keep cloth+box `phystwin` explicitly unsupported while preserving `off/native/custom`
-4. run sanity-check and parity-regression passes on the selected mode
-5. write the final decision summary
+3. promote frame-frozen explicit-table semantics to the strict `phystwin` default
+4. keep cloth+box `phystwin` explicitly unsupported while preserving `off/native/custom`
+5. run sanity-check, parity-regression, and rollout-mismatch diagnostics on the selected mode
+6. write the final decision summary
 
 ## Validation
 
@@ -33,3 +35,4 @@ changing any default `off` behavior.
 ## Notes
 
 - Backfilled during the harness upgrade so the active task set has a full chain.
+- Current next blocker candidate after table sync: controller-spring semantics.

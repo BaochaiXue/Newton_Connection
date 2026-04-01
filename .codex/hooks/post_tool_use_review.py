@@ -52,7 +52,9 @@ def main() -> int:
                 "and write the result into tasks/status and docs/bridge/current_status.md. "
                 "For meeting-facing video tasks, prepare a skeptical review bundle and do not treat automatic QC as final acceptance."
                 " If this command renamed or deprecated Markdown/control-plane surfaces, refresh docs/generated/md_inventory.*, "
-                "update docs/generated/harness_deprecations.md, and rerun scripts/lint_harness_consistency.py."
+                "update docs/generated/harness_deprecations.md, and rerun scripts/lint_harness_consistency.py. "
+                "If you touched tracked local-only pointers under results/ or subtree status stubs, keep them explicitly local-only "
+                "and aligned with results_meta before you move on."
             ),
         },
     }

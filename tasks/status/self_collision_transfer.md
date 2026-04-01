@@ -26,7 +26,9 @@ the PhysTwin-native cloth parity scene:
 Local scratch validation notes:
 
 - operator exactness still passes:
-  - `Newton/phystwin_bridge/results/tmp_verify_phystwin_equivalence_after_refactor.json`
+  - `max_abs_dv = 1.1324882507324219e-06`
+  - `median_rel_dv = 4.070106739010465e-08`
+  - `Newton/phystwin_bridge/results/tmp_verify_phystwin_equivalence_postsync_rerun.json`
 - strict cloth parity 60-frame default frozen-table run:
   - `rmse_mean = 0.001314889290370047`
   - `first30_rmse = 0.00038029628922231495`
@@ -51,9 +53,11 @@ Local scratch validation notes:
   - `pass = false`
   - `Newton/phystwin_bridge/results/tmp_controller_spring_diag_v2/controller_spring_diagnostic.json`
 - OFF regression remains acceptable:
-  - `Newton/phystwin_bridge/results/tmp_off_ground_regression_60/off_ground_regression60_rollout_report.json`
+  - `rmse_mean = 0.00476811733096838`
+  - `Newton/phystwin_bridge/results/tmp_off_ground_regression_60_postsync/off_ground_regression60_rollout_report.json`
 - rope OFF importer smoke still passes:
-  - `Newton/phystwin_bridge/results/tmp_rope_off_smoke_30/rope_off_smoke30_rollout_report.json`
+  - `rmse_mean = 1.4174155694490764e-05`
+  - `Newton/phystwin_bridge/results/tmp_rope_off_smoke_30_postsync/rope_off_smoke30_rollout_report.json`
 
 ## Last Completed Step
 
@@ -72,8 +76,8 @@ default and added dedicated table/controller diagnosis harnesses:
 Use the new diagnostics to determine whether controller-spring semantics are the
 next dominant blocker after candidate-table sync:
 
-- validate the controller-spring harness itself if needed
-- decide whether to rework strict `phystwin` controller representation
+- validate the controller-spring harness against a narrower one-step reference if needed
+- decide whether to rework strict `phystwin` controller representation so it is closer to PhysTwin `control_x/control_v` semantics
 - rerun full strict parity after that change
 - update `results_meta/tasks/self_collision_transfer.json` only if a new
   committed current bundle is actually promoted

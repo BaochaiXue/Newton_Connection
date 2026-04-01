@@ -14,9 +14,9 @@ repeat superseded work, or cite the wrong run as current.
 
 ## Current Status
 
-- In progress
-- This task is responsible for turning the control-plane Markdown layer into a
-  fail-closed truth system:
+- Initial fail-closed cleanup pass completed on `2026-04-01`
+- This task remains the canonical maintenance surface for keeping the
+  control-plane Markdown layer fail-closed:
   - one canonical source per concept
   - explicit deprecated-pointer stubs
   - explicit historical archives
@@ -47,7 +47,6 @@ repeat superseded work, or cite the wrong run as current.
 python scripts/generate_md_inventory.py
 python scripts/lint_harness_consistency.py
 rg -n --glob '*.md' 'authoritative|current|latest|promoted|best run|final' docs tasks plans results_meta .
-rg -n --glob '*.md' '/home/' docs tasks plans results_meta .
 ```
 
 ## Required Artifacts

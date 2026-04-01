@@ -56,12 +56,19 @@ The repo already contains the right scaffolding for a decision:
   - shared strict bridge-side `phystwin` contact stack
   - reusable validation, context construction, and substep hook for the
     PhysTwin-native cloth case
+  - strict `phystwin` now defaults to a frame-frozen explicit collision table
+    with object-only candidate semantics
 - `Newton/phystwin_bridge/demos/demo_cloth_bunny_drop_without_self_contact.py`
   - force-diagnostic path for external rigid-contact sanity checks
 - `Newton/phystwin_bridge/demos/demo_cloth_bunny_realtime_viewer.py`
   - profiling breakdown infrastructure for `internal_force`, `collision_contact`, and `integration`
 - `Newton/phystwin_bridge/tools/core/validate_parity.py`
   - OFF-baseline regression thresholds and parity checks
+- `Newton/phystwin_bridge/tools/other/diagnose_phystwin_collision_table.py`
+  - compares frozen explicit tables against the dynamic-query debug path
+- `Newton/phystwin_bridge/tools/other/diagnose_controller_spring_semantics.py`
+  - checks whether controller-connected spring forces still differ from
+    PhysTwin `control_x/control_v` semantics
 
 That means the next step is not “add more framework”, but “turn the current framework into decision evidence”.
 
@@ -100,6 +107,12 @@ defines:
 
 It does **not** define generic box / rigid-shape contact for this spring-mass
 path.
+
+For that strict cloth parity path, `phystwin` should now mean:
+
+- frame-frozen explicit collision table by default
+- object-only candidate build / consumption semantics
+- dynamic-query candidate generation only as a debug override
 
 ## Follow-Up Sanity Check
 

@@ -31,6 +31,7 @@ Poor slide structure hides real progress. The advisor feedback was explicit:
 - visuals dominate over text where possible
 - transcript is explanatory, not redundant filler
 - deck order matches the intended story
+- the shipped full-deck PPTX stays below `100 MB` without manual post-build cleanup
 
 ## Open Questions
 

@@ -77,6 +77,15 @@ def _render_deprecation_md(rows: list[dict]) -> str:
 
 def _render_cleanup_md(inventory: list[dict], orphans: list[dict], deprecations: list[dict]) -> str:
     counts = summary_counts(inventory)
+    tracked_secondary = [
+        row["path"]
+        for row in inventory
+        if row["classification"] == "deprecated-pointer"
+        and (
+            row["path"].startswith("results/")
+            or row["path"] == "Newton/phystwin_bridge/STATUS.md"
+        )
+    ]
     lines = [
         "# Markdown Cleanup Report",
         "",
@@ -94,8 +103,19 @@ def _render_cleanup_md(inventory: list[dict], orphans: list[dict], deprecations:
             "",
             "- Root singleton docs `Plan.md`, `Prompt.md`, `Status.md`, and `DecisionLog.md` are absent from the current filesystem.",
             "- `results_meta/` remains the canonical committed authority for run meaning.",
+            "- Selected secondary/local-only Markdown pointer surfaces are explicitly inventoried instead of living outside the doc-control audit.",
             "- Deprecated and historical task families are expected to carry explicit metadata blocks and canonical replacements.",
             f"- Orphan canonical surfaces detected: `{len(orphans)}`.",
+            "",
+            "## Secondary Surfaces Under Control",
+            "",
+            f"- tracked deprecated/local-only pointer surfaces: `{len(tracked_secondary)}`.",
+        ]
+    )
+    for rel in tracked_secondary:
+        lines.append(f"  - `{rel}`")
+    lines.extend(
+        [
             "",
             "## Deprecated / Historical Surfaces",
             "",
@@ -104,7 +124,7 @@ def _render_cleanup_md(inventory: list[dict], orphans: list[dict], deprecations:
             "",
             "## Machine-Local Path Risk",
             "",
-            "- Canonical control-plane Markdown should not contain `/home/...` machine-local paths.",
+            "- Canonical control-plane Markdown should not contain machine-local home-directory absolute paths.",
             "- Local convenience pointer files may still exist outside the canonical control plane, but they must not be treated as committed authority.",
         ]
     )

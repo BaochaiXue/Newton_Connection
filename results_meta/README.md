@@ -22,12 +22,14 @@ Use this subtree to answer:
   - template for new task entries
 - `tasks/<task_slug>.json`
   - committed machine-readable metadata per task
-- `INDEX.md`
+- [INDEX.md](./INDEX.md)
   - generated summary across tasks
-- `LATEST.md`
+- [LATEST.md](./LATEST.md)
   - generated latest-update view across tasks
-- `DEPRECATED.md`
+- [DEPRECATED.md](./DEPRECATED.md)
   - local-only pointer surfaces that are no longer canonical
+- [AGENTS.md](./AGENTS.md)
+  - local rules for the committed results registry
 
 ## Regeneration
 

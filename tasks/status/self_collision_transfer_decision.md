@@ -41,7 +41,7 @@ Run the full box decision matrix with render enabled and then attach:
 
 - `docs/bridge/tasks/self_collision_transfer.md`
 - `tasks/spec/self_collision_transfer_decision.md`
-- `plans/active/self_collision_transfer_decision.md`
+- `plans/completed/self_collision_transfer_decision.md`
 - `Newton/phystwin_bridge/tools/other/run_self_collision_matrix.py`
 - `Newton/phystwin_bridge/tools/other/verify_phystwin_self_collision_equivalence.py`
 - `tmp/self_collision_eq_smoke_20260330/equivalence.json`

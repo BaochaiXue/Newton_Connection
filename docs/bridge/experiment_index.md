@@ -21,6 +21,10 @@ Each serious experiment directory should contain:
 - `*.mp4` render output when relevant
 - `*.gif` presentation output when relevant
 
+Canonical template surface:
+
+- [templates/experiment_README_template.md](./templates/experiment_README_template.md)
+
 If the experiment is diagnostic, also include:
 
 - `force_diag_trigger_substep.npz`
