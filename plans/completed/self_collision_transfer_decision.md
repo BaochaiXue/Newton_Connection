@@ -1,8 +1,10 @@
 # Plan: self_collision_transfer_decision
 
-> Deprecated alias. Canonical slug: `self_collision_transfer`.  
-> Canonical replacement: `plans/active/self_collision_transfer.md`.  
-> Do not keep two active self-collision slugs alive.
+> status: deprecated
+> canonical_replacement: `plans/active/self_collision_transfer.md`
+> owner_surface: `self_collision_transfer`
+> last_reviewed: `2026-04-01`
+> notes: Deprecated slug alias kept only for discoverability; do not record new planning state under `_decision`.
 
 ## Goal
 

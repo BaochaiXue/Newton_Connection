@@ -1,7 +1,10 @@
 # Plan: Final Self-Collision Campaign
 
-> Historical task family. Active canonical task: `self_collision_transfer`.  
-> Migration path: use `plans/active/self_collision_transfer.md` for current planning state.
+> status: historical
+> canonical_replacement: `plans/active/self_collision_transfer.md`
+> owner_surface: `self_collision_transfer`
+> last_reviewed: `2026-04-01`
+> notes: Historical campaign plan preserved for traceability only; do not use this file for current planning state.
 
 ## Milestones
 

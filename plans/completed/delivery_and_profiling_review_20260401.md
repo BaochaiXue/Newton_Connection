@@ -1,5 +1,11 @@
 # Plan: delivery_and_profiling_review_20260401
 
+> status: historical
+> canonical_replacement: none
+> owner_surface: `delivery_and_profiling_review_20260401`
+> last_reviewed: `2026-04-01`
+> notes: Completed one-off review record; keep only as historical audit context, not as a live operating surface.
+
 ## Goal
 
 Audit the latest project deliverables and the rope profiling plan, then give a

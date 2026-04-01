@@ -3,6 +3,7 @@ tmp_vis/
 .ruff_cache/
 __pycache__/
 *.pyc
+*.npy
 send_pdf_via_yahoo.py
 send_pdf_via_yahoo.local.json
  result_for_slides/
