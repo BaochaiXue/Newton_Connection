@@ -46,3 +46,20 @@
     bundle
   - keep the standard support setup because removing the ground plane caused the
     bunny baseline to miss contact entirely during smoke testing
+- Follow-up observations from implementation:
+  - static checks passed for:
+    - `scripts/render_bunny_penetration_collision_board.py`
+    - `scripts/run_bunny_penetration_collision_board.sh`
+    - `Newton/phystwin_bridge/demos/demo_cloth_bunny_drop_without_self_contact.py`
+  - a low-resolution wrapper smoke now reliably reaches `box_control` end to
+    end and reaches `bunny_baseline` simulation without the old “no trigger”
+    failure once ground support is restored
+  - the dominant runtime bottleneck is currently bunny-side phenomenon rendering
+    in the smoke wrapper, not shell orchestration
+  - the new board renderer also works against existing canonical bundles on the
+    `box_control` side and starts the `bunny_baseline` side correctly, but a
+    full end-to-end smoke finish was not waited out in this checkpoint
+  - one concrete optimization landed:
+    - `_mesh_surface_info(...)` now reuses a static bunny-local `trimesh`
+      query object and transforms cloth points into local coordinates, instead
+      of rebuilding the world-space mesh every frame
