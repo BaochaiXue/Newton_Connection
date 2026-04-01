@@ -1015,7 +1015,7 @@ def _prepare_generated_assets() -> None:
         _extract_code_segments(
             PHYSTWIN_SPRING_WARP_CODE_PATH,
             [(156, 160), (323, 323), (329, 330), (332, 339), (343, 344)],
-            highlight_lines={157, 159, 323, 332, 344},
+            highlight_lines={157, 160, 323, 332, 344},
         ),
         CODE_SELFCOLLISION_FORCE_GROUND_PHYSTWIN_PNG,
     )
@@ -1056,7 +1056,7 @@ def _prepare_generated_assets() -> None:
         _extract_code_segments(
             bridge_self_contact_code,
             [(263, 267), (660, 660), (666, 667), (669, 676), (680, 681)],
-            highlight_lines={264, 266, 660, 669, 681},
+            highlight_lines={264, 267, 660, 669, 681},
         ),
         CODE_SELFCOLLISION_FORCE_GROUND_BRIDGE_PNG,
     )
@@ -1067,7 +1067,7 @@ def _prepare_generated_assets() -> None:
         _extract_code_segments(
             bridge_phystwin_stack,
             [(302, 307), (311, 315), (318, 324)],
-            highlight_lines={305, 312, 315, 319, 323},
+            highlight_lines={305, 306, 312, 315, 319},
         ),
         CODE_SELFCOLLISION_TABLE_BRIDGE_PNG,
     )
@@ -1077,7 +1077,7 @@ def _prepare_generated_assets() -> None:
         _extract_code_segments(
             PHYSTWIN_SPRING_WARP_CODE_PATH,
             [(82, 86), (103, 105), (109, 111)],
-            highlight_lines={85, 86, 104, 105, 110},
+            highlight_lines={85, 86, 104, 105, 111},
         ),
         CODE_SELFCOLLISION_CONTROLLER_PHYSTWIN_PNG,
     )
@@ -1088,7 +1088,7 @@ def _prepare_generated_assets() -> None:
         _extract_code_segments(
             bridge_import_code,
             [(1606, 1610), (1613, 1616), (1619, 1623)],
-            highlight_lines={1608, 1610, 1616, 1619, 1620},
+            highlight_lines={1610, 1613, 1614, 1619, 1620},
         ),
         CODE_SELFCOLLISION_CONTROLLER_BRIDGE_PNG,
     )
