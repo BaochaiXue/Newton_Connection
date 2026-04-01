@@ -2,35 +2,49 @@
 
 ## Milestones
 
-1. Audit the current baseline outputs and wrapper paths
-2. Fix the full-process render/packaging path for `bunny_baseline`
-3. Render and validate baseline until it passes strict gates
-4. Propagate the accepted pipeline to the other three cases
-5. Refresh canonical result pointers and summary board
-6. For the contact-mechanism review request, add an OFF-only `2 x 2` board
-   workflow:
-   - rerun `box_control` + `bunny_baseline` without ground
-   - detect every rigid-contact cloth node on every displayed frame
-   - render penalty-force and total-force panels separately
-   - compose one board video over the exact requested time window
+1. Reopen the task in docs/spec/status/current-status so the old accepted
+   package is no longer treated as the final meeting visualization.
+2. Audit the current detector, board renderer, wrapper, and validators against
+   the stricter `2 x 2` all-colliding-node spec.
+3. Implement a replayable per-frame collision-force detector bundle for:
+   - `box_control`
+   - `bunny_baseline`
+4. Fix the board renderer so the main board uses:
+   - force-active collision membership
+   - strict penalty-vs-total force definitions
+   - clip-wide force scaling
+   - hold annotation when one case ends early
+5. Extend validation so the promoted run checks:
+   - board semantics
+   - panel visibility / non-black / non-blank
+   - duration rule
+   - detector metadata
+   - legend presence
+6. Produce a fresh promoted run under
+   `results/bunny_force_visualization/runs/<timestamp>_realtime_allcolliding_2x2_v1/`
+   and only update latest pointers if that run passes.
 
 ## Canonical Commands
 
-- baseline run:
+- case runner:
   `scripts/run_bunny_force_case.py ... --force-diagnostic --defer-force-artifacts`
-- force helper:
-  `scripts/render_bunny_force_artifacts.py --bundle ... --force-dump-dir ...`
-- QA:
-  `scripts/validate_bunny_force_visualization.py --run-dir <case_root>`
-- board workflow:
-  `scripts/run_bunny_penetration_collision_board.sh [run_id] [extra demo args...]`
+- detector builder:
+  `scripts/build_bunny_collision_force_bundle.py ...`
+- board builder:
+  `scripts/render_bunny_penetration_collision_board.py ...`
+- promoted wrapper:
+  `scripts/run_bunny_penetration_collision_board.sh [run_id]`
+- validators:
+  - `scripts/validate_bunny_force_visualization.py --run-dir <run_dir>`
+  - `scripts/validate_experiment_artifacts.py <run_dir> ...`
 
 ## Stop-And-Fix Rule
 
-If any of these fail, do not advance to the matrix:
+If any of these fail, do not promote the run:
 
-- phenomenon duration < 3.0s
-- force duration < 4.0s
-- force video loses full cloth context
-- local panel is unreadable
-- QA or contact sheet still indicates slideshow/static behavior
+- board node set is top-k only
+- first-collision detector is missing or not saved
+- penalty / total force semantics are ambiguous
+- one or more panels are black / blank / mislabeled
+- board duration does not match start to one second after first collision
+- validators do not explicitly pass

@@ -26,6 +26,8 @@
 ## 2026-04-01
 
 - A new visualization change request was added under the same bunny task:
+  - previous accepted trigger-centered bunny mechanism artifact is superseded
+    for meeting visualization purposes
   - stop focusing on top-k probes only
   - render all rigid-contact cloth nodes on every displayed frame
   - produce a self-collision-OFF `2 x 2` board:
@@ -40,6 +42,8 @@
     `scripts/render_bunny_penetration_collision_board.py`
   - add a canonical wrapper:
     `scripts/run_bunny_penetration_collision_board.sh`
+  - promote the board run separately from the older sync-safe mechanism matrix
+    only if the new all-colliding-node validator passes
 - Pending at this checkpoint:
   - smoke-run the new wrapper
   - verify the shell wrapper argument handling and the board renderer on a real

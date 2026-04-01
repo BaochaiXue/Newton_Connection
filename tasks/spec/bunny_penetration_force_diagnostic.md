@@ -2,53 +2,61 @@
 
 ## Goal
 
-Make the bunny penetration visualization package meeting-ready under the
-stricter full-process criteria:
+Reopen the bunny penetration visualization task under a stricter meeting spec
+and replace the old accepted final artifact with:
 
-- phenomenon video shows approach -> contact -> penetration growth -> max
-  penetration -> landing / settle or rebound
-- force mechanism video preserves both full-cloth global context and a readable
-  local force panel
-- the baseline bunny case passes visual QA before propagating to the 4-case
-  matrix
+- a self-collision-OFF real-time `2 x 2` board
+- only `cloth + box` and `cloth + bunny`
+- all currently colliding cloth mass nodes in the main board
+- fixed panel semantics:
+  - `box penalty`
+  - `box total`
+  - `bunny penalty`
+  - `bunny total`
 
 ## Constraints
 
 - Do not modify `Newton/newton/`
 - Keep all implementation in bridge/demo/scripts/report code
-- Do not accept short trigger-centric clips as success
-- Do not accept file existence as success; videos must pass QA and visual review
+- Do not accept trigger-only or top-k-only visualization as success
+- Do not treat the historical accepted run as the final meeting artifact
+- Do not drift into rope, self-collision transfer, robot, or any unrelated
+  scene
 
 ## Inputs
 
 - task page:
   `docs/bridge/tasks/bunny_penetration_force_diagnostic.md`
+- supporting presentation page:
+  `docs/bridge/tasks/video_presentation_quality.md`
 - main demo:
   `Newton/phystwin_bridge/demos/demo_cloth_bunny_drop_without_self_contact.py`
 - helper scripts:
   `scripts/run_bunny_force_case.py`
-  `scripts/render_bunny_force_artifacts.py`
   `scripts/validate_bunny_force_visualization.py`
+  `scripts/validate_experiment_artifacts.py`
 
 ## Required Outputs
 
-- canonical run under `results/bunny_force_visualization/runs/<timestamp>_<slug>/`
-- accepted `bunny_baseline` phenomenon + full-process force video
-- QA contact sheets and verdict
-- propagated 4-case package only after baseline passes
-- updated `INDEX.md`, `LATEST_ATTEMPT.txt`, and `LATEST_SUCCESS.txt`
-- when the mechanism review asks for all-contact-node evidence:
-  - an OFF-only `2 x 2` board video under the same result family
-  - per-frame rigid-contact-node detection, not top-k probe thinning
-  - separate penalty-force and total-force panels with magnitude-coded arrows
+- fresh promoted run under:
+  `results/bunny_force_visualization/runs/<timestamp>_realtime_allcolliding_2x2_v1/`
+- per-case rollout + detector bundles for:
+  - `box_control`
+  - `bunny_baseline`
+- final `2 x 2` board MP4
+- run-local `README.md`
+- run-local `command.sh`
+- run-local `summary.json`
+- QA outputs and validator verdict
+- updated bundle pointers only if the new run passes validation
 
 ## Done When
 
-- bunny baseline passes all strict gates, including duration
-- full-process force video is not trigger-only and keeps the full cloth visible
-- the 4-case package exists and is organized under one canonical run
-- the result folder README explains why the run passes
-- if the board workflow is requested:
-  - the board video exists
-  - summary JSON records the force normalization caps and case frame counts
-  - every displayed arrow corresponds to a currently rigid-contact cloth node
+- the old accepted force package is clearly marked as superseded for meeting use
+- a deterministic first-collision detector exists and is saved per frame
+- the displayed node set is the force-active rigid-contact set
+- penalty force and total force use strict documented definitions
+- the final board runs from rollout start to `1.0 s` after first collision
+- the board follows the exact requested panel semantics
+- the board is meeting-readable
+- validators pass
