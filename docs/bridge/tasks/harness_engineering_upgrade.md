@@ -2,94 +2,89 @@
 
 ## Question
 
-How do we upgrade this repo from a useful first-layer Codex harness into a
-durable long-running multi-agent harness with tighter source-of-truth
-discipline, better result governance, more skeptical video acceptance, and
-cleaner session handoff?
+How do we upgrade this repo from a good first-layer Codex harness into a
+durable long-running multi-agent harness with stronger source-of-truth
+discipline, skeptical evaluator layers, cleaner handoff, and results
+governance that survives local-only heavy artifacts?
 
 ## Why It Matters
 
-The project now depends on Codex for multi-step physics, video, and
-presentation work. Without stronger harness engineering, agents will keep
-drifting across duplicate docs, optimistic video validators, ignored heavy
-artifacts, and incomplete handoff state.
+Future agents should spend their time solving bridge, physics, video, and
+presentation problems rather than rediscovering task state, arguing over stale
+docs, or over-trusting optimistic validators.
 
 ## Current Status
 
 - In progress
-- Existing harness baseline already includes:
-  - root + subtree `AGENTS.md`
-  - `docs/`, `plans/`, `tasks/` control-plane structure
-  - `.codex/` hooks/config
-  - first-wave validators and wrapper scripts
-- Known gaps before implementation:
-  - no committed authoritative results registry
-  - no skeptical multimodal video evaluator layer
-  - hooks mostly remind rather than enforce
-  - no first-class contracts / handoffs
-  - no harness lint for duplicate truth surfaces and portability drift
+- This task owns the current harness hardening pass
+- Expected upgrade areas:
+  - single-source-of-truth discipline
+  - planner / builder / evaluator / handoff orchestration
+  - skeptical multimodal video acceptance
+  - committed metadata mirrors for authoritative local results
+  - mechanical harness linting and stronger hooks
 
 ## Code Entry Points
 
 - Harness rules:
   - `AGENTS.md`
-  - `docs/README.md`
   - `docs/PROJECT_MAP.md`
-  - `docs/bridge/current_status.md`
-  - `docs/bridge/open_questions.md`
-- Control plane:
   - `.codex/config.toml`
   - `.codex/hooks.json`
   - `.codex/hooks/`
-  - `.agents/skills/`
-- Execution/evaluation:
-  - `plans/`
-  - `tasks/`
-  - `scripts/`
+- Task-control surfaces:
+  - `docs/bridge/tasks/`
+  - `plans/active/`
+  - `tasks/spec/`
+  - `tasks/implement/`
+  - `tasks/status/`
+- Evaluation and validators:
   - `docs/evals/`
+  - `scripts/validate_*.py`
+- Results governance:
+  - `results/`
+  - `results_meta/`
 
 ## Canonical Commands
 
-Audit and consistency checks should start from:
+```bash
+python scripts/lint_harness_consistency.py
+python scripts/validate_experiment_artifacts.py <run_dir>
+```
+
+Audit-first commands:
 
 ```bash
 rg --files -g '*.md'
-find .codex/hooks -maxdepth 2 -type f | sort
-rg --files scripts | rg 'validate|lint|check'
-```
-
-Final validation for this task must include:
-
-```bash
-python scripts/lint_harness_consistency.py
+rg -n '/home/|Plan.md|Status.md|Prompt.md|DecisionLog.md' AGENTS.md docs plans tasks results
 ```
 
 ## Required Artifacts
 
 - `docs/generated/harness_audit.md`
-- authoritative task/spec/plan/implement/status chain for this upgrade task
-- committed results-metadata mirror for authoritative local runs
-- skeptical video evaluator docs/prompts and supporting scripts/templates
-- harness lint/check script plus any useful hook upgrades
-- contract/handoff templates and any local `AGENTS.md` additions
+- authoritative harness task chain for this upgrade
+- committed results metadata mirror for authoritative runs
+- skeptical video evaluator docs/templates
+- harness lint/check script
 
 ## Success Criteria
 
-- active tasks have one clear authoritative chain
-- duplicate truth surfaces are removed or explicitly deprecated
-- authoritative run meaning no longer lives only in ignored local artifacts
-- video tasks have a skeptical evaluator layer that fails closed
-- handoff/contract artifacts exist for long-running work
-- harness lint detects drift mechanically
+- every active task has a clear authoritative task/spec/plan/implement/status chain
+- duplicate or ambiguous task slugs are normalized or explicitly deprecated
+- authoritative run meaning no longer lives only in ignored local bundles
+- video tasks have a fail-closed skeptical evaluator layer
+- handoff/contracts templates exist for long sessions
+- hooks and lint catch harness drift mechanically
 
 ## Open Questions
 
-- How much enforcement should happen in hooks versus lint-only checks?
-- Which metadata mirror location is best:
-  `docs/generated/results_registry/`, `results_meta/`, or another explicit tree?
+- Which parts of the results-metadata workflow should be enforced by hooks
+  versus lint versus human review?
+- Which low-signal legacy experiment trees should stay historical exceptions
+  instead of being fully mirrored?
 
 ## Related Pages
 
 - [README.md](./README.md)
-- [delivery_and_profiling_review_20260401.md](./delivery_and_profiling_review_20260401.md)
-- [harness_markdown_cleanup_20260401.md](./harness_markdown_cleanup_20260401.md)
+- [video_presentation_quality.md](./video_presentation_quality.md)
+- [interactive_playground_profiling.md](./interactive_playground_profiling.md)

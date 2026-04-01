@@ -2,28 +2,25 @@
 
 ## Current State
 
-In progress. Initial control-plane read is complete and the required audit
-subagent work has been started.
+In progress. Audit and implementation work are underway.
 
 ## Last Completed Step
 
-Bootstrapped the upgrade task and collected the first-pass harness context from
-AGENTS/docs/.codex/tasks/plans/scripts.
+Loaded the current control-plane docs, hooks, skills, validators, and active
+task/task-chain coverage; identified task-chain gaps and source-of-truth drift.
 
 ## Next Step
 
-Wait for the specialist audit subagents, integrate their findings into
-`docs/generated/harness_audit.md`, then begin implementation.
+Implement canonical task scaffolds, results metadata mirrors, skeptical video
+evaluator assets, and the new harness lint/check.
 
 ## Blocking Issues
 
-- Waiting on the required audit subagent returns before implementation
+- None currently; the main work is migration and mechanical enforcement.
 
 ## Artifact Paths
 
-- `docs/bridge/tasks/harness_engineering_upgrade.md`
 - `docs/generated/harness_audit.md`
-- `.codex/`
-- `plans/`
-- `tasks/`
-- `scripts/`
+- `results_meta/`
+- `docs/evals/`
+- `scripts/lint_harness_consistency.py`

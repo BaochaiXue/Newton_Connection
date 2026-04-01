@@ -2,53 +2,47 @@
 
 ## Goal
 
-Implement a durable repo-native harness upgrade that improves single-source of
-truth, results governance, skeptical video evaluation, structured handoff, and
-mechanical consistency enforcement.
+Implement a durable repo-native harness upgrade covering source-of-truth
+discipline, results governance, skeptical video evaluation, handoff/contracts,
+and mechanical consistency checks.
 
 ## Non-Goals
 
-- Modifying `Newton/newton/`
+- Editing `Newton/newton/`
 - Rewriting historical accepted evidence bundles in place
-- Replacing existing validators when they can be layered instead
-- Auditing third-party or vendored markdown outside the project harness
+- Converting every legacy local experiment into a fully mirrored metadata entry
+  in one pass
 
 ## Inputs
 
-- `docs/bridge/tasks/harness_engineering_upgrade.md`
 - `AGENTS.md`
 - `docs/README.md`
 - `docs/PROJECT_MAP.md`
+- `docs/STYLE_GUIDE.md`
 - `docs/bridge/current_status.md`
-- `docs/bridge/open_questions.md`
 - `.codex/config.toml`
 - `.codex/hooks.json`
 - `.codex/hooks/`
 - `.agents/skills/`
-- `plans/`
-- `tasks/`
-- validators under `scripts/`
+- `scripts/validate_*.py`
 
 ## Outputs
 
-- `docs/generated/harness_audit.md`
-- results metadata mirror subtree
-- contract/handoff templates
-- skeptical video evaluator docs/prompts
-- harness lint/check script
-- updated hooks / AGENTS / status docs / local guidance files
+- harness audit doc
+- canonical task-chain coverage for all active tasks
+- results metadata mirror
+- skeptical video evaluator docs/templates and supporting script paths
+- harness lint and stronger hook behavior
 
 ## Constraints
 
-- Do not modify `Newton/newton/`
-- Deprecate old surfaces explicitly; do not silently leave conflicting truth
-- Heavy binaries may remain ignored, but authoritative meaning may not
-- Keep migrations incremental and repo-readable
+- Keep `Newton/newton/` read-only
+- Prefer explicit deprecation + migration over silent replacement
+- Keep heavy binaries local; mirror authoritative meaning in committed metadata
 
 ## Done When
 
-- audit exists and is reflected in implementation
-- active tasks have clean authoritative chains
-- fresh agents can identify current best runs from repo-only metadata
-- video tasks have a skeptical evaluator layer
-- lint/hook validation runs cleanly enough to defend the harness upgrade
+- the harness audit exists and is actionable
+- the active task set has canonical execution artifacts
+- the new lint passes
+- the new evaluator/handoff/results-governance docs cross-link correctly

@@ -1,17 +1,32 @@
-# Contract: <milestone slug>
+# Contract: <task slug> / <milestone name>
 
-## Purpose
+## Goal
 
-## Scope
+## Scope Boundary
 
-## Inputs
+- In scope:
+- Out of scope:
 
-## Deliverables
+## Required Inputs
 
-## Hard-Fail Criteria
+## Required Outputs
+
+## Hard-Fail Conditions
+
+- 
 
 ## Acceptance Criteria
 
-## Validation Command
+- 
 
-## Notes
+## Evaluator Evidence Required
+
+- validator command(s):
+- artifact paths:
+- skeptical review required: yes/no
+
+## Next Command After Acceptance
+
+```bash
+# exact next command
+```

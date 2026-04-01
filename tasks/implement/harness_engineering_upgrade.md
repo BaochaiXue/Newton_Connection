@@ -2,39 +2,36 @@
 
 ## Preconditions
 
-- Read the repo control-plane docs, hooks, skills, task/task-status structure, and validators
-- Integrate the required audit perspectives before implementing migrations
+- Read `AGENTS.md`, `docs/README.md`, `docs/PROJECT_MAP.md`, and `TODO.md`
+- Read `.codex/config.toml`, `.codex/hooks.json`, and current validators under `scripts/`
 
 ## Canonical Commands
 
 ```bash
-rg --files -g '*.md'
-find .codex/hooks -maxdepth 2 -type f | sort
-rg --files scripts | rg 'validate|lint|check'
 python scripts/lint_harness_consistency.py
+rg -n '/home/|Plan.md|Status.md|Prompt.md|DecisionLog.md' AGENTS.md docs plans tasks results
 ```
 
 ## Step Sequence
 
-1. Bootstrap this task and write the integrated harness audit
-2. Fix source-of-truth drift and slug ambiguity
-3. Add committed results metadata mirror and migration docs
-4. Add contracts, handoffs, skeptical video evaluator docs/prompts, and any needed scripts
-5. Add harness lint and stronger hook enforcement
-6. Update status docs and validate the upgraded harness
+1. Record the harness audit
+2. Normalize active task chains and deprecate ambiguous surfaces
+3. Add committed results metadata mirrors
+4. Add skeptical video evaluator docs/prompts and supporting scripts/templates
+5. Add contracts/handoffs/templates and local AGENTS guidance
+6. Strengthen lint and hooks, then validate
 
 ## Validation
 
-- active tasks resolve to one authoritative chain
-- authoritative results are discoverable from repo-only metadata
-- skeptical video evaluation is distinct from generation and fails closed
-- lint catches the intended drift classes
+- lint passes
+- active task chain is complete for every active task
+- results metadata mirrors identify current authoritative runs
+- skeptical video evaluator layer is documented and discoverable
 
 ## Output Paths
 
 - `docs/generated/harness_audit.md`
+- `results_meta/`
 - `docs/evals/`
 - `tasks/contracts/`
 - `tasks/handoffs/`
-- results metadata mirror subtree
-- `scripts/lint_harness_consistency.py`

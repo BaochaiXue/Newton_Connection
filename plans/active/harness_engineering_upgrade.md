@@ -2,31 +2,28 @@
 
 ## Goal
 
-Upgrade the repo harness so future Codex agents can execute long-running
-physics, video, and presentation work with less drift and stronger evidence
-discipline.
+Make the harness reliable enough that future agents can resume complex
+physics/video/presentation work with less drift and fewer false positives.
 
 ## Constraints
 
 - No edits under `Newton/newton/`
-- Preserve historical accepted evidence bundles
-- Prefer explicit deprecation + migration over silent replacement
+- Do not silently preserve competing truth surfaces
+- Keep migrations explicit and discoverable
 
 ## Milestones
 
-1. Audit the current harness, including docs, hooks, validators, results governance, and stale truth surfaces
-2. Implement authoritative-chain cleanup, slug normalization, portable-path cleanup, and results metadata mirror
-3. Add contracts, handoffs, skeptical video evaluator docs/prompts, harness lint, hook upgrades, and local AGENTS guidance
-4. Validate the upgraded harness and record what changed plus what remains open
+1. Audit the current harness and record exact failure modes
+2. Repair source-of-truth drift across task/status/plan/result surfaces
+3. Add results metadata mirrors, skeptical video evaluator assets, handoff/contracts, and lint/hook enforcement
+4. Validate the upgraded harness and update task status/docs
 
 ## Validation
 
-- `docs/generated/harness_audit.md` exists and matches implemented changes
-- `python scripts/lint_harness_consistency.py` runs
-- docs cross-link correctly
-- active tasks expose clean authoritative chains
-- authoritative runs are legible from repo-only metadata
+- `python scripts/lint_harness_consistency.py`
+- cross-link checks over new docs and templates
+- repo-only authoritative run discovery works for major tasks
 
 ## Notes
 
-- The initial audit should integrate the required specialist subagent findings before implementation.
+- This task is both a harness change and a harness self-test.
