@@ -114,3 +114,35 @@
   - rewired `Result F2` so it now uses those current single-panel videos rather
     than the older historical force-mechanism gifs
   - kept `Result F3` on the full canonical `2 x 2` board
+
+## 2026-04-01 GIF Quality Refresh
+
+- Raised bunny-board GIF generation from the previous low-deck defaults
+  (`640/960` width, `8 fps`, `96/128` colors) to a high-quality, size-capped
+  policy:
+  - board preferred profile:
+    `1600 px`, `15 fps`, `224 colors`
+  - panel preferred profile:
+    `960 px`, `15 fps`, `224 colors`
+  - hard per-GIF budget:
+    `< 40 MB`
+- Updated:
+  - `scripts/render_bunny_penetration_collision_board.py`
+  - `scripts/export_bunny_collision_board_panels.py`
+  - `formal_slide/meeting_2026_04_01/build_meeting_20260401.py`
+- Regenerated the canonical board GIF:
+  - `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/artifacts/collision_force_board/collision_force_board_2x2.gif`
+- Regenerated four single-panel GIFs both for the result bundle and the meeting
+  deck:
+  - `.../panels/box_penalty.gif`
+  - `.../panels/box_total.gif`
+  - `.../panels/bunny_penalty.gif`
+  - `.../panels/bunny_total.gif`
+  - `formal_slide/meeting_2026_04_01/gif/box_penalty.gif`
+  - `formal_slide/meeting_2026_04_01/gif/box_total.gif`
+  - `formal_slide/meeting_2026_04_01/gif/bunny_penalty.gif`
+  - `formal_slide/meeting_2026_04_01/gif/bunny_total.gif`
+- Rebuilt:
+  - `formal_slide/meeting_2026_04_01/bridge_meeting_20260401.pptx`
+  - `formal_slide/meeting_2026_04_01/transcript.md`
+  - `formal_slide/meeting_2026_04_01/transcript.pdf`

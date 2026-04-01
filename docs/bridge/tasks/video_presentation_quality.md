@@ -27,6 +27,18 @@ readability:
 - offline render functions in `Newton/phystwin_bridge/demos/*.py`
 - GIF generation helpers in slide builders / demo scripts
 
+## Delivery Contract
+
+- publish/result GIFs:
+  - stored next to the promoted result artifacts
+  - intended for sharing/release quality
+  - each single GIF must stay below `40 MB`
+- deck/PPTX GIFs:
+  - stored under the meeting slide `gif/` directory
+  - may be compressed relative to the publish GIFs so the final `pptx`
+    remains below `100 MB`
+  - deck compression must not overwrite the publish/result GIFs
+
 ## Current Default
 
 Most renderers now use an earth-tone ground palette through shared bridge-side

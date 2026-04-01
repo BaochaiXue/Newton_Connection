@@ -11,6 +11,16 @@ import subprocess
 import cv2
 import numpy as np
 
+BOARD_GIF_PROFILES = [
+    (1600, 15, 224),
+    (1440, 12, 224),
+    (1280, 12, 192),
+    (1120, 10, 192),
+    (960, 10, 160),
+    (960, 8, 128),
+]
+BOARD_GIF_MAX_MB = 40.0
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -175,29 +185,83 @@ def _gather_case_data(summary_path: Path) -> dict[str, object]:
     }
 
 
-def _render_gif_from_mp4(mp4_path: Path, gif_path: Path, *, width: int = 960, fps: int = 8, max_colors: int = 128) -> Path:
+def _render_gif_from_mp4(
+    mp4_path: Path,
+    gif_path: Path,
+    *,
+    width: int = 960,
+    fps: int = 8,
+    max_colors: int = 128,
+    max_size_mb: float | None = None,
+    quality_profiles: list[tuple[int, int, int]] | None = None,
+) -> Path:
     ffmpeg = shutil.which("ffmpeg")
     if ffmpeg is None:
         raise RuntimeError("ffmpeg not found in PATH")
     gif_path.parent.mkdir(parents=True, exist_ok=True)
-    cmd = [
-        ffmpeg,
-        "-y",
-        "-loglevel",
-        "error",
-        "-i",
-        str(mp4_path),
-        "-vf",
-        (
-            f"fps={int(fps)},scale={int(width)}:-1:flags=lanczos,"
-            f"split[s0][s1];[s0]palettegen=max_colors={int(max_colors)}:stats_mode=diff[p];"
-            "[s1][p]paletteuse=dither=bayer:bayer_scale=4"
-        ),
-        "-loop",
-        "0",
-        str(gif_path),
+    profile_rows = [
+        [int(w), int(f), int(c)]
+        for w, f, c in (quality_profiles or [(width, fps, max_colors)])
     ]
-    subprocess.run(cmd, check=True)
+    meta_path = gif_path.with_suffix(f"{gif_path.suffix}.meta.json")
+    signature = {
+        "profiles": profile_rows,
+        "max_size_mb": None if max_size_mb is None else float(max_size_mb),
+        "palette_stats_mode": "full",
+        "palette_dither": "sierra2_4a",
+    }
+    if gif_path.exists() and meta_path.exists() and gif_path.stat().st_mtime >= mp4_path.stat().st_mtime:
+        try:
+            meta_obj = json.loads(meta_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            meta_obj = {}
+        if meta_obj.get("signature") == signature:
+            return gif_path
+
+    budget_bytes = None
+    if max_size_mb is not None and float(max_size_mb) > 0.0:
+        budget_bytes = int(round(float(max_size_mb) * 1_000_000.0))
+    candidate_path = gif_path.with_name(f"{gif_path.stem}.tmp{gif_path.suffix}")
+    chosen_profile: list[int] | None = None
+    chosen_size = 0
+    for render_width, render_fps, render_colors in profile_rows:
+        cmd = [
+            ffmpeg,
+            "-y",
+            "-loglevel",
+            "error",
+            "-i",
+            str(mp4_path),
+            "-vf",
+            (
+                f"fps={int(render_fps)},scale={int(render_width)}:-1:flags=lanczos,"
+                f"split[s0][s1];[s0]palettegen=max_colors={int(render_colors)}:stats_mode=full[p];"
+                "[s1][p]paletteuse=dither=sierra2_4a"
+            ),
+            "-loop",
+            "0",
+            str(candidate_path),
+        ]
+        subprocess.run(cmd, check=True)
+        chosen_profile = [int(render_width), int(render_fps), int(render_colors)]
+        chosen_size = int(candidate_path.stat().st_size)
+        if budget_bytes is None or chosen_size <= budget_bytes:
+            break
+
+    candidate_path.replace(gif_path)
+    meta_path.write_text(
+        json.dumps(
+            {
+                "signature": signature,
+                "chosen_profile": chosen_profile,
+                "size_bytes": chosen_size,
+                "source": str(mp4_path),
+            },
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
     return gif_path
 
 
@@ -493,9 +557,8 @@ def main() -> int:
     board_gif_path = _render_gif_from_mp4(
         board_video_path,
         out_dir / "collision_force_board_2x2.gif",
-        width=960,
-        fps=8,
-        max_colors=128,
+        max_size_mb=BOARD_GIF_MAX_MB,
+        quality_profiles=BOARD_GIF_PROFILES,
     )
     summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print(f"[render_bunny_penetration_collision_board] video={board_video_path}", flush=True)

@@ -30,6 +30,7 @@ TEMPLATE_PPTX = MEETING_DIR / "templates" / "My Adjust.pptx"
 OUT_PPTX = MEETING_DIR / "bridge_meeting_20260401.pptx"
 DECK_GIF_DIR = MEETING_DIR / "gif"
 DEFAULT_MAX_PPTX_MB = 100.0
+DEFAULT_MAX_GIF_MB = 40.0
 
 REF_TITLE_LEFT = 311760
 REF_TITLE_TOP = 444960
@@ -168,6 +169,7 @@ HISTORICAL_BUNNY_RUN = (
 HISTORICAL_BUNNY_MATRIX_DIR = HISTORICAL_BUNNY_RUN / "artifacts" / "matrix"
 CURRENT_BUNNY_BOARD_MP4 = CURRENT_BUNNY_RUN / "artifacts" / "collision_force_board" / "collision_force_board_2x2.mp4"
 CURRENT_BUNNY_BOARD_SUMMARY = CURRENT_BUNNY_RUN / "artifacts" / "collision_force_board" / "summary.json"
+CURRENT_BUNNY_BOARD_PUBLISH_GIF = CURRENT_BUNNY_RUN / "artifacts" / "collision_force_board" / "collision_force_board_2x2.gif"
 CURRENT_BUNNY_BOARD_GIF = DECK_GIF_DIR / "bunny_collision_board_2x2.gif"
 CURRENT_BUNNY_BOARD_FIRST_FRAME = (
     CURRENT_BUNNY_RUN / "artifacts" / "collision_force_board" / "collision_force_board_2x2_first_frame.png"
@@ -178,9 +180,40 @@ CURRENT_BUNNY_PANEL_MP4 = {
     "bunny_penalty": CURRENT_BUNNY_RUN / "artifacts" / "collision_force_board" / "panels" / "bunny_penalty.mp4",
     "bunny_total": CURRENT_BUNNY_RUN / "artifacts" / "collision_force_board" / "panels" / "bunny_total.mp4",
 }
+CURRENT_BUNNY_PANEL_PUBLISH_GIF = {
+    name: CURRENT_BUNNY_RUN / "artifacts" / "collision_force_board" / "panels" / f"{name}.gif"
+    for name in CURRENT_BUNNY_PANEL_MP4
+}
 CURRENT_BUNNY_PANEL_GIF = {
     name: DECK_GIF_DIR / f"{name}.gif" for name in CURRENT_BUNNY_PANEL_MP4
 }
+CURRENT_BUNNY_BOARD_PUBLISH_GIF_PROFILES = [
+    (1600, 15, 224),
+    (1440, 12, 224),
+    (1280, 12, 192),
+    (1120, 10, 192),
+    (960, 10, 160),
+    (960, 8, 128),
+]
+CURRENT_BUNNY_PANEL_PUBLISH_GIF_PROFILES = [
+    (960, 15, 224),
+    (960, 12, 192),
+    (896, 12, 192),
+    (832, 10, 160),
+    (768, 10, 160),
+    (640, 8, 128),
+]
+CURRENT_BUNNY_BOARD_GIF_PROFILES = [
+    (1280, 12, 192),
+    (1120, 10, 160),
+    (960, 10, 160),
+    (960, 8, 128),
+]
+CURRENT_BUNNY_PANEL_GIF_PROFILES = [
+    (832, 10, 160),
+    (768, 10, 160),
+    (640, 8, 128),
+]
 ACCEPTED_BUNNY_BOARD_PNG = (
     HISTORICAL_BUNNY_MATRIX_DIR / "bunny_penetration_summary_board.png"
     if (HISTORICAL_BUNNY_MATRIX_DIR / "bunny_penetration_summary_board.png").exists()
@@ -534,9 +567,9 @@ RECALL_SLIDES: list[dict] = [
         "kind": "body",
         "title": "Conclusion P2: Bridge Tax Exists, But Collision Is Still Tiny",
         "bullets": [
-            "**A0 -> A1:** `1.87x` faster, so controller bridge tax is real.",
-            "**A3:** collision is only about `0.004 ms/substep`; bridge and residual overhead are much larger.",
-            "**B1:** PhysTwin frame cost is still dominated by simulator launch, not controller/reset.",
+            "**Observation:** precomputing controller targets makes Newton `1.87x` faster.",
+            "**Observation:** collision is only about `0.004 ms/substep`; most cost is elsewhere.",
+            "**Takeaway:** the remaining gap is not mainly a collision problem.",
         ],
         "transcript": [
             "这一页不再用数据图，而是只保留 progress statement。",
@@ -550,9 +583,9 @@ RECALL_SLIDES: list[dict] = [
         "kind": "body",
         "title": "Conclusion P3: The Residual Gap Still Looks Like Launch Structure",
         "bullets": [
-            "**Nsight A1:** `cuLaunchKernel 77.2%`, `cudaMemsetAsync 21.5%`.",
-            "**Nsight B0:** `cudaGraphLaunch 92.6%`, `cuCtxSynchronize 2.9%`.",
-            "**Next move:** optimize batching / graph-like replay before blaming collision.",
+            "**Newton:** `cuLaunchKernel 77.2%`, `cudaMemsetAsync 21.5%`.",
+            "**PhysTwin:** `cudaGraphLaunch 92.6%`, `cuCtxSynchronize 2.9%`.",
+            "**Takeaway:** optimize batching / graph-like replay before blaming collision.",
         ],
         "transcript": [
             "这一页也不再用数据图，只保留最终解释。",
@@ -566,10 +599,9 @@ RECALL_SLIDES: list[dict] = [
         "kind": "body",
         "title": "Hypothesis F1: A Force Video Must Preserve Both Global Cloth Behavior And Local Contact Mechanism",
         "bullets": [
-            "**Failure condition:** a local patch alone is not enough; we must still see the full cloth and bunny.",
-            "**Method:** split the explanation into **phenomenon** and **force mechanism**, but keep the force video itself as **global panel + local zoom panel**.",
-            "**Acceptance gate:** no black frames, no fake slideshow, and no loss of the global cloth in the main panel.",
-            "**Progress:** we now have one accepted 4-case package instead of one fragile single-case debug clip.",
+            "**Hypothesis:** a local patch alone is not enough; the whole cloth must stay visible.",
+            "**Method:** pair a global phenomenon view with a local force zoom.",
+            "**Expected result:** one force video should explain both motion and contact mechanism.",
         ],
         "transcript": [
             "这里开始进入第三段 penetration analysis。",
@@ -599,7 +631,7 @@ RECALL_SLIDES: list[dict] = [
     {
         "kind": "grid",
         "title": "Result F2: Split Single-Panel Videos Now Match The Current 2x2 Board",
-        "common_settings": "Same workpoint: cloth 0.1 kg, rigid 0.5 kg.",
+        "common_settings": None,
         "items": [
             ("Box penalty\nsingle panel", CURRENT_BUNNY_PANEL_GIF["box_penalty"]),
             ("Box total\nsingle panel", CURRENT_BUNNY_PANEL_GIF["box_total"]),
@@ -631,9 +663,9 @@ RECALL_SLIDES: list[dict] = [
         "kind": "body",
         "title": "Hypothesis S1: Native Newton Is Not Enough For The Final Self-Collision Claim",
         "bullets": [
-            "**Claim boundary:** strict parity only covers PhysTwin-native self-collision plus implicit ground.",
-            "**Decision scene:** cloth+box is the controlled scene for video comparison, not the exactness scope itself.",
-            "**Progress:** operator exactness passed, but rollout parity is still blocked.",
+            "**Hypothesis:** native Newton self-collision is not enough for the final claim.",
+            "**Scope:** strict parity only covers PhysTwin-native self-collision plus implicit ground.",
+            "**Current status:** operator exactness passed, but rollout parity is still blocked.",
         ],
         "transcript": [
             "这里开始进入第四段 self-collision, Newton way。",
@@ -782,10 +814,20 @@ def _prepare_generated_assets() -> None:
     for name, src in ACCEPTED_PHENO_MP4.items():
         _ensure_gif(src, ACCEPTED_PHENO_GIF[name], width=640, fps=8, max_colors=96)
     if CURRENT_BUNNY_BOARD_MP4.exists():
-        _ensure_current_bunny_panel_mp4s()
-        _ensure_gif(CURRENT_BUNNY_BOARD_MP4, CURRENT_BUNNY_BOARD_GIF, width=960, fps=8, max_colors=128)
+        _ensure_current_bunny_publish_gifs()
+        _ensure_gif(
+            CURRENT_BUNNY_BOARD_MP4,
+            CURRENT_BUNNY_BOARD_GIF,
+            max_size_mb=DEFAULT_MAX_GIF_MB,
+            quality_profiles=CURRENT_BUNNY_BOARD_GIF_PROFILES,
+        )
         for name, src in CURRENT_BUNNY_PANEL_MP4.items():
-            _ensure_gif(src, CURRENT_BUNNY_PANEL_GIF[name], width=640, fps=8, max_colors=96)
+            _ensure_gif(
+                src,
+                CURRENT_BUNNY_PANEL_GIF[name],
+                max_size_mb=DEFAULT_MAX_GIF_MB,
+                quality_profiles=CURRENT_BUNNY_PANEL_GIF_PROFILES,
+            )
     for name, src in ACCEPTED_FORCE_MP4.items():
         _ensure_gif(src, ACCEPTED_FORCE_GIF[name], width=640, fps=8, max_colors=96)
     for src, out in (
@@ -1208,44 +1250,113 @@ def _ensure_transcoded_gif(
     width: int = 640,
     fps: int = 8,
     max_colors: int = 96,
+    max_size_mb: float | None = None,
+    quality_profiles: list[tuple[int, int, int]] | None = None,
 ) -> Path:
     gif_path.parent.mkdir(parents=True, exist_ok=True)
-    if gif_path.exists() and gif_path.stat().st_mtime >= src_path.stat().st_mtime:
-        return gif_path
-    subprocess.run(
-        [
-            "ffmpeg",
-            "-y",
-            "-loglevel",
-            "error",
-            "-i",
-            str(src_path),
-            "-vf",
-            (
-                f"fps={fps},scale={width}:-1:flags=lanczos,"
-                f"split[s0][s1];[s0]palettegen=max_colors={max_colors}:stats_mode=diff[p];"
-                "[s1][p]paletteuse=dither=bayer:bayer_scale=4"
-            ),
-            "-loop",
-            "0",
-            str(gif_path),
-        ],
-        check=True,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
+    profile_rows = [
+        [int(w), int(f), int(c)]
+        for w, f, c in (quality_profiles or [(width, fps, max_colors)])
+    ]
+    meta_path = gif_path.with_suffix(f"{gif_path.suffix}.meta.json")
+    signature = {
+        "profiles": profile_rows,
+        "max_size_mb": None if max_size_mb is None else float(max_size_mb),
+        "palette_stats_mode": "full",
+        "palette_dither": "sierra2_4a",
+    }
+    if gif_path.exists() and meta_path.exists() and gif_path.stat().st_mtime >= src_path.stat().st_mtime:
+        try:
+            meta_obj = json.loads(meta_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            meta_obj = {}
+        if meta_obj.get("signature") == signature:
+            return gif_path
+    budget_bytes = None
+    if max_size_mb is not None and float(max_size_mb) > 0.0:
+        budget_bytes = int(round(float(max_size_mb) * 1_000_000.0))
+    candidate_path = gif_path.with_name(f"{gif_path.stem}.tmp{gif_path.suffix}")
+    chosen_profile: list[int] | None = None
+    chosen_size = 0
+    for render_width, render_fps, render_colors in profile_rows:
+        subprocess.run(
+            [
+                "ffmpeg",
+                "-y",
+                "-loglevel",
+                "error",
+                "-i",
+                str(src_path),
+                "-vf",
+                (
+                    f"fps={int(render_fps)},scale={int(render_width)}:-1:flags=lanczos,"
+                    f"split[s0][s1];[s0]palettegen=max_colors={int(render_colors)}:stats_mode=full[p];"
+                    "[s1][p]paletteuse=dither=sierra2_4a"
+                ),
+                "-loop",
+                "0",
+                str(candidate_path),
+            ],
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        candidate_size = candidate_path.stat().st_size
+        chosen_profile = [int(render_width), int(render_fps), int(render_colors)]
+        chosen_size = int(candidate_size)
+        if budget_bytes is None or candidate_size <= budget_bytes:
+            break
+    candidate_path.replace(gif_path)
+    meta_path.write_text(
+        json.dumps(
+            {
+                "signature": signature,
+                "chosen_profile": chosen_profile,
+                "size_bytes": chosen_size,
+                "source": str(src_path),
+            },
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
     )
     return gif_path
 
 
-def _ensure_gif(mp4_path: Path, gif_path: Path, *, width: int = 640, fps: int = 8, max_colors: int = 96) -> Path:
-    return _ensure_transcoded_gif(mp4_path, gif_path, width=width, fps=fps, max_colors=max_colors)
+def _ensure_gif(
+    mp4_path: Path,
+    gif_path: Path,
+    *,
+    width: int = 640,
+    fps: int = 8,
+    max_colors: int = 96,
+    max_size_mb: float | None = None,
+    quality_profiles: list[tuple[int, int, int]] | None = None,
+) -> Path:
+    return _ensure_transcoded_gif(
+        mp4_path,
+        gif_path,
+        width=width,
+        fps=fps,
+        max_colors=max_colors,
+        max_size_mb=max_size_mb,
+        quality_profiles=quality_profiles,
+    )
 
 
 def _ensure_current_bunny_panel_mp4s() -> None:
     if not CURRENT_BUNNY_BOARD_SUMMARY.exists():
         raise FileNotFoundError(f"missing bunny board summary: {CURRENT_BUNNY_BOARD_SUMMARY}")
-    missing = [path for path in CURRENT_BUNNY_PANEL_MP4.values() if not path.exists()]
-    if not missing:
+    board_mtime = 0.0
+    if CURRENT_BUNNY_BOARD_MP4.exists():
+        board_mtime = CURRENT_BUNNY_BOARD_MP4.stat().st_mtime
+    expected = list(CURRENT_BUNNY_PANEL_MP4.values()) + list(CURRENT_BUNNY_PANEL_PUBLISH_GIF.values())
+    stale_or_missing = [
+        path
+        for path in expected
+        if (not path.exists()) or (board_mtime > 0.0 and path.stat().st_mtime < board_mtime)
+    ]
+    if not stale_or_missing:
         return
     helper = ROOT / "scripts" / "export_bunny_collision_board_panels.py"
     subprocess.run(
@@ -1257,6 +1368,25 @@ def _ensure_current_bunny_panel_mp4s() -> None:
         ],
         check=True,
     )
+
+
+def _ensure_current_bunny_publish_gifs() -> None:
+    if not CURRENT_BUNNY_BOARD_MP4.exists():
+        return
+    _ensure_gif(
+        CURRENT_BUNNY_BOARD_MP4,
+        CURRENT_BUNNY_BOARD_PUBLISH_GIF,
+        max_size_mb=DEFAULT_MAX_GIF_MB,
+        quality_profiles=CURRENT_BUNNY_BOARD_PUBLISH_GIF_PROFILES,
+    )
+    _ensure_current_bunny_panel_mp4s()
+    for name, src in CURRENT_BUNNY_PANEL_MP4.items():
+        _ensure_gif(
+            src,
+            CURRENT_BUNNY_PANEL_PUBLISH_GIF[name],
+            max_size_mb=DEFAULT_MAX_GIF_MB,
+            quality_profiles=CURRENT_BUNNY_PANEL_PUBLISH_GIF_PROFILES,
+        )
 
 
 def _ensure_resized_gif(
