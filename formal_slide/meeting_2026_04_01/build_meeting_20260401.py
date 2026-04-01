@@ -8,7 +8,6 @@ import subprocess
 import textwrap
 from pathlib import Path
 
-import matplotlib
 import markdown
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from pptx import Presentation
@@ -19,10 +18,6 @@ from pptx.util import Inches, Pt
 from pygments import lex
 from pygments.lexers import PythonLexer
 from pygments.token import Comment, Keyword, Name, Number, Operator, Punctuation, String, Text, Token
-
-matplotlib.use("Agg")
-from matplotlib import pyplot as plt
-
 
 MEETING_DIR = Path(__file__).resolve().parent
 ROOT = MEETING_DIR.parents[1]
@@ -104,16 +99,11 @@ RECALL_BOX_SUPPORT_GIF = PREV_GIF_DIR / "cloth_rigid_compare_box_m5_v1.gif"
 RECALL_THIN_EAR_5X_GIF = PREV_GIF_DIR / "thin_ear_ccd5x_v3.gif"
 RECALL_THIN_EAR_10X_GIF = PREV_GIF_DIR / "thin_ear_ccd10x_v3.gif"
 
-VIEWER_CODE_PATH = ROOT / "Newton" / "phystwin_bridge" / "demos" / "demo_rope_control_realtime_viewer.py"
 RENDER_BUNNY_BOARD_PATH = ROOT / "scripts" / "render_bunny_penetration_collision_board.py"
-NEWTON_CORE_BENCHMARK_PATH = ROOT / "Newton" / "newton" / "asv" / "benchmarks" / "benchmark_mujoco.py"
-NEWTON_CORE_SOLVER_PATH = ROOT / "Newton" / "newton" / "newton" / "_src" / "solvers" / "solver.py"
-NEWTON_CORE_CABLE_EXAMPLE_PATH = ROOT / "Newton" / "newton" / "newton" / "examples" / "cable" / "example_cable_pile.py"
+NEWTON_CORE_SPRING_PATH = ROOT / "Newton" / "newton" / "newton" / "_src" / "solvers" / "semi_implicit" / "kernels_particle.py"
 NEWTON_CORE_SEMIIMPLICIT_PATH = ROOT / "Newton" / "newton" / "newton" / "_src" / "solvers" / "semi_implicit" / "solver_semi_implicit.py"
 PHYSTWIN_SPRING_WARP_CODE_PATH = ROOT / "PhysTwin" / "qqtt" / "model" / "diff_simulator" / "spring_mass_warp.py"
 IMAGE_DIR = MEETING_DIR / "images"
-CODE_REPLAY_SEMANTICS_PNG = IMAGE_DIR / "code_replay_semantics.png"
-CODE_GRANULAR_PROFILE_PNG = IMAGE_DIR / "code_granular_profile.png"
 CODE_PERF_PHYSICS_NEWTON_PNG = IMAGE_DIR / "code_perf_physics_newton.png"
 CODE_PERF_PHYSICS_PHYSTWIN_PNG = IMAGE_DIR / "code_perf_physics_phystwin.png"
 CODE_PERF_EXECUTION_NEWTON_PNG = IMAGE_DIR / "code_perf_execution_newton.png"
@@ -122,8 +112,6 @@ CODE_SELFCOLLISION_OBJECT_PNG = IMAGE_DIR / "code_selfcollision_object.png"
 CODE_SELFCOLLISION_GROUND_PNG = IMAGE_DIR / "code_selfcollision_ground.png"
 CODE_SELFCOLLISION_TABLE_PHYSTWIN_PNG = IMAGE_DIR / "code_selfcollision_table_phystwin.png"
 CODE_SELFCOLLISION_TABLE_BRIDGE_PNG = IMAGE_DIR / "code_selfcollision_table_bridge.png"
-PERF_ATTRIBUTION_PNG = IMAGE_DIR / "perf_attribution_breakdown.png"
-PERF_NSIGHT_PNG = IMAGE_DIR / "perf_nsight_breakdown.png"
 FORCE_DIAG_CODE_PNG = IMAGE_DIR / "code_force_diag_capture.png"
 FORCE_LAYOUT_CODE_PNG = IMAGE_DIR / "code_force_diag_layout.png"
 PERF_ROPE_CASE_GIF = DECK_GIF_DIR / "rope_perf_case_anchor.gif"
@@ -398,6 +386,10 @@ A3_UNEXPLAINED_MS = max(
 B1_CONTROLLER_FRAME_MS = float(B1_AGG.get("controller_target", {}).get("mean_of_run_means_ms", 0.0))
 B1_SIM_LAUNCH_MS = float(B1_AGG.get("simulator_launch", {}).get("mean_of_run_means_ms", 0.0))
 B1_STATE_RESET_MS = float(B1_AGG.get("state_reset", {}).get("mean_of_run_means_ms", 0.0))
+A0_VS_B0 = float(A0_ROW.get("ms_per_substep_mean", 0.0)) / max(float(B0_ROW.get("ms_per_substep_mean", 1.0e-12)), 1.0e-12)
+A1_VS_B0 = float(A1_ROW.get("ms_per_substep_mean", 0.0)) / max(float(B0_ROW.get("ms_per_substep_mean", 1.0e-12)), 1.0e-12)
+A0_TO_A1 = float(A0_ROW.get("ms_per_substep_mean", 0.0)) / max(float(A1_ROW.get("ms_per_substep_mean", 1.0e-12)), 1.0e-12)
+A3_POST_BRIDGE_MS = A3_INTERNAL_MS + A3_INTEGRATION_MS + A3_UNEXPLAINED_MS
 
 RECALL_SLIDES: list[dict] = [
     {
@@ -506,211 +498,138 @@ RECALL_SLIDES: list[dict] = [
         ],
     },
     {
-        "kind": "perf_gif_bullets",
-        "title": "H1: On The Same Rope Replay, How Far Is Newton From PhysTwin?",
-        "gif_label": "Same rope case: `rope_double_hand`.",
+        "kind": "table_gif",
+        "title": "Method: Fair Rope Benchmark Before Optimization",
+        "note": "Method only. The main comparison is simulator-only, with rendering removed on both sides.",
+        "gif_label": "Rope replay case",
         "gif_path": PERF_ROPE_CASE_GIF,
-        "note": None,
-        "bullets": [
-            "**Question:** on the same rope replay, is Newton slower or faster when render is removed?",
-            "**Controls:** same rope case, same replay, same `dt/substeps`, same GPU, no render.",
-            "**Order:** benchmark first, locate the slow stage second, optimize last.",
+        "columns": ["Control", "Setting", "Why it matters"],
+        "rows": [
+            ["Case", "`rope_double_hand`", "same rope object, same spring graph"],
+            ["Replay", "same controller trajectory", "same input history, not two tasks"],
+            ["Physics", "`dt=5e-05`, `667` substeps", "same time resolution"],
+            ["Hardware", "same RTX 4090", "same GPU path"],
+            ["Render", "disabled on both sides", "no viewer/UI contamination"],
         ],
         "transcript": [
-            "这里开始进入第二段 Newton Interactive Playground 性能 Profiling，而且这次只讲 rope case，不再讲 robot case。",
-            "教授要求的研究顺序很清楚：先建立 apples-to-apples benchmark，再解释 gap，最后才谈优化。",
-            "因此第一步不是优化，而是问一个简单的问题：在同一个 `rope_double_hand` replay、完全一致的物理设定下，去掉 rendering 之后，Newton 到底比 PhysTwin 快还是慢。",
-            "rope case 之所以适合作为这个 benchmark，是因为它是弱碰撞 path。也就是说，如果这里仍然有明显 slowdown，第一嫌疑不应该自动落到 collision model 上。",
-            "公平条件必须写死：same rope case、same controller replay、same `dt`、same `substeps`、same GPU、no render。",
-            f"同 case identity 不是口头假设。当前 committed benchmark 里，PhysTwin controller trajectory 和 IR 的 max abs diff 是 {B0_PAYLOAD.get('trajectory_parity', {}).get('controller_traj_max_abs_diff', 0.0):.1e}，所以输入轨迹本身已经对齐。",
+            "这里开始进入第二段 rope-case performance analysis，而且这次明确只讲 rope case，不再讲 robot case。",
+            "第一张 slide 的作用不是给结论，而是先把 benchmark method 锁死：same case、same replay、same physics settings、same GPU、no render。",
+            "Newton 侧的方法学是用 realtime viewer 的同一个 rope replay 入口，但切到 `--viewer null --profile-only`，所以这一步只说明 benchmark setup，不把 wrapper 当成 core proof。",
+            "PhysTwin 侧的方法学是 same trajectory 的 headless replay。因为教授先要 apples-to-apples throughput，所以这里故意不把 GUI / Gaussian / viewer loop 混进主比较。",
+            f"同 case identity 也不是口头假设：当前 committed benchmark 里，PhysTwin controller trajectory 和 IR 的 max abs diff 是 {B0_PAYLOAD.get('trajectory_parity', {}).get('controller_traj_max_abs_diff', 0.0):.1e}。",
         ],
     },
     {
         "kind": "code_twocol_large",
-        "title": "Source Proof P1: The Rope Core Is Spring Force + Semi-Implicit Update",
-        "note": "Core source only. Both sides advance rope state through spring force and semi-implicit time stepping.",
-        "left_label": "Newton core: particle state is advanced by semi-implicit Euler.",
+        "title": "H2: Comparable Spring-Damper Rope Update Intent",
+        "note": "Core source only. Claim strength: comparable update intent, not exact formula identity.",
+        "left_label": "[Newton/newton/newton/_src/solvers/semi_implicit/kernels_particle.py : 27-29, 43-52]\nNewton spring kernel uses stretch + relative-velocity damping.",
         "left_path": CODE_PERF_PHYSICS_NEWTON_PNG,
-        "right_label": "PhysTwin core: rope force is spring + dashpot, then velocity is updated from force.",
+        "right_label": "[PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py : 121-132, 156-160]\nPhysTwin rope core builds spring+damp force, then updates velocity from force.",
         "right_path": CODE_PERF_PHYSICS_PHYSTWIN_PNG,
         "transcript": [
-            "这一页先不谈 graph，不谈优化，只回答一个更基础的问题：rope case 两边是不是在做可比的 spring-driven semi-implicit update。",
+            "这一页回答的是更基础的 H2：两边是不是至少在做可比较的 spring-damper rope update intent。",
             "",
-            "[Newton/newton/newton/_src/solvers/solver.py : 38-46]",
-            "```python",
-            "# simple semi-implicit Euler. v1 = v0 + a dt, x1 = x0 + v1 dt",
-            "v1 = v0 + (f0 * inv_mass + world_g * wp.step(-inv_mass)) * dt",
-            "v1_mag = wp.length(v1)",
-            "if v1_mag > v_max:",
-            "    v1 *= v_max / v1_mag",
-            "x1 = x0 + v1 * dt",
-            "x_new[tid] = x1",
-            "v_new[tid] = v1",
-            "```",
-            "[What]",
-            "L38 明确把 Newton 粒子积分写成 semi-implicit Euler：先速度、后位置，这给出了最核心的时间推进骨架。",
-            "L39 真正的速度更新是 `v1 = v0 + a dt`，其中加速度来自力除以质量再加重力项，所以它是力驱动更新，不是位置投影黑盒。",
-            "L41-L43 是速度限幅稳定化，它不改变“先求新速度、再推进位置”的积分结构，但会在极端高速时截断数值爆炸。",
-            "L44 把新位置写成 `x1 = x0 + v1 dt`，这正是 semi-implicit Euler 和 explicit Euler 的关键差异：位置用的是新速度而不是旧速度。",
-            "L46-L47 把 `x1` 和 `v1` 写回 state，所以这一段不是抽象描述，而是 Newton core 真正落地的粒子推进算子。",
-            "[Why]",
-            "这段代码的说服力在于，它把 Newton 这一侧的核心时间推进直接对应到物理公式 `v_{t+1}=v_t+a_t\\Delta t, x_{t+1}=x_t+v_{t+1}\\Delta t`。",
-            "也就是说，如果 rope case 的主要工作量确实来自 spring force 和粒子推进，那么 Newton 这边的核心数学并不是一开始就和 PhysTwin 完全不同的另一套东西。",
-            "[Risk]",
-            "这里要诚实地降 claim：这段代码证明的是 Newton core 采用可比的 semi-implicit particle update intent，不是逐字符证明 Newton rope implementation 和 PhysTwin rope implementation 完全同构。",
-            "所以这页不能单独推出“所有公式完全一样”，但足以支撑一个更窄、更诚实的判断：弱碰撞 rope case 的主更新结构不是天然 collision-first。",
+            "[Newton/newton/newton/_src/solvers/semi_implicit/kernels_particle.py : 27-29, 43-52]",
+            "[What | Newton]",
+            "L27-L29 先把每条边的 stiffness、damping 和 rest length 取出来，说明 Newton rope force 不是黑箱约束，而是按 edge-wise spring parameter 逐条计算。",
+            "L43-L44 用当前边向量归一化得到 `dir`，这一步把几何形变投到当前边方向上，决定了后面恢复力和阻尼力的方向。",
+            "L46-L47 同时计算 stretch `c = l - rest` 和沿边方向的相对速度 `dcdt`，也就是把弹性形变和速度阻尼拆成两个独立物理量。",
+            "L50 用 `fs = dir * (ke * c + kd * dcdt)` 把弹性项和阻尼项重新合成一个 spring-damper force，这就是 Newton rope edge 的核心力学表达。",
+            "L52-L53 把这一对 edge force 以反向方式原子加回两个端点，所以这个 kernel 的物理意义是 pairwise internal spring force assembly，而不是接触求解。",
+            "[Why | Newton]",
+            "这段代码足以支撑一个比较谨慎但重要的判断：Newton rope core 至少不是在用完全不同于 spring-damper 的奇异更新思路。",
+            "它明确是边级别的 stretch + relative-velocity damping force assembly，所以后面 benchmark 里出现的 gap，不能直接归结成“Newton 做的不是 rope spring physics”。",
+            "[Risk | Newton]",
+            "这段源码只证明 Newton core 的 rope-side force assembly intent，不能单独推出整条 replay path 与 PhysTwin 逐项完全同构，因为完整 replay 还包括积分、控制点写入和 runtime organization。",
             "",
-            "[PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py : 123-132, 156-160]",
-            "```python",
-            "spring_force = (",
-            "    wp.clamp(wp.exp(spring_Y[tid]), low=spring_Y_min, high=spring_Y_max)",
-            "    * (dis_len / rest - 1.0)",
-            "    * d",
-            ")",
-            "v_rel = wp.dot(v2 - v1, d)",
-            "dashpot_forces = dashpot_damping * v_rel * d",
-            "overall_force = spring_force + dashpot_forces",
-            "...",
-            "all_force = f0 + m0 * wp.vec3(0.0, 0.0, -9.8) * reverse_factor",
-            "a = all_force / m0",
-            "v1 = v0 + a * dt",
-            "v2 = v1 * drag_damping_factor",
-            "```",
-            "[What]",
-            "L123-L127 把 PhysTwin rope 的主内力写成 spring term：弹簧模量乘以应变 `(dis_len / rest - 1)` 再沿当前边方向 `d` 施加。",
-            "L129-L130 再加上 dashpot 阻尼项，也就是相对速度在边方向上的投影乘阻尼系数，这对应一维 Kelvin-Voigt 式的阻尼弹簧近似。",
-            "L132 把 spring 和 dashpot 合成 `overall_force`，说明这一侧的主动力学不是 contact impulse，而是 internal spring-damper force。",
-            "L156-L158 把总力加上重力再除以质量得到加速度 `a`，这一段直接把力学公式 `a = F/m` 写成代码。",
-            "L159 用 `v1 = v0 + a dt` 更新速度，L160 再施加 drag 衰减，所以 PhysTwin 这边的核心推进同样是 force-driven velocity update。",
-            "[Why]",
-            "这段源码真正参与说理的地方在于，它明确告诉我们 rope case 的主要物理量是 spring force、dashpot damping、gravity 和基于 `dt` 的速度推进。",
-            "因此如果当前 benchmark 选的是 weak-collision rope replay，那么首先应该怀疑的是 spring/integration path 的 runtime organization，而不是把 slowdown 直接归罪给 collision model。",
-            "[Risk]",
-            "这里同样要诚实：PhysTwin 这段代码比 Newton 侧展示得更具体，因为它直接把 spring force kernel 写出来了；Newton 侧我们目前展示的是 core integrator，而不是 rope-specific force assembly。",
-            "所以我们在 slide 上只能写“closely comparable semi-implicit rope update intent”，不能夸张成“逐项完全同一个 kernel”。",
+            "[PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py : 121-132, 156-160]",
+            "[What | PhysTwin]",
+            "L121-L127 先用当前边方向 `d` 和应变 `(dis_len / rest - 1)` 写出 `spring_force`，这里 PhysTwin 同样是 edge-wise 弹簧恢复力，而不是位置投影式约束。",
+            "L129-L130 再把相对速度在边方向上的投影乘上 `dashpot_damping`，得到 `dashpot_forces`，这和 Newton 侧的 damping term 是同一类物理对象。",
+            "L132 把 spring 和 dashpot 合成 `overall_force`，说明 PhysTwin rope 主内力同样是 spring-damper force，而不是 collision-first path。",
+            "L156-L160 再把总力转成加速度，用 `v1 = v0 + a * dt` 更新速度，并在最后施加 drag 衰减，所以它仍然是 force-driven time update。",
+            "[Why | PhysTwin]",
+            "这段代码把 PhysTwin 侧的 rope update intent 讲得更直接：spring-damper internal force 加 gravity，然后按 `dt` 推速度，这和 Newton 侧至少在物理意图上是可比较的。",
+            "因此 Q1 的 apples-to-apples benchmark 可以被解释成同类 rope update path 的性能比较，而不是两套毫无关系的 physics 在碰运气。",
+            "[Risk | PhysTwin]",
+            "这里也不能过强宣称“same formula means same runtime”。代码只能支持 comparable physical intent；runtime gap 还可能来自 graph replay、launch structure、bookkeeping 和 control feed path。",
         ],
     },
     {
         "kind": "table_gif",
-        "title": "Result P1: On The Fair Rope Replay, Newton A1 Is Still 3.30x Slower",
-        "note": "Same rope case. No render. Same `dt/substeps`. RTX 4090.",
-        "gif_label": "Rope benchmark object",
+        "title": "Result: Newton A1 Is 3.30x Slower Than PhysTwin B0",
+        "note": "264 replay frames, 175421 substeps, 8.77 s physical time. No render on either side.",
+        "gif_label": "Same rope replay",
         "gif_path": PERF_ROPE_CASE_GIF,
-        "columns": ["Config", "Replay Path", "ms/substep", "RTF", "Meaning"],
+        "columns": ["Config", "ms/substep", "RTF", "vs B0", "Meaning"],
         "rows": [
-            [
-                "Newton A0",
-                "controller targets uploaded every substep",
-                _fmt(A0_ROW, "ms_per_substep_mean", ".6f"),
-                _fmt(A0_ROW, "rtf_mean", ".3f"),
-                "repeated controller-write overhead is included",
-            ],
-            [
-                "Newton A1",
-                "controller targets precomputed once",
-                _fmt(A1_ROW, "ms_per_substep_mean", ".6f"),
-                _fmt(A1_ROW, "rtf_mean", ".3f"),
-                "controller-write cost is reduced, but Newton is still slower",
-            ],
-            [
-                "PhysTwin B0",
-                "graph-captured headless replay",
-                _fmt(B0_ROW, "ms_per_substep_mean", ".6f"),
-                _fmt(B0_ROW, "rtf_mean", ".3f"),
-                "same replay runs through a graph-launch path",
-            ],
+            ["Newton A0", _fmt(A0_ROW, "ms_per_substep_mean", ".6f"), _fmt(A0_ROW, "rtf_mean", ".3f"), f"{A0_VS_B0:.2f}x", "baseline controller write"],
+            ["Newton A1", _fmt(A1_ROW, "ms_per_substep_mean", ".6f"), _fmt(A1_ROW, "rtf_mean", ".3f"), f"{A1_VS_B0:.2f}x", "precomputed controller write"],
+            ["PhysTwin B0", _fmt(B0_ROW, "ms_per_substep_mean", ".6f"), _fmt(B0_ROW, "rtf_mean", ".3f"), "1.00x", "headless graph replay"],
         ],
         "transcript": [
-            "这张表只回答 throughput gap 本身，不提前解释原因。",
+            "这一页只回答 Q1，不提前解释原因。",
             "完整 rope replay 现在已经做成 same-case apples-to-apples throughput table。264 个 trajectory frame 展开以后是 175421 个 substep，对应 8.77 秒物理时间。",
-            f"authoritative 数字很直接：Newton A0 `{_fmt(A0_ROW, 'ms_per_substep_mean', '.6f')} ms/substep`，Newton A1 `{_fmt(A1_ROW, 'ms_per_substep_mean', '.6f')} ms/substep`，PhysTwin B0 `{_fmt(B0_ROW, 'ms_per_substep_mean', '.6f')} ms/substep`。",
-            "A0 和 A1 的差别只是在 controller target 的组织方式，不是换了一套物理任务。",
-            f"所以这页给出的核心事实是：即使把 repeated controller write 降下来，Newton A1 仍然比 PhysTwin B0 慢 `{_fmt(A1_ROW, 'slowdown_vs_phystwin_headless', '.3f')}x`。",
+            f"主结果很直接：Newton A0 是 `{_fmt(A0_ROW, 'ms_per_substep_mean', '.6f')} ms/substep`，Newton A1 是 `{_fmt(A1_ROW, 'ms_per_substep_mean', '.6f')} ms/substep`，PhysTwin B0 是 `{_fmt(B0_ROW, 'ms_per_substep_mean', '.6f')} ms/substep`。",
+            "A0 和 A1 的差别只在 controller feed path，不是换了一套 rope task。",
+            f"所以这页真正要让老师带走的结论只有一句：在公平 rope replay benchmark 下，Newton A1 仍然比 PhysTwin B0 慢 `{A1_VS_B0:.2f}x`，也就是大约 `3.30x`。",
+        ],
+    },
+    {
+        "kind": "table_gif",
+        "title": "H4: Bridge Tax Is Real, But It Does Not Explain The Whole Gap",
+        "note": "Attribution is synchronized evidence. Use it to bound likely causes, not to replace the throughput table.",
+        "gif_label": "Same rope replay",
+        "gif_path": PERF_ROPE_CASE_GIF,
+        "columns": ["Evidence", "Value", "What it supports"],
+        "rows": [
+            ["A0 -> A1 speedup", f"{A0_TO_A1:.2f}x", "bridge/controller-write tax is real"],
+            ["Newton A3 bridge", f"{A3_BRIDGE_MS:.3f} ms/substep", "some bridge cost remains after precompute"],
+            ["Newton A3 post-bridge residual", f"{A3_POST_BRIDGE_MS:.3f} ms/substep", "the gap survives after bridge tax"],
+            ["Newton A3 collision", f"{A3_COLLISION_MS:.3f} ms/substep", "pure rope replay is not collision-dominated"],
+        ],
+        "transcript": [
+            "这一页回答 Q2 的第一半：bridge tax 到底有多真，以及它是不是全部解释。",
+            f"A0 到 A1 的 speedup 是 `{A0_TO_A1:.3f}x`，所以 controller-write overhead 不是猜测，而是已经被同 case benchmark 直接量出来了。",
+            f"但 bridge 不是全部，因为 Newton A3 里 bridge 只有 `{A3_BRIDGE_MS:.3f} ms/substep`，而 post-bridge residual 仍然有 `{A3_POST_BRIDGE_MS:.3f} ms/substep`。",
+            f"同一张表里 collision bucket 只有 `{A3_COLLISION_MS:.3f} ms/substep`，而且这个 baseline 本身就是 weak-contact rope replay，所以 collision-first explanation 在这里不够强。",
+            "这一页必须故意收着讲：它支持的是『bridge tax is real, but not the whole gap』，而不是直接宣称 residual gap 已经被完全归因。",
         ],
     },
     {
         "kind": "code_twocol_large",
-        "title": "Source Proof P2: The Slow Path Is Runtime Structure, Not Rope Physics",
-        "note": "Core source only. Newton rope-side examples still loop over substeps; PhysTwin rope replay directly captures a graph path.",
-        "left_label": "Newton core solver actually used by the rope viewer: SolverSemiImplicit.step() still executes multiple force/contact stages before integrate_particles.",
+        "title": "H5: The Residual Gap Looks More Like Launch Structure Than Collision",
+        "note": "Core + system evidence. Nsight API summary: Newton A1 `77.2%` `cuLaunchKernel`; PhysTwin B0 `92.6%` `cudaGraphLaunch_v10000`.",
+        "left_label": "[Newton/newton/newton/_src/solvers/semi_implicit/solver_semi_implicit.py : 141-145, 160-165, 172-177]\nNewton core replay still walks a decomposed multi-stage step.",
         "left_path": CODE_PERF_EXECUTION_NEWTON_PNG,
-        "right_label": "PhysTwin rope source: use_graph captures replay and keeps a forward_graph path.",
+        "right_label": "[PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py : 768-782, 800-802]\nPhysTwin core explicitly captures and replays a forward graph.",
         "right_path": CODE_PERF_EXECUTION_PHYSTWIN_PNG,
         "transcript": [
-            "这一页回答的是：如果 rope case 的主物理意图已经是可比的，那么 residual gap 更像出在什么层面。",
-            "",
-            "先把调用链说清楚。我们自己的 realtime viewer 在 `[Newton/phystwin_bridge/demos/demo_rope_control_realtime_viewer.py : 342-347, 738]` 明确实例化并调用的是 `newton.solvers.SolverSemiImplicit`。所以左边这段不是 generic example，而是 rope viewer 真会走到的 Newton core solver path。",
+            "这一页回答 Q2 的第二半，也就是 residual gap 更像什么，然后才有资格回答 Q3 的优化方向。",
             "",
             "[Newton/newton/newton/_src/solvers/semi_implicit/solver_semi_implicit.py : 141-145, 160-165, 172-177]",
-            "```python",
-            "# damped springs",
-            "eval_spring_forces(model, state_in, particle_f)",
-            "# triangle elastic and lift/drag forces",
-            "eval_triangle_forces(model, state_in, control, particle_f)",
-            "...",
-            "# particle-particle interactions",
-            "eval_particle_contact_forces(model, state_in, particle_f)",
-            "# triangle/triangle contacts",
-            "if self.enable_tri_contact:",
-            "    eval_triangle_contact_forces(model, state_in, particle_f)",
-            "...",
-            "# particle shape contact",
-            "eval_particle_body_contact_forces(",
-            "    model, state_in, contacts, particle_f, body_f_work, body_f_in_world_frame=False",
-            ")",
-            "self.integrate_particles(model, state_in, state_out, dt)",
-            "```",
-            "[What]",
-            "L141-L145 说明 `SolverSemiImplicit.step()` 并不是一个单一 rope kernel，而是先后调用多个物理子阶段，其中 rope 相关的第一块就是 damped spring forces。",
-            "L160-L165 说明 solver 内部还会继续串上 particle contact 和 triangle contact 这些阶段；即使当前 rope case 是弱碰撞，这条 stage pipeline 依然存在。",
-            "L172-L177 最后才进入 particle-shape contact 和 `integrate_particles(...)`，也就是力学阶段先累积，再统一推进粒子状态。",
-            "所以左边真正给出的信息是：我们当前 viewer 调到的 Newton core solver path，本身就是 multi-stage step organization，而不是一个只做 rope force 的最小路径。",
-            "[Why]",
-            "这段代码真正参与说理的地方在于，它把“Newton core solver actually used by our rope viewer”这件事讲实了。",
-            "既然 viewer 最终落到的是 `SolverSemiImplicit.step()`，而这条 core path 本身是多阶段串行组织，那么 rope slowdown 的第一怀疑对象就可以自然落到 runtime structure，而不是先落到 spring formula 不一致。",
-            "[Risk]",
-            "这里要诚实的 caveat 变成另外一个问题：这段代码证明的是 solver 内部 stage organization，但它并不单独量化每个 stage 的 wall time 占比。",
-            "所以它只能和 throughput / profiler 证据一起用，不能单独推出 residual gap 的精确比例。",
+            "[What | Newton]",
+            "L141-L145 说明 Newton `SolverSemiImplicit.step()` 先显式走 spring、triangle、bending、tetra 等多个力学子阶段，而不是一个已经打包好的 rope replay graph。",
+            "L160-L165 又继续串上 particle contact 和 triangle contact 相关阶段，所以这条 core step path 在组织上是明显的 multi-stage execution。",
+            "L172-L177 最后才进入 particle-shape contact 和 `integrate_particles(...)`，也就是先分段累积力，再统一做状态推进。",
+            "[Why | Newton]",
+            "这段代码本身不量化 wall time，但它确实说明 Newton rope viewer 落到的是一条分阶段的 core solver path，而不是天然 graph-replay path。",
+            "当它和 Nsight 的 `77.2% cuLaunchKernel` 一起看时，证据会更一致地指向 launch-heavy execution structure，而不是 collision 主导。",
+            "[Risk | Newton]",
+            "这里必须降 claim：Newton core 这段源码只能证明 step organization 是分阶段的，不能单独证明 residual gap 的全部比例都由 launch structure 造成。",
             "",
-            "[PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py : 769-802]",
-            "```python",
-            "if cfg.use_graph:",
-            "    if cfg.data_type == \"real\":",
-            "        with wp.ScopedCapture() as capture:",
-            "            self.step()",
-            "            self.calculate_loss()",
-            "        self.graph = capture.graph",
-            "...",
-            "with wp.ScopedCapture() as forward_capture:",
-            "    self.step()",
-            "self.forward_graph = forward_capture.graph",
-            "```",
-            "[What]",
-            "L769-L782 表明 PhysTwin rope source 在 `use_graph` 打开时，会直接把核心 step path capture 成 graph，并保存在 `self.graph` 里。",
-            "L800-L802 进一步保留了一个专门的 `forward_graph`，说明它不仅有训练路径 graph，还有一个明确的前向 replay graph。",
-            "[Why]",
-            "这段代码直接参与后面的 bottleneck 判断，因为它说明 PhysTwin rope core 本身就把 graph replay 当成一等执行路径，而不是外部 profiling harness 临时包出来的技巧。",
-            "结合前一页的 throughput 结果，它给我们的不是最终证明，而是一个很强的结构性解释方向：两边的主要差异更像 runtime organization，而不是 rope physics 本身。",
-            "[Risk]",
-            "这里同样不能过度宣称：这段源码只能证明 PhysTwin core 明确拥有 graph replay 路径，不能单独证明 Newton residual gap 的全部比例都来自 launch structure。",
-            "最后仍然要结合系统级 timing 证据，也就是上一轮 benchmark 里的 A0/A1/B0/B1 和 profiler 结果。",
-        ],
-    },
-    {
-        "kind": "body",
-        "title": "Takeaway P1: Measure The Gap First, Locate The Slow Stage Second",
-        "bullets": [
-            "**Measured gap:** on the same rope replay, Newton A1 is still `3.30x` slower than PhysTwin B0.",
-            "**Partial answer:** A0 -> A1 gives `1.87x` speedup, so controller-write overhead is real but not the whole gap.",
-            "**Takeaway:** in this weak-collision rope case, profile runtime organization before any targeted optimization.",
-        ],
-        "transcript": [
-            "这一页把 profiling 逻辑收束成真正的研究顺序，而不是内部优化待办。",
-            f"第一，公平 benchmark 已经把 gap 定量出来：Newton A1 相对 PhysTwin B0 的 slowdown 是 `{_fmt(A1_ROW, 'slowdown_vs_phystwin_headless', '.3f')}x`。",
-            f"第二，A0 到 A1 的 speedup 是 `{A0_ROW.get('ms_per_substep_mean', 0.0) / max(A1_ROW.get('ms_per_substep_mean', 1.0e-12), 1.0e-12):.3f}x`，所以 controller-write overhead 确实存在，但它不能独自解释全部差距。",
-            f"第三，A3 里 collision 只有 `{A3_COLLISION_MS:.3f} ms/substep`，而 rope case 本身又是弱碰撞，这使得 collision-first explanation 没有说服力。",
-            "所以这段 profiling 的正确收束方式不是“马上去优化”，而是先承认研究顺序：先 benchmark，后定位 bottleneck，再做针对性优化。",
-            "只有当 bottleneck explanation 被讲清楚以后，后面的优化目标，例如更 graph-like 的 replay、更少的 launch、更少的 host/device 往返，才会有说服力。",
+            "[PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py : 768-782, 800-802]",
+            "[What | PhysTwin]",
+            "L768-L782 直接表明 PhysTwin rope core 在 `cfg.use_graph` 为真时，会把 `self.step()` capture 成 CUDA graph，并把训练路径保存在 `self.graph`。",
+            "L800-L802 又额外保留了 `forward_graph`，这说明它不是只为训练准备 graph，而是连纯 forward replay 也有专门的 graph path。",
+            "[Why | PhysTwin]",
+            "这段源码是当前最强的 core evidence，因为它把 graph replay 直接写在 rope simulator 内核路径里，而不是外部 benchmark wrapper 临时包出来的技巧。",
+            "再结合 Nsight 的 `92.6% cudaGraphLaunch_v10000`，我们可以比较稳妥地说：PhysTwin 这条 rope replay 更像 graph-driven execution path。",
+            "[Risk | PhysTwin]",
+            "这里同样不能把证据说得过头。PhysTwin 有 graph replay，不等于 Newton 的全部 residual gap 就只有 graph 一个原因；更诚实的结论是『residual gap 更一致地像 execution / launch structure，而不是 collision』。",
+            "",
+            "所以 Q3 的优化方向现在才成立：先保留 precomputed controller writes，再优先研究更 graph-like 或更 batched 的 Newton rope replay，而不是先冲去调 collision 参数或者改 `dt/substeps`。",
         ],
     },
     {
@@ -791,55 +710,80 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "body",
-        "title": "Hypothesis S1: Native Newton Is Not Enough For The Final Self-Collision Claim",
+        "title": "What Strict `phystwin` Now Means",
         "bullets": [
-            "**Hypothesis:** native Newton self-collision is not enough for the final claim.",
-            "**Scope:** strict parity only covers PhysTwin-native self-collision plus implicit ground.",
-            "**Current status:** operator exactness passed, but rollout parity is still blocked.",
+            "**Strict scope:** pairwise self-collision + implicit `z=0` ground plane.",
+            "**No Newton core change:** implemented in `Newton/phystwin_bridge/tools/core/phystwin_contact_stack.py`.",
+            "**Task boundary:** `docs/bridge/tasks/self_collision_transfer.md` tracks strict `phystwin` separately from the cloth+box decision matrix.",
+            "**Cloth+box `phystwin` intentionally unsupported:** generic rigid-support contact is outside this strict parity claim.",
+            "**Takeaway:** This is a strict PhysTwin-native contact-stack mode for the cloth reference case, not a generic rigid-support parity claim.",
         ],
         "transcript": [
             "这里开始进入第四段 self-collision, Newton way。",
-            "这一章不再用静态 campaign board 讲，而是收成一个 hypothesis-driven block。",
-            "这一页先把 hypothesis 说清楚：如果 native Newton 已经足够，我们就不需要 bridge-side phystwin 这条更窄的 exact path。",
-            "同时 claim boundary 也要收紧：strict parity 只针对 PhysTwin 原生定义的 cloth self-collision 加 implicit ground，不把 box-support semantics 混进 exact claim 里。",
-            "当前 progress 也要一句话说死：operator exactness 已经过，但 rollout parity 仍然 blocked。",
+            "这一页先把 strict phystwin 的 claim boundary 说死，不让老师误会它是在 claim 一个 generic rigid-support parity mode。",
+            "现在我们只 claim PhysTwin 原生 cloth contact scope：pairwise self-collision 加 implicit z 等于零 ground plane。",
+            "这条 strict path 完全在 bridge 层实现，没有改 Newton core，而且 cloth-box phystwin 在 demo 里是故意禁止的。",
+            "所以这一页的 take-home message 很简单：strict phystwin 是 cloth reference case 的 contact-stack mode，不是通用 rigid-support parity claim。",
         ],
     },
     {
-        "kind": "code_twocol_large",
-        "title": "Source Proof S1: PhysTwin Native Contact Scope Is Pairwise Self-Collision + Ground",
-        "note": "PhysTwin upstream source only.",
-        "left_label": "PhysTwin object_collision: pairwise self-collision updates velocity from collision impulses.",
-        "left_path": CODE_SELFCOLLISION_OBJECT_PNG,
-        "right_label": "PhysTwin integrate_ground_collision: implicit ground-plane TOI + velocity update.",
-        "right_path": CODE_SELFCOLLISION_GROUND_PNG,
+        "kind": "body",
+        "title": "What Is Already Matched",
+        "bullets": [
+            "**Shared strict bridge stack exists:** `Newton/phystwin_bridge/tools/core/phystwin_contact_stack.py`.",
+            "**Strict rollout wiring exists:** `Newton/phystwin_bridge/tools/core/newton_import_ir.py` uses the shared strict bridge path.",
+            "**Canonical full-rollout gate exists:** `Newton/phystwin_bridge/tools/core/validate_parity.py` is the parity entrypoint.",
+            "**Operator exactness already passed:** `max_abs_dv = 1.1324882507324219e-06`, `median_rel_dv = 4.070106739010465e-08` from `docs/bridge/current_status.md`.",
+            "**Cloth+box `phystwin` remains intentionally unsupported:** this is documented in `docs/bridge/current_status.md` and enforced in the demo driver.",
+            "**Takeaway:** At this point, the bridge-side self-collision/contact operator itself is no longer the best explanation for the remaining rollout RMSE.",
+        ],
         "transcript": [
-            "这一页只用 PhysTwin upstream source 来证明 strict parity 的 scope，不再 cite 我们自己的 bridge code。",
-            "左边这段是 `object_collision`，说明 PhysTwin 原生的 cloth contact 里有 pairwise object self-collision，而且速度修正是基于 collision impulse average。",
-            "右边这段是 `integrate_ground_collision`，说明 PhysTwin 原生还定义了 implicit ground-plane TOI 和 velocity update。",
-            "所以 strict parity 的 claim boundary 不是拍脑袋收窄，而是直接从 PhysTwin native contact source 推出来的：object self-collision 加 ground collision。",
-            "也正因为这个 source scope，本章后面的 cloth+box scene 只能作为 decision/demo evidence，不能被包装成 strict parity scene。",
+            "第二页只回答一个问题：我们到底已经 match 了什么。",
+            "shared strict bridge stack 已经存在，而且 importer 和 parity validator 也已经把它接成一条 canonical strict path。",
+            "更关键的是 operator-level exactness 已经过，所以 isolated contact operator 本身已经不是现在最好的归因对象。",
+            "同时 cloth-box phystwin 依然是故意不支持的，这也是为了不把 unsupported rigid-support semantics 混进 strict parity claim。",
         ],
     },
     {
-        "kind": "code_twocol_large",
-        "title": "Source Proof S1b: The Remaining Self-Collision Gap Is The Runtime Collision Table",
-        "note": "PhysTwin runtime table build versus current bridge-side strict `phystwin` rebuild.",
-        "left_label": "PhysTwin: update the collision graph once per frame from `wp_states[0].wp_x`, then reuse `collision_indices / collision_number` across substeps.",
-        "left_path": CODE_SELFCOLLISION_TABLE_PHYSTWIN_PNG,
-        "right_label": "Bridge strict `phystwin`: also freeze per frame, but rebuild a local table from copied `object_q` in the bridge runtime.",
-        "right_path": CODE_SELFCOLLISION_TABLE_BRIDGE_PNG,
+        "kind": "body",
+        "title": "Where The Remaining Mismatch Likely Is",
+        "bullets": [
+            "**Strict parity is still blocked on the in-scope cloth reference case:** `docs/bridge/current_status.md`.",
+            "**Frozen-table default improved the short window:** `0.001314889290370047` vs dynamic `0.001589029561728239` on the 60-frame case.",
+            "**Full rollout still stalls around `1e-2`:** `rmse_mean = 0.010103434324264526`, `last30_rmse = 0.014149246737360954` on the 302-frame strict run.",
+            "**Current evidence now points past the isolated contact law:** `docs/bridge/current_status.md` reports the controller-spring diagnostic with `one-step force_abs_max = 0.006733048971410349`, `short-rollout force_abs_max = 389.3789927564146`, `pass = false`.",
+            "**Blocker path:** `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/BLOCKER_strict_self_collision_parity_bridge_rollout_mismatch.md`.",
+            "**Takeaway:** The remaining gap is now better described as whole-step cloth rollout mismatch than as isolated self-collision-law mismatch.",
+        ],
         "transcript": [
-            "这一页专门回答：现在 strict phystwin 在 self-collision 上到底还和 PhysTwin 差在哪里。",
-            "左边是 PhysTwin 原版：每帧先在 `wp_states[0].wp_x` 上 build collision graph，再填 `wp_collision_indices / wp_collision_number`，整帧 substeps 都复用这张表。",
-            "右边是我们当前 bridge strict phystwin：生命周期已经改成 per-frame frozen table，但它还是从 bridge runtime 的 `object_q` 里本地重建，再调用自己的 table builder。",
-            "所以现在 local impulse law 本身已经不是主差异；剩下的 self-collision 差异主要是 candidate table 的 provenance、ordering 和 truncation semantics。",
+            "第三页不再说“还有点不一样”，而是直接把 remaining mismatch 定位到 rollout level。",
+            "现在 frozen-table 默认已经把 60-frame case 拉得更好了，但 full 302-frame rollout 还是停在 1e-2 量级。",
+            "同时 current status 里的 controller-spring diagnostic 现在已经给出一个更强的信号：下一阶段最像 blocker 的是 whole-step cloth rollout stack，尤其是 controller-spring 这一层。",
+            "所以这一页的 take-home message 是：不要再把 blocked parity 粗暴地说成 self-collision kernel 仍然错误。",
+        ],
+    },
+    {
+        "kind": "body",
+        "title": "Claim Boundary: What We Are NOT Claiming",
+        "bullets": [
+            "**Not claiming cloth+box `phystwin` parity.**",
+            "**Not claiming generic rigid-support parity.**",
+            "**Not claiming full PhysTwin cloth solver equivalence.**",
+            "**Only claiming the strict PhysTwin-native cloth contact scope:** pairwise self-collision + implicit `z=0` ground.",
+            "**Cited paths:** `docs/bridge/tasks/self_collision_transfer.md`, `docs/bridge/current_status.md`, `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/BLOCKER_strict_self_collision_parity_bridge_rollout_mismatch.md`.",
+            "**Takeaway:** Unsupported external rigid-support semantics are intentionally outside the strict `phystwin` claim.",
+        ],
+        "transcript": [
+            "第四页专门把不该 claim 的东西说出来，防止老师自动脑补成更大的 equivalence claim。",
+            "我们不 claim cloth-box phystwin parity，不 claim generic rigid-support parity，也不 claim full PhysTwin cloth solver equivalence。",
+            "我们现在只 claim那条收紧过的 strict cloth contact scope，而且 blocker doc 也明确记录了 rollout mismatch 还没有解决。",
+            "所以这一页的 purpose 就是让 meeting 里的口径 fail-closed。",
         ],
     },
     {
         "kind": "grid",
-        "title": "Result S1: Native Is Not Enough On The Controlled Cloth+Box Scene",
-        "common_settings": None,
+        "title": "Scene Evidence Only: Native Is Not Enough On The Controlled Cloth+Box Scene",
+        "common_settings": "Takeaway: this cloth+box page is scene evidence that native is not enough for the final claim; it is not the strict `phystwin` parity target.",
         "items": [
             ("OFF", SELF_MATRIX_OFF_GIF),
             ("Native", SELF_MATRIX_NATIVE_GIF),
@@ -850,24 +794,25 @@ RECALL_SLIDES: list[dict] = [
             "这一页是 scene-level video evidence，不是源码页。",
             "这里直接放 controlled cloth+box decision videos：OFF、native、custom H2、phystwin。",
             "这页要回答的 hypothesis 很窄：native 能不能直接承担 final self-collision claim。",
+            "同时也要再提醒一次，这里是 scene evidence，不是 strict phystwin parity target。",
             "目前 answer 仍然是否定的。能继续 defend 下去的是 bridge-side phystwin candidate，而不是 native。",
             "所以这页的 progress 不是“所有问题都 solved”，而是 decision scene 已经把 native 不足这件事视频化、可比较化了。",
         ],
     },
     {
         "kind": "twocol",
-        "title": "Progress S2: The Demo Is Ready, But Strict Parity Is Still Blocked",
-        "common_settings": None,
+        "title": "Progress S2: Demo Ready, Operator Exact, Full-Rollout A/B Still Fails",
+        "common_settings": "Takeaway: demo-ready yes, operator exact yes, but the full-rollout A/B gate still fails. Left: QC-passing cloth+box `phystwin` hero demo. Right: full 302-frame parity support video on the in-scope cloth reference path. Current full-rollout A/B remains unfavorable: OFF rmse_mean 0.009786468930542469, strict `phystwin` rmse_mean 0.010103434324264526.",
         "left_label": "QC-passing cloth+box `phystwin` hero demo",
         "left_path": SELF_HERO_GIF,
-        "right_label": "Parity support demo on the in-scope reference path",
+        "right_label": "302-frame parity support demo on the in-scope reference path",
         "right_path": SELF_PARITY_SUPPORT_GIF,
         "transcript": [
             "最后这一页把当前 self-collision progress 和 blocker 同时讲清楚。",
             "左边是已经可汇报的 cloth+box `phystwin` hero demo，它通过了 black/blank、motion 和 scene-visibility 的 QC，所以 video claim 已经成立。",
-            "右边是 parity support video，用来提醒老师：strict parity 的 in-scope reference path 仍然在，而且我们不是拿错 scene 在讲 parity。",
+            "右边是最新 302-frame parity support video，用来提醒老师：strict parity 的 in-scope reference path 仍然在，而且我们不是拿错 scene 在讲 parity。",
             "同时 exactness 本身也已经过了，`max_abs_dv` 在 1e-6 量级、`median_rel_dv` 在 1e-8 量级。",
-            "但 full rollout parity 仍然停在 1e-2 量级，所以当前 honest progress 应该讲成：demo-ready yes，operator exact yes，strict rollout parity not yet。",
+            "但 full-rollout A/B 仍然没有过线，所以当前 honest progress 应该讲成：demo-ready yes，operator exact yes，strict rollout parity not yet。",
         ],
     },
     {
@@ -917,12 +862,12 @@ def _prepare_generated_assets() -> None:
         _ensure_resized_gif(src, out, width=width, fps=fps, max_colors=max_colors)
     _ensure_resized_gif(RECALL_ROPE_GIF_SRC, PERF_ROPE_CASE_GIF, width=720, fps=8, max_colors=96)
     _code_excerpt_image(
-        NEWTON_CORE_SOLVER_PATH,
-        "newton_core_particle_update",
+        NEWTON_CORE_SPRING_PATH,
+        "newton_rope_spring_force",
         _extract_code_segments(
-            NEWTON_CORE_SOLVER_PATH,
-            [(38, 46)],
-            highlight_lines={38, 39, 44, 46},
+            NEWTON_CORE_SPRING_PATH,
+            [(27, 29), (43, 52)],
+            highlight_lines={27, 28, 46, 47, 50},
         ),
         CODE_PERF_PHYSICS_NEWTON_PNG,
     )
@@ -931,8 +876,8 @@ def _prepare_generated_assets() -> None:
         "phystwin_rope_force_update",
         _extract_code_segments(
             PHYSTWIN_SPRING_WARP_CODE_PATH,
-            [(123, 132), (156, 160)],
-            highlight_lines={123, 130, 132, 157, 159},
+            [(121, 132), (156, 160)],
+            highlight_lines={123, 124, 129, 157, 159},
         ),
         CODE_PERF_PHYSICS_PHYSTWIN_PNG,
     )
@@ -942,7 +887,7 @@ def _prepare_generated_assets() -> None:
         _extract_code_segments(
             NEWTON_CORE_SEMIIMPLICIT_PATH,
             [(141, 145), (160, 165), (172, 177)],
-            highlight_lines={141, 145, 160, 173, 177},
+            highlight_lines={142, 145, 161, 173, 177},
         ),
         CODE_PERF_EXECUTION_NEWTON_PNG,
     )
@@ -1646,105 +1591,6 @@ def _validate_pptx_size(pptx_path: Path, *, max_pptx_mb: float) -> None:
         raise RuntimeError(
             f"PPTX size gate failed: {pptx_path} is {actual_mb:.1f} MB, above the {max_pptx_mb:.1f} MB budget."
         )
-
-
-def _render_perf_attribution_png(out_path: Path) -> Path:
-    labels_newton = ["bridge", "internal", "integration", "collision", "unexplained"]
-    values_newton = [A3_BRIDGE_MS, A3_INTERNAL_MS, A3_INTEGRATION_MS, A3_COLLISION_MS, A3_UNEXPLAINED_MS]
-    labels_phystwin = ["sim launch", "controller", "state reset"]
-    values_phystwin = [B1_SIM_LAUNCH_MS, B1_CONTROLLER_FRAME_MS, B1_STATE_RESET_MS]
-    colors_newton = ["#3B6EA8", "#E07A5F", "#81B29A", "#F2CC8F", "#8D99AE"]
-    colors_phystwin = ["#264653", "#2A9D8F", "#E9C46A"]
-
-    fig, axes = plt.subplots(1, 2, figsize=(12.8, 5.6), dpi=160, gridspec_kw={"width_ratios": [1.35, 1.0]})
-    fig.patch.set_facecolor("#F7F5EE")
-    for ax in axes:
-        ax.set_facecolor("#F7F5EE")
-
-    left = axes[0]
-    start = 0.0
-    for label, value, color in zip(labels_newton, values_newton, colors_newton):
-        left.barh(["Newton A3 ms/substep"], [value], left=start, color=color, edgecolor="white", height=0.46)
-        left.text(start + value / 2.0, 0, f"{label}\n{value:.3f}", ha="center", va="center", fontsize=10, color="#111111")
-        start += value
-    left.set_title("Newton A3 Breakdown", fontsize=16, fontweight="bold", loc="left")
-    left.set_xlabel("ms / substep", fontsize=12)
-    left.spines[["top", "right", "left"]].set_visible(False)
-    left.grid(axis="x", alpha=0.18)
-    left.tick_params(axis="y", length=0, labelsize=12)
-    left.tick_params(axis="x", labelsize=10)
-
-    right = axes[1]
-    y_pos = list(range(len(labels_phystwin)))
-    bars = right.barh(y_pos, values_phystwin, color=colors_phystwin, edgecolor="white", height=0.48)
-    right.set_yticks(y_pos, labels_phystwin, fontsize=12)
-    right.invert_yaxis()
-    right.set_title("PhysTwin B1 Frame Attribution", fontsize=16, fontweight="bold", loc="left")
-    right.set_xlabel("ms / frame", fontsize=12)
-    right.spines[["top", "right"]].set_visible(False)
-    right.grid(axis="x", alpha=0.18)
-    right.tick_params(axis="x", labelsize=10)
-    for bar, value in zip(bars, values_phystwin):
-        right.text(value + max(values_phystwin) * 0.02, bar.get_y() + bar.get_height() / 2.0, f"{value:.3f}", va="center", fontsize=10)
-
-    fig.suptitle("Bridge Tax Exists, But Collision Is Still Tiny On The Clean Rope Replay", fontsize=18, fontweight="bold", x=0.5, y=0.98)
-    fig.text(
-        0.075,
-        0.03,
-        "A0→A1 proves bridge tax. The remaining A3 split still leaves collision near zero on the clean replay baseline.",
-        fontsize=11,
-        color="#1F4E79",
-    )
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    fig.tight_layout(rect=[0.02, 0.06, 0.98, 0.93])
-    fig.savefig(out_path, bbox_inches="tight")
-    plt.close(fig)
-    return out_path
-
-
-def _render_perf_nsight_png(out_path: Path) -> Path:
-    labels = ["dominant API", "next API", "other"]
-    newton_vals = [77.2, 21.5, 1.3]
-    phystwin_vals = [92.6, 2.9, 4.5]
-    colors = ["#355070", "#E56B6F", "#BFC7D5"]
-
-    fig, axes = plt.subplots(2, 1, figsize=(12.8, 5.6), dpi=160, sharex=True)
-    fig.patch.set_facecolor("#F7F5EE")
-    for ax in axes:
-        ax.set_facecolor("#F7F5EE")
-        ax.spines[["top", "right", "left"]].set_visible(False)
-        ax.grid(axis="x", alpha=0.18)
-        ax.tick_params(axis="y", length=0, labelsize=12)
-        ax.tick_params(axis="x", labelsize=10)
-        ax.set_xlim(0.0, 100.0)
-
-    for ax, vals, title, dominant, secondary in [
-        (axes[0], newton_vals, "Newton A1 CUDA API", "cuLaunchKernel 77.2%", "cudaMemsetAsync 21.5%"),
-        (axes[1], phystwin_vals, "PhysTwin B0 CUDA API", "cudaGraphLaunch 92.6%", "cuCtxSynchronize 2.9%"),
-    ]:
-        start = 0.0
-        for label, value, color in zip(labels, vals, colors):
-            ax.barh([title], [value], left=start, color=color, edgecolor="white", height=0.42)
-            if value >= 8.0:
-                ax.text(start + value / 2.0, 0, f"{value:.1f}%", ha="center", va="center", fontsize=10, color="#111111")
-            start += value
-        ax.text(1.0, 0.34, dominant, fontsize=11, color="#1F4E79")
-        ax.text(1.0, -0.34, secondary, fontsize=10, color="#444444")
-
-    axes[1].set_xlabel("share of CUDA API time (%)", fontsize=12)
-    fig.suptitle("Nsight Supports A Launch-Structure Story, Not A Collision Story", fontsize=18, fontweight="bold", x=0.5, y=0.98)
-    fig.text(
-        0.075,
-        0.03,
-        "Newton still looks like many decoupled launches; PhysTwin replay is graph-launch-dominated on the same rope case.",
-        fontsize=11,
-        color="#1F4E79",
-    )
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    fig.tight_layout(rect=[0.02, 0.08, 0.98, 0.92])
-    fig.savefig(out_path, bbox_inches="tight")
-    plt.close(fig)
-    return out_path
 
 
 def _add_pic(slide, path: Path, left: int, top: int, width: int, height: int):

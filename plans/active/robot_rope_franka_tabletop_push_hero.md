@@ -17,6 +17,12 @@ clean candidate management and explicit visual validation.
 2. implement tabletop-push task/result/validation path
 3. iterate candidates until one passes all hard gates and is promoted
 
+Status:
+
+- Milestones 1-3 completed on `2026-04-01`
+- accepted run:
+  - `Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_081639_fixeddt_c08_gatepass/`
+
 ## Validation
 
 - ffprobe and keyframe artifacts exist for every serious candidate

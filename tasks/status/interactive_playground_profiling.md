@@ -15,6 +15,10 @@ authoritative same-case replay benchmark, use:
 Added the missing spec/plan/implement/status scaffold during the harness
 upgrade.
 
+Rebuilt the 2026-04-01 TODO 2 profiling slides so the meeting-facing rope
+story now treats this task as methodology context only; the authoritative gap
+evidence itself remains under `rope_perf_apples_to_apples`.
+
 ## Next Step
 
 Keep the scope split explicit:

@@ -30,6 +30,23 @@
   - user explicitly requested email send
   - sending target uses the repo-configured default recipient in `send_pdf_via_yahoo.py`
 
+## 2026-04-01 Profiling Section Rebuild
+
+- Rebuilt the TODO 2 profiling section in
+  `formal_slide/meeting_2026_04_01/` around a stricter evidence hierarchy:
+  - fair benchmark
+  - core physical-intent evidence
+  - throughput result
+  - bridge tax vs residual gap
+  - launch-structure interpretation
+- Downgraded wrapper / benchmark-entry references to methodology notes only.
+- Upgraded slide citations to Newton core + PhysTwin core:
+  - `Newton/newton/newton/_src/solvers/semi_implicit/kernels_particle.py`
+  - `Newton/newton/newton/_src/solvers/semi_implicit/solver_semi_implicit.py`
+  - `PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py`
+- Added a file-backed audit for the rebuild:
+  - `formal_slide/meeting_2026_04_01/todo2_rope_profiling_rebuild_audit_20260401.md`
+
 ## Next Step
 
 - Follow-up optimization work should start from:

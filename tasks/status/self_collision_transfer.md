@@ -61,6 +61,12 @@ Local scratch validation notes:
   - PhysTwin `update_collision_graph()` / `update_potential_collision`
   - bridge `prepare_strict_phystwin_contact_frame()`
   - rebuilt deck: `formal_slide/meeting_2026_04_01/bridge_meeting_20260401.pptx`
+- updated April 1 deck now also restructures the self-collision section into a
+  four-step logic:
+  - what strict `phystwin` now means
+  - what is already matched
+  - where the remaining mismatch likely is
+  - what we are not claiming
 - controller-spring diagnostic currently reports substantial mismatch:
   - one-step `force_abs_max = 0.006733048971410349`
   - short-rollout `force_abs_max = 389.3789927564146`

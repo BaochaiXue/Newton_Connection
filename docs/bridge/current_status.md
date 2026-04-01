@@ -18,6 +18,19 @@ It should stay current and be updated whenever a task changes state.
   same native Franka + PhysTwin rope path:
   - `docs/bridge/tasks/robot_rope_franka_tabletop_push_hero.md`
   - canonical result tree reserved under `Newton/phystwin_bridge/results/robot_rope_franka/`
+- A validated tabletop-push hero bundle now exists:
+  - `Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_081639_fixeddt_c08_gatepass`
+  - promoted mirror:
+    - `Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/`
+  - pass summary:
+    - native Newton Franka visible
+    - native Newton tabletop visibly supporting the rope
+    - rope settled before the visible push
+    - visible robot contact followed by rope deformation / sliding
+    - hero / debug / validation videos all pass strict validator with truthful manual review
+    - encoded duration `6.2 s` at `1280x720 @ 30 fps`
+  - bridge-layer implementation note:
+    - the accepted tabletop hero now uses a native joint-space waypoint controller because the previous tabletop IK path did not reliably reach the contact line under the fixed timestep
 - A separate stage-0 sanity-baseline scaffold now exists for the native robot
   rope release/drop case:
   - `docs/bridge/tasks/native_robot_rope_drop_release.md`

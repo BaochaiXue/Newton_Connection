@@ -37,3 +37,7 @@ PhysTwin-loaded rope across a native Newton tabletop.
 
 - one promoted run passes the technical, plausibility, readability, and
   artifact gates from the task page
+
+## Accepted Run
+
+- `Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_081639_fixeddt_c08_gatepass/`

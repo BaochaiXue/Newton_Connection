@@ -2,7 +2,7 @@
 
 ## State
 
-- Status: scaffolded, audit completed, implementation in progress
+- Status: accepted
 - Last updated: 2026-04-01
 
 ## Authoritative Paths
@@ -18,37 +18,31 @@
 
 ## Current Focus
 
-- determine whether a slow tabletop push can be achieved through bridge-layer
-  scene/motion/camera changes alone
-- add canonical candidate and best-run structure under `phystwin_bridge/results`
-- build a stricter hero-demo validation path before accepting any run
+- preserve the accepted fixed-timestep tabletop hero bundle and its rerun path
 
 ## Latest Findings
 
-- `demo_robot_rope_franka.py` now contains a dedicated `tabletop_push_hero`
-  path with:
-  - tabletop-specific camera presets
-  - tabletop reshape / preroll settle logic
-  - local summary + physics-validation sidecars
-- A canonical local wrapper now exists:
-  - `scripts/run_robot_rope_franka_hero.sh`
-- A strict local validator now exists:
-  - `scripts/validate_robot_rope_franka_hero.py`
-- Stable short-smoke runs now show:
-  - the rope can preroll-settle on the tabletop without immediate explosion
-  - result packaging is no longer the main blocker
-  - the remaining blocker is still robot-rope contact
-- Best stable short-smoke so far:
-  - `Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_hero_quick_eeoffset_v1/`
+- Accepted run:
+  - `Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_081639_fixeddt_c08_gatepass/`
+- Promoted mirror:
+  - `Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/`
+- Winning implementation details:
+  - fixed timestep preserved: `sim_dt = 5e-5`, `substeps = 667`
+  - native Newton Franka + native Newton table + PhysTwin rope remain intact
+  - tabletop hero switched from unreliable tabletop IK to a tabletop-only
+    native joint-space waypoint controller
+  - table raised to a readable workbench height so the contact line is legible
+  - hero presentation hides the oversized visual pedestal while validation view
+    keeps the full geometry honest
+- Accepted run evidence:
+  - `hero_presentation.mp4`, `hero_debug.mp4`, `validation_camera.mp4`
+  - `duration_s = 6.2`
+  - `contact_started = true`
+  - `first_contact_phase = push`
+  - `contact_duration_s = 1.8676`
   - `preroll_settle_pass = true`
-  - `min_clearance_min_m ~= 0.1986`
-  - `contact_started = false`
+  - strict validator `overall_pass = true`
 
 ## Current Blocker
 
-- The remaining blocker is no longer generic scene readability or result
-  organization.
-- The blocker is the tabletop contact geometry itself:
-  - robot base placement, IK control body, and near-table target path still do
-    not bring the finger/span into credible contact with the rope under the
-    stable timestep.
+- No open blocker for the accepted tabletop-push hero milestone.
