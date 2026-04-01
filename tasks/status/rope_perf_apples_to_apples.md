@@ -47,6 +47,16 @@
 - Added a file-backed audit for the rebuild:
   - `formal_slide/meeting_2026_04_01/todo2_rope_profiling_rebuild_audit_20260401.md`
 
+## 2026-04-01 Persuasion Tightening
+
+- Tightened the rebuilt profiling section one more time so the claim
+  “residual gap looks more like execution / launch structure than collision”
+  is supported by an explicit three-layer chain:
+  - clean rope experiment excludes rendering and shows the gap
+  - synchronized attribution bounds bridge tax and keeps collision tiny
+  - Newton core step organization + PhysTwin core graph replay + Nsight API
+    summary jointly support the launch-structure interpretation
+
 ## Next Step
 
 - Follow-up optimization work should start from:

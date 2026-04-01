@@ -108,6 +108,8 @@ CODE_PERF_PHYSICS_NEWTON_PNG = IMAGE_DIR / "code_perf_physics_newton.png"
 CODE_PERF_PHYSICS_PHYSTWIN_PNG = IMAGE_DIR / "code_perf_physics_phystwin.png"
 CODE_PERF_EXECUTION_NEWTON_PNG = IMAGE_DIR / "code_perf_execution_newton.png"
 CODE_PERF_EXECUTION_PHYSTWIN_PNG = IMAGE_DIR / "code_perf_execution_phystwin.png"
+PERF_NEWTON_SYSTEM_PNG = IMAGE_DIR / "perf_newton_system_summary.png"
+PERF_PHYSTWIN_SYSTEM_PNG = IMAGE_DIR / "perf_phystwin_system_summary.png"
 CODE_SELFCOLLISION_OBJECT_PNG = IMAGE_DIR / "code_selfcollision_object.png"
 CODE_SELFCOLLISION_GROUND_PNG = IMAGE_DIR / "code_selfcollision_ground.png"
 CODE_SELFCOLLISION_TABLE_PHYSTWIN_PNG = IMAGE_DIR / "code_selfcollision_table_phystwin.png"
@@ -599,14 +601,14 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "code_twocol_large",
-        "title": "H5: The Residual Gap Looks More Like Launch Structure Than Collision",
-        "note": "Core + system evidence. Nsight API summary: Newton A1 `77.2%` `cuLaunchKernel`; PhysTwin B0 `92.6%` `cudaGraphLaunch_v10000`.",
-        "left_label": "[Newton/newton/newton/_src/solvers/semi_implicit/solver_semi_implicit.py : 141-145, 160-165, 172-177]\nNewton core replay still walks a decomposed multi-stage step.",
+        "title": "Source Proof P2: Newton Residual Replay Still Uses A Decomposed Step Path",
+        "note": "Core code on the left, synchronized runtime evidence on the right.",
+        "left_label": "[Newton/newton/newton/_src/solvers/semi_implicit/solver_semi_implicit.py : 141-145, 160-165, 172-177]\nNewton core still walks a decomposed multi-stage solver step.",
         "left_path": CODE_PERF_EXECUTION_NEWTON_PNG,
-        "right_label": "[PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py : 768-782, 800-802]\nPhysTwin core explicitly captures and replays a forward graph.",
-        "right_path": CODE_PERF_EXECUTION_PHYSTWIN_PNG,
+        "right_label": "Newton experiment + Nsight summary\nA3 keeps a post-bridge residual while the API is launch-dominated.",
+        "right_path": PERF_NEWTON_SYSTEM_PNG,
         "transcript": [
-            "这一页回答 Q2 的第二半，也就是 residual gap 更像什么，然后才有资格回答 Q3 的优化方向。",
+            "这一页先把 Newton 侧剩余 gap 的证据单独讲清楚，不和 PhysTwin graph 证据混在一页里。",
             "",
             "[Newton/newton/newton/_src/solvers/semi_implicit/solver_semi_implicit.py : 141-145, 160-165, 172-177]",
             "[What | Newton]",
@@ -615,21 +617,64 @@ RECALL_SLIDES: list[dict] = [
             "L172-L177 最后才进入 particle-shape contact 和 `integrate_particles(...)`，也就是先分段累积力，再统一做状态推进。",
             "[Why | Newton]",
             "这段代码本身不量化 wall time，但它确实说明 Newton rope viewer 落到的是一条分阶段的 core solver path，而不是天然 graph-replay path。",
-            "当它和 Nsight 的 `77.2% cuLaunchKernel` 一起看时，证据会更一致地指向 launch-heavy execution structure，而不是 collision 主导。",
+            "当它和右侧 experiment evidence 一起看时，信息会闭合得更稳：A3 的 post-bridge residual 还在，同时 Nsight 的 API 又是 `77.2% cuLaunchKernel`，所以 residual gap 至少很像 staged launch overhead 在继续主导。",
             "[Risk | Newton]",
             "这里必须降 claim：Newton core 这段源码只能证明 step organization 是分阶段的，不能单独证明 residual gap 的全部比例都由 launch structure 造成。",
+            "[What | System Evidence]",
+            "右侧系统证据把 experiment 和 Nsight 摆在一起：A3 bridge 只有 `0.037 ms/substep`，但 post-bridge residual 还有 `0.081 ms/substep`，同时 collision 只有 `0.004 ms/substep`。",
+            "Nsight 又显示 Newton A1 的 CUDA API 时间里有 `77.2%` 是 `cuLaunchKernel`，所以剩余成本至少与 launch-heavy runtime structure 一致。",
+            "[Why | System Evidence]",
+            "这一页的作用不是证明唯一原因，而是先把 Newton 侧的『不是 collision-first、而且 bridge 之外仍然有 launch-heavy residual』讲实。",
+            "[Risk | System Evidence]",
+            "到这一步我们仍然没有证明 PhysTwin 一定快在 graph launch；这里只是把 Newton 侧的残余形状讲清楚。",
+        ],
+    },
+    {
+        "kind": "code_twocol_large",
+        "title": "Source Proof P3: PhysTwin Rope Replay Has A Core Graph Path",
+        "note": "Core code on the left, system evidence on the right.",
+        "left_label": "[PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py : 768-782, 800-802]\nPhysTwin core explicitly captures and replays a forward graph.",
+        "left_path": CODE_PERF_EXECUTION_PHYSTWIN_PNG,
+        "right_label": "PhysTwin experiment + Nsight summary\nThe clean rope replay is headless, weak-contact, and graph-launch-dominated.",
+        "right_path": PERF_PHYSTWIN_SYSTEM_PNG,
+        "transcript": [
+            "这一页再补 PhysTwin 侧，这样『为什么更像 execution / launch structure』就不是单边推断，而是两边证据对齐。",
             "",
             "[PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py : 768-782, 800-802]",
             "[What | PhysTwin]",
             "L768-L782 直接表明 PhysTwin rope core 在 `cfg.use_graph` 为真时，会把 `self.step()` capture 成 CUDA graph，并把训练路径保存在 `self.graph`。",
             "L800-L802 又额外保留了 `forward_graph`，这说明它不是只为训练准备 graph，而是连纯 forward replay 也有专门的 graph path。",
             "[Why | PhysTwin]",
-            "这段源码是当前最强的 core evidence，因为它把 graph replay 直接写在 rope simulator 内核路径里，而不是外部 benchmark wrapper 临时包出来的技巧。",
-            "再结合 Nsight 的 `92.6% cudaGraphLaunch_v10000`，我们可以比较稳妥地说：PhysTwin 这条 rope replay 更像 graph-driven execution path。",
+            "这段源码是当前最强的 core evidence，因为它把 graph replay 直接写在 rope simulator 内核路径里，而不是外部 benchmark harness 临时包出来的技巧。",
+            "所以当 throughput 表告诉我们 PhysTwin 明显更快时，我们至少知道它快的那条路径确实具有一个核心 graph replay 结构。",
             "[Risk | PhysTwin]",
-            "这里同样不能把证据说得过头。PhysTwin 有 graph replay，不等于 Newton 的全部 residual gap 就只有 graph 一个原因；更诚实的结论是『residual gap 更一致地像 execution / launch structure，而不是 collision』。",
+            "这段源码只能证明 PhysTwin 有 graph replay path，不能单独推出它比 Newton 快的全部比例都来自 graph replay 本身。",
             "",
-            "所以 Q3 的优化方向现在才成立：先保留 precomputed controller writes，再优先研究更 graph-like 或更 batched 的 Newton rope replay，而不是先冲去调 collision 参数或者改 `dt/substeps`。",
+            "[What | System Evidence]",
+            "右侧系统证据进一步闭环：B0 throughput summary 明确记录 `use_graph = true`、`object_collision_flag = false`，所以这是 clean rope replay，不是 collision-heavy scene。",
+            "Nsight 又显示 PhysTwin B0 的 CUDA API 时间里有 `92.6%` 是 `cudaGraphLaunch_v10000`，这和左侧的 core graph path 完全一致。",
+            "[Why | System Evidence]",
+            "这页真正的说服力在于：实验说这是 clean rope replay，源码说它有 forward graph，Nsight 说运行时确实主要在 graph launch，所以 PhysTwin 侧的 execution story 是自洽的。",
+            "[Risk | System Evidence]",
+            "这里仍然不能把结论说成『Newton 一定只差 graph』；更诚实的说法是：PhysTwin 的快路径已经明显带有 core graph replay 特征。",
+        ],
+    },
+    {
+        "kind": "body",
+        "title": "Conclusion: The Residual Gap Is More Consistent With Launch Structure",
+        "bullets": [
+            "**Experiment:** clean rope replay keeps Newton A1 about `3.30x` slower than PhysTwin B0.",
+            "**Attribution:** bridge tax is real, but collision stays tiny on the weak-contact baseline.",
+            "**Core + system evidence:** Newton still looks staged; PhysTwin directly exposes graph replay and Nsight agrees.",
+            "**Only now optimize:** keep A1, then study more graph-like or more batched Newton replay.",
+        ],
+        "transcript": [
+            "这一页才给出 profiling section 的最终收束。",
+            "第一，Q1 已经被 throughput table 回答：在公平 rope replay benchmark 下，Newton A1 仍然比 PhysTwin B0 慢大约 `3.30x`。",
+            "第二，Q2 也被拆成了两半：A0 到 A1 证明 bridge tax 真实存在，但 A3 collision 很小，所以 residual gap 不能先怪 collision。",
+            "第三，Newton core 的 staged step path、PhysTwin core 的 forward graph，以及 Nsight 的 API 时间分布，三者方向是一致的。",
+            "所以现在最诚实也最有说服力的结论是：residual gap 更一致地指向 execution / launch structure，而不是 collision。",
+            "只有在这一步讲清楚之后，Q3 的优化方向才成立：先保留 precomputed controller writes，再优先研究更 graph-like 或更 batched 的 Newton rope replay。",
         ],
     },
     {
@@ -900,6 +945,34 @@ def _prepare_generated_assets() -> None:
             highlight_lines={769, 772, 780, 782, 802},
         ),
         CODE_PERF_EXECUTION_PHYSTWIN_PNG,
+    )
+    _system_summary_image(
+        PERF_NEWTON_SYSTEM_PNG,
+        "System Evidence",
+        "results/rope_perf_apples_to_apples/newton/A3_precomputed_attribution + nsight/newton_A1",
+        [
+            "A3 bridge: 0.037 ms/substep",
+            f"A3 post-bridge residual: {A3_POST_BRIDGE_MS:.3f} ms/substep",
+            f"A3 collision: {A3_COLLISION_MS:.3f} ms/substep",
+            "Nsight API: 77.2% cuLaunchKernel",
+            "Interpretation: many staged launches still survive after bridge precompute",
+        ],
+        font_size=22,
+        max_chars=78,
+    )
+    _system_summary_image(
+        PERF_PHYSTWIN_SYSTEM_PNG,
+        "System Evidence",
+        "results/rope_perf_apples_to_apples/phystwin/B0_headless_throughput + nsight/phystwin_B0",
+        [
+            "B0 use_graph: True",
+            "B0 object_collision_flag: False",
+            "B1 simulator_launch: 6.601 ms/frame",
+            "Nsight API: 92.6% cudaGraphLaunch_v10000",
+            "Interpretation: replay path is graph-driven in the PhysTwin core",
+        ],
+        font_size=22,
+        max_chars=78,
     )
     _code_excerpt_image(
         PHYSTWIN_SPRING_WARP_CODE_PATH,
@@ -1379,6 +1452,25 @@ def _code_excerpt_image(path: Path, title: str, lines: list[str], out_path: Path
         path.name,
         str(rel_path),
         lines,
+    )
+
+
+def _system_summary_image(
+    out_path: Path,
+    title: str,
+    subtitle: str,
+    lines: list[str],
+    *,
+    font_size: int = 24,
+    max_chars: int = 72,
+) -> Path:
+    return _render_code_png(
+        out_path,
+        title,
+        subtitle,
+        lines,
+        font_size=font_size,
+        max_chars=max_chars,
     )
 
 
