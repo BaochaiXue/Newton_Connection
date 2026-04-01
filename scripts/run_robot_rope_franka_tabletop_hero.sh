@@ -30,6 +30,7 @@ MANUAL_REVIEW_JSON="${RUN_DIR}/manual_review.json"
 
 COMMON_ARGS=(
   --task tabletop_push_hero
+  --tabletop-control-mode ik
   --sim-dt 5.0e-5
   --substeps 667
   --slowdown 1.0
@@ -39,6 +40,7 @@ COMMON_ARGS=(
   --viewer-headless
   --no-make-gif
   --anchor-count-per-end 2
+  --tabletop-control-mode joint_trajectory
   --ik-target-blend 0.20
   --auto-set-weight 3.0
   --tabletop-initial-pose tabletop_curve
@@ -48,21 +50,21 @@ COMMON_ARGS=(
   --tabletop-approach-seconds 1.4
   --tabletop-push-seconds 2.4
   --tabletop-hold-seconds 0.4
-  --tabletop-retract-seconds 1.0
+  --tabletop-retract-seconds 1.2
   --tabletop-rope-height 0.156
-  --tabletop-table-top-z 0.120
+  --tabletop-table-top-z 0.200
   --tabletop-table-hx 0.42
   --tabletop-table-hy 0.24
   --tabletop-table-hz 0.020
   --tabletop-robot-base-offset -0.56 -0.22 0.10
-  --tabletop-push-start-offset -0.10 0.06 0.0
-  --tabletop-push-contact-offset -0.04 0.04 0.0
-  --tabletop-push-end-offset 0.10 0.04 0.0
-  --tabletop-retract-offset 0.14 -0.06 0.0
-  --tabletop-approach-clearance-z 0.18
-  --tabletop-contact-clearance-z 0.025
-  --tabletop-push-clearance-z 0.018
-  --tabletop-retract-clearance-z 0.14
+  --tabletop-push-start-offset -0.09 -0.01 0.0
+  --tabletop-push-contact-offset -0.04 -0.03 0.0
+  --tabletop-push-end-offset 0.03 -0.04 0.0
+  --tabletop-retract-offset -0.02 -0.02 0.0
+  --tabletop-approach-clearance-z 0.10
+  --tabletop-contact-clearance-z 0.010
+  --tabletop-push-clearance-z 0.008
+  --tabletop-retract-clearance-z 0.05
   --tabletop-ee-offset-z 0.22
   "$@"
 )
