@@ -1,10 +1,10 @@
 # Task: Harness Markdown Cleanup 2026-04-01
 
 > status: historical
-> canonical_replacement: `docs/bridge/tasks/markdown_truthfulness_cleanup.md`
-> owner_surface: `markdown_truthfulness_cleanup`
+> canonical_replacement: `docs/bridge/tasks/markdown_harness_maintenance_upgrade.md`
+> owner_surface: `markdown_harness_maintenance_upgrade`
 > last_reviewed: `2026-04-01`
-> notes: Completed predecessor cleanup kept only as historical context for the broader markdown truthfulness pass.
+> notes: Completed predecessor cleanup kept only as historical context for the current markdown-harness maintenance task.
 
 ## Question
 
@@ -71,5 +71,5 @@ rg -n 'bunny_force_visualization_fullprocess|bunny_force_visualization_full_proc
 
 ## Related Pages
 
-- [README.md](./README.md)
+- [README.md](../README.md)
 - [delivery_and_profiling_review_20260401.md](./delivery_and_profiling_review_20260401.md)

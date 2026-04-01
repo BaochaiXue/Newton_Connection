@@ -1,3 +1,11 @@
+> status: active
+> canonical_replacement: none
+> owner_surface: `slide_deck_overhaul`
+> last_reviewed: `2026-04-01`
+> review_interval: `21d`
+> update_rule: `Update when the deck story structure, review artifacts, or slide-build policy changes.`
+> notes: Active canonical task page for slide/transcript structure and review-deliverable upkeep.
+
 # Task: Slide Deck Overhaul
 
 ## Question

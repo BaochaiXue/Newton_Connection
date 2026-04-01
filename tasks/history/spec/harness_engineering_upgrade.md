@@ -1,3 +1,11 @@
+> status: historical
+> canonical_replacement: `docs/bridge/tasks/markdown_harness_maintenance_upgrade.md`
+> owner_surface: `markdown_harness_maintenance_upgrade`
+> last_reviewed: `2026-04-01`
+> review_interval: `90d`
+> update_rule: `Keep only as a historical predecessor spec for the original harness-upgrade pass.`
+> notes: Historical predecessor spec. Current markdown/control-plane maintenance lives under `markdown_harness_maintenance_upgrade`.
+
 # Spec: harness_engineering_upgrade
 
 ## Goal

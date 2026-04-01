@@ -20,10 +20,30 @@ ROOT_CONTROL_FILES = [
 ]
 
 CONTROL_DIRS = [
-    ROOT / "docs",
     ROOT / "tasks",
     ROOT / "plans",
     ROOT / "results_meta",
+]
+
+DOC_CONTROL_FILES = [
+    ROOT / "docs" / "AGENTS.md",
+    ROOT / "docs" / "README.md",
+    ROOT / "docs" / "PROJECT_MAP.md",
+    ROOT / "docs" / "STYLE_GUIDE.md",
+    ROOT / "docs" / "archive" / "README.md",
+    ROOT / "docs" / "bridge" / "README.md",
+    ROOT / "docs" / "bridge" / "current_status.md",
+    ROOT / "docs" / "bridge" / "open_questions.md",
+    ROOT / "docs" / "bridge" / "experiment_index.md",
+]
+
+DOC_CONTROL_DIRS = [
+    ROOT / "docs" / "bridge" / "tasks",
+    ROOT / "docs" / "archive" / "tasks",
+    ROOT / "docs" / "generated",
+    ROOT / "docs" / "runbooks",
+    ROOT / "docs" / "evals",
+    ROOT / "docs" / "decisions",
 ]
 
 EXTRA_CONTROL_SURFACES = [
@@ -46,6 +66,9 @@ EXTRA_CONTROL_SURFACES = [
     ROOT / "Newton/phystwin_bridge/STATUS.md",
     ROOT / "Newton/phystwin_bridge/AGENTS.md",
     ROOT / "Newton/phystwin_bridge/demos/AGENTS.md",
+    ROOT / "Newton/phystwin_bridge/results/final_self_collision_campaign_20260330_205935_4fdef39/README.md",
+    ROOT / "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/README.md",
+    ROOT / "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/FINAL_STATUS.md",
     ROOT / "Newton/phystwin_bridge/results/robot_rope_franka/README.md",
     ROOT / "Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/README.md",
 ]
@@ -86,6 +109,7 @@ CANONICAL_SURFACES = {
     "docs/bridge/experiment_index.md",
     "docs/bridge/open_questions.md",
     "docs/bridge/tasks/README.md",
+    "docs/archive/tasks/README.md",
     "docs/generated/README.md",
     "docs/runbooks/doc_gardening.md",
     "results_meta/README.md",
@@ -153,6 +177,8 @@ LOCAL_ONLY_SURFACES = {
     "results/robot_deformable_demo/runs/20260330_213045_native_franka_lift_release_presentation/README.md",
     "results/rope_perf_apples_to_apples/README.md",
     "results/rope_perf_apples_to_apples/BEST_EVIDENCE.md",
+    "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/README.md",
+    "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/FINAL_STATUS.md",
     "Newton/phystwin_bridge/results/robot_rope_franka/README.md",
     "Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/README.md",
 }
@@ -167,6 +193,8 @@ LOCAL_ONLY_REPLACEMENTS = {
     "results/robot_deformable_demo/BEST_RUN.md": "results_meta/tasks/robot_deformable_demo.json",
     "results/rope_perf_apples_to_apples/README.md": "results_meta/tasks/rope_perf_apples_to_apples.json",
     "results/rope_perf_apples_to_apples/BEST_EVIDENCE.md": "results_meta/tasks/rope_perf_apples_to_apples.json",
+    "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/README.md": "results_meta/tasks/self_collision_transfer.json",
+    "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/FINAL_STATUS.md": "results_meta/tasks/self_collision_transfer.json",
     "Newton/phystwin_bridge/results/robot_rope_franka/README.md": "results_meta/tasks/robot_rope_franka_tabletop_push_hero.json",
     "Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/README.md": "results_meta/tasks/robot_rope_franka_tabletop_push_hero.json",
 }
@@ -286,6 +314,22 @@ def iter_control_plane_markdown() -> list[Path]:
             rel = _relative(path)
             seen.add(rel)
             paths.append(path)
+    for path in DOC_CONTROL_FILES:
+        if path.exists():
+            rel = _relative(path)
+            if rel in seen:
+                continue
+            seen.add(rel)
+            paths.append(path)
+    for directory in DOC_CONTROL_DIRS:
+        if not directory.exists():
+            continue
+        for path in sorted(directory.rglob("*.md")):
+            rel = _relative(path)
+            if rel in seen:
+                continue
+            seen.add(rel)
+            paths.append(path)
     for directory in CONTROL_DIRS:
         if not directory.exists():
             continue
@@ -348,6 +392,8 @@ def _owner_surface(rel: str, meta: dict[str, str], active_slugs: list[str]) -> s
         return "rope_perf_apples_to_apples"
     if rel.startswith("Newton/phystwin_bridge/results/robot_rope_franka/"):
         return "robot_rope_franka_tabletop_push_hero"
+    if rel.startswith("Newton/phystwin_bridge/results/final_self_collision_campaign_"):
+        return "self_collision_transfer"
     if Path(rel).stem in active_slugs:
         return Path(rel).stem
     return "misc"
@@ -363,6 +409,8 @@ def _base_classification(rel: str, meta: dict[str, str]) -> tuple[str, str, str]
         return ("DEPRECATED_POINTER", replacement, notes or "Deprecated pointer surface.")
     if status == "historical":
         return ("HISTORICAL_ARCHIVE", replacement, notes or "Historical archive surface.")
+    if rel.startswith("docs/archive/") and rel not in {"docs/archive/README.md", "docs/archive/tasks/README.md"}:
+        return ("HISTORICAL_ARCHIVE", replacement or "none", notes or "Historical archived documentation surface.")
     if rel.startswith("tasks/history/") and rel != "tasks/history/README.md":
         return ("HISTORICAL_ARCHIVE", replacement or "none", notes or "Execution-layer historical archive.")
     if rel.startswith("plans/completed/") and rel != "plans/completed/README.md":

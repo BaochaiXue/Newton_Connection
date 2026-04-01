@@ -1,3 +1,11 @@
+> status: active
+> canonical_replacement: none
+> owner_surface: `self_collision_transfer`
+> last_reviewed: `2026-04-01`
+> review_interval: `21d`
+> update_rule: `Update when strict-scope interpretation, current blocker, or decision evidence changes.`
+> notes: Active canonical task page for the self-collision decision and strict parity blocker analysis.
+
 # Task: Self-Collision Transfer Decision
 
 ## Primary Question

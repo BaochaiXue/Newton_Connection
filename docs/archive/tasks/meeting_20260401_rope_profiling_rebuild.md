@@ -1,11 +1,12 @@
 # Task: Meeting 2026-04-01 Rope Profiling Rebuild
 
-> status: active
-> canonical_replacement: none
+> status: historical
+> canonical_replacement: `docs/bridge/tasks/rope_perf_apples_to_apples.md`
 > owner_surface: `meeting_20260401_rope_profiling_rebuild`
 > last_reviewed: `2026-04-01`
-> review_interval: `7d`
-> update_rule: `Update when the profiling section logic, experiment matrix, or slide/transcript conclusion changes.`
+> review_interval: `90d`
+> update_rule: `Do not update for current work; keep only as the historical record of the 2026-04-01 profiling-section rewrite.`
+> notes: Historical one-off meeting rebuild record. Current benchmark authority lives under `rope_perf_apples_to_apples`; current meeting-story maintenance lives under `slide_deck_overhaul`.
 
 ## Question
 
@@ -68,6 +69,6 @@ weakening the scientific boundary.
 
 ## Related Pages
 
-- [rope_perf_apples_to_apples.md](./rope_perf_apples_to_apples.md)
-- [interactive_playground_profiling.md](./interactive_playground_profiling.md)
-- [../current_status.md](../current_status.md)
+- [rope_perf_apples_to_apples.md](../../bridge/tasks/rope_perf_apples_to_apples.md)
+- [interactive_playground_profiling.md](../../bridge/tasks/interactive_playground_profiling.md)
+- [current_status.md](../../bridge/current_status.md)

@@ -19,6 +19,7 @@ def main() -> int:
         "update results_meta before claiming completion. If you rename, deprecate, "
         "archive, or supersede a Markdown surface, update docs/generated/md_inventory.*, "
         "md_staleness_report.md, task_surface_matrix.md, the deprecation ledger, and run scripts/lint_harness_consistency.py before ending. "
+        "Historical bridge task pages belong in docs/archive/tasks/, not docs/bridge/tasks/. "
         "Treat tracked `results/*` pointer docs and `Newton/phystwin_bridge/STATUS.md` as "
         "secondary surfaces only; if they change, keep them aligned with results_meta and the inventory."
     )

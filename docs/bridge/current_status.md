@@ -24,6 +24,8 @@ Detailed result meaning belongs in:
   - keep the markdown/control-plane harness fail-closed: dashboard scope, inventory generation, local-only result wording, and lint enforcement
 - `slide_deck_overhaul`
   - keep the 2026-04-01 meeting deck hypothesis-driven and evidence-first
+- `meeting_20260408_recall_part`
+  - keep the new 2026-04-08 recall bundle visible in the active task map until the later meeting sections are ready
 - `rope_perf_apples_to_apples`
   - maintain the same-case rope replay benchmark as the committed performance reference, now with an explicit real-viewer E1 row
 - `self_collision_transfer`

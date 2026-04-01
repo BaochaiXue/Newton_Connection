@@ -1,3 +1,11 @@
+> status: active
+> canonical_replacement: none
+> owner_surface: `data_collection_protocol`
+> last_reviewed: `2026-04-01`
+> review_interval: `21d`
+> update_rule: `Update when capture steps, required artifacts, or default collection policy changes.`
+> notes: Active canonical task page for the bridge-side data collection procedure.
+
 # Task: Data Collection Protocol
 
 ## Question

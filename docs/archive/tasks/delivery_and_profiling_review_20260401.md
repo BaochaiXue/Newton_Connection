@@ -81,8 +81,8 @@ find results/native_robot_rope_drop_release -maxdepth 3 -type f
 
 ## Related Pages
 
-- [slide_deck_overhaul.md](./slide_deck_overhaul.md)
-- [video_presentation_quality.md](./video_presentation_quality.md)
-- [native_robot_rope_drop_release.md](./native_robot_rope_drop_release.md)
-- [interactive_playground_profiling.md](./interactive_playground_profiling.md)
-- [rope_perf_apples_to_apples.md](./rope_perf_apples_to_apples.md)
+- [slide_deck_overhaul.md](../../bridge/tasks/slide_deck_overhaul.md)
+- [video_presentation_quality.md](../../bridge/tasks/video_presentation_quality.md)
+- [native_robot_rope_drop_release.md](../../bridge/tasks/native_robot_rope_drop_release.md)
+- [interactive_playground_profiling.md](../../bridge/tasks/interactive_playground_profiling.md)
+- [rope_perf_apples_to_apples.md](../../bridge/tasks/rope_perf_apples_to_apples.md)

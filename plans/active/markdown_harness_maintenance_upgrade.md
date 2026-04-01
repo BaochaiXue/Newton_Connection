@@ -22,10 +22,11 @@ authority, inventory generation, and lint enforcement.
 ## Milestones
 
 1. audit markdown truth surfaces and current generator/lint behavior
-2. bootstrap the new maintenance task and retire predecessor harness tasks from active execution dirs
+2. retire predecessor task pages into `docs/archive/tasks/` and keep execution artifacts out of active dirs
 3. trim `current_status.md` into a real dashboard and align result authority
 4. normalize inventory generation, staleness reporting, and task-surface reporting
 5. strengthen lint/hooks and regenerate ledgers
+6. enforce review metadata on active canonical task pages
 
 ## Validation
 

@@ -1,3 +1,11 @@
+> status: canonical
+> canonical_replacement: none
+> owner_surface: `results_registry`
+> last_reviewed: `2026-04-01`
+> review_interval: `30d`
+> update_rule: `Update when registry field requirements or authority semantics change.`
+> notes: Canonical schema for committed result-authority entries under results_meta/tasks/.
+
 # Results Metadata Schema
 
 Version: `1`

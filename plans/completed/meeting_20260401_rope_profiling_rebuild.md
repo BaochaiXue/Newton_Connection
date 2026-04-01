@@ -1,3 +1,11 @@
+> status: historical
+> canonical_replacement: none
+> owner_surface: `meeting_20260401_rope_profiling_rebuild`
+> last_reviewed: `2026-04-01`
+> review_interval: `90d`
+> update_rule: `Keep only as a historical planning record for the completed 2026-04-01 profiling-section rebuild.`
+> notes: Completed one-off plan moved out of `plans/active/` so it no longer competes with live planning surfaces.
+
 # Plan: meeting_20260401_rope_profiling_rebuild
 
 ## Goal

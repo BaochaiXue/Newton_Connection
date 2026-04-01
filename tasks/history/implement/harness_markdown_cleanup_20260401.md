@@ -1,8 +1,8 @@
 # Implement: harness_markdown_cleanup_20260401
 
 > status: historical
-> canonical_replacement: `tasks/implement/markdown_truthfulness_cleanup.md`
-> owner_surface: `markdown_truthfulness_cleanup`
+> canonical_replacement: `tasks/implement/markdown_harness_maintenance_upgrade.md`
+> owner_surface: `markdown_harness_maintenance_upgrade`
 > last_reviewed: `2026-04-01`
 > notes: Historical predecessor runbook; kept only to preserve the earlier cleanup record.
 

@@ -43,13 +43,19 @@ CANONICAL_WORD_RE = re.compile(
     re.IGNORECASE,
 )
 NONCANONICAL_MARKERS = ("local-only", "secondary", "historical", "deprecated", "scratch", "rejected", "superseded")
-REQUIRED_METADATA_SURFACES = {
+BASE_REQUIRED_METADATA_SURFACES = {
     "TODO.md",
     "docs/bridge/current_status.md",
     "docs/bridge/tasks/README.md",
+    "docs/bridge/experiment_index.md",
+    "docs/bridge/open_questions.md",
+    "docs/archive/README.md",
+    "docs/archive/tasks/README.md",
     "docs/generated/README.md",
     "docs/runbooks/doc_gardening.md",
     "results_meta/README.md",
+    "results_meta/DEPRECATED.md",
+    "results_meta/schema.md",
     "docs/bridge/tasks/markdown_harness_maintenance_upgrade.md",
     "tasks/spec/markdown_harness_maintenance_upgrade.md",
     "plans/active/markdown_harness_maintenance_upgrade.md",
@@ -86,6 +92,13 @@ def _metadata_present(path: Path) -> bool:
     required = {"status:", "owner_surface:", "last_reviewed:", "review_interval:", "update_rule:", "notes:"}
     found = {line[2:].split(":", 1)[0].strip() + ":" for line in text if line.startswith("> ") and ":" in line}
     return required.issubset(found)
+
+
+def _required_metadata_surfaces(active_slugs: list[str]) -> set[str]:
+    surfaces = set(BASE_REQUIRED_METADATA_SURFACES)
+    for slug in active_slugs:
+        surfaces.add(f"docs/bridge/tasks/{slug}.md")
+    return surfaces
 
 
 def _issues_from_generated_inventory(fresh: list[dict[str, Any]]) -> list[str]:
@@ -165,6 +178,17 @@ def _issues_from_task_index(active_slugs: list[str]) -> list[str]:
     return issues
 
 
+def _issues_from_doc_task_neighborhood(active_slugs: list[str]) -> list[str]:
+    issues: list[str] = []
+    keep_names = {"README.md", "AGENTS.md", "_task_template.md"}
+    for path in sorted(TASK_PAGE_DIR.glob("*.md")):
+        if path.name in keep_names:
+            continue
+        if path.stem not in active_slugs:
+            issues.append(f"historical or non-active task page still lives in docs/bridge/tasks/: {_relative(path)}")
+    return issues
+
+
 def _issues_from_current_status(fresh_inventory: list[dict[str, Any]], registry_entries: dict[str, dict[str, Any]]) -> list[str]:
     issues: list[str] = []
     if not CURRENT_STATUS.exists():
@@ -176,6 +200,12 @@ def _issues_from_current_status(fresh_inventory: list[dict[str, Any]], registry_
         issues.append(f"current_status.md is too long for a dashboard: {line_count} lines")
     if "results_meta/INDEX.md" not in text or "results_meta/LATEST.md" not in text:
         issues.append("current_status.md must point readers to results_meta/INDEX.md and results_meta/LATEST.md")
+    missing_slugs = [slug for slug in active_task_slugs() if f"`{slug}`" not in text]
+    if missing_slugs:
+        issues.append(
+            "current_status.md is missing active task slugs from the dashboard/workstream view: "
+            + ", ".join(sorted(missing_slugs))
+        )
     run_ids = set(RUN_ID_RE.findall(text))
     allowed_run_ids = {
         str((entry.get("authoritative_run") or {}).get("run_id") or "")
@@ -190,9 +220,10 @@ def _issues_from_current_status(fresh_inventory: list[dict[str, Any]], registry_
     return issues
 
 
-def _issues_from_metadata(fresh_inventory: list[dict[str, Any]]) -> list[str]:
+def _issues_from_metadata(active_slugs: list[str], fresh_inventory: list[dict[str, Any]]) -> list[str]:
     issues: list[str] = []
-    for rel in sorted(REQUIRED_METADATA_SURFACES):
+    required_surfaces = _required_metadata_surfaces(active_slugs)
+    for rel in sorted(required_surfaces):
         path = ROOT / rel
         if not path.exists():
             issues.append(f"required metadata surface is missing: {rel}")
@@ -200,7 +231,7 @@ def _issues_from_metadata(fresh_inventory: list[dict[str, Any]]) -> list[str]:
         if not _metadata_present(path):
             issues.append(f"required metadata surface lacks the standard metadata block: {rel}")
     for row in fresh_inventory:
-        if row["path"] not in REQUIRED_METADATA_SURFACES:
+        if row["path"] not in required_surfaces:
             continue
         if row["review_status"] in {"missing", "parse_error", "due"}:
             issues.append(
@@ -246,8 +277,12 @@ def _issues_from_authority_surfaces(fresh_inventory: list[dict[str, Any]], regis
             issues.append(f"robot tabletop local result surface must be LOCAL_ONLY_SECONDARY: {row['path']}")
 
     for rel in (
+        "Newton/phystwin_bridge/results/final_self_collision_campaign_20260330_205935_4fdef39/README.md",
+        "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/README.md",
+        "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/FINAL_STATUS.md",
         "Newton/phystwin_bridge/results/robot_rope_franka/README.md",
         "Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/README.md",
+        "results/rope_perf_apples_to_apples/BEST_EVIDENCE.md",
         "results/robot_deformable_demo/runs/README.md",
         "results/native_robot_rope_drop_release/runs/20260331_232106_native_franka_recoilfix_drag_off_w5/README.md",
     ):
@@ -255,10 +290,29 @@ def _issues_from_authority_surfaces(fresh_inventory: list[dict[str, Any]], regis
         if not path.exists():
             continue
         text = path.read_text(encoding="utf-8", errors="ignore").lower()
-        if "local-only" not in text and "do not use this page as the committed source of truth" not in text:
+        if (
+            "local-only" not in text
+            and "historical" not in text
+            and "do not use this page as the committed source of truth" not in text
+            and "do not use it as the current source of truth" not in text
+        ):
             issues.append(f"local result surface lacks explicit local-only truth banner: {rel}")
         if "/home/" in text:
             issues.append(f"local result surface still contains machine-local absolute path: {rel}")
+
+    slide_status = ROOT / "tasks/status/slide_deck_overhaul.md"
+    if slide_status.exists():
+        text = slide_status.read_text(encoding="utf-8", errors="ignore")
+        current_counts = sorted(set(re.findall(r"current deck:\s*`(\d+)`\s*slides", text, flags=re.IGNORECASE)))
+        if len(current_counts) > 1:
+            issues.append(
+                "tasks/status/slide_deck_overhaul.md contains multiple conflicting current deck counts in one live status surface"
+            )
+        review_counts = sorted(set(re.findall(r"current review pdf:\s*`(\d+)`\s*paired review pages", text, flags=re.IGNORECASE)))
+        if len(review_counts) > 1:
+            issues.append(
+                "tasks/status/slide_deck_overhaul.md contains multiple conflicting current review-PDF counts in one live status surface"
+            )
 
     robot_status = ROOT / "tasks/status/robot_rope_franka_tabletop_push_hero.md"
     if robot_status.exists():
@@ -282,6 +336,35 @@ def _issues_from_authority_surfaces(fresh_inventory: list[dict[str, Any]], regis
             issues.append("interactive_playground_profiling.md still carries stale hotspot language that conflicts with the rope benchmark truth")
         if "results_meta/tasks/rope_perf_apples_to_apples.json" not in text:
             issues.append("interactive_playground_profiling.md must point to rope_perf_apples_to_apples for committed current result meaning")
+
+    for entry in registry_entries.values():
+        for rel in entry.get("local_only_surfaces", []):
+            path = ROOT / rel
+            if not path.exists() or path.suffix.lower() != ".md":
+                continue
+            text = path.read_text(encoding="utf-8", errors="ignore").lower()
+            if "do not use this page as the committed source of truth" not in text and not any(
+                marker in text for marker in NONCANONICAL_MARKERS
+            ):
+                issues.append(f"registry-declared local-only markdown surface lacks an explicit local-only/historical banner: {rel}")
+            if "/home/" in text:
+                issues.append(f"registry-declared local-only markdown surface still contains machine-local absolute path: {rel}")
+    return issues
+
+
+def _issues_from_archived_task_pages() -> list[str]:
+    issues: list[str] = []
+    archive_dir = ROOT / "docs/archive/tasks"
+    if not archive_dir.exists():
+        return issues
+    for path in sorted(archive_dir.glob("*.md")):
+        if path.name == "README.md":
+            continue
+        head = "\n".join(path.read_text(encoding="utf-8", errors="ignore").splitlines()[:12]).lower()
+        if "> status: historical" not in head and "> status: deprecated" not in head:
+            issues.append(f"archived task page lacks historical/deprecated metadata banner: {_relative(path)}")
+        if "> status: active" in head:
+            issues.append(f"archived task page still looks active: {_relative(path)}")
     return issues
 
 
@@ -335,10 +418,12 @@ def _collect_issues() -> list[str]:
     issues.extend(_issues_from_root_singletons())
     issues.extend(_issues_from_active_task_chain(active_slugs))
     issues.extend(_issues_from_task_index(active_slugs))
+    issues.extend(_issues_from_doc_task_neighborhood(active_slugs))
     issues.extend(_issues_from_current_status(fresh_inventory, registry_entries))
-    issues.extend(_issues_from_metadata(fresh_inventory))
+    issues.extend(_issues_from_metadata(active_slugs, fresh_inventory))
     issues.extend(_issues_from_generator_story())
     issues.extend(_issues_from_authority_surfaces(fresh_inventory, registry_entries))
+    issues.extend(_issues_from_archived_task_pages())
     issues.extend(_issues_from_registry_json(registry_entries))
     issues.extend(_issues_from_harness_audit())
 

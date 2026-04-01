@@ -43,5 +43,5 @@ Initial recall-only draft generated.
   - `python scripts/generate_md_inventory.py`
   - `python scripts/lint_harness_consistency.py`
   - current result: fails on pre-existing unrelated surfaces:
-    - `meeting_20260401_rope_profiling_rebuild` still lives in active execution directories
-    - `Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/README.md` still reads as a canonical surface in the current nested-repo state
+    - rerun after the current markdown-harness maintenance pass regenerates the
+      ledgers and clears the old residual failures

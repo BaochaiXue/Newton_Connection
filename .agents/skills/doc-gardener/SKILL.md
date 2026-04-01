@@ -21,7 +21,9 @@ Keep one canonical surface per concept and make deprecations explicit.
 - deprecated files without migration notes
 - overgrown dashboards that should be maps, not ledgers
 - active-vs-historical task mixing
+- historical bridge task pages that still live under `docs/bridge/tasks/`
 - local result surfaces that sound canonical without `results_meta/` backing
+- registry-declared local-only Markdown surfaces that still lack explicit local-only wording
 - stale review ages or missing metadata on high-value control-plane docs
 
 ## Standard Closeout
@@ -34,6 +36,8 @@ When this skill leads to edits, finish by:
    - `docs/generated/md_deprecation_matrix.md`
    - `docs/generated/md_staleness_report.md`
    - `docs/generated/task_surface_matrix.md`
+   - `results_meta/INDEX.md`
+   - `results_meta/LATEST.md`
 3. aligning `results_meta/` if promoted/current result meaning changed
 4. rerunning `python scripts/lint_harness_consistency.py`
 5. keeping `docs/bridge/current_status.md` short and dashboard-like

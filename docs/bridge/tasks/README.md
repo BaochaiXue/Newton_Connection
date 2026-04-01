@@ -36,10 +36,12 @@ Each task page should answer:
 
 ## One-Off / Historical Task Records
 
-- [harness_engineering_upgrade.md](./harness_engineering_upgrade.md)
-- [markdown_truthfulness_cleanup.md](./markdown_truthfulness_cleanup.md)
-- [delivery_and_profiling_review_20260401.md](./delivery_and_profiling_review_20260401.md)
-- [harness_markdown_cleanup_20260401.md](./harness_markdown_cleanup_20260401.md)
+- [docs/archive/tasks/README.md](../../archive/tasks/README.md)
+- [harness_engineering_upgrade.md](../../archive/tasks/harness_engineering_upgrade.md)
+- [markdown_truthfulness_cleanup.md](../../archive/tasks/markdown_truthfulness_cleanup.md)
+- [delivery_and_profiling_review_20260401.md](../../archive/tasks/delivery_and_profiling_review_20260401.md)
+- [harness_markdown_cleanup_20260401.md](../../archive/tasks/harness_markdown_cleanup_20260401.md)
+- [meeting_20260401_rope_profiling_rebuild.md](../../archive/tasks/meeting_20260401_rope_profiling_rebuild.md)
 
 Task template:
 

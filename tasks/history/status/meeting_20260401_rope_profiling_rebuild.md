@@ -1,3 +1,11 @@
+> status: historical
+> canonical_replacement: none
+> owner_surface: `meeting_20260401_rope_profiling_rebuild`
+> last_reviewed: `2026-04-01`
+> review_interval: `90d`
+> update_rule: `Keep only as the historical status log for the completed 2026-04-01 profiling-section rebuild.`
+> notes: Historical one-off status moved out of `tasks/status/` so it no longer appears active.
+
 # Status: Meeting 2026-04-01 Rope Profiling Rebuild
 
 ## Current State

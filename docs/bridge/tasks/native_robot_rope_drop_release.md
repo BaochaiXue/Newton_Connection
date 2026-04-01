@@ -1,3 +1,11 @@
+> status: active
+> canonical_replacement: none
+> owner_surface: `native_robot_rope_drop_release`
+> last_reviewed: `2026-04-01`
+> review_interval: `21d`
+> update_rule: `Update when the baseline claim boundary, promoted run meaning, or validation contract changes.`
+> notes: Active canonical task page for the native Franka support/release/free-fall baseline.
+
 # Task: Native Robot Rope Drop/Release Sanity Baseline
 
 ## Question

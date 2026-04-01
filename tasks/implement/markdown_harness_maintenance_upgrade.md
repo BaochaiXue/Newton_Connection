@@ -21,6 +21,7 @@ python scripts/generate_md_inventory.py
 python scripts/lint_harness_consistency.py
 python scripts/sync_results_registry.py
 rg -n --glob '*.md' 'authoritative|current|latest|promoted|best|final|canonical' docs tasks plans results_meta results Newton/phystwin_bridge/results
+rg -n 'docs/archive/tasks|meeting_20260401_rope_profiling_rebuild' docs tasks plans
 ```
 
 ## Step Sequence
@@ -29,7 +30,9 @@ rg -n --glob '*.md' 'authoritative|current|latest|promoted|best|final|canonical'
 2. move historical execution docs out of active directories
 3. trim/realign canonical dashboards and indexes
 4. align local result surfaces with `results_meta/`
-5. regenerate ledgers and rerun lint
+5. move historical bridge task pages out of `docs/bridge/tasks/`
+6. add review metadata to active canonical task pages
+7. regenerate ledgers and rerun lint
 
 ## Validation
 
@@ -37,3 +40,4 @@ rg -n --glob '*.md' 'authoritative|current|latest|promoted|best|final|canonical'
 - `current_status.md` is short enough to function as a dashboard
 - no local result pointer still sounds canonical without registry backing
 - no completed historical task chain remains in an active execution directory
+- no historical bridge task page remains in `docs/bridge/tasks/`

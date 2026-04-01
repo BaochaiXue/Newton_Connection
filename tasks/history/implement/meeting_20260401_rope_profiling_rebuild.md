@@ -1,3 +1,11 @@
+> status: historical
+> canonical_replacement: none
+> owner_surface: `meeting_20260401_rope_profiling_rebuild`
+> last_reviewed: `2026-04-01`
+> review_interval: `90d`
+> update_rule: `Keep only as the historical runbook for the completed 2026-04-01 profiling-section rebuild.`
+> notes: Historical one-off runbook moved out of `tasks/implement/` so it no longer competes with live execution surfaces.
+
 # Implement: meeting_20260401_rope_profiling_rebuild
 
 ## Canonical Steps

@@ -87,4 +87,4 @@ rg -n --glob '*.md' 'authoritative|current|latest|promoted|best run|final' docs 
 ## Related Pages
 
 - [harness_engineering_upgrade.md](./harness_engineering_upgrade.md)
-- [slide_deck_overhaul.md](./slide_deck_overhaul.md)
+- [slide_deck_overhaul.md](../../bridge/tasks/slide_deck_overhaul.md)

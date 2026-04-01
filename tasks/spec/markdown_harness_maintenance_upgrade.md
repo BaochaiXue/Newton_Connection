@@ -33,6 +33,7 @@ historical surfaces cannot plausibly masquerade as current truth.
 
 - canonical markdown-maintenance task chain
 - cleaned dashboard/index/task taxonomy surfaces
+- historical bridge task pages routed through `docs/archive/tasks/`
 - refreshed generated markdown ledgers
 - stronger lint/hook policy for markdown drift
 
@@ -47,4 +48,5 @@ historical surfaces cannot plausibly masquerade as current truth.
 - active and historical task artifacts are separated intentionally
 - current-status, task status pages, and `results_meta/` agree on authority
 - generator/lint docs name one public inventory entrypoint
+- active canonical task pages expose review metadata
 - markdown maintenance becomes part of normal closeout instead of one-off cleanup

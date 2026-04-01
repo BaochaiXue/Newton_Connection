@@ -1,3 +1,11 @@
+> status: active
+> canonical_replacement: none
+> owner_surface: `video_presentation_quality`
+> last_reviewed: `2026-04-01`
+> review_interval: `21d`
+> update_rule: `Update when visual QA gates, skeptical-review policy, or video acceptance criteria change.`
+> notes: Active canonical task page for meeting-facing video readability and acceptance quality.
+
 # Task: Video Presentation Quality
 
 ## Question

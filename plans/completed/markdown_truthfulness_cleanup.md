@@ -1,3 +1,11 @@
+> status: historical
+> canonical_replacement: `plans/active/markdown_harness_maintenance_upgrade.md`
+> owner_surface: `markdown_harness_maintenance_upgrade`
+> last_reviewed: `2026-04-01`
+> review_interval: `90d`
+> update_rule: `Keep only as the predecessor plan for the earlier markdown-truthfulness cleanup pass.`
+> notes: Historical predecessor plan. Current markdown/control-plane maintenance planning lives under `markdown_harness_maintenance_upgrade`.
+
 # Plan: markdown_truthfulness_cleanup
 
 ## Goal

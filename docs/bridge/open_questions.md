@@ -1,3 +1,11 @@
+> status: canonical
+> canonical_replacement: none
+> owner_surface: `bridge_control_plane`
+> last_reviewed: `2026-04-01`
+> review_interval: `30d`
+> update_rule: `Update when an open question is answered, superseded, or promoted into a dedicated task or decision surface.`
+> notes: Canonical unresolved-question ledger for bridge work. Keep resolved items out of this page.
+
 # Open Questions
 
 Last updated: 2026-03-31

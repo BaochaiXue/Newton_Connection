@@ -1,3 +1,11 @@
+> status: historical
+> canonical_replacement: `tasks/status/markdown_harness_maintenance_upgrade.md`
+> owner_surface: `markdown_harness_maintenance_upgrade`
+> last_reviewed: `2026-04-01`
+> review_interval: `90d`
+> update_rule: `Keep only as a historical predecessor status log for the original harness-upgrade pass.`
+> notes: Historical predecessor status log. Current markdown/control-plane maintenance state lives under `markdown_harness_maintenance_upgrade`.
+
 # Status: harness_engineering_upgrade
 
 ## Current State

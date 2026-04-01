@@ -1,3 +1,11 @@
+> status: active
+> canonical_replacement: none
+> owner_surface: `fast_foundation_stereo`
+> last_reviewed: `2026-04-01`
+> review_interval: `21d`
+> update_rule: `Update when evaluation scope, decision criteria, or adoption recommendation changes.`
+> notes: Active canonical task page for the Fast-FoundationStereo decision.
+
 # Task: Fast-FoundationStereo Evaluation
 
 ## Question

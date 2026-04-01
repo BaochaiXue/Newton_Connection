@@ -1,53 +1,53 @@
+> status: active
+> canonical_replacement: none
+> owner_surface: `slide_deck_overhaul`
+> last_reviewed: `2026-04-01`
+> review_interval: `14d`
+> update_rule: `Update when the active 0401 deck story, shipped bundle workflow, or paired review-PDF process changes materially.`
+> notes: Live status page for the deck-overhaul task. Keep this page current-state-first; do not accumulate a resend/rebuild changelog that produces multiple conflicting “current” claims.
+
 # Status: slide_deck_overhaul
 
 ## Current State
 
-Tracked as an active task with a backfilled authoritative chain and an active
-PPTX size-budget gate on the 2026-04-01 deck builder.
+Tracked as an active task with a stable `0401` bundle workflow:
 
-An explicit user request now also approves release of a `0401` review PDF to
-the repo-configured default email recipient once the artifact is generated and
-validated.
+- `formal_slide/meeting_2026_04_01/build_meeting_20260401.py` is the canonical
+  deck/transcript builder
+- the builder enforces a PPTX size gate
+- `scripts/build_slide_transcript_review_pdf.py` generates the paired
+  slide-plus-transcript review PDF
+- release sends are expected to use the latest regenerated review PDF, not a
+  stale export
 
 ## Last Completed Step
 
-Prepared the 2026-04-01 bundle for review release:
+Stabilized the April 1 release path around the current source of truth:
 
-- rebuilt `formal_slide/meeting_2026_04_01/bridge_meeting_20260401.pptx`
-  and `formal_slide/meeting_2026_04_01/transcript.md` to the current
-  `26`-slide state
-- added a reusable review builder at
-  `scripts/build_slide_transcript_review_pdf.py`
-- generated
-  `formal_slide/meeting_2026_04_01/bridge_meeting_20260401_review.pdf`
-  with `26` review pages matching `26` slide/transcript pairs
-- recorded the review build manifest under
-  `tmp_vis/review_pdf_20260401/review_manifest.json`
-- sent the validated review PDF to the repo-configured default recipient via
-  `send_pdf_via_yahoo.py`
-- refreshed the bundle again after later slide/transcript edits:
-  - current deck: `25` slides
-  - current review PDF: `25` paired review pages
-  - resent the refreshed review PDF to the same default recipient
-- refreshed the bundle again after the latest slide/transcript edits:
-  - current deck: `24` slides
-  - current review PDF: `24` paired review pages
-  - current review layout: `review_wide_landscape`
-  - resent the refreshed review PDF to the same default recipient
-- refreshed the bundle again after the newest slide/transcript edits:
-  - current deck: `28` slides
-  - current review PDF: `28` paired review pages
-  - current review layout: `review_wide_landscape`
-  - resent the refreshed review PDF to the same default recipient
+- rebuild the latest PPTX/transcript from source
+- regenerate the paired review PDF from that same source
+- verify slide-page / transcript-section count alignment
+- keep the review build manifest under `tmp_vis/review_pdf_20260401/`
+
+Historical resend note:
+
+- this task saw several same-day refreshes while the `0401` deck was still
+  changing
+- those events are routine release churn, not separate competing current
+  states
 
 ## Next Step
 
-Do a final pass on wording density and GIF sizing if another meeting-review
-iteration changes the claim boundaries.
+If the `0401` deck changes again:
+
+- keep the wording density under control
+- rebuild both the PPTX and the paired review PDF from source
+- preserve the PPTX size gate
+- avoid turning this page into a resend ledger
 
 ## Blocking Issues
 
-- None recorded for the performance-section pass
+- None recorded for the current deck workflow
 
 ## Artifact Paths
 

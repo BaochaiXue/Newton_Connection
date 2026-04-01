@@ -20,7 +20,7 @@ current rope profiling plan, using in-repo evidence rather than memory.
 
 ## Inputs
 
-- `docs/bridge/tasks/delivery_and_profiling_review_20260401.md`
+- `docs/archive/tasks/delivery_and_profiling_review_20260401.md`
 - `formal_slide/meeting_2026_04_01/`
 - `results/native_robot_rope_drop_release/`
 - `results/rope_perf_apples_to_apples/`

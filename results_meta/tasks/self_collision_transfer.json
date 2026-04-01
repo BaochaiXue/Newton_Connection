@@ -65,6 +65,7 @@
     }
   ],
   "local_only_surfaces": [
+    "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/README.md",
     "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/FINAL_STATUS.md",
     "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/matrix/self_collision_decision.md"
   ],

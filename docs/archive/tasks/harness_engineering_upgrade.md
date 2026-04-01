@@ -98,6 +98,6 @@ rg -n 'Plan.md|Status.md|Prompt.md|DecisionLog.md' AGENTS.md docs plans tasks
 
 ## Related Pages
 
-- [README.md](./README.md)
-- [video_presentation_quality.md](./video_presentation_quality.md)
-- [interactive_playground_profiling.md](./interactive_playground_profiling.md)
+- [README.md](../README.md)
+- [video_presentation_quality.md](../../bridge/tasks/video_presentation_quality.md)
+- [interactive_playground_profiling.md](../../bridge/tasks/interactive_playground_profiling.md)

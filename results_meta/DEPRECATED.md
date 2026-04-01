@@ -1,3 +1,11 @@
+> status: canonical
+> canonical_replacement: none
+> owner_surface: `results_registry`
+> last_reviewed: `2026-04-01`
+> review_interval: `30d`
+> update_rule: `Update when local-only pointer surfaces are added, retired, or re-scoped relative to results_meta.`
+> notes: Canonical deprecation ledger for result-authority surfaces that must no longer sound committed-truth.
+
 # Results Metadata Deprecations
 
 Updated: 2026-04-01
@@ -25,6 +33,9 @@ longer the canonical committed truth.
 - `Newton/phystwin_bridge/results/robot_rope_franka/manifest.json`
 - `Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/README.md`
 - `Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/manifest.json`
+- `Newton/phystwin_bridge/results/final_self_collision_campaign_20260330_205935_4fdef39/README.md`
+- `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/README.md`
+- `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/FINAL_STATUS.md`
 
 ## Canonical Replacement
 

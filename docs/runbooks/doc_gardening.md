@@ -21,13 +21,15 @@ disagree, make them converge immediately.
 1. Update the task status file.
 2. Update the canonical replacement surface.
 3. Add or refresh the deprecated/historical banner if the old file remains.
-4. Refresh `docs/generated/harness_deprecations.md` when the deprecation set changes.
-5. Update `results_meta/` if run meaning changed.
-6. Run `python scripts/sync_results_registry.py` when registry JSON changed.
-7. Run `python scripts/generate_md_inventory.py`.
-8. Review `docs/generated/md_staleness_report.md` and `docs/generated/task_surface_matrix.md`.
-9. Run `python scripts/lint_harness_consistency.py`.
-10. Refresh local bundle pointers only if they still add local convenience.
+4. If a bridge task page becomes historical, move it to `docs/archive/tasks/`
+   instead of leaving it under `docs/bridge/tasks/`.
+5. Refresh `docs/generated/harness_deprecations.md` when the deprecation set changes.
+6. Update `results_meta/` if run meaning changed.
+7. Run `python scripts/sync_results_registry.py` when registry JSON changed.
+8. Run `python scripts/generate_md_inventory.py`.
+9. Review `docs/generated/md_staleness_report.md` and `docs/generated/task_surface_matrix.md`.
+10. Run `python scripts/lint_harness_consistency.py`.
+11. Refresh local bundle pointers only if they still add local convenience.
 
 ## Required Metadata For Deprecated / Historical Files
 
@@ -39,6 +41,37 @@ At the top of the file, expose:
 - `last_reviewed`
 - `notes`
 
+## Metadata Convention For Control-Plane Markdown
+
+For non-trivial control-plane Markdown, prefer the same top-of-file metadata
+block across active, local-only, deprecated, historical, and generated
+surfaces:
+
+- `status`
+- `canonical_replacement`
+- `owner_surface`
+- `last_reviewed`
+- `review_interval`
+- `update_rule`
+- `notes`
+
+Recommended status values:
+
+- `active`
+- `local_only_secondary`
+- `deprecated`
+- `historical`
+- `generated`
+
+Rules:
+
+- canonical files may use `canonical_replacement: none`
+- local-only files must say they are not the committed authority surface
+- deprecated/historical files must point at the canonical live replacement when
+  one exists
+- generated files must name their regeneration command and whether hand edits
+  are allowed
+
 ## Delete vs Stub vs Archive
 
 - Delete:
@@ -47,6 +80,7 @@ At the top of the file, expose:
   - when the old path still matters for discoverability
 - Archive:
   - when the file remains historically useful but should stop living in a live-looking location
+  - bridge task pages should archive into `docs/archive/tasks/`
 
 ## Review-Age Policy
 

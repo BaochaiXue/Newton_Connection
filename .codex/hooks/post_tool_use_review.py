@@ -17,6 +17,11 @@ WATCH_TERMS = (
     "sync_results_registry.py",
     "generate_md_inventory.py",
     "generate_md_truth_inventory.py",
+    "docs/archive/tasks/",
+    "docs/bridge/tasks/",
+    "docs/bridge/current_status.md",
+    "docs/bridge/open_questions.md",
+    "results_meta/schema.md",
     "render_bunny_penetration_collision_board",
     "validate_experiment_artifacts.py",
     "validate_bridge_video_qc.py",
@@ -55,6 +60,7 @@ def main() -> int:
                 " If this command renamed or deprecated Markdown/control-plane surfaces, refresh docs/generated/md_inventory.*, "
                 "docs/generated/md_staleness_report.md, docs/generated/task_surface_matrix.md, "
                 "update docs/generated/harness_deprecations.md, and rerun scripts/lint_harness_consistency.py. "
+                " Historical bridge task pages should move to docs/archive/tasks/, not remain in docs/bridge/tasks/. "
                 "If you touched tracked local-only pointers under results/ or subtree status stubs, keep them explicitly local-only "
                 "and aligned with results_meta before you move on."
             ),

@@ -1,3 +1,11 @@
+> status: active
+> canonical_replacement: none
+> owner_surface: `robot_deformable_demo`
+> last_reviewed: `2026-04-01`
+> review_interval: `21d`
+> update_rule: `Update when the defendable robot-deformable claim, promoted bundle, or acceptance contract changes.`
+> notes: Active canonical task page for the native Franka plus deformable baseline.
+
 # Task: Robot + Deformable Demo
 
 ## Question
