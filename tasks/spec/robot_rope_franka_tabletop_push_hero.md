@@ -40,4 +40,4 @@ PhysTwin-loaded rope across a native Newton tabletop.
 
 ## Accepted Run
 
-- `Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_081639_fixeddt_c08_gatepass/`
+- `Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_093102_fixeddt_c10_contactfix_cam/`

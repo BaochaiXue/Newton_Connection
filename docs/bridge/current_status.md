@@ -25,7 +25,7 @@ Detailed result meaning belongs in:
 - `slide_deck_overhaul`
   - keep the 2026-04-01 meeting deck hypothesis-driven and evidence-first
 - `rope_perf_apples_to_apples`
-  - maintain the same-case rope replay benchmark as the committed performance reference
+  - maintain the same-case rope replay benchmark as the committed performance reference, now with an explicit real-viewer E1 row
 - `self_collision_transfer`
   - separate demo-ready progress from blocked strict parity
 - `robot_rope_franka_tabletop_push_hero`
@@ -59,7 +59,7 @@ Detailed result meaning belongs in:
 - `rope_perf_apples_to_apples`
   - task status: `tasks/status/rope_perf_apples_to_apples.md`
   - committed authority: `results_meta/tasks/rope_perf_apples_to_apples.json`
-  - current meaning: same-case no-render rope replay benchmark; Newton A1 remains slower than PhysTwin B0 on the committed baseline
+  - current meaning: same-case rope replay benchmark with both visible-viewer E1 and no-render A0/A1/B0 rows; Newton A1 remains slower than PhysTwin B0 on the committed baseline
 
 ## Active Workstreams
 

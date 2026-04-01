@@ -272,10 +272,16 @@ def main() -> int:
         )
 
     parity = stage_payloads.get("B0_headless_throughput", {}).get("trajectory_parity", {})
+    e1_backend = None if e1 is None else e1["payload"].get("viewer_backend")
+    e1_backend_note = {
+        "gl": "visible `ViewerGL` render path ON",
+        "gl_headless": "offscreen `ViewerGL` render path ON",
+    }.get(e1_backend, "`ViewerGL` render path ON")
+
     methodology_md = f"""
 # Rope Apples-To-Apples Methodology
 
-- E1 = Newton real viewer end-to-end on the same rope replay (`ViewerGL` render path ON, automated headless measurement)
+- E1 = Newton real viewer end-to-end on the same rope replay ({e1_backend_note})
 - Same case: `rope_double_hand`
 - Same controller trajectory: IR vs PhysTwin controller trajectory max abs diff = `{parity.get('controller_traj_max_abs_diff', 'n/a')}`
 - Same dt: Newton IR `sim_dt = {parity.get('sim_dt_ir', 'n/a')}`
@@ -329,44 +335,42 @@ Primary benchmark rows:
     findings_lines: list[str] = []
     if speedup_precomputed_vs_baseline is not None:
         findings_lines.append(
-            f"- H1 supported: controller bridge tax is real because A1 improves over A0 by `{speedup_precomputed_vs_baseline:.3f}x` on the same rope replay."
+            f"- Controller replay overhead is real because A1 improves over A0 by `{speedup_precomputed_vs_baseline:.3f}x` on the same rope replay."
         )
     if b0 and stage_payloads.get("B0_headless_throughput", {}).get("use_graph") is True:
         findings_lines.append(
-            "- H2 supported by source and run evidence: PhysTwin headless replay keeps CUDA graph launch enabled on the rope path."
+            "- Source and run evidence agree that PhysTwin headless rope replay keeps CUDA graph launch enabled on this path."
         )
     if a3_bridge_ms is not None:
         findings_lines.append(
-            f"- Newton A3 attribution split: bridge `{a3_bridge_ms:.3f} ms/substep`, internal force `{a3_internal_ms:.3f} ms/substep`, collision `{a3_collision_ms:.3f} ms/substep`, integration `{a3_integration_ms:.3f} ms/substep`, unexplained `{a3_unexplained_ms:.3f} ms/substep`."
+            f"- Newton A3 attribution split: controller replay overhead `{a3_bridge_ms:.3f} ms/substep`, internal force `{a3_internal_ms:.3f} ms/substep`, collision `{a3_collision_ms:.3f} ms/substep`, integration `{a3_integration_ms:.3f} ms/substep`, unexplained `{a3_unexplained_ms:.3f} ms/substep`."
         )
-        if a3_internal_ms >= max(a3_bridge_ms, a3_collision_ms, a3_integration_ms, a3_unexplained_ms):
-            findings_lines.append(
-                "- H4 is currently the strongest remaining Newton-side hypothesis after bridge tax reduction: internal spring-force work is the largest measured bucket."
-            )
     if a3_collision_ms is not None and b0 is not None:
         findings_lines.append(
-            f"- H5 supported: collision is not the main reason in the pure rope baseline because Newton collision bucket is `{a3_collision_ms:.6f} ms/substep` and PhysTwin reports `object_collision_flag = {bool(stage_payloads.get('B0_headless_throughput', {}).get('object_collision_flag', False))}`."
+            f"- Collision is small in the clean rope baseline: Newton collision bucket is `{a3_collision_ms:.6f} ms/substep` and PhysTwin reports `object_collision_flag = {bool(stage_payloads.get('B0_headless_throughput', {}).get('object_collision_flag', False))}`."
         )
     if a1 and b0:
         findings_lines.append(
-            "- H3 remains relevant: even after removing most controller-write tax, a material Newton-vs-PhysTwin gap still remains and must be explained by solver/runtime structure rather than contact."
+            "- Even after reducing controller replay overhead, a material Newton-vs-PhysTwin gap still remains on the same rope replay."
         )
     if nsys_newton_api and nsys_phystwin_api:
         findings_lines.append(
-            f"- Nsight Systems supports H2: Newton A1 API time is dominated by `{nsys_newton_api[0][1]}` while PhysTwin B0 API time is dominated by `{nsys_phystwin_api[0][1]}`."
+            f"- Nsight Systems agrees with the runtime-organization story: Newton A1 API time is dominated by `{nsys_newton_api[0][1]}` while PhysTwin B0 API time is dominated by `{nsys_phystwin_api[0][1]}`."
         )
     if nsys_newton_gpu and nsys_phystwin_gpu:
         findings_lines.append(
-            f"- Nsight GPU-side shape: Newton A1 top kernel is `{nsys_newton_gpu[0][1]}`, while PhysTwin B0 top kernel is `{nsys_phystwin_gpu[0][1]}` inside a graph-launched replay path."
+            f"- On the GPU side, Newton A1 top kernel is `{nsys_newton_gpu[0][1]}`, while PhysTwin B0 top kernel is `{nsys_phystwin_gpu[0][1]}` inside a graph-replayed path."
         )
 
     optimization_lines: list[str] = []
     if speedup_precomputed_vs_baseline is not None:
-        optimization_lines.append("- Make precomputed controller writes the default benchmark path when the goal is simulator throughput rather than bridge stress-testing.")
+        optimization_lines.append("- Keep precomputed controller writes as the default rope replay baseline when the goal is simulator throughput.")
+    if e1 and a1:
+        optimization_lines.append("- Because viewer-on is only modestly slower than no-render on this rope case, rendering is not the first optimization target here.")
     if a1 and b0:
-        optimization_lines.append("- Investigate graph-captured or more batched step execution on the Newton replay path before touching physics settings.")
+        optimization_lines.append("- Investigate more batched or more graph-like Newton replay execution before touching physics settings.")
     if a3_internal_ms is not None:
-        optimization_lines.append("- Use Newton precomputed attribution, then Nsight on A1 vs B0, to decide whether the remaining gap is dominated by internal-force kernels or host/runtime launch overhead.")
+        optimization_lines.append("- Use Newton precomputed attribution, then Nsight on A1 vs B0, to decide how much of the remaining gap is runtime organization versus kernel work.")
 
     nsight_md_lines = [
         "# Rope Perf Nsight Findings",

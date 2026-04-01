@@ -34,11 +34,12 @@
 
 - Rebuilt the TODO 2 profiling section in
   `formal_slide/meeting_2026_04_01/` around a stricter evidence hierarchy:
-  - fair benchmark
-  - core physical-intent evidence
+  - why this matters to the real viewer
+  - controlled rope benchmark definition
   - throughput result
-  - bridge tax vs residual gap
-  - launch-structure interpretation
+  - controller replay overhead vs residual gap
+  - runtime-organization interpretation
+  - optimization implication
 - Downgraded wrapper / benchmark-entry references to methodology notes only.
 - Upgraded slide citations to Newton core + PhysTwin core:
   - `Newton/newton/newton/_src/solvers/semi_implicit/kernels_particle.py`
@@ -47,21 +48,24 @@
 - Added a file-backed audit for the rebuild:
   - `formal_slide/meeting_2026_04_01/todo2_rope_profiling_rebuild_audit_20260401.md`
 
-## 2026-04-01 Persuasion Tightening
+## 2026-04-01 Real-Viewer Relevance Update
 
-- Tightened the rebuilt profiling section one more time so the claim
-  “residual gap looks more like execution / launch structure than collision”
-  is supported by an explicit three-layer chain:
-  - clean rope experiment excludes rendering and shows the gap
-  - synchronized attribution bounds bridge tax and keeps collision tiny
-  - Newton core step organization + PhysTwin core graph replay + Nsight API
-    summary jointly support the launch-structure interpretation
+- Added a new E1 benchmark row:
+  - `results/rope_perf_apples_to_apples/newton/E1_viewer_end_to_end/`
+- E1 now uses the visible `ViewerGL` render path on the same rope replay:
+  - `viewer FPS ≈ 37.85`
+  - `RTF ≈ 1.26x`
+- The rebuilt deck now makes the practical point explicit:
+  - on this rope case, render ON is only about `1.11x` slower than the same
+    replay with render OFF
+  - therefore the profiling story is valuable to the viewer because it shows
+    render is not the first optimization target on this clean rope baseline
 
 ## Next Step
 
 - Follow-up optimization work should start from:
   - precomputed controller writes as the default replay baseline
-  - graph-captured / batched Newton replay investigation
+  - more batched or more graph-like Newton replay investigation
   - weak-contact profiling as a separate workstream
 
 ## Blocking Issues

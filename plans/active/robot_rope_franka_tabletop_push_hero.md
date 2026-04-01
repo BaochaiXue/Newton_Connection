@@ -21,7 +21,7 @@ Status:
 
 - Milestones 1-3 completed on `2026-04-01`
 - accepted run:
-  - `Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_081639_fixeddt_c08_gatepass/`
+  - `Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_093102_fixeddt_c10_contactfix_cam/`
 
 ## Validation
 

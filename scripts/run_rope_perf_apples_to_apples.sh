@@ -65,7 +65,6 @@ VIEWER_COMMON=(
   --sim-dt 5e-05
   --segment-substeps 667
   --steps-per-render 667
-  --headless
 )
 
 NEWTON_COMMON=(
@@ -107,6 +106,7 @@ run_stage \
   --runs 5 \
   --warmup-runs 1 \
   --controller-write-mode precomputed \
+  --no-headless \
   --out-dir "${OUT_ROOT}/newton/E1_viewer_end_to_end" \
   --prefix E1_viewer_end_to_end \
   --json-out "${OUT_ROOT}/newton/E1_viewer_end_to_end/summary.json" \

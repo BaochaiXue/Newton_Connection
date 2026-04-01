@@ -6,155 +6,146 @@ Audit target:
 
 - `formal_slide/meeting_2026_04_01/build_meeting_20260401.py`
 - `formal_slide/meeting_2026_04_01/transcript.md`
+- `results/rope_perf_apples_to_apples/`
 
 Section under review:
 
 - TODO 2 / rope-case profiling section only
 
-## What Was Already Good
+## 1. Why The Old Profiling Section Did Not Explain Its Value To The Real Viewer
 
-- The high-level research order was already mostly correct:
-  - fair benchmark
-  - source evidence
-  - throughput result
-  - gap interpretation
-  - optimization implication
-- The section was already rope-case only at the conclusion level.
-- The section already separated throughput evidence from attribution evidence.
+The old section jumped too quickly into the no-render benchmark without first
+answering the practical audience question:
 
-## Main Problems Found Before Rebuild
+- what part of the current rope viewer is actually slow?
+- is rendering the main reason?
+- why should the audience care about a no-render benchmark?
 
-1. Slide 8 did not visually establish fairness strongly enough.
-   - It used a GIF plus bullets.
-   - It did not use a compact fairness table, so the controls were harder to scan in 15 seconds.
+That made the whole section feel detached from the visible real viewer.
 
-2. Slide 9 had asymmetric physical-intent evidence.
-   - Newton side used a generic particle integration kernel.
-   - PhysTwin side used a more rope-specific spring/dashpot force block.
-   - This made the Newton proof look weaker than the PhysTwin proof.
+## 2. Which Pages Made The Experiment Hard To Understand
 
-3. Slide 11 mixed a valid core claim with a wrapper-dependent call-chain explanation.
-   - The core code excerpt itself was acceptable.
-   - But the transcript leaned on our rope viewer entry to argue that this was the relevant Newton path.
-   - That use is acceptable only as methodology context, not as the main proof of core behavior.
+- Old Slide 8:
+  - it locked fairness correctly, but it did not first explain why this
+    benchmark mattered to the viewer
+- Old Slide 9:
+  - it cited physical-intent code, but it did not define E1/A0/A1/B0 in plain
+    language
+- Old Slides 10-14:
+  - they used shorthand-heavy reasoning and assumed the audience already knew
+    what A0, A1, B0, bridge tax, and launch structure meant
 
-4. Slide 12 was too conclusion-shaped and not evidence-shaped enough.
-   - It used body bullets instead of a compact evidence table.
-   - It did not explicitly separate bridge tax from the residual post-bridge cost on the slide face.
+## 3. Which Terms Were Internal Shorthand And Had To Be Removed From Slides
 
-5. Unused profiling chart helpers still existed in the build script.
-   - They were not the current slide content.
-   - But they still violated the new rule against plots/charts/self-drawn figures in this section.
+These were identified as meeting-hostile shorthand:
 
-6. The transcript was detailed, but some claims were still stronger than the source evidence.
-   - “runtime structure / launch structure” was directionally supported.
-   - But the old wording could still be read as stronger causality than the code alone justified.
+- `bridge tax`
+- `tax reduced`
+- `launch-dominated`
+- `graph-launch-dominated`
+- `execution structure, not collision`
 
-## Weak Citations / Evidence Mismatch
+They were replaced on slides by plain-language phrases:
 
-### Wrapper-leaning evidence
+- `controller replay overhead`
+- `render ON vs render OFF`
+- `many separated launches remain on the Newton side`
+- `PhysTwin uses graph-based replay`
+- `within this controlled rope benchmark, the residual gap is more consistent with runtime organization`
 
-- The profiling section still mentioned the rope viewer entry path to connect the benchmark to `SolverSemiImplicit`.
-- That is valid as a methodology note only.
-- It is not strong enough as the main proof of Newton core execution structure.
+## 4. Which Transcript Sections Did Not Sound Like Normal Speech
 
-### Asymmetric proof strength
+The previous transcript failures were mostly in Slides 10-14:
 
-- Old Newton P1 evidence:
-  - generic semi-implicit particle update
-- Old PhysTwin P1 evidence:
-  - rope-specific spring + dashpot + force-to-velocity update
+- it read like expanded internal notes
+- it stacked shorthand terms instead of spoken explanations
+- some pages skipped the key sentence:
+  - what question this page answers
+  - what evidence is being shown
+  - what conclusion the audience should carry away
 
-This mismatch made the “same physics intent” claim feel stronger on the PhysTwin side than on the Newton side.
+The rebuild requirement was therefore:
 
-### Over-strong claim boundary
+- each page must explain question -> evidence -> conclusion -> viewer value ->
+  limitation in full sentences
 
-- “The slow path is runtime structure, not rope physics” was too strong as a slide title for the available evidence.
-- A more honest boundary is:
-  - the residual gap looks more consistent with execution / launch structure than collision
-  - bridge tax is real, but not the whole gap
+## 5. Which Earlier Conclusions Were Stronger Than The Evidence
 
-## Which Slides Needed GIF Support
+The following old claims were too aggressive for the evidence level:
 
-- Benchmark method slide: yes
-- Throughput result slide: yes
-- Bottleneck / bridge-tax slide: yes
-- Source-only code slides: GIF optional
+- any wording that implied launch structure was already fully proven
+- any wording that made collision globally irrelevant
+- any wording that implied full physics parity
 
-## Which Slides Had Too Much Text
+The corrected claim boundary is:
 
-- Slide 8: too much fairness information in bullets rather than a table
-- Slide 11: too much explanation burden in transcript because the slide itself did not expose the bridge-vs-residual split compactly
+- in this controlled rope replay benchmark,
+- after replay-overhead reduction,
+- the residual gap is more consistent with runtime organization than with
+  replay overhead alone
 
-## Which Transcript Sections Failed The Intended 1:50 Standard
+This is deliberately weaker and more honest than a universal causality claim.
 
-Not catastrophic, but two improvements were needed:
+## 6. Which New Experiments Were Needed
 
-- Newton physical-intent transcript needed a more rope-specific core explanation instead of relying on a generic integrator kernel
-- Runtime-structure transcript needed a clearer What / Why / Risk separation so the launch-structure claim stayed honest
+The earlier benchmark matrix already covered:
 
-## Stronger Evidence Sources Chosen For The Rebuild
+- Newton A0/A1 throughput
+- Newton A2/A3 attribution
+- PhysTwin B0/B1 headless replay
+- Nsight A1/B0
 
-### Newton core files
+But it still lacked a viewer-facing row.
 
-- `Newton/newton/newton/_src/solvers/semi_implicit/kernels_particle.py`
-  - rope spring-damper force assembly
-- `Newton/newton/newton/_src/solvers/semi_implicit/solver_semi_implicit.py`
-  - decomposed semi-implicit multi-stage step organization
+So the rebuild added:
 
-### PhysTwin core files
+- E1 = Newton real viewer end-to-end on the same rope replay, render ON,
+  visible `ViewerGL`
 
-- `PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py`
-  - rope spring + dashpot force update
-  - force-to-velocity update
-  - graph capture / `forward_graph`
+Why E1 was necessary:
 
-### Wrapper/harness evidence retained only as methodology
+- without it, the audience could not tell whether the no-render benchmark was
+  diagnosing a real viewer bottleneck or just an abstract simulator benchmark
 
-- `Newton/phystwin_bridge/demos/demo_rope_control_realtime_viewer.py`
-  - used only to describe the fairness setup and the benchmark entry path
-  - no longer used as the main proof of Newton core runtime behavior
+## Updated Evidence Chain
 
-## Slide-by-Slide Rebuild Plan
+The rebuilt section now uses this order:
 
-1. Slide 8
-   - replace bullets with a compact fairness table
-   - keep one rope GIF
-   - make it explicitly a method slide
+1. real viewer relevance
+2. controlled rope benchmark definition
+3. main numbers
+4. what A0 -> A1 isolates
+5. what the residual gap suggests and does not prove
+6. what to optimize next for the real viewer
 
-2. Slide 9
-   - replace the generic Newton integrator excerpt with a rope-specific Newton spring kernel excerpt
-   - keep PhysTwin rope spring/dashpot excerpt
-   - lower claim strength to “comparable spring-damper rope update intent”
+## Slide-By-Slide Fix Plan Implemented
 
-3. Slide 10
-   - keep it as the main throughput table slide
-   - keep one rope GIF
-   - move metadata to note/transcript
+1. P1
+   - add E1 visible-viewer measurement
+   - show render ON vs render OFF relation
+   - explain why no-render replay is still relevant to the viewer
+2. P2
+   - define E1 / A0 / A1 / B0 in plain language
+   - make same-case fairness explicit
+3. P3
+   - keep only the load-bearing throughput table
+   - separate practical viewer row from simulator-only rows
+4. P4
+   - define controller replay overhead directly
+   - explain A0 -> A1 without shorthand
+5. P5
+   - use Newton core staged-step code plus PhysTwin core graph-capture code
+   - pair them with honest Nsight wording
+6. P6
+   - connect the whole profiling chain back to the next real-viewer
+     optimization step
 
-4. Slide 11
-   - rebuild as a compact bridge-tax-vs-residual evidence table
-   - keep one rope GIF
-   - avoid overclaiming collision causality
+## Expected Outcome
 
-5. Slide 12
-   - keep it as the runtime-interpretation / optimization-implication slide
-   - main evidence becomes:
-     - Newton core multi-stage step organization
-     - PhysTwin core graph capture
-     - compact Nsight summary in the slide note
-   - conclusion lowered to:
-     - residual gap looks more like launch structure than collision
+After this rebuild, a normal meeting audience should be able to answer in
+2-3 minutes:
 
-## Rebuild Outcome Target
-
-After rebuild, the profiling section should satisfy:
-
-- rope-case only
-- fair benchmark first
-- gap second
-- bridge tax vs residual third
-- launch-structure interpretation last
-- core claims supported by Newton core + PhysTwin core
-- wrapper only as methodology
-- no plots/charts/self-drawn diagrams
+- what experiment was run
+- why it matters to the real viewer
+- how far Newton is from PhysTwin on the same rope replay
+- what that gap suggests, and what it still does not prove

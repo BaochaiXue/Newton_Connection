@@ -23,7 +23,7 @@
   - `results_meta/INDEX.md`
   - `results_meta/LATEST.md`
 - Current committed run id:
-  - `20260401_081639_fixeddt_c08_gatepass`
+  - `20260401_093102_fixeddt_c10_contactfix_cam`
 
 ## Local Navigation Surfaces
 
@@ -41,7 +41,7 @@
 ## Latest Findings
 
 - Accepted run:
-  - `Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_081639_fixeddt_c08_gatepass/`
+  - `Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_093102_fixeddt_c10_contactfix_cam/`
 - Local convenience mirror:
   - `Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/`
 - Winning implementation details:
@@ -57,17 +57,15 @@
   - `duration_s = 6.2`
   - `contact_started = true`
   - `first_contact_phase = push`
-  - `first_contact_time_s = 2.56795`
-  - `contact_duration_s = 2.6013`
-  - `min_clearance_min_m = -0.0113213938`
+  - `first_contact_time_s = 2.2011`
+  - `contact_duration_s = 2.9348`
+  - `min_clearance_min_m = -0.0103589874`
   - `preroll_settle_pass = true`
   - strict validator `overall_pass = true`
   - canonical rerun wrapper:
     - `scripts/run_robot_rope_franka_tabletop_hero.sh`
-  - note on current drift:
-    - the accepted run command history still contains a duplicated `--tabletop-control-mode`
-      flag, but the canonical current wrapper is `scripts/run_robot_rope_franka_tabletop_hero.sh`
-      and the promoted top-level `summary.json` is the presentation summary
+  - contact-causality improvement over the older promoted cut:
+    - visible contact starts earlier and the pre-contact rope drift is reduced
 
 ## Current Blocker
 

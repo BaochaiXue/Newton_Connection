@@ -39,7 +39,7 @@ drop/release baseline:
   - `results/native_robot_rope_drop_release/`
 - This task is the follow-on hero-demo workstream for a real tabletop push.
 - Accepted run:
-  - `Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_081639_fixeddt_c08_gatepass`
+  - `Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_093102_fixeddt_c10_contactfix_cam`
 - Local convenience mirror:
   - `Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/`
 
@@ -48,7 +48,9 @@ Accepted implementation note:
 - the winning run keeps the robot native to Newton and the rope on the
   PhysTwin -> Newton bridge, but uses a tabletop-only native joint-space
   waypoint controller because the earlier tabletop IK path did not reliably
-  hit the contact line under the fixed timestep
+  hit the contact line under the fixed timestep. The current promoted contact-fix
+  update starts visible contact earlier, reducing the impression that the rope
+  moves before the finger arrives.
 
 ## Code Entry Points
 
