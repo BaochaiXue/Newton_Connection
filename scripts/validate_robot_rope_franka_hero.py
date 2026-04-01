@@ -88,7 +88,12 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--black-mean-threshold", type=float, default=18.0)
     p.add_argument("--black-dark-ratio-threshold", type=float, default=0.97)
     p.add_argument("--frame-dark-threshold", type=int, default=12)
-    p.add_argument("--motion-threshold", type=float, default=0.75)
+    p.add_argument(
+        "--motion-threshold",
+        type=float,
+        default=0.25,
+        help="Minimum mean inter-frame difference for readable motion. Tuned to stay conservative while not rejecting slow quasi-static tabletop pushes.",
+    )
     p.add_argument("--repeat-frame-threshold", type=float, default=0.20)
     p.add_argument("--contact-sheet-cols", type=int, default=4)
     return p.parse_args()
