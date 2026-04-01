@@ -55,6 +55,8 @@ MANUAL_REVIEW_JSON="${RUN_DIR}/manual_review.json"
 
 COMMON_ARGS=(
   --task tabletop_push_hero
+  --sim-dt 5.0e-5
+  --substeps 667
   --viewer-headless
   --no-make-gif
   --screen-width 1280

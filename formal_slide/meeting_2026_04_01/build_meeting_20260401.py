@@ -104,10 +104,13 @@ RECALL_THIN_EAR_5X_GIF = PREV_GIF_DIR / "thin_ear_ccd5x_v3.gif"
 RECALL_THIN_EAR_10X_GIF = PREV_GIF_DIR / "thin_ear_ccd10x_v3.gif"
 
 VIEWER_CODE_PATH = ROOT / "Newton" / "phystwin_bridge" / "demos" / "demo_rope_control_realtime_viewer.py"
+NEWTON_CORE_BENCHMARK_PATH = ROOT / "Newton" / "newton" / "asv" / "benchmarks" / "benchmark_mujoco.py"
 PHYSTWIN_SPRING_WARP_CODE_PATH = ROOT / "PhysTwin" / "qqtt" / "model" / "diff_simulator" / "spring_mass_warp.py"
 IMAGE_DIR = MEETING_DIR / "images"
 CODE_REPLAY_SEMANTICS_PNG = IMAGE_DIR / "code_replay_semantics.png"
 CODE_GRANULAR_PROFILE_PNG = IMAGE_DIR / "code_granular_profile.png"
+CODE_SELFCOLLISION_OBJECT_PNG = IMAGE_DIR / "code_selfcollision_object.png"
+CODE_SELFCOLLISION_GROUND_PNG = IMAGE_DIR / "code_selfcollision_ground.png"
 PERF_ATTRIBUTION_PNG = IMAGE_DIR / "perf_attribution_breakdown.png"
 PERF_NSIGHT_PNG = IMAGE_DIR / "perf_nsight_breakdown.png"
 FORCE_DIAG_CODE_PNG = IMAGE_DIR / "code_force_diag_capture.png"
@@ -226,6 +229,18 @@ ROBOT_DROP_BASELINE_OFF_MP4 = ROBOT_DROP_OFF_ROOT / "final_presentation.mp4"
 ROBOT_DROP_BASELINE_ON_MP4 = ROBOT_DROP_ON_ROOT / "final_presentation.mp4"
 ROBOT_DROP_BASELINE_OFF_GIF = DECK_GIF_DIR / "robot_drop_release_drag_off.gif"
 ROBOT_DROP_BASELINE_ON_GIF = DECK_GIF_DIR / "robot_drop_release_drag_on.gif"
+SELF_MATRIX_OFF_MP4 = SELF_COLLISION_CAMPAIGN_DIR / "matrix" / "off" / "self_off" / "cloth_box_decision_off_m10.mp4"
+SELF_MATRIX_NATIVE_MP4 = SELF_COLLISION_CAMPAIGN_DIR / "matrix" / "native" / "self_native" / "cloth_box_decision_native_m10.mp4"
+SELF_MATRIX_CUSTOM_H2_MP4 = SELF_COLLISION_CAMPAIGN_DIR / "matrix" / "custom_h2" / "self_custom" / "cloth_box_decision_custom_h2_m10.mp4"
+SELF_MATRIX_PHYSTWIN_MP4 = SELF_COLLISION_CAMPAIGN_DIR / "matrix" / "phystwin" / "self_phystwin" / "cloth_box_decision_phystwin_m10.mp4"
+SELF_MATRIX_OFF_GIF = DECK_GIF_DIR / "self_matrix_off.gif"
+SELF_MATRIX_NATIVE_GIF = DECK_GIF_DIR / "self_matrix_native.gif"
+SELF_MATRIX_CUSTOM_H2_GIF = DECK_GIF_DIR / "self_matrix_custom_h2.gif"
+SELF_MATRIX_PHYSTWIN_GIF = DECK_GIF_DIR / "self_matrix_phystwin.gif"
+SELF_HERO_MP4 = SELF_COLLISION_CAMPAIGN_DIR / "selected" / "self_collision_on_cloth_box_phystwin.mp4"
+SELF_PARITY_SUPPORT_MP4 = SELF_COLLISION_CAMPAIGN_DIR / "selected" / "parity_support_demo.mp4"
+SELF_HERO_GIF = DECK_GIF_DIR / "self_collision_hero.gif"
+SELF_PARITY_SUPPORT_GIF = DECK_GIF_DIR / "self_collision_parity_support.gif"
 
 RECALL_DIRECT_GIF_SPECS = [
     (RECALL_CLOTH_GIF_SRC, RECALL_CLOTH_GIF, 800, 6, 80),
@@ -336,7 +351,7 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "grid",
-        "title": "Recall 1: Earlier Bridge Baseline Already Worked",
+        "title": "Recall R1: The Bridge Baseline Was Already Established",
         "common_settings": "These four PASS cases were already established before this week's new discussion.",
         "items": [
             ("Cloth baseline already worked", RECALL_CLOTH_GIF),
@@ -352,7 +367,7 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "grid",
-        "title": "Recall 2: Earlier Bridge Baseline Also Matched The Reference Motion",
+        "title": "Recall R2: The Baseline Already Matched The Reference Motion",
         "common_settings": "Visual recall only: last week already had direct reference-vs-Newton motion overlays for the baseline bridge cases.",
         "items": [
             ("Cloth overlay recall", RECALL_CLOTH_OVERLAY_GIF),
@@ -368,7 +383,7 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "twocol",
-        "title": "Recall 3: Bunny+Rope Already Showed Deformable-Rigid Interaction",
+        "title": "Recall R3: Deformable-Rigid Interaction Already Existed",
         "common_settings": "Last week already established that deformable-rigid interaction exists; the later question was why cloth still penetrates bunny.",
         "left_label": "Rope + bunny recall\nbunny mass = 5 kg",
         "left_path": RECALL_BUNNY_M5_GIF,
@@ -381,7 +396,7 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "twocol",
-        "title": "Recall 4: Weight Changes Already Preserved Interaction",
+        "title": "Recall R4: Weight Change Did Not Remove Interaction",
         "common_settings": "Visual recall: last week already showed that changing deformable total weight did not remove deformable-rigid interaction itself.",
         "left_label": "Rope total mass = 1 kg",
         "left_path": RECALL_ROPE_WEIGHT_1KG_GIF,
@@ -395,7 +410,7 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "twocol",
-        "title": "Recall 5: Bunny Was Harder Than Thick Box",
+        "title": "Recall R5: Bunny Was Harder Than Thick Box",
         "common_settings": "This was the key visual diagnosis from last week: the rigid support problem was geometry-dependent, not a missing bridge baseline.",
         "left_label": "Same cloth + bunny support",
         "left_path": RECALL_BUNNY_SUPPORT_GIF,
@@ -409,7 +424,7 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "twocol",
-        "title": "Recall 6: Radius Helped, But Thin Geometry Still Survived",
+        "title": "Recall R6: Radius Helped, But Thin Geometry Still Survived",
         "common_settings": "Last week already showed the hardest visual counterexample: larger radius helped, but thin geometry still kept nonzero penetration.",
         "left_label": "Thin-ear close-up\n5x radius",
         "left_path": RECALL_THIN_EAR_5X_GIF,
@@ -447,17 +462,17 @@ RECALL_SLIDES: list[dict] = [
     {
         "kind": "code_twocol_large",
         "title": "Source Proof P1: Same Replay, Different Execution Style",
-        "note": "Real source only. Read the highlighted lines first: Newton exposes replay/profile knobs; PhysTwin captures and replays a graph.",
-        "left_label": "Newton replay knobs: --profile-only, --profile-mode, --controller-write-mode.",
+        "note": "Real upstream source only. Newton core shows the optional CUDA-graph path; PhysTwin rope source captures and replays a forward graph.",
+        "left_label": "Newton core benchmark: optional CUDA graph path, otherwise a substep loop + solver.step.",
         "left_path": CODE_REPLAY_SEMANTICS_PNG,
-        "right_label": "PhysTwin graph path: use_graph, ScopedCapture, forward_graph.",
+        "right_label": "PhysTwin rope source: use_graph, ScopedCapture, graph, forward_graph.",
         "right_path": CODE_GRANULAR_PROFILE_PNG,
         "transcript": [
-            "这一页是 source proof，不是结果页，所以 slide 上只放两段短 code excerpt 和一句短分析。",
-            "左边这段 Newton source code 现在只保留三件事：`--profile-only`、`--profile-mode`、`--controller-write-mode`。这已经足够说明 A0 到 A3 不是临时 hack，而是这个 benchmark interface 原生支持的路径。",
-            "右边这段 PhysTwin source code 现在只保留 `cfg.use_graph`、`ScopedCapture`、`self.graph` 和 `self.forward_graph`。这已经足够说明 B0 是 graph-captured replay path，而不是 GUI loop。",
-            "所以这页真正的分析应该放在 transcript 里：两边不是在比不同 task，而是在比同一个 replay 下两种 execution style。",
-            "我把大部分低价值细节从 slide 移掉了，比如更长的 surrounding code、无关 helper、以及更多行的 control flow。",
+            "这一页我按你的反馈改成了真正有意义的 upstream source proof，不再引用我们自己写的 wrapper CLI。",
+            "左边现在引用的是 Newton core 里的 `asv/benchmarks/benchmark_mujoco.py`。它同时保留了三件关键事情：`if self.use_cuda_graph`、`with wp.ScopedCapture()`、以及 fallback 的 `for sim_substeps -> solver.step -> self.simulate()` 路径。",
+            "这段代码的作用不是说 rope benchmark 就是跑这个 benchmark 文件，而是说明 Newton upstream 自己就已经有一套 graph-capture execution idiom；如果不用这条 idiom，默认结构仍然像 repeated substep loop。",
+            "右边保留的是 PhysTwin `spring_mass_warp.py` 里的 upstream source code，而且只保留 `cfg.use_graph`、`ScopedCapture`、`self.graph`、`self.forward_graph` 这些最能说明 execution style 的行。",
+            "所以这页真正要证明的不是我们的 wrapper 参数，而是 upstream code 层面上，两边对 graph replay 的组织方式本来就不同；这才是后面 Nsight interpretation 的源码背景。",
         ],
     },
     {
@@ -480,12 +495,15 @@ RECALL_SLIDES: list[dict] = [
         ],
     },
     {
-        "kind": "image",
-        "title": "Result P2: Bridge Tax Is Only Part Of The Gap",
-        "path": PERF_ATTRIBUTION_PNG,
-        "note": "A0→A1 proves bridge tax. A3/B1 still show the clean rope gap is not collision-dominated.",
+        "kind": "body",
+        "title": "Conclusion P2: Bridge Tax Exists, But Collision Is Still Tiny",
+        "bullets": [
+            "**A0 -> A1:** `1.87x` faster, so controller bridge tax is real.",
+            "**A3:** collision is only about `0.004 ms/substep`; bridge and residual overhead are much larger.",
+            "**B1:** PhysTwin frame cost is still dominated by simulator launch, not controller/reset.",
+        ],
         "transcript": [
-            "这一页现在不再是一堵字墙，而是改成一个 attribution chart。",
+            "这一页不再用数据图，而是只保留 progress statement。",
             f"首先 H1 还是一样硬：A0 到 A1 是 `{A0_ROW.get('ms_per_substep_mean', 0.0) / max(A1_ROW.get('ms_per_substep_mean', 1.0e-12), 1.0e-12):.3f}x` 的提升，所以 controller bridge tax 是真实存在的。",
             f"但 bridge tax 不是全部。Newton A3 的 precomputed attribution 里，bridge 是 `{A3_BRIDGE_MS:.3f} ms/substep`，internal force `{A3_INTERNAL_MS:.3f}`，integration `{A3_INTEGRATION_MS:.3f}`，collision 只有 `{A3_COLLISION_MS:.3f}`，还剩 `{A3_UNEXPLAINED_MS:.3f}` 的 runtime overhead。",
             f"右边的 PhysTwin B1 frame-level attribution 则说明它的大头基本就是 simulator launch，本身大约 `{B1_SIM_LAUNCH_MS:.3f} ms/frame`；controller target `{B1_CONTROLLER_FRAME_MS:.3f}` 和 state reset `{B1_STATE_RESET_MS:.3f}` 都是小头。",
@@ -493,12 +511,15 @@ RECALL_SLIDES: list[dict] = [
         ],
     },
     {
-        "kind": "image",
-        "title": "Result P3: Nsight Supports A Launch-Structure Explanation",
-        "path": PERF_NSIGHT_PNG,
-        "note": "Newton API time is launch-dominated; PhysTwin replay is graph-launch-dominated on the same rope case.",
+        "kind": "body",
+        "title": "Conclusion P3: The Residual Gap Still Looks Like Launch Structure",
+        "bullets": [
+            "**Nsight A1:** `cuLaunchKernel 77.2%`, `cudaMemsetAsync 21.5%`.",
+            "**Nsight B0:** `cudaGraphLaunch 92.6%`, `cuCtxSynchronize 2.9%`.",
+            "**Next move:** optimize batching / graph-like replay before blaming collision.",
+        ],
         "transcript": [
-            "这一页也从纯文字改成了 chart，因为这里的 point 本质上是一个 100% share comparison。",
+            "这一页也不再用数据图，只保留最终解释。",
             "Newton A1 的 CUDA API 时间里，`cuLaunchKernel` 占到 77.2%，其余主要是 `cudaMemsetAsync` 21.5%。这说明 Newton replay 仍然像 many decoupled launches。",
             "PhysTwin B0 的 CUDA API 时间里，92.6% 是 `cudaGraphLaunch`，`cuCtxSynchronize` 只有 2.9%。所以它不是 GUI path，而是 graph-captured replay execution style。",
             "这页真正要堵住的反驳是：如果 residual gap 主要来自 collision，Nsight 不会长成现在这样；现在它长成了 launch structure 的样子。",
@@ -523,23 +544,8 @@ RECALL_SLIDES: list[dict] = [
         ],
     },
     {
-        "kind": "code_twocol",
-        "title": "Source Proof: The Diagnostic Really Splits Contact Forces And Renders A Global+Local Layout",
-        "common_settings": "Left: the trigger substep stores internal vs external force explicitly. Right: the accepted renderer keeps the global view and adds the local zoom in a separate helper pass.",
-        "left_label": "Diagnostic capture: `f_spring`, `f_internal_total`, `f_external_total` are stored separately.",
-        "left_path": FORCE_DIAG_CODE_PNG,
-        "right_label": "Render path: keep the global camera, draw 3D glyphs, then add the split zoom panel.",
-        "right_path": FORCE_LAYOUT_CODE_PNG,
-        "transcript": [
-            "这一页是新的 source proof。",
-            "左边这段 bridge code 说明 trigger substep 不是黑盒截图，而是在同一个 substep 里把 `f_spring`、`f_internal_total` 和 `f_external_total` 明确分开。这里的 external force 不是猜的，而是 particle-body contact 之后相对于 internal path 的增量。",
-            "右边这段 render code 说明 accepted 版本没有再把主画面换成一个 contact-only camera。它保留全局主相机，在 3D scene 里直接画 world-space glyph，再加右侧 zoom panel，所以 full cloth context 和 local readability 才能同时存在。",
-            "另外 accepted 版本还把 force artifact render 单独放进 fresh helper process，所以 phenomenon video 和 force video 不会再互相污染成黑片。",
-        ],
-    },
-    {
         "kind": "grid",
-        "title": "Result F1: Accepted Global Phenomenon Videos Cover The Whole Penetration Story",
+        "title": "Result F1: Global Phenomenon Videos Now Cover The Whole Penetration Process",
         "common_settings": "All four accepted cases now pass black-screen, motion, and temporal-density QA on the phenomenon video. The point of this page is WHAT happened over time.",
         "items": [
             ("Bunny baseline\nfull process", ACCEPTED_PHENO_GIF["bunny_baseline"]),
@@ -556,7 +562,7 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "grid",
-        "title": "Result F2: Accepted Force Videos Keep The Full Cloth And Still Explain The Local Contact Patch",
+        "title": "Result F2: Force Videos Now Keep The Full Cloth And The Local Patch",
         "common_settings": "All four accepted force videos now pass black-screen, motion, temporal-density, subject-visibility, and contact-readability QA. Experiment setting for the bunny mechanism workpoint: cloth total mass = 0.1 kg, rigid target mass = 0.5 kg. The point of this page is WHY it happened.",
         "items": [
             ("Bunny baseline\nforce mechanism", ACCEPTED_FORCE_GIF["bunny_baseline"]),
@@ -586,91 +592,74 @@ RECALL_SLIDES: list[dict] = [
         ],
     },
     {
-        "kind": "image",
-        "title": "Result F4: The Historical 4-Case Summary Board Still Compresses The Older Mechanism Story",
-        "note": "Historical 4-case sync-safe summary board: one representative phenomenon frame + one representative force frame per case, together with compact metrics and one-sentence takeaway.",
-        "path": ACCEPTED_BUNNY_BOARD_PNG,
-        "transcript": [
-            "这一页保留历史的 4-case summary board，作用更像一张 mechanism summary appendix。",
-            "每个 case 都只保留一张 phenomenon frame、一张 force frame、几项关键指标和一句 takeaway，所以它仍然适合快速回顾旧的四 case mechanism package。",
-            "但和上一页相比，这一页现在不再是主要视频页；真正更适合 meeting 现场播放的是新的 `2 x 2` board。",
+        "kind": "body",
+        "title": "Hypothesis S1: Native Newton Is Not Enough For The Final Self-Collision Claim",
+        "bullets": [
+            "**Claim boundary:** strict parity only covers PhysTwin-native self-collision plus implicit ground.",
+            "**Decision scene:** cloth+box is the controlled scene for video comparison, not the exactness scope itself.",
+            "**Progress:** operator exactness passed, but rollout parity is still blocked.",
         ],
-    },
-    {
-        "kind": "image",
-        "title": "Question, Claim, And Constraint: Final Self-Collision Campaign",
-        "note": "Campaign summary slide: promoted mode, no-core-change constraint, and current gate status.",
-        "path": SLIDE_QUESTION_CLAIM_PNG,
         "transcript": [
             "这里开始进入第四段 self-collision, Newton way。",
-            "这一章展开成 6 页 self-collision campaign 证据块。",
-            "这一页先把 claim 说死：最终 promoted mode 是 bridge-side phystwin，而且整个 campaign 没有改 Newton core。",
-            "同时我也把当前 gate 状态讲清楚：exactness 已经过，final cloth-box demo 已经过 QC，但 strict self-collision parity 仍然被 blocker 卡住。",
+            "这一章不再用静态 campaign board 讲，而是收成一个 hypothesis-driven block。",
+            "这一页先把 hypothesis 说清楚：如果 native Newton 已经足够，我们就不需要 bridge-side phystwin 这条更窄的 exact path。",
+            "同时 claim boundary 也要收紧：strict parity 只针对 PhysTwin 原生定义的 cloth self-collision 加 implicit ground，不把 box-support semantics 混进 exact claim 里。",
+            "当前 progress 也要一句话说死：operator exactness 已经过，但 rollout parity 仍然 blocked。",
         ],
     },
     {
-        "kind": "image",
-        "title": "Source Evidence: Native Newton Semantics Are Not PhysTwin Exact",
-        "note": "Use the campaign code-evidence summary board directly: IR radius mapping, off/native/custom/phystwin mode split, and bridge-side PhysTwin operator.",
-        "path": SLIDE_SOURCE_EVIDENCE_PNG,
+        "kind": "code_twocol_large",
+        "title": "Source Proof S1: PhysTwin Native Contact Scope Is Pairwise Self-Collision + Ground",
+        "note": "Real PhysTwin upstream source only. These are the native contact operators that define the strict parity scope.",
+        "left_label": "PhysTwin object_collision: pairwise self-collision updates velocity from collision impulses.",
+        "left_path": CODE_SELFCOLLISION_OBJECT_PNG,
+        "right_label": "PhysTwin integrate_ground_collision: implicit ground-plane TOI + velocity update.",
+        "right_path": CODE_SELFCOLLISION_GROUND_PNG,
         "transcript": [
-            "这一页是源码证据，不是实验结果。",
-            "第一段代码说明 bridge 会把 PhysTwin pairwise collision distance 映射成 Newton particle radius 语义，所以 native path 一开始就不是原封不动的 PhysTwin collision law。",
-            "第二段代码说明 cloth-box ON 场景里，off、native、custom、phystwin 四条路径是明确分开的；第三段代码说明 exact PhysTwin-style velocity correction 是 bridge-side 引入，而不是改 Newton core。",
-            "同时这里也要把边界说清楚：PhysTwin 这条 cloth spring-mass 源码原生只定义了 pairwise object_collision 和 implicit z=0 ground collision，没有 generic box-support contact。",
+            "这一页只用 PhysTwin upstream source 来证明 strict parity 的 scope，不再 cite 我们自己的 bridge code。",
+            "左边这段是 `object_collision`，说明 PhysTwin 原生的 cloth contact 里有 pairwise object self-collision，而且速度修正是基于 collision impulse average。",
+            "右边这段是 `integrate_ground_collision`，说明 PhysTwin 原生还定义了 implicit ground-plane TOI 和 velocity update。",
+            "所以 strict parity 的 claim boundary 不是拍脑袋收窄，而是直接从 PhysTwin native contact source 推出来的：object self-collision 加 ground collision。",
+            "也正因为这个 source scope，本章后面的 cloth+box scene 只能作为 decision/demo evidence，不能被包装成 strict parity scene。",
         ],
     },
     {
-        "kind": "image",
-        "title": "Scene-Level Decision Matrix: Native Is Not Enough",
-        "note": "Controlled cloth-box matrix plus bunny-diagnostic conclusion. Use this page to separate scene-level evidence from source-level evidence.",
-        "path": SLIDE_NATIVE_FAILURE_PNG,
-        "transcript": [
-            "这一页是 controlled scene-level evidence。",
-            "cloth-box matrix 的作用不是证明 phystwin 已经完美，而是证明 native 不足以直接被当成最终 claim。",
-            "所以 box scene 在这里是 scene evidence，不是 strict phystwin parity scene。",
-            "这里我只保留 cloth-box scope，不再把 bunny 或其他 scene 混进最终结论里。",
+        "kind": "grid",
+        "title": "Result S1: Native Is Not Enough On The Controlled Cloth+Box Scene",
+        "common_settings": "Controlled cloth+box decision videos. The point is scene-level progress: native is not enough, and bridge-side `phystwin` is the only video-ready candidate we can still defend.",
+        "items": [
+            ("OFF", SELF_MATRIX_OFF_GIF),
+            ("Native", SELF_MATRIX_NATIVE_GIF),
+            ("Custom H2", SELF_MATRIX_CUSTOM_H2_GIF),
+            ("Phystwin", SELF_MATRIX_PHYSTWIN_GIF),
         ],
-    },
-    {
-        "kind": "image",
-        "title": "Bridge-Side PhysTwin Exactness",
-        "note": "Operator-level exactness result from the campaign verifier.",
-        "path": SLIDE_EXACTNESS_PNG,
         "transcript": [
-            "这一页只回答一个问题：bridge-side phystwin operator 本身是不是 exact。",
-            "现在 verifier 的 strict gate 已经过：max_abs_dv 在 1e-6 量级，median_rel_dv 在 1e-8 量级。",
-            "所以我们可以把 exactness claim 说得很窄但很硬：operator-level PhysTwin collision equivalence 已经验证通过。",
-        ],
-    },
-    {
-        "kind": "image",
-        "title": "Final Demo: Cloth + Box + Self-Collision ON",
-        "note": "QC-passing hero demo contact sheet from the final top-down `phystwin` presentation render.",
-        "path": SLIDE_FINAL_DEMO_PNG,
-        "transcript": [
-            "这一页放最终 cloth-box phystwin hero demo。",
-            "我最后选的是 top-down presentation 视角，因为它同时保住了 cloth、box、接触区和后续 settle 过程。",
-            "但这个视频的作用是 demo evidence，不是 strict parity 的 claim scope。",
-            "这条视频已经通过 black/blank、motion 和 scene-visibility 的 QC gate，所以它是当前可以直接汇报的 self-collision ON 最终 demo。",
-        ],
-    },
-    {
-        "kind": "image",
-        "title": "Strict Self-Collision Parity Is Blocked By Rollout Mismatch",
-        "note": "Final blocker page: the in-scope cloth self-collision reference exists, but the current Newton bridge rollout semantics do not reach the required strict parity gate.",
-        "path": SLIDE_STRICT_PARITY_PNG,
-        "transcript": [
-            "最后这一页专门讲最终 blocker，不粉饰。",
-            "现在 blocker 不是缺 reference，因为 cloth self-collision reference case 已经明确存在，而且我们就是拿它做的 strict parity。",
-            "这里的 strict scope 也收紧得很明确：只覆盖 PhysTwin 原生的 object_collision 加 implicit z=0 ground，不把 box scene 混进去。",
-            "最近一轮 bridge-side 同步已经把 strict phystwin 默认切成 frame-frozen explicit collision table，而且 60-frame parity 确实比 dynamic-query 更好。",
-            "但 full rollout 仍然停在 1e-2 量级，所以现在最像主因的已经不是 local self-collision operator，而是更长程的 rollout mismatch，尤其是 controller-spring semantics 这一层。",
+            "这一页是 scene-level video evidence，不是源码页。",
+            "这里直接放 controlled cloth+box decision videos：OFF、native、custom H2、phystwin。",
+            "这页要回答的 hypothesis 很窄：native 能不能直接承担 final self-collision claim。",
+            "目前 answer 仍然是否定的。能继续 defend 下去的是 bridge-side phystwin candidate，而不是 native。",
+            "所以这页的 progress 不是“所有问题都 solved”，而是 decision scene 已经把 native 不足这件事视频化、可比较化了。",
         ],
     },
     {
         "kind": "twocol",
-        "title": "Robotic With Deformable Objects: Current Defendable Sub-Conclusion",
+        "title": "Progress S2: The Demo Is Ready, But Strict Parity Is Still Blocked",
+        "common_settings": "Left: the selected cloth+box `phystwin` hero demo already passes QC. Right: the parity support video keeps the in-scope cloth reference visible. Operator exactness already passed, but full rollout parity still stalls around `1e-2`.",
+        "left_label": "QC-passing cloth+box `phystwin` hero demo",
+        "left_path": SELF_HERO_GIF,
+        "right_label": "Parity support demo on the in-scope reference path",
+        "right_path": SELF_PARITY_SUPPORT_GIF,
+        "transcript": [
+            "最后这一页把当前 self-collision progress 和 blocker 同时讲清楚。",
+            "左边是已经可汇报的 cloth+box `phystwin` hero demo，它通过了 black/blank、motion 和 scene-visibility 的 QC，所以 video claim 已经成立。",
+            "右边是 parity support video，用来提醒老师：strict parity 的 in-scope reference path 仍然在，而且我们不是拿错 scene 在讲 parity。",
+            "同时 exactness 本身也已经过了，`max_abs_dv` 在 1e-6 量级、`median_rel_dv` 在 1e-8 量级。",
+            "但 full rollout parity 仍然停在 1e-2 量级，所以当前 honest progress 应该讲成：demo-ready yes，operator exact yes，strict rollout parity not yet。",
+        ],
+    },
+    {
+        "kind": "twocol",
+        "title": "Conclusion R1: The Current Robot-Deformable Claim Is A Defendable Native Baseline",
         "common_settings": "Chapter-5 claim for today: the defendable robot-deformable evidence is a native Franka release/drop baseline with visible support, settle-before-release, gravity-dominated fall, and real ground contact at 1:1 time. This is not yet full manipulation.",
         "left_label": "Drag OFF\npromoted best run",
         "left_path": ROBOT_DROP_BASELINE_OFF_GIF,
@@ -715,12 +704,12 @@ def _prepare_generated_assets() -> None:
         _ensure_resized_gif(src, out, width=width, fps=fps, max_colors=max_colors)
     _ensure_resized_gif(RECALL_ROPE_GIF_SRC, PERF_ROPE_CASE_GIF, width=720, fps=8, max_colors=96)
     _code_excerpt_image(
-        VIEWER_CODE_PATH,
-        "rope_benchmark_modes",
+        NEWTON_CORE_BENCHMARK_PATH,
+        "newton_core_graph_path",
         _extract_code_segments(
-            VIEWER_CODE_PATH,
-            [(185, 193), (202, 208)],
-            highlight_lines={185, 191, 202, 206, 207},
+            NEWTON_CORE_BENCHMARK_PATH,
+            [(338, 345), (348, 352), (358, 362)],
+            highlight_lines={339, 344, 349, 351, 360},
         ),
         CODE_REPLAY_SEMANTICS_PNG,
     )
@@ -967,7 +956,7 @@ def _render_code_png(
     text_color = (212, 212, 212)
     path_color = (156, 220, 254)
     gutter_color = (133, 133, 133)
-    highlight_fill = (38, 79, 120, 150)
+    highlight_fill = (47, 93, 143, 228)
     highlight_accent = (55, 148, 255, 255)
     shadow_color = (0, 0, 0, 110)
     token_colors = {
@@ -1080,6 +1069,9 @@ def _render_code_png(
                 return color
         return text_color
 
+    def _boost(color: tuple[int, int, int], *, amount: int = 26) -> tuple[int, int, int]:
+        return tuple(min(255, channel + amount) for channel in color)
+
     lexer = PythonLexer(stripnl=False)
     for row_idx, raw_line in enumerate(visible_lines):
         y = code_top + row_idx * line_h
@@ -1103,6 +1095,8 @@ def _render_code_png(
                 [panel_left + 14, row_top, panel_right - 14, row_bottom],
                 radius=10,
                 fill=highlight_fill,
+                outline=(118, 179, 245, 255),
+                width=2,
             )
             draw.rounded_rectangle(
                 [panel_left + 14, row_top, panel_left + 20, row_bottom],
@@ -1116,7 +1110,7 @@ def _render_code_png(
                 (gutter_right - 18 - line_no_w, y),
                 f"{line_no:>4}",
                 font=font_bold if highlight else font,
-                fill=gutter_color + (255,),
+                fill=(_boost(gutter_color, amount=40) if highlight else gutter_color) + (255,),
             )
 
         x = code_x
@@ -1124,7 +1118,10 @@ def _render_code_png(
             clean = value.replace("\n", "")
             if not clean:
                 continue
-            draw.text((x, y), clean, font=font, fill=_color_for_token(tok) + (255,))
+            color = _color_for_token(tok)
+            if highlight:
+                color = _boost(color, amount=30)
+            draw.text((x, y), clean, font=font_bold if highlight else font, fill=color + (255,))
             x += int(draw.textlength(clean, font=font))
 
     out_path.parent.mkdir(parents=True, exist_ok=True)

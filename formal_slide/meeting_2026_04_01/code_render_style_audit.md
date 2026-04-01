@@ -14,6 +14,12 @@ Primary affected slides:
 - `Slide 9` — `Source Proof P1: Same Replay, Different Execution Style`
 - `Slide 14` — penetration-analysis source-proof code slide
 
+The performance `Source Proof` page was also corrected to use upstream source
+evidence instead of bridge-local wrapper arguments:
+
+- left: `Newton/newton/asv/benchmarks/benchmark_mujoco.py`
+- right: `PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py`
+
 ## What The Old Render Looked Like
 
 - light background panel
@@ -32,6 +38,8 @@ capture and it did not hold attention well at slide scale.
 - added subtle editor chrome with a file-title strip and muted path label
 - added a real gutter region for line numbers
 - replaced yellow highlighter bars with soft line-level blue emphasis strips
+- strengthened highlighted rows further with a brighter fill, border, accent
+  bar, and brighter/bolder code text on highlighted lines
 - increased code font size and panel export size
 - added line truncation with `...` instead of silent hard clipping
 - enlarged the `Source Proof` slide layout so code occupies more of the page

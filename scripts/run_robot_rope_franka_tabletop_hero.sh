@@ -30,6 +30,8 @@ MANUAL_REVIEW_JSON="${RUN_DIR}/manual_review.json"
 
 COMMON_ARGS=(
   --task tabletop_push_hero
+  --sim-dt 5.0e-5
+  --substeps 667
   --slowdown 1.0
   --render-fps 30
   --screen-width 1280
@@ -39,23 +41,23 @@ COMMON_ARGS=(
   --anchor-count-per-end 2
   --ik-target-blend 0.35
   --auto-set-weight 3.0
-  --tabletop-preroll-settle-seconds 2.4
+  --tabletop-preroll-settle-seconds 0.0
   --tabletop-preroll-damping-scale 6.0
-  --tabletop-settle-seconds 0.8
-  --tabletop-approach-seconds 1.2
-  --tabletop-push-seconds 2.7
-  --tabletop-hold-seconds 0.8
-  --tabletop-retract-seconds 1.1
-  --tabletop-rope-height 0.145
+  --tabletop-settle-seconds 0.5
+  --tabletop-approach-seconds 0.8
+  --tabletop-push-seconds 0.8
+  --tabletop-hold-seconds 0.2
+  --tabletop-retract-seconds 0.5
+  --tabletop-rope-height 0.19
   --tabletop-table-top-z 0.120
   --tabletop-table-hx 0.42
   --tabletop-table-hy 0.24
   --tabletop-table-hz 0.020
-  --tabletop-robot-base-offset 0.56 -0.34 0.10
-  --tabletop-push-start-offset -0.28 -0.10 0.14
-  --tabletop-push-contact-offset -0.10 -0.06 0.03
-  --tabletop-push-end-offset 0.18 -0.06 0.03
-  --tabletop-retract-offset 0.24 -0.20 0.18
+  --tabletop-robot-base-offset -0.56 -0.24 0.10
+  --tabletop-push-start-offset -0.42 -0.22 0.24
+  --tabletop-push-contact-offset -0.16 -0.12 0.08
+  --tabletop-push-end-offset 0.08 -0.10 0.08
+  --tabletop-retract-offset 0.18 -0.24 0.18
   "$@"
 )
 

@@ -52,11 +52,11 @@ radius 变大确实会帮忙，但 thin-ear geometry 仍然会留下 penetration
 另外 same-case identity 不是口头假设，而是已经检查到 PhysTwin controller trajectory 和 IR 的 max abs diff 是 0.0e+00，所以 benchmark 的输入本身是对上的。
 
 ## Slide 9 — Source Proof P1: Same Replay, Different Execution Style
-这一页是 source proof，不是结果页，所以 slide 上只放两段短 code excerpt 和一句短分析。
-左边这段 Newton source code 现在只保留三件事：`--profile-only`、`--profile-mode`、`--controller-write-mode`。这已经足够说明 A0 到 A3 不是临时 hack，而是这个 benchmark interface 原生支持的路径。
-右边这段 PhysTwin source code 现在只保留 `cfg.use_graph`、`ScopedCapture`、`self.graph` 和 `self.forward_graph`。这已经足够说明 B0 是 graph-captured replay path，而不是 GUI loop。
-所以这页真正的分析应该放在 transcript 里：两边不是在比不同 task，而是在比同一个 replay 下两种 execution style。
-我把大部分低价值细节从 slide 移掉了，比如更长的 surrounding code、无关 helper、以及更多行的 control flow。
+这一页我按你的反馈改成了真正有意义的 upstream source proof，不再引用我们自己写的 wrapper CLI。
+左边现在引用的是 Newton core 里的 `asv/benchmarks/benchmark_mujoco.py`。它同时保留了三件关键事情：`if self.use_cuda_graph`、`with wp.ScopedCapture()`、以及 fallback 的 `for sim_substeps -> solver.step -> self.simulate()` 路径。
+这段代码的作用不是说 rope benchmark 就是跑这个 benchmark 文件，而是说明 Newton upstream 自己就已经有一套 graph-capture execution idiom；如果不用这条 idiom，默认结构仍然像 repeated substep loop。
+右边保留的是 PhysTwin `spring_mass_warp.py` 里的 upstream source code，而且只保留 `cfg.use_graph`、`ScopedCapture`、`self.graph`、`self.forward_graph` 这些最能说明 execution style 的行。
+所以这页真正要证明的不是我们的 wrapper 参数，而是 upstream code 层面上，两边对 graph replay 的组织方式本来就不同；这才是后面 Nsight interpretation 的源码背景。
 
 ## Slide 10 — Result P1: A1 Is Still 3.30x Slower Than B0
 这一页保留 table，因为这里的核心就是一个 bounded benchmark result。
@@ -151,8 +151,9 @@ cloth-box matrix 的作用不是证明 phystwin 已经完美，而是证明 nati
 最后这一页专门讲最终 blocker，不粉饰。
 现在 blocker 不是缺 reference，因为 cloth self-collision reference case 已经明确存在，而且我们就是拿它做的 strict parity。
 这里的 strict scope 也收紧得很明确：只覆盖 PhysTwin 原生的 object_collision 加 implicit z=0 ground，不把 box scene 混进去。
-最近一轮 bridge-side 同步已经把 strict phystwin 默认切成 frame-frozen explicit collision table，而且 60-frame parity 确实比 dynamic-query 更好。
-但 full rollout 仍然停在 1e-2 量级，所以现在最像主因的已经不是 local self-collision operator，而是更长程的 rollout mismatch，尤其是 controller-spring semantics 这一层。
+最近一轮 bridge-side 同步已经把 strict phystwin 默认切成 frame-frozen explicit collision table，而且短窗口里它确实比 dynamic-query 更好。
+但按 full-rollout A/B 硬门槛看，当前 strict phystwin 仍然没有赢过 off：off 的 rmse_mean 大约是 0.00979，strict phystwin 大约是 0.01010。
+所以现在最像主因的已经不是 local self-collision operator，而是更长程的 rollout mismatch，尤其是 controller-spring semantics 这一层。
 
 ## Slide 25 — Robotic With Deformable Objects: Current Defendable Sub-Conclusion
 最后一段是 robotic with deformable objects。
