@@ -12,6 +12,8 @@ sed -n '1,260p' formal_slide/meeting_2026_04_01/build_meeting_20260401.py
 sed -n '1,260p' formal_slide/meeting_2026_04_01/transcript.md
 python formal_slide/meeting_2026_04_01/build_meeting_20260401.py --max-pptx-mb 100
 du -h formal_slide/meeting_2026_04_01/bridge_meeting_20260401.pptx
+python scripts/build_slide_transcript_review_pdf.py --pptx formal_slide/meeting_2026_04_01/bridge_meeting_20260401.pptx --transcript-md formal_slide/meeting_2026_04_01/transcript.md --out-pdf formal_slide/meeting_2026_04_01/bridge_meeting_20260401_review.pdf --work-dir tmp_vis/review_pdf_20260401 --deck-title "PhysTwin -> Newton Bridge 2026-04-01 Review"
+pdfinfo formal_slide/meeting_2026_04_01/bridge_meeting_20260401_review.pdf
 ```
 
 ## Step Sequence
@@ -21,12 +23,15 @@ du -h formal_slide/meeting_2026_04_01/bridge_meeting_20260401.pptx
 3. update slide/transcript outputs only after the story boundary is explicit
 4. regenerate deck-sized GIF assets before shipping the PPTX
 5. fail closed if the built PPTX exceeds `100 MB`
+6. when a review artifact is requested, render one slide plus the matching transcript onto each review page
+7. validate the review PDF page count before release
 
 ## Validation
 
 - the resulting deck uses validated evidence
 - transcript wording matches slide structure
 - the default deck build passes the `100 MB` size gate
+- the review PDF page count matches the slide / transcript count
 
 ## Output Paths
 

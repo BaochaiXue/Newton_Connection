@@ -23,6 +23,7 @@ matching transcript and defensible evidence selection.
 - matching build/transcript updates
 - task-local status for what remains main-deck versus appendix
 - a default full-deck build that stays below `100 MB`
+- an optional review PDF that pairs each slide with its matching transcript
 
 ## Constraints
 
@@ -37,3 +38,4 @@ matching transcript and defensible evidence selection.
 - each slide has a clear claim boundary
 - transcript and slide structure agree
 - the default deck build passes the `100 MB` size gate
+- the review build can render one slide plus the matching transcript on each page

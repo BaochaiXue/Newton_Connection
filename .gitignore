@@ -16,3 +16,4 @@ formal_slide/**/__pycache__/
 formal_slide/**/transcript.html
 formal_slide/**/transcript.pdf
 formal_slide/**/bridge_meeting_*.pptx
+formal_slide/**/bridge_meeting_*_review.pdf

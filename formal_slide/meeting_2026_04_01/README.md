@@ -12,6 +12,8 @@ This folder is the local bundle for the `2026-04-01` formal slide deck.
   - Latest generated transcript source.
 - `transcript.pdf`
   - Latest rendered transcript PDF.
+- `bridge_meeting_20260401_review.pdf`
+  - Review PDF with one slide page paired to the matching transcript for that slide.
 - `code_render_style_audit.md`
   - Meeting-local note for the synthetic VSCode-like code-panel renderer.
 - `templates/`
@@ -41,11 +43,21 @@ and the repo root.
 - Large recall GIFs in `slides_assets/gif/` are not embedded directly anymore;
   the builder first writes smaller deck-specific copies into `gif/`.
 
+## Review Artifact
+
+- `bridge_meeting_20260401_review.pdf` is the review-facing companion PDF.
+- Each review page pairs one rendered slide with the transcript lines for that
+  same slide.
+- The reusable builder lives at
+  `scripts/build_slide_transcript_review_pdf.py`.
+
 ## Common Build Commands
 
 - Full deck + transcript:
   - `python formal_slide/meeting_2026_04_01/build_meeting_20260401.py`
 - Full deck + transcript with an explicit size gate:
   - `python formal_slide/meeting_2026_04_01/build_meeting_20260401.py --max-pptx-mb 100`
+- Review PDF with one slide per matching transcript page:
+  - `python scripts/build_slide_transcript_review_pdf.py --pptx formal_slide/meeting_2026_04_01/bridge_meeting_20260401.pptx --transcript-md formal_slide/meeting_2026_04_01/transcript.md --out-pdf formal_slide/meeting_2026_04_01/bridge_meeting_20260401_review.pdf --work-dir tmp_vis/review_pdf_20260401 --deck-title "PhysTwin -> Newton Bridge 2026-04-01 Review"`
 - Performance-only slice (`slides 8-12`) for external review:
   - `python formal_slide/meeting_2026_04_01/build_meeting_20260401.py --out-dir tmp_vis/performance_analysis_20260401 --out-pptx tmp_vis/performance_analysis_20260401/bridge_meeting_20260401_performance_only_slides_8_12.pptx --slide-range 8-12`

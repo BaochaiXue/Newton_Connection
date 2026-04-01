@@ -5,23 +5,26 @@
 Tracked as an active task with a backfilled authoritative chain and an active
 PPTX size-budget gate on the 2026-04-01 deck builder.
 
+An explicit user request now also approves release of a `0401` review PDF to
+the repo-configured default email recipient once the artifact is generated and
+validated.
+
 ## Last Completed Step
 
-Redesigned the 2026-04-01 meeting deck to match the current review standard:
+Prepared the 2026-04-01 bundle for review release:
 
-- replaced bridge-local wrapper citations on the performance source-proof page
-  with upstream Newton core + PhysTwin source
-- removed performance data-chart slides in favor of short conclusion slides
-- removed the bunny mechanism code-citation slide so that bunny evidence is now
-  carried by videos instead of our own diagnostic implementation details
-- replaced the static self-collision campaign/image block with:
-  - one hypothesis page
-  - one upstream PhysTwin source-proof page
-  - one controlled cloth+box decision video grid
-  - one hero/parity progress video page
-- kept the VSCode-like synthetic code renderer as the reusable code-panel path
-- regenerated the full deck, transcript, and a fresh review build under
-  `tmp_vis/redeck_20260401/`
+- rebuilt `formal_slide/meeting_2026_04_01/bridge_meeting_20260401.pptx`
+  and `formal_slide/meeting_2026_04_01/transcript.md` to the current
+  `26`-slide state
+- added a reusable review builder at
+  `scripts/build_slide_transcript_review_pdf.py`
+- generated
+  `formal_slide/meeting_2026_04_01/bridge_meeting_20260401_review.pdf`
+  with `26` review pages matching `26` slide/transcript pairs
+- recorded the review build manifest under
+  `tmp_vis/review_pdf_20260401/review_manifest.json`
+- sent the validated review PDF to the repo-configured default recipient via
+  `send_pdf_via_yahoo.py`
 
 ## Next Step
 
@@ -36,7 +39,9 @@ iteration changes the claim boundaries.
 
 - `formal_slide/meeting_2026_03_25/`
 - `formal_slide/meeting_2026_04_01/`
+- `formal_slide/meeting_2026_04_01/bridge_meeting_20260401_review.pdf`
 - `formal_slide/meeting_2026_04_01/performance_section_audit.md`
 - `formal_slide/meeting_2026_04_01/code_render_style_audit.md`
 - `tmp_vis/performance_analysis_20260401/`
 - `tmp_vis/redeck_20260401/`
+- `tmp_vis/review_pdf_20260401/`
