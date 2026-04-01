@@ -56,6 +56,9 @@ Local scratch validation notes:
 - latest parity support comparison video now exists for the updated slide deck:
   - `Newton/phystwin_bridge/results/tmp_off_vs_phystwin_302_compare_20260401/parity_support_demo/parity_support_demo.mp4`
   - deck GIF: `formal_slide/meeting_2026_04_01/gif/self_collision_parity_support.gif`
+- professor-facing detailed report now exists under:
+  - `tmp/report/self_collision_professor_report_20260401/report.md`
+  - `tmp/report/self_collision_professor_report_20260401/report.pdf`
 - updated April 1 deck now includes a dedicated source-proof slide for the
   remaining self-collision gap:
   - PhysTwin `update_collision_graph()` / `update_potential_collision`

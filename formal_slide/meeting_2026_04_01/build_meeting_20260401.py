@@ -775,14 +775,17 @@ RECALL_SLIDES: list[dict] = [
     {
         "kind": "table",
         "title": "Mechanism Table A: Scope + Matched Mechanisms",
-        "note": "Index table, part 1. Scope: in-scope cloth reference case only. This page only lists what is already aligned inside the strict scope.",
+        "note": "Index table, part 1. In-scope cloth reference case only. This page lists only scope + matched mechanisms.",
+        "title_size": 24,
+        "note_font_size": 9,
+        "cell_font_size": 12,
         "columns": ["Mechanism", "PhysTwin native", "Our strict `phystwin`", "Status", "Why it matters"],
         "rows": [
-            ["Strict scope", "pairwise self-collision + implicit z=0 ground", "same target scope", "MATCHED", "this is the only parity target"],
-            ["Shape contact penalty force", "not used on this cloth path", "not used in strict mode", "OUTSIDE", "generic rigid-support penalty contact is not part of this section"],
-            ["Force-to-velocity injection", "`v1 = v0 + a*dt`, then drag multiplies velocity before contact", "same bridge kernel order", "MATCHED", "contact starts from the same velocity-level update idea"],
-            ["Self-collision impulse law", "pairwise impulse average on candidate pairs", "same bridge-side impulse-style law", "MATCHED", "operator exactness already passed"],
-            ["Point-plane TOI ground collision", "solve `toi = -x_z / v_z`, then update normal/tangent velocity", "same bridge-side ground integrator", "MATCHED", "ground inside strict scope is not the main blocker"],
+            ["Strict scope", "pairwise self-collision + z=0 ground", "same target scope", "MATCHED", "only parity target"],
+            ["Shape penalty force", "not used on this cloth path", "not used in strict mode", "OUTSIDE", "not part of this section"],
+            ["Force->velocity", "`v1 = v0 + a*dt`, then drag", "same bridge order", "MATCHED", "contact sees the same updated velocity idea"],
+            ["Self-collision law", "pairwise impulse average", "same bridge impulse law", "MATCHED", "operator exactness already passed"],
+            ["Point-plane TOI ground", "solve `toi = -x_z / v_z`", "same bridge TOI ground", "MATCHED", "ground inside strict scope is not the main blocker"],
         ],
         "transcript": [
             "这一页是总表的第一部分，只放 scope 和已经对齐的机制。",
@@ -795,13 +798,16 @@ RECALL_SLIDES: list[dict] = [
     {
         "kind": "table",
         "title": "Mechanism Table B: Primary Mismatches + Final Gate",
-        "note": "Index table, part 2. This page only lists the current strongest mismatches and the final A/B gate. It is not trying to enumerate every low-confidence secondary possibility.",
+        "note": "Index table, part 2. This page lists only the current strongest mismatches + the final A/B gate.",
+        "title_size": 24,
+        "note_font_size": 9,
+        "cell_font_size": 12,
         "columns": ["Mechanism", "PhysTwin native", "Our strict `phystwin`", "Status", "Why it matters"],
         "rows": [
-            ["Collision table lifecycle", "build once per frame, reuse within substeps", "same default now", "PARTIAL", "60-frame parity improved after this sync"],
-            ["Collision table provenance", "table built inside PhysTwin runtime", "table rebuilt inside bridge runtime", "DIFF", "remaining self-collision-side difference lives here"],
-            ["Controller spring handling", "springs read separate `control_x / control_v`", "controllers written into Newton particle state", "DIFF", "this is the strongest current rollout-level blocker signal"],
-            ["Full-rollout A/B", "reference target", "strict `phystwin` still worse than OFF on 302 frames", "BLOCKED", "the final gate still fails"],
+            ["Table lifecycle", "build once / frame, reuse in substeps", "same default now", "PARTIAL", "60-frame parity improved after this sync"],
+            ["Table provenance", "built inside PhysTwin runtime", "rebuilt inside bridge runtime", "DIFF", "remaining self-collision-side runtime difference"],
+            ["Controller springs", "springs read `control_x / control_v`", "controllers written into Newton particle state", "DIFF", "current strongest rollout-level blocker"],
+            ["Full-rollout A/B", "reference target", "strict `phystwin` still worse than OFF", "BLOCKED", "final gate still fails"],
         ],
         "transcript": [
             "这一页是总表的第二部分，只放 primary mismatches 和最终 gate。",
@@ -1794,13 +1800,23 @@ def _body(prs: Presentation, title: str, bullets: list[str]) -> None:
     _set_lines(body_box, bullets)
 
 
-def _table(prs: Presentation, title: str, columns: list[str], rows: list[list[str]], note: str | None = None) -> None:
+def _table(
+    prs: Presentation,
+    title: str,
+    columns: list[str],
+    rows: list[list[str]],
+    note: str | None = None,
+    *,
+    title_size: int = 28,
+    note_font_size: int = 11,
+    cell_font_size: int = 15,
+) -> None:
     slide = prs.slides.add_slide(_layout(prs))
     _clear_placeholders(slide)
     title_box = slide.shapes.add_textbox(
         REF_TITLE_LEFT, REF_TITLE_TOP, REF_TITLE_W, REF_TITLE_H
     )
-    _set_title_textbox(title_box, title, size_pt=28)
+    _set_title_textbox(title_box, title, size_pt=title_size)
     if note:
         _add_label(
             slide,
@@ -1809,7 +1825,7 @@ def _table(prs: Presentation, title: str, columns: list[str], rows: list[list[st
             TABLE_W,
             TABLE_NOTE_H,
             note,
-            font_size=11,
+            font_size=note_font_size,
             bold=False,
         )
     table_shape = slide.shapes.add_table(
@@ -1856,7 +1872,7 @@ def _table(prs: Presentation, title: str, columns: list[str], rows: list[list[st
             p,
             text,
             font_name="Arial",
-            font_size=15,
+            font_size=cell_font_size,
             color=RGBColor(0x22, 0x22, 0x22),
             accent_color=RGBColor(0x1F, 0x4E, 0x79),
             bold_default=bold,
@@ -2259,6 +2275,9 @@ def build_recall_only_deck(prs: Presentation, slides: list[dict] | None = None) 
                 slide["columns"],
                 slide["rows"],
                 note=slide.get("note"),
+                title_size=slide.get("title_size", 28),
+                note_font_size=slide.get("note_font_size", 11),
+                cell_font_size=slide.get("cell_font_size", 15),
             )
         elif kind == "table_gif":
             _table_with_gif(
