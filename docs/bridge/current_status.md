@@ -66,6 +66,7 @@ Detailed result meaning belongs in:
 - `markdown_harness_maintenance_upgrade`
   - inventory/lint/hook discipline now converges on one public markdown-maintenance path; follow-up is routine review-age cleanup rather than structural rescue
 - `slide_deck_overhaul`
+- `meeting_20260408_recall_part`
 - `bunny_penetration_force_diagnostic`
 - `video_presentation_quality`
 - `robot_deformable_demo`

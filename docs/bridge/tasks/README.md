@@ -22,6 +22,7 @@ Each task page should answer:
 
 - [markdown_harness_maintenance_upgrade.md](./markdown_harness_maintenance_upgrade.md)
 - [slide_deck_overhaul.md](./slide_deck_overhaul.md)
+- [meeting_20260408_recall_part.md](./meeting_20260408_recall_part.md)
 - [bunny_penetration_force_diagnostic.md](./bunny_penetration_force_diagnostic.md)
 - [video_presentation_quality.md](./video_presentation_quality.md)
 - [robot_deformable_demo.md](./robot_deformable_demo.md)
