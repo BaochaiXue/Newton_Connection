@@ -28,5 +28,6 @@ High-signal harness scripts now also include:
 
 - `scripts/sync_results_registry.py`
 - `scripts/lint_harness_consistency.py`
+- `scripts/generate_md_inventory.py`
 - `scripts/prepare_video_review_bundle.py`
 - `scripts/run_skeptical_video_audit.py`

@@ -26,6 +26,12 @@ Each task page should answer:
 - [data_collection_protocol.md](./data_collection_protocol.md)
 - [fast_foundation_stereo.md](./fast_foundation_stereo.md)
 
+## One-Off / Historical Task Records
+
+- [delivery_and_profiling_review_20260401.md](./delivery_and_profiling_review_20260401.md)
+- [harness_markdown_cleanup_20260401.md](./harness_markdown_cleanup_20260401.md)
+- [markdown_truthfulness_cleanup.md](./markdown_truthfulness_cleanup.md)
+
 Task template:
 
 - [_task_template.md](./_task_template.md)

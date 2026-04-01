@@ -1,8 +1,10 @@
 # Spec: self_collision_transfer_decision
 
-> Deprecated alias. Canonical slug: `self_collision_transfer`.  
-> Canonical replacement: `tasks/spec/self_collision_transfer.md`.  
-> Migration rule: do not add new implementation state under `self_collision_transfer_decision`; update the canonical slug instead.
+> status: deprecated
+> canonical_replacement: `tasks/spec/self_collision_transfer.md`
+> owner_surface: `self_collision_transfer`
+> last_reviewed: `2026-04-01`
+> notes: Deprecated slug alias kept only for discoverability; do not add new implementation state under `_decision`.
 
 ## Goal
 

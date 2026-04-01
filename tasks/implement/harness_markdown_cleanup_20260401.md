@@ -1,5 +1,11 @@
 # Implement: harness_markdown_cleanup_20260401
 
+> status: historical
+> canonical_replacement: `tasks/implement/markdown_truthfulness_cleanup.md`
+> owner_surface: `markdown_truthfulness_cleanup`
+> last_reviewed: `2026-04-01`
+> notes: Historical predecessor runbook; kept only to preserve the earlier cleanup record.
+
 ## Preconditions
 
 - Read `AGENTS.md`, `docs/README.md`, and `TODO.md`

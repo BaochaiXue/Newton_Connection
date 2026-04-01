@@ -8,3 +8,4 @@ Examples:
 - how to create a new experiment directory
 - how to promote a tmp result into a documented artifact
 - how to prepare meeting-ready outputs
+- how to deprecate, archive, or rename Markdown control-plane surfaces

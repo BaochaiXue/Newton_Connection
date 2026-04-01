@@ -2,30 +2,31 @@
 
 ## Goal
 
-Converge Markdown, filesystem state, and lint policy so the repo has one
-fail-closed truth system instead of multiple plausible Markdown authorities.
+Harden the repo's Markdown control plane so a fresh agent can identify the
+canonical truth surfaces without being misled by stale or conflicting docs.
 
 ## Constraints
 
 - No edits under `Newton/newton/`
-- No ambiguous live-looking duplicate Markdown surfaces
-- Keep historical value, but make historical state explicit
+- Preserve historical value without letting historical files sound live
+- Use `results_meta/` as the canonical committed result authority
 
 ## Milestones
 
-1. Audit Markdown control-plane surfaces and classify them
-2. Build repo-native generated inventory / orphan / deprecation artifacts
-3. Deprecate, archive, merge, or delete misleading Markdown surfaces
-4. Reconcile run-meaning claims against `results_meta/`
-5. Strengthen lint/hooks/runbook coverage, then validate
+1. Audit the Markdown control plane and classify every in-scope file
+2. Create the cleanup task chain and generated inventory/report artifacts
+3. Convert stale surfaces into explicit canonical / deprecated / historical
+   states
+4. Add or strengthen lint, runbook, and hook enforcement
+5. Validate the cleaned control plane and update task status
 
 ## Validation
 
+- `python scripts/generate_md_inventory.py`
 - `python scripts/lint_harness_consistency.py`
-- Markdown inventory/report files refresh cleanly
-- canonical status pages and `results_meta/` agree on authoritative runs
+- generated inventory and cleanup docs match the filesystem state
 
 ## Notes
 
-- This task treats Markdown truthfulness as harness engineering, not cosmetic
-  cleanup.
+- One-off dated review/cleanup task chains may remain only as explicit
+  historical records.

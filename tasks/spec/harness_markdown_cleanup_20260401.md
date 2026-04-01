@@ -1,5 +1,11 @@
 # Spec: harness_markdown_cleanup_20260401
 
+> status: historical
+> canonical_replacement: `tasks/spec/markdown_truthfulness_cleanup.md`
+> owner_surface: `markdown_truthfulness_cleanup`
+> last_reviewed: `2026-04-01`
+> notes: Historical predecessor spec; do not update this file for current markdown truth work.
+
 ## Goal
 
 Remove stale harness markdown and make the remaining harness docs accurately

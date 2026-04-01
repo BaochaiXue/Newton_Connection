@@ -1,7 +1,10 @@
 # Status: Final Self-Collision Campaign
 
-> Historical task family. Active canonical task: `self_collision_transfer`.  
-> Migration path: use `tasks/status/self_collision_transfer.md` for current state and keep this file as the archived campaign log.
+> status: historical
+> canonical_replacement: `tasks/status/self_collision_transfer.md`
+> owner_surface: `self_collision_transfer`
+> last_reviewed: `2026-04-01`
+> notes: Historical campaign log preserved for traceability only; current self-collision state lives under the canonical task.
 
 ## 2026-03-30
 

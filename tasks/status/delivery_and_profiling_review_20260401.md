@@ -1,5 +1,11 @@
 # Status: delivery_and_profiling_review_20260401
 
+> status: historical
+> canonical_replacement: none
+> owner_surface: `delivery_and_profiling_review_20260401`
+> last_reviewed: `2026-04-01`
+> notes: Completed one-off review status log; not a live source of truth for current work.
+
 ## Current State
 
 Completed. Slides, transcript, promoted demo bundles, and rope profiling

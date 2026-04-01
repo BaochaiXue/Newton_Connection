@@ -2,53 +2,52 @@
 
 ## Question
 
-How do we turn the repo's Markdown control plane into a fail-closed truth
-system so future agents are not misled by stale, conflicting, or
-historical-but-live-sounding surfaces?
+Which Markdown surfaces in the repo control plane still sound current,
+authoritative, or operational when they are actually stale, duplicated,
+deprecated, historical, or only local convenience pointers?
 
 ## Why It Matters
 
-This repo now depends on Markdown as part of the harness control system.
-If a file sounds authoritative but is stale, duplicated, or only locally true,
-future agents will route work through the wrong surface and drift will return
-even if the code is correct.
+This repo now depends on Markdown as part of the agent control system.
+If a stale page sounds live, a future agent can update the wrong surface,
+repeat superseded work, or cite the wrong run as current.
 
 ## Current Status
 
 - In progress
-- Audit-first cleanup pass for Markdown truth surfaces is underway
-- This task specifically targets:
-  - stale or conflicting Markdown control-plane surfaces
-  - deprecated/historical files that still sound live
-  - run-meaning drift between status pages and `results_meta/`
-  - mechanical detection of future Markdown drift
+- This task is responsible for turning the control-plane Markdown layer into a
+  fail-closed truth system:
+  - one canonical source per concept
+  - explicit deprecated-pointer stubs
+  - explicit historical archives
+  - generated inventory and cleanup reports
+  - mechanical lint for future drift
 
 ## Code Entry Points
 
-- Canonical control plane:
+- Canonical docs:
   - `AGENTS.md`
   - `docs/README.md`
   - `docs/bridge/current_status.md`
-  - `docs/bridge/tasks/README.md`
-  - `tasks/AGENTS.md`
-  - `docs/bridge/tasks/AGENTS.md`
-- Generated audit surfaces:
+  - `docs/bridge/experiment_index.md`
   - `docs/generated/harness_audit.md`
   - `docs/generated/harness_deprecations.md`
-- Canonical results registry:
+- Results authority:
   - `results_meta/README.md`
   - `results_meta/INDEX.md`
   - `results_meta/LATEST.md`
   - `results_meta/tasks/*.json`
-- Mechanical checks:
+- Enforcement:
   - `scripts/lint_harness_consistency.py`
+  - `.codex/hooks/`
 
 ## Canonical Commands
 
 ```bash
+python scripts/generate_md_inventory.py
 python scripts/lint_harness_consistency.py
-rg --files -g '*.md' .
-rg -n 'authoritative|current|latest|promoted|best run|final' . -g '*.md'
+rg -n --glob '*.md' 'authoritative|current|latest|promoted|best run|final' docs tasks plans results_meta .
+rg -n --glob '*.md' '/home/' docs tasks plans results_meta .
 ```
 
 ## Required Artifacts
@@ -58,24 +57,26 @@ rg -n 'authoritative|current|latest|promoted|best run|final' . -g '*.md'
 - `docs/generated/md_cleanup_report.md`
 - `docs/generated/md_orphans.md`
 - `docs/generated/md_deprecation_matrix.md`
-- `docs/runbooks/doc_gardening.md`
+- updated canonical / deprecated / historical Markdown surfaces
+- updated lint / hook discipline
 
 ## Success Criteria
 
-- every live-looking Markdown control-plane surface is either canonical,
-  deprecated, historical, generated, or deleted
-- root singleton docs are absent or explicit stubs only
-- canonical run meaning agrees with `results_meta/`
-- no canonical Markdown surface uses machine-local absolute paths
-- deprecated and historical files are explicitly marked
-- Markdown drift becomes mechanically lint-detectable
+- every control-plane Markdown file is classified as canonical,
+  deprecated-pointer, historical, generated, or delete-candidate
+- retired root singleton docs are absent or explicit stubs
+- active tasks keep one clean task/spec/plan/implement/status chain
+- `docs/bridge/current_status.md` and active task status pages agree with
+  `results_meta/` on authoritative run meaning
+- deprecated and historical files are unmistakably marked
+- markdown drift becomes mechanically lint-detectable
 
 ## Open Questions
 
-- Which historical files should remain in place as stubs versus move under an
-  explicit archive subtree?
-- How much of the Markdown inventory should be enforced directly in lint versus
-  refreshed by a maintenance workflow?
+- Which non-indexed dated one-off task chains should remain as historical files
+  in place versus being moved later into a dedicated archive subtree?
+- How strict should the lint be about non-canonical local pointer terms such as
+  `BEST_RUN.md` inside historical notes?
 
 ## Related Pages
 

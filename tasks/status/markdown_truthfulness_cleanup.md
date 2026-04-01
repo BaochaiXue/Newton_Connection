@@ -2,16 +2,19 @@
 
 ## Current State
 
-In progress.
+In progress. The control-plane Markdown layer is being audited and normalized
+so only canonical files sound authoritative.
 
 ## Last Completed Step
 
-Bootstrapped the repo-native task chain for the Markdown truthfulness cleanup.
+Bootstrapped the repo-native task chain and started the multi-surface Markdown
+audit.
 
 ## Next Step
 
-Run the full Markdown inventory and truth-surface audit, then converge stale
-or conflicting surfaces onto canonical/deprecated/historical states.
+Implement the cleanup: generate the inventory, convert stale surfaces into
+explicit deprecated/historical states, align `results_meta` references, and run
+lint.
 
 ## Blocking Issues
 
@@ -19,8 +22,6 @@ or conflicting surfaces onto canonical/deprecated/historical states.
 
 ## Artifact Paths
 
-- `docs/generated/md_inventory.md`
-- `docs/generated/md_inventory.json`
-- `docs/generated/md_cleanup_report.md`
-- `docs/generated/md_orphans.md`
-- `docs/generated/md_deprecation_matrix.md`
+- `docs/generated/`
+- `docs/runbooks/doc_gardening.md`
+- `results_meta/`

@@ -1,5 +1,11 @@
 # Implement: delivery_and_profiling_review_20260401
 
+> status: historical
+> canonical_replacement: none
+> owner_surface: `delivery_and_profiling_review_20260401`
+> last_reviewed: `2026-04-01`
+> notes: Historical one-off review runbook preserved for traceability only.
+
 ## Preconditions
 
 - Read `AGENTS.md`, `docs/README.md`, `TODO.md`

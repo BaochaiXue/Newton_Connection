@@ -1,5 +1,11 @@
 # Task: Harness Markdown Cleanup 2026-04-01
 
+> status: historical
+> canonical_replacement: `docs/bridge/tasks/markdown_truthfulness_cleanup.md`
+> owner_surface: `markdown_truthfulness_cleanup`
+> last_reviewed: `2026-04-01`
+> notes: Completed predecessor cleanup kept only as historical context for the broader markdown truthfulness pass.
+
 ## Question
 
 Which harness and engineering markdown files in the repo are stale,

@@ -1,5 +1,11 @@
 # Spec: delivery_and_profiling_review_20260401
 
+> status: historical
+> canonical_replacement: none
+> owner_surface: `delivery_and_profiling_review_20260401`
+> last_reviewed: `2026-04-01`
+> notes: Historical one-off review spec; do not reuse as a live task surface.
+
 ## Goal
 
 Produce a strict review of the current meeting-facing deliverables and the

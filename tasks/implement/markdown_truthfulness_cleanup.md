@@ -2,35 +2,34 @@
 
 ## Preconditions
 
-- Read the canonical harness/docs surfaces named in the task spec
-- Audit Markdown state before deleting or stubbing anything
+- Read `AGENTS.md`, `docs/README.md`, and `TODO.md`
+- Read the current harness audit/deprecation surfaces before changing them
+- Treat `results_meta/` as the committed source of truth for current run meaning
 
 ## Canonical Commands
 
 ```bash
+python scripts/generate_md_inventory.py
 python scripts/lint_harness_consistency.py
-rg --files -g '*.md' .
-rg -n 'authoritative|current|latest|promoted|best run|final' . -g '*.md'
+rg -n --glob '*.md' 'authoritative|current|latest|promoted|best run|final' docs tasks plans results_meta .
+rg -n --glob '*.md' '/home/' docs tasks plans results_meta .
 ```
 
 ## Step Sequence
 
-1. Inventory Markdown control-plane surfaces and classify them
-2. Record contradictions between filesystem state, docs, and `results_meta/`
-3. Convert misleading surfaces into canonical docs, deprecated stubs, or
-   historical/archive pages
-4. Generate Markdown cleanup artifacts and deprecation/orphan reports
-5. Extend lint/hooks/runbook coverage so the same drift becomes mechanically
-   detectable
-6. Validate and update task status
+1. Build the Markdown inventory and classify in-scope files
+2. Fix misleading surfaces by making them canonical, deprecated-pointer, or
+   historical
+3. Align current-status and task status pages with `results_meta/`
+4. Add runbook, lint, and hook enforcement for future Markdown drift
+5. Regenerate inventory/report artifacts and update task status
 
 ## Validation
 
+- generated inventory covers every in-scope Markdown file
+- no canonical surface contains machine-local absolute paths
+- no active task keeps a competing stale alias alive
 - root singleton docs are absent or explicit stubs only
-- no canonical Markdown surface contains machine-local absolute paths
-- `current_status.md` and `results_meta/` agree on run authority
-- every deprecated/historical file has a banner and replacement/migration note
-- inventory/report artifacts exist and lint passes
 
 ## Output Paths
 

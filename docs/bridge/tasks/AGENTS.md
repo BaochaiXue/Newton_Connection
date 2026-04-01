@@ -16,3 +16,5 @@ task has authoritative local result bundles.
 - explain the task question and claim boundary
 - link to result roots instead of copying large run notes
 - mark deprecated task families explicitly rather than leaving duplicates alive
+- when a task page becomes historical or deprecated, add metadata + a strong
+  banner and keep it linked from the task README or archive index

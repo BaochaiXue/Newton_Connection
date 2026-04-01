@@ -1,8 +1,10 @@
 # Status: self_collision_transfer_decision
 
-> Deprecated alias. Canonical slug: `self_collision_transfer`.  
-> Canonical replacement: `tasks/status/self_collision_transfer.md`.  
-> Historical note: this file remains only to preserve discoverability for the older `_decision` slug family.
+> status: deprecated
+> canonical_replacement: `tasks/status/self_collision_transfer.md`
+> owner_surface: `self_collision_transfer`
+> last_reviewed: `2026-04-01`
+> notes: Deprecated slug alias preserved only for discoverability; do not treat this file as live status.
 
 ## Current State
 

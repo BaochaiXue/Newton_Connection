@@ -1,7 +1,10 @@
 # Task Spec: Final Self-Collision Campaign
 
-> Historical task family. Active canonical task: `self_collision_transfer`.  
-> Migration path: use `tasks/spec/self_collision_transfer.md` for current work and treat this file as campaign history only.
+> status: historical
+> canonical_replacement: `tasks/spec/self_collision_transfer.md`
+> owner_surface: `self_collision_transfer`
+> last_reviewed: `2026-04-01`
+> notes: Historical campaign spec kept for traceability only; current self-collision work belongs to the canonical task.
 
 ## Goal
 

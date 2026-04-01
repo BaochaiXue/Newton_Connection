@@ -2,15 +2,15 @@
 
 ## Goal
 
-Make Markdown truth surfaces fail closed by inventorying control-plane docs,
-normalizing canonical/deprecated/historical state, reconciling run authority
-with `results_meta/`, and enforcing the policy mechanically.
+Make the repo's control-plane Markdown fail closed by eliminating ambiguous
+truth surfaces and making canonical / deprecated / historical state explicit.
 
 ## Non-Goals
 
 - Editing `Newton/newton/`
-- Rewriting heavy local result bundles only for documentation cleanup
-- Preserving ambiguous historical files without an explicit status banner
+- Rewriting heavy local result bundles only for doc cleanup
+- Reauthoring stable technical explanation pages that are not part of the
+  control plane
 
 ## Inputs
 
@@ -31,24 +31,24 @@ with `results_meta/`, and enforcing the policy mechanically.
 
 ## Outputs
 
-- repo-native task chain for this cleanup
-- generated Markdown inventory and cleanup reports
-- canonical/archive/deprecated convergence for misleading Markdown surfaces
-- stronger markdown drift checks in lint/hooks/runbooks
+- cleaned canonical Markdown surfaces
+- explicit deprecated/historical markers where needed
+- generated Markdown inventory / orphan / cleanup reports
+- markdown-maintenance runbook
+- stronger lint / hook checks for doc drift
 
 ## Constraints
 
-- Keep `Newton/newton/` read-only
-- Prefer explicit deprecation/archive/pointer over silent deletion unless the
-  file is trivial, reproducible, and unreferenced
-- Treat `results_meta/` as the canonical committed source for run meaning
+- `Newton/newton/` remains read-only
+- prefer stub / archive / pointer over silent deletion unless a file is truly
+  redundant and unreferenced
+- treat `results_meta/` as the committed authority for current run meaning
 
 ## Done When
 
-- generated Markdown inventory/report artifacts exist and are current
-- root retired singleton docs are absent or explicit stubs only
-- `docs/bridge/current_status.md` and `results_meta/` agree on current
-  authoritative runs
-- no canonical Markdown surface contains machine-local absolute paths
-- every active task has one clean truth chain
-- lint passes with Markdown truthfulness checks enabled
+- required generated inventory and cleanup artifacts exist and are current
+- no retired root singleton doc survives as a substantive live surface
+- active task chains are clean and unique
+- canonical Markdown surfaces have no machine-local absolute paths
+- deprecated/historical files are clearly marked
+- lint catches future Markdown truth drift

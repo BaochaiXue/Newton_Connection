@@ -1,5 +1,11 @@
 # Task: Delivery and Profiling Review 2026-04-01
 
+> status: historical
+> canonical_replacement: none
+> owner_surface: `delivery_and_profiling_review_20260401`
+> last_reviewed: `2026-04-01`
+> notes: Completed one-off review record; keep only as historical audit context, not as a live task surface.
+
 ## Question
 
 Do the current meeting-facing deliverables for the bridge project hold up under
@@ -14,7 +20,7 @@ real rope bottleneck instead of re-running an already-explained experiment.
 
 ## Current Status
 
-- In progress
+- Completed
 - Existing context already spans:
   - `formal_slide/meeting_2026_04_01/`
   - `results/native_robot_rope_drop_release/`

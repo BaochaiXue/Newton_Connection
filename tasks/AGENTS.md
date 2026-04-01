@@ -19,6 +19,18 @@ When a task promotes or blocks a major local result bundle, update the matching
 
 Do not recreate retired root singleton docs such as `Plan.md` or `Status.md`.
 
+When a task page or task-chain file becomes deprecated or historical, add a
+top-of-file metadata block with:
+
+- `status`
+- `canonical_replacement`
+- `owner_surface`
+- `last_reviewed`
+- `notes`
+
+Then refresh `docs/generated/md_inventory.*` and rerun
+`scripts/lint_harness_consistency.py`.
+
 ## Handoffs And Contracts
 
 Use `tasks/contracts/` for milestone acceptance and `tasks/handoffs/` for

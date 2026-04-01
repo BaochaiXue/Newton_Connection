@@ -12,3 +12,8 @@ High-signal generated/control-plane files currently include:
 
 - `harness_audit.md`
 - `harness_deprecations.md`
+- `md_inventory.md`
+- `md_inventory.json`
+- `md_cleanup_report.md`
+- `md_orphans.md`
+- `md_deprecation_matrix.md`

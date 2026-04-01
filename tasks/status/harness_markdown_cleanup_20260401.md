@@ -1,5 +1,11 @@
 # Status: harness_markdown_cleanup_20260401
 
+> status: historical
+> canonical_replacement: `tasks/status/markdown_truthfulness_cleanup.md`
+> owner_surface: `markdown_truthfulness_cleanup`
+> last_reviewed: `2026-04-01`
+> notes: Historical predecessor status log; current markdown truth state lives under the canonical cleanup task.
+
 ## Current State
 
 Completed. Legacy singleton docs and duplicate bunny scaffold docs were
