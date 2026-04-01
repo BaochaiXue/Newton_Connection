@@ -9,6 +9,10 @@ Historical accepted package:
 
 - `results/bunny_force_visualization/runs/20260331_231500_fullprocess_sync_matrix_manual_v2`
 
+Promoted meeting-facing board package:
+
+- `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5`
+
 That package remains a valid historical mechanism bundle, but it is no longer
 the final visualization target for this task. Its acceptance depended on a
 full-process synchronized force-mechanism pipeline that still centered the main
@@ -235,13 +239,18 @@ to present it is no longer the final meeting artifact.
 
 - Historical force-diagnostic tooling exists.
 - Historical synchronized full-process package exists.
-- The task is reopened specifically because the old accepted package is no
-  longer sufficient for the new meeting visualization requirement.
-- The active target is now:
-  - real-time
-  - all colliding nodes
-  - `2 x 2`
-  - `box penalty / box total / bunny penalty / bunny total`
+- A promoted meeting-facing `2 x 2` board now exists under:
+  - `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5`
+- That board uses:
+  - self-collision OFF
+  - only `box_control` and `bunny_baseline`
+  - all rigid force-active cloth nodes in the main board
+  - target-only penalty force from explicit re-evaluation with
+    `add_ground_plane=False`
+  - total force defined as
+    `f_internal_total + f_external_total + mass * gravity_vec`
+- The old synchronized package remains historical mechanism evidence, but the
+  new `v5` board is the meeting artifact to show.
 
 ## Definition Of Done
 

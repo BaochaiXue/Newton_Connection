@@ -267,8 +267,8 @@ readme_lines = [
     "- top-right: box total",
     "- bottom-left: bunny penalty",
     "- bottom-right: bunny total",
-    "- main node set: rigid_force_contact_mask = geom_contact_mask AND force_contact_mask",
-    "- penalty force: f_external_total on the current frame",
+    "- main node set: rigid_force_contact_mask = geom_contact_mask AND target_force_contact_mask",
+    "- penalty force: target-only f_external_total from explicit re-evaluation with add_ground_plane=False",
     "- total force: f_internal_total + f_external_total + mass * gravity_vec on the current frame",
 ]
 (run_dir / "README.md").write_text("\\n".join(readme_lines) + "\\n", encoding="utf-8")

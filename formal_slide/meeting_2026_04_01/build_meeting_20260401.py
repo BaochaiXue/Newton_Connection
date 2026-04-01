@@ -137,15 +137,28 @@ def _resolve_latest_bunny_run() -> Path:
     return fallback.resolve()
 
 
-ACCEPTED_BUNNY_RUN = _resolve_latest_bunny_run()
-ACCEPTED_BUNNY_MATRIX_DIR = ACCEPTED_BUNNY_RUN / "artifacts" / "matrix"
-ACCEPTED_BUNNY_BOARD_PNG = ACCEPTED_BUNNY_MATRIX_DIR / "bunny_penetration_summary_board.png"
+CURRENT_BUNNY_RUN = _resolve_latest_bunny_run()
+HISTORICAL_BUNNY_RUN = (
+    _meta_superseded_root("bunny_penetration_force_diagnostic", run_status="historical")
+    or CURRENT_BUNNY_RUN
+).resolve()
+HISTORICAL_BUNNY_MATRIX_DIR = HISTORICAL_BUNNY_RUN / "artifacts" / "matrix"
+CURRENT_BUNNY_BOARD_MP4 = CURRENT_BUNNY_RUN / "artifacts" / "collision_force_board" / "collision_force_board_2x2.mp4"
+CURRENT_BUNNY_BOARD_GIF = MEETING_DIR / "gif" / "bunny_collision_board_2x2.gif"
+CURRENT_BUNNY_BOARD_FIRST_FRAME = (
+    CURRENT_BUNNY_RUN / "artifacts" / "collision_force_board" / "collision_force_board_2x2_first_frame.png"
+)
+ACCEPTED_BUNNY_BOARD_PNG = (
+    HISTORICAL_BUNNY_MATRIX_DIR / "bunny_penetration_summary_board.png"
+    if (HISTORICAL_BUNNY_MATRIX_DIR / "bunny_penetration_summary_board.png").exists()
+    else CURRENT_BUNNY_BOARD_FIRST_FRAME
+)
 SELF_COLLISION_CAMPAIGN_DIR = (_meta_local_root("self_collision_transfer") or (ROOT / "Newton" / "phystwin_bridge" / "results" / "final_self_collision_campaign_20260331_033636_533f3d0")).resolve()
 SELF_COLLISION_SLIDES_DIR = SELF_COLLISION_CAMPAIGN_DIR / "slides_update"
 
 
 def _resolve_case_video_maps() -> tuple[dict[str, Path], dict[str, Path]]:
-    summary_path = ACCEPTED_BUNNY_RUN / "summary.json"
+    summary_path = HISTORICAL_BUNNY_RUN / "summary.json"
     if summary_path.exists():
         obj = json.loads(summary_path.read_text(encoding="utf-8"))
         pheno: dict[str, Path] = {}
@@ -164,16 +177,16 @@ def _resolve_case_video_maps() -> tuple[dict[str, Path], dict[str, Path]]:
             return pheno, force
 
     pheno = {
-        "bunny_baseline": ACCEPTED_BUNNY_MATRIX_DIR / "bunny_baseline" / "phenomenon" / "self_off" / "cloth_bunny_drop_off_m0p5.mp4",
-        "box_control": ACCEPTED_BUNNY_MATRIX_DIR / "box_control" / "phenomenon" / "self_off" / "cloth_bunny_drop_off_m0p5.mp4",
-        "bunny_low_inertia": ACCEPTED_BUNNY_MATRIX_DIR / "bunny_low_inertia" / "phenomenon" / "self_off" / "cloth_bunny_drop_off_m0p5.mp4",
-        "bunny_larger_scale": ACCEPTED_BUNNY_MATRIX_DIR / "bunny_larger_scale" / "phenomenon" / "self_off" / "cloth_bunny_drop_off_m0p5.mp4",
+        "bunny_baseline": HISTORICAL_BUNNY_MATRIX_DIR / "bunny_baseline" / "phenomenon" / "self_off" / "cloth_bunny_drop_off_m0p5.mp4",
+        "box_control": HISTORICAL_BUNNY_MATRIX_DIR / "box_control" / "phenomenon" / "self_off" / "cloth_bunny_drop_off_m0p5.mp4",
+        "bunny_low_inertia": HISTORICAL_BUNNY_MATRIX_DIR / "bunny_low_inertia" / "phenomenon" / "self_off" / "cloth_bunny_drop_off_m0p5.mp4",
+        "bunny_larger_scale": HISTORICAL_BUNNY_MATRIX_DIR / "bunny_larger_scale" / "phenomenon" / "self_off" / "cloth_bunny_drop_off_m0p5.mp4",
     }
     force = {
-        "bunny_baseline": ACCEPTED_BUNNY_MATRIX_DIR / "bunny_baseline" / "force_mechanism" / "self_off" / "force_diagnostic" / "force_diag_trigger_window.mp4",
-        "box_control": ACCEPTED_BUNNY_MATRIX_DIR / "box_control" / "force_mechanism" / "self_off" / "force_diagnostic" / "force_diag_trigger_window.mp4",
-        "bunny_low_inertia": ACCEPTED_BUNNY_MATRIX_DIR / "bunny_low_inertia" / "force_mechanism" / "self_off" / "force_diagnostic" / "force_diag_trigger_window.mp4",
-        "bunny_larger_scale": ACCEPTED_BUNNY_MATRIX_DIR / "bunny_larger_scale" / "force_mechanism" / "self_off" / "force_diagnostic" / "force_diag_trigger_window.mp4",
+        "bunny_baseline": HISTORICAL_BUNNY_MATRIX_DIR / "bunny_baseline" / "force_mechanism" / "self_off" / "force_diagnostic" / "force_diag_trigger_window.mp4",
+        "box_control": HISTORICAL_BUNNY_MATRIX_DIR / "box_control" / "force_mechanism" / "self_off" / "force_diagnostic" / "force_diag_trigger_window.mp4",
+        "bunny_low_inertia": HISTORICAL_BUNNY_MATRIX_DIR / "bunny_low_inertia" / "force_mechanism" / "self_off" / "force_diagnostic" / "force_diag_trigger_window.mp4",
+        "bunny_larger_scale": HISTORICAL_BUNNY_MATRIX_DIR / "bunny_larger_scale" / "force_mechanism" / "self_off" / "force_diagnostic" / "force_diag_trigger_window.mp4",
     }
     return pheno, force
 
@@ -511,7 +524,7 @@ RECALL_SLIDES: list[dict] = [
     {
         "kind": "grid",
         "title": "Result F2: Accepted Force Videos Keep The Full Cloth And Still Explain The Local Contact Patch",
-        "common_settings": "All four accepted force videos now pass black-screen, motion, temporal-density, subject-visibility, and contact-readability QA. The point of this page is WHY it happened.",
+        "common_settings": "All four accepted force videos now pass black-screen, motion, temporal-density, subject-visibility, and contact-readability QA. Experiment setting for the bunny mechanism workpoint: cloth total mass = 0.1 kg, rigid target mass = 0.5 kg. The point of this page is WHY it happened.",
         "items": [
             ("Bunny baseline\nforce mechanism", ACCEPTED_FORCE_GIF["bunny_baseline"]),
             ("Box control\nforce mechanism", ACCEPTED_FORCE_GIF["box_control"]),
@@ -520,6 +533,7 @@ RECALL_SLIDES: list[dict] = [
         ],
         "transcript": [
             "这一页专门讲 force mechanism。",
+            "这里也把实验设定说清楚：cloth total mass 是 0.1 kg，rigid target mass 是 0.5 kg。",
             "现在 accepted 的 force video 已经满足一个很关键的视觉要求：左侧主面板仍然能看到 full cloth 和 bunny，右侧 zoom panel 才负责讲 local force patch。",
             "所以我们不再在 global story 和 local readability 之间二选一。",
             "从这四个 case 可以直接看出，主要问题不是 outward direction 错了，而是 contact support 太弱，尤其是 bunny baseline、low inertia 和 larger scale 这三条 still point to insufficient contact magnitude。",
@@ -527,13 +541,26 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "image",
-        "title": "Result F3: The Accepted 4-Case Summary Board Compresses The Meeting Story Into One Asset",
-        "note": "One representative phenomenon frame + one representative force frame per case, together with compact metrics and one-sentence takeaway.",
+        "title": "Result F3: The New 2x2 Board Makes The Box-vs-Bunny Comparison Immediate",
+        "note": "Current promoted meeting artifact: TL box penalty, TR box total, BL bunny penalty, BR bunny total. Experiment setting: self-collision OFF, cloth total mass = 0.1 kg, rigid target mass = 0.5 kg. The board uses all rigid force-active cloth nodes from rollout start to one second after first collision.",
+        "path": CURRENT_BUNNY_BOARD_GIF,
+        "transcript": [
+            "这一页就是新的 `2 x 2` board video，我把它直接放进 PPT 里了。",
+            "这里必须把实验设定写明：self-collision 是 OFF，cloth total mass 是 0.1 kg，rigid target mass 是 0.5 kg。",
+            "它的结构非常直接：左上是 box penalty，右上是 box total，左下是 bunny penalty，右下是 bunny total。",
+            "所以这一页的价值不是再讲一个局部 mechanism patch，而是把 box versus bunny、penalty versus total 这两个对比同时压进一个 meeting-readable clip。",
+            "如果现场只想停一页讲 penetration，我现在会优先停这一页，因为它最接近老师要的最终 visual comparison。",
+        ],
+    },
+    {
+        "kind": "image",
+        "title": "Result F4: The Historical 4-Case Summary Board Still Compresses The Older Mechanism Story",
+        "note": "Historical 4-case sync-safe summary board: one representative phenomenon frame + one representative force frame per case, together with compact metrics and one-sentence takeaway.",
         "path": ACCEPTED_BUNNY_BOARD_PNG,
         "transcript": [
-            "最后这一页把 accepted package 压成一个 summary board。",
-            "每个 case 我都只保留了一张 phenomenon frame、一张 force frame、几项关键指标和一句 takeaway。",
-            "这样 meeting 里如果时间不够，就算只停在这一页，也能把四个 case 的区别讲清楚：box control 是 broad support patch，bunny 这几条则更像是 outward force 存在但 magnitude 不够。",
+            "这一页保留历史的 4-case summary board，作用更像一张 mechanism summary appendix。",
+            "每个 case 都只保留一张 phenomenon frame、一张 force frame、几项关键指标和一句 takeaway，所以它仍然适合快速回顾旧的四 case mechanism package。",
+            "但和上一页相比，这一页现在不再是主要视频页；真正更适合 meeting 现场播放的是新的 `2 x 2` board。",
         ],
     },
     {
@@ -694,6 +721,8 @@ def _prepare_generated_assets() -> None:
         _ensure_gif(src, ACCEPTED_PHENO_GIF[name], width=640, fps=8, max_colors=96)
     for name, src in ACCEPTED_FORCE_MP4.items():
         _ensure_gif(src, ACCEPTED_FORCE_GIF[name], width=640, fps=8, max_colors=96)
+    if CURRENT_BUNNY_BOARD_MP4.exists():
+        _ensure_gif(CURRENT_BUNNY_BOARD_MP4, CURRENT_BUNNY_BOARD_GIF, width=960, fps=8, max_colors=128)
     _ensure_gif(ROBOT_DROP_BASELINE_OFF_MP4, ROBOT_DROP_BASELINE_OFF_GIF, width=640, fps=8, max_colors=96)
     _ensure_gif(ROBOT_DROP_BASELINE_ON_MP4, ROBOT_DROP_BASELINE_ON_GIF, width=640, fps=8, max_colors=96)
 

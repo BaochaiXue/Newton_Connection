@@ -20,22 +20,22 @@
 - Historical committed results metadata now records the sync-safe 4-case
   mechanism package under:
   - `results_meta/tasks/bunny_penetration_force_diagnostic.json`
-- Existing board/render code also exists, but it is still short of the stricter
-  spec in at least these ways:
-  - main board currently follows geometry-contact membership instead of the
-    force-active collision set
-  - the current board path does not yet save a formal per-frame detector bundle
-    as a promoted artifact
-  - board-level validation is not yet strict enough for the new semantics
-  - the old docs still overstated the historical accepted run as final
+- The reopened all-colliding-node board path is now implemented bridge-side and
+  promoted under:
+  - `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5`
+- The promoted `v5` run now includes:
+  - per-frame detector bundles for `box_control` and `bunny_baseline`
+  - target-only penalty force from explicit re-evaluation with
+    `add_ground_plane=False`
+  - a board-aware QA PASS
+  - artifact-contract PASS
+  - bundle pointers updated under `results/bunny_force_visualization/`
 
 ## Next Step
 
-- harden detector persistence
-- harden board semantics
-- extend validator coverage
-- produce a fresh promoted run under a new
-  `*_realtime_allcolliding_2x2_v1` directory
+- optional slide refresh if the meeting deck should swap the older historical
+  mechanism GIFs for the new `2 x 2` board
+- otherwise keep `v5` as the canonical reopened-board result
 
 ## 2026-04-01 Attempt: `20260401_011336_realtime_allcolliding_2x2_v1`
 
@@ -68,3 +68,43 @@
 - once promoted, update:
   - `results_meta/tasks/bunny_penetration_force_diagnostic.json`
   - `results_meta/LATEST.md`
+
+## 2026-04-01 Promoted Run: `20260401_013500_realtime_allcolliding_2x2_v5`
+
+- Promoted run root:
+  - `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5`
+- Final board artifact:
+  - `artifacts/collision_force_board/collision_force_board_2x2.mp4`
+- Detector semantics:
+  - main node set:
+    `rigid_force_contact_mask = geom_contact_mask AND target_force_contact_mask`
+  - target-only penalty force:
+    `f_external_total` from explicit re-evaluation with
+    `add_ground_plane=False`
+  - total force:
+    `f_internal_total + f_external_total + mass * gravity_vec`
+- First-collision indices:
+  - `box_control = 4`
+  - `bunny_baseline = 4`
+- Validators:
+  - `qa/report.json` -> `PASS`
+  - `qa/verdict.md`
+  - `scripts/validate_experiment_artifacts.py` -> `PASS`
+- Result pointers updated:
+  - `results/bunny_force_visualization/LATEST_SUCCESS.txt`
+  - `results/bunny_force_visualization/LATEST_ATTEMPT.txt`
+  - `results/bunny_force_visualization/INDEX.md`
+
+## 2026-04-01 Slide Update
+
+- Updated the `2026-04-01` meeting deck source so the bunny force-analysis
+  section now explicitly states the experiment setting on-slide:
+  - cloth total mass = `0.1 kg`
+  - rigid target mass = `0.5 kg`
+- Applied this to the visible slide text for:
+  - `Result F2`
+  - `Result F3`
+- Regenerated:
+  - `formal_slide/meeting_2026_04_01/bridge_meeting_20260401.pptx`
+  - `formal_slide/meeting_2026_04_01/transcript.md`
+  - `formal_slide/meeting_2026_04_01/transcript.pdf`

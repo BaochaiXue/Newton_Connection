@@ -442,7 +442,7 @@ def main() -> int:
         "node_mask_semantics": "rigid_force_contact_mask",
         "node_selection_mode": "rigid_force_contact_mask",
         "force_definitions": {
-            "penalty_force": "f_external_total on the current frame; used only on nodes in rigid_force_contact_mask",
+            "penalty_force": "target-only f_external_total from explicit re-evaluation with add_ground_plane=False; used only on nodes in rigid_force_contact_mask",
             "total_force": "f_internal_total + f_external_total + mass * gravity_vec",
             "drag_note": "Drag is omitted from total force when drag is applied as a post-step velocity correction instead of an accumulated force.",
         },

@@ -71,12 +71,17 @@ It should stay current and be updated whenever a task changes state.
   - `results/bunny_force_visualization/runs/20260331_231500_fullprocess_sync_matrix_manual_v2`
   - it still supports the older 4-case mechanism claim package
   - but it is no longer the final meeting visualization target for this task
-  - the bunny task is now reopened for a stricter real-time all-colliding-node
-    `2 x 2` board:
+- A promoted meeting-facing bunny `2 x 2` board now exists under:
+  - `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5`
+  - panel semantics:
     - `box penalty`
     - `box total`
     - `bunny penalty`
     - `bunny total`
+  - main node set:
+    `rigid_force_contact_mask = geom_contact_mask AND target_force_contact_mask`
+  - penalty force now uses target-only explicit re-evaluation with
+    `add_ground_plane=False`
 - No-render realtime profiling exists for the interactive viewer and already
   separates collision, solver-path, and render interpretations.
 - A canonical apples-to-apples rope performance bundle now exists:
@@ -228,14 +233,6 @@ It should stay current and be updated whenever a task changes state.
 - A hard skeptical video evaluator layer separate from optimistic automatic QC
 - One standard harness-consistency lint pass in normal task closeout
 - Rope-side force diagnostic at the same level as cloth-side diagnostic
-- Strict target-only penalty-force decomposition for the reopened bunny
-  `2 x 2` board is still missing
-  - current attempt run:
-    - `results/bunny_force_visualization/runs/20260401_011336_realtime_allcolliding_2x2_v1`
-  - blocker:
-    - `f_external_total` is not yet decomposed per target shape, so the board
-      can still mix target contact with other shape-contact contributors such as
-      ground support
 - Full self-collision decision result across the complete box matrix
 - Final decision on whether strict parity can reach `1e-5` under bridge-only changes
   - current campaign evidence says the best bridge-only result is still around `1.95e-5`

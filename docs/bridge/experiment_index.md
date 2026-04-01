@@ -52,6 +52,14 @@ Specialized bunny visual QA bundles should also expose the workflow under
 `results/bunny_force_visualization/`, including a verdict template for manual
 review.
 
+For the reopened meeting-facing bunny board task, the canonical promoted local
+bundle is now:
+
+- `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5`
+
+and the bundle-level latest pointers under `results/bunny_force_visualization/`
+should be treated as the fast local entrypoint.
+
 ## Legacy vs Canonical
 
 Not every existing directory under `tmp/` already satisfies the contract.

@@ -10,49 +10,56 @@
   },
   "bundle_root": "results/bunny_force_visualization",
   "authoritative_run": {
-    "run_id": "20260331_231500_fullprocess_sync_matrix_manual_v2",
+    "run_id": "20260401_013500_realtime_allcolliding_2x2_v5",
     "authoritative": true,
-    "task_state": "partial",
-    "claim_boundary": "Authoritative historical mechanism package for the four-case bunny force-visualization matrix under the strict sync contract. The task itself is reopened for a new all-colliding-node meeting board, so this run is authoritative for the historical mechanism claim, not for the new final visualization target.",
-    "local_artifact_root": "results/bunny_force_visualization/runs/20260331_231500_fullprocess_sync_matrix_manual_v2",
-    "command_pointer": "results/bunny_force_visualization/runs/20260331_231500_fullprocess_sync_matrix_manual_v2/command.sh",
+    "task_state": "promoted",
+    "claim_boundary": "Authoritative meeting-facing bunny penetration board under the reopened all-colliding-node contract: self-collision OFF, only cloth+box and cloth+bunny, target-only penalty force, and a 2x2 board from rollout start to one second after first rigid collision.",
+    "local_artifact_root": "results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5",
+    "command_pointer": "results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/command.sh",
     "expected_artifacts": [
-      "results/bunny_force_visualization/runs/20260331_231500_fullprocess_sync_matrix_manual_v2/summary.json",
-      "results/bunny_force_visualization/runs/20260331_231500_fullprocess_sync_matrix_manual_v2/artifacts/matrix/bunny_penetration_summary_board.png"
+      "results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/summary.json",
+      "results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/artifacts/collision_force_board/collision_force_board_2x2.mp4",
+      "results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/artifacts/collision_force_board/summary.json"
     ],
     "validator_outputs": [
-      "results/bunny_force_visualization/runs/20260331_231500_fullprocess_sync_matrix_manual_v2/artifacts/matrix/bunny_baseline/qa/verdict.md",
-      "results/bunny_force_visualization/runs/20260331_231500_fullprocess_sync_matrix_manual_v2/artifacts/matrix/box_control/qa/verdict.md",
-      "results/bunny_force_visualization/runs/20260331_231500_fullprocess_sync_matrix_manual_v2/artifacts/matrix/bunny_low_inertia/qa/verdict.md",
-      "results/bunny_force_visualization/runs/20260331_231500_fullprocess_sync_matrix_manual_v2/artifacts/matrix/bunny_larger_scale/qa/verdict.md"
+      "results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/qa/report.json",
+      "results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/qa/verdict.md"
     ],
     "verdict_pointers": [
-      "results/bunny_force_visualization/runs/20260331_231500_fullprocess_sync_matrix_manual_v2/artifacts/matrix/bunny_baseline/qa/verdict.md"
+      "results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/qa/verdict.md"
     ],
     "repo_friendly_evidence": {
       "summary": [
-        "Historical four-case force-mechanism package passes the strict active-interval synchronization gate.",
-        "Current mechanism conclusion remains: not wrong direction, but sparse support / insufficient contact magnitude on bunny."
+        "Promoted board passes both the board-aware visual QA and the generic artifact-contract validator.",
+        "The meeting artifact now shows all rigid force-active cloth nodes instead of a top-k or trigger-centered subset.",
+        "Penalty force is now target-only via explicit re-evaluation with add_ground_plane=False."
       ],
       "key_metrics": {
-        "bunny_baseline_geom_contact_nodes": 2,
-        "box_control_geom_contact_nodes": 2116,
-        "bunny_baseline_max_mesh_pen_mm": 4.3976,
-        "box_control_max_mesh_pen_mm": 16.2965
+        "box_first_force_contact_frame": 4,
+        "bunny_first_force_contact_frame": 4,
+        "box_clip_video_frame_count": 87,
+        "bunny_clip_video_frame_count": 87
       },
       "thumbnail_paths": [
-        "results/bunny_force_visualization/runs/20260331_231500_fullprocess_sync_matrix_manual_v2/artifacts/matrix/bunny_penetration_summary_board.png"
+        "results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/artifacts/collision_force_board/collision_force_board_2x2_first_frame.png"
       ]
     },
     "why_passed": [
-      "All four cases report exact active-interval mapping for force overlays.",
-      "Phenomenon and force-mechanism videos both pass their QA bundles.",
-      "The package cleanly separates historical mechanism evidence from the reopened newer board request."
+      "The promoted board follows the reopened meeting contract: self-collision OFF, box+bunny only, and a fixed 2x2 layout.",
+      "The detector bundle is saved per frame for both cases and the main board uses all rigid force-active cloth nodes.",
+      "Penalty force now uses target-only explicit re-evaluation instead of the older full-scene external-force shortcut."
     ],
-    "predecessor": "20260331_033500_baseline_syncfix_v1",
+    "predecessor": "20260331_231500_fullprocess_sync_matrix_manual_v2",
     "superseded_by": null
   },
   "superseded_runs": [
+    {
+      "run_id": "20260331_231500_fullprocess_sync_matrix_manual_v2",
+      "status": "historical",
+      "local_artifact_root": "results/bunny_force_visualization/runs/20260331_231500_fullprocess_sync_matrix_manual_v2",
+      "why_not_authoritative": "Historical four-case mechanism package under the strict sync contract. It remains valid evidence for the older mechanism claim, but it is superseded as the final meeting visualization artifact by the all-colliding-node 2x2 board.",
+      "superseded_by": "20260401_013500_realtime_allcolliding_2x2_v5"
+    },
     {
       "run_id": "20260330_183245_final_matrix",
       "status": "superseded",

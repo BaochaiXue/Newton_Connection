@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import pickle
 import sys
@@ -112,6 +113,20 @@ def main() -> int:
         device=device,
         n_obj=n_obj,
     )
+    target_only_args = copy.deepcopy(run_args)
+    target_only_args.add_ground_plane = False
+    target_model, target_meta, target_n_obj = demo.build_model(ir_obj, target_only_args, device)
+    if int(target_n_obj) != int(n_obj):
+        raise RuntimeError(
+            f"target-only model particle count mismatch: target={target_n_obj} full={n_obj}"
+        )
+    target_only_context = demo._make_explicit_force_snapshot_context(
+        model=target_model,
+        ir_obj=ir_obj,
+        args=target_only_args,
+        device=device,
+        n_obj=n_obj,
+    )
 
     particle_q_all = np.asarray(sim_data["particle_q_all"], dtype=np.float32)
     particle_qd_all = np.asarray(sim_data["particle_qd_all"], dtype=np.float32)
@@ -142,6 +157,26 @@ def main() -> int:
             body_qd=body_qd_all[frame_idx],
             explicit_context=explicit_context,
         )
+        target_only_snapshot = demo._capture_force_snapshot_from_explicit_state(
+            model=target_model,
+            meta=target_meta,
+            ir_obj=ir_obj,
+            args=target_only_args,
+            device=device,
+            n_obj=n_obj,
+            frame_index=int(frame_idx),
+            substep_index_in_frame=0,
+            global_substep_index=int(frame_idx) * int(sim_data["substeps"]),
+            sim_time=float(frame_idx) * sim_frame_dt,
+            particle_q=particle_q_all[frame_idx],
+            particle_qd=particle_qd_all[frame_idx],
+            body_q=body_q_all[frame_idx],
+            body_qd=body_qd_all[frame_idx],
+            explicit_context=target_only_context,
+        )
+        snapshot["rigid_target_only_f_external_total"] = np.asarray(
+            target_only_snapshot["f_external_total"], dtype=np.float32
+        )
         snapshots.append(snapshot)
         if (frame_idx + 1) % 10 == 0 or frame_idx + 1 == n_frames:
             print(f"[build_bunny_collision_force_bundle] frame {frame_idx + 1}/{n_frames}", flush=True)
@@ -154,12 +189,16 @@ def main() -> int:
         [np.asarray(snapshot["force_contact_mask"], dtype=bool) for snapshot in snapshots],
         axis=0,
     )
-    rigid_force_contact_mask = np.logical_and(geom_contact_mask, force_contact_mask)
-    particle_q = np.stack([np.asarray(snapshot["particle_q"], dtype=np.float32) for snapshot in snapshots], axis=0)
-    penalty_force = np.stack(
-        [np.asarray(snapshot["f_external_total"], dtype=np.float32) for snapshot in snapshots],
+    target_penalty_force = np.stack(
+        [np.asarray(snapshot["rigid_target_only_f_external_total"], dtype=np.float32) for snapshot in snapshots],
         axis=0,
     )
+    target_force_contact_mask = (
+        np.linalg.norm(target_penalty_force, axis=2).astype(np.float32, copy=False) > 1.0e-8
+    )
+    rigid_force_contact_mask = np.logical_and(geom_contact_mask, target_force_contact_mask)
+    particle_q = np.stack([np.asarray(snapshot["particle_q"], dtype=np.float32) for snapshot in snapshots], axis=0)
+    penalty_force = target_penalty_force
     total_force = np.stack(
         [
             (
@@ -197,6 +236,7 @@ def main() -> int:
 
     geom_ptr, geom_flat = _pack_mask_indices(geom_contact_mask)
     force_ptr, force_flat = _pack_mask_indices(force_contact_mask)
+    target_force_ptr, target_force_flat = _pack_mask_indices(target_force_contact_mask)
     rigid_ptr, rigid_flat = _pack_mask_indices(rigid_force_contact_mask)
 
     npz_path = out_dir / "collision_force_rollout_bundle.npz"
@@ -212,6 +252,9 @@ def main() -> int:
         geom_contact_index_flat=geom_flat,
         force_contact_index_ptr=force_ptr,
         force_contact_index_flat=force_flat,
+        target_force_contact_mask=target_force_contact_mask.astype(np.bool_, copy=False),
+        target_force_contact_index_ptr=target_force_ptr,
+        target_force_contact_index_flat=target_force_flat,
         rigid_force_contact_index_ptr=rigid_ptr,
         rigid_force_contact_index_flat=rigid_flat,
         penalty_force=penalty_force,
@@ -251,11 +294,12 @@ def main() -> int:
         "node_selection_mode": "rigid_force_contact_mask",
         "contact_mask_semantics": {
             "geom_contact_mask": "rigid-target geometry-contact mask from signed penetration against the chosen rigid target",
-            "force_contact_mask": "nonzero external penalty force mask on the current cloth node",
-            "rigid_force_contact_mask": "geom_contact_mask AND force_contact_mask; this is the main board node set",
+            "force_contact_mask": "nonzero full-scene external-force mask on the current cloth node",
+            "target_force_contact_mask": "nonzero rigid-target-only penalty mask from explicit re-evaluation with add_ground_plane=False",
+            "rigid_force_contact_mask": "geom_contact_mask AND target_force_contact_mask; this is the main board node set",
         },
         "force_definitions": {
-            "penalty_force": "f_external_total on the current frame; used only on nodes in rigid_force_contact_mask",
+            "penalty_force": "target-only f_external_total from explicit re-evaluation with add_ground_plane=False; used only on nodes in rigid_force_contact_mask",
             "total_force": "f_internal_total + f_external_total + mass * gravity_vec",
             "drag_note": "Drag is omitted from total force when drag is applied as a post-step velocity correction instead of an accumulated force.",
         },
@@ -272,6 +316,7 @@ def main() -> int:
         "clip_video_frame_indices": [int(v) for v in clip_video_frame_indices.tolist()],
         "geom_contact_node_count_per_frame": [int(v) for v in np.sum(geom_contact_mask, axis=1, dtype=np.int32).tolist()],
         "force_contact_node_count_per_frame": [int(v) for v in np.sum(force_contact_mask, axis=1, dtype=np.int32).tolist()],
+        "target_force_contact_node_count_per_frame": [int(v) for v in np.sum(target_force_contact_mask, axis=1, dtype=np.int32).tolist()],
         "rigid_force_contact_node_count_per_frame": [int(v) for v in np.sum(rigid_force_contact_mask, axis=1, dtype=np.int32).tolist()],
         "max_penalty_force_n": float(np.max(penalty_force_norm)) if penalty_force_norm.size else 0.0,
         "max_total_force_n": float(np.max(total_force_norm)) if total_force_norm.size else 0.0,
