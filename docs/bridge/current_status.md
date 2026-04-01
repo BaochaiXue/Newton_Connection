@@ -14,6 +14,10 @@ It should stay current and be updated whenever a task changes state.
   - native Franka Panda URDF
   - bridge rope
   - `mp4 + gif + summary.json` artifacts
+- A dedicated tabletop-push hero-demo workstream is now scaffolded for the
+  same native Franka + PhysTwin rope path:
+  - `docs/bridge/tasks/robot_rope_franka_tabletop_push.md`
+  - canonical result tree reserved under `Newton/phystwin_bridge/results/robot_rope_franka/`
 - A separate stage-0 sanity-baseline scaffold now exists for the native robot
   rope release/drop case:
   - `docs/bridge/tasks/native_robot_rope_drop_release.md`

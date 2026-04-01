@@ -39,7 +39,11 @@ Operational ledgers:
 - Task page: [robot_deformable_demo.md](./docs/bridge/tasks/robot_deformable_demo.md)
 - Current goal: turn robot + deformable into a defendable claim with native Newton robot assets, layered deliverables, and measurable acceptance.
 
-### 5. Native Robot Rope Drop/Release Sanity Baseline
+### 5. Native Robot + Native Table + PhysTwin Rope Hero Demo
+- Task page: [robot_rope_franka_tabletop_push.md](./docs/bridge/tasks/robot_rope_franka_tabletop_push.md)
+- Current goal: make the tabletop push hero clip slow, readable, and defensible.
+
+### 6. Native Robot Rope Drop/Release Sanity Baseline
 - Task page: [native_robot_rope_drop_release.md](./docs/bridge/tasks/native_robot_rope_drop_release.md)
 - Current goal: isolate the stage-0 native Franka rope release/drop baseline before any stronger two-way-coupling claim.
 

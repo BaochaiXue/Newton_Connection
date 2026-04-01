@@ -17,6 +17,7 @@ Each task page should answer:
 - [bunny_penetration_force_diagnostic.md](./bunny_penetration_force_diagnostic.md)
 - [video_presentation_quality.md](./video_presentation_quality.md)
 - [robot_deformable_demo.md](./robot_deformable_demo.md)
+- [robot_rope_franka_tabletop_push.md](./robot_rope_franka_tabletop_push.md)
 - [native_robot_rope_drop_release.md](./native_robot_rope_drop_release.md)
 - [interactive_playground_profiling.md](./interactive_playground_profiling.md)
 - [rope_perf_apples_to_apples.md](./rope_perf_apples_to_apples.md)
