@@ -66,8 +66,6 @@ COMMON_ARGS=(
   --tabletop-push-clearance-z 0.008
   --tabletop-retract-clearance-z 0.05
   --tabletop-ee-offset-z 0.22
-  --particle-radius-vis-scale 1.0
-  --particle-radius-vis-min 0.026
   --rope-line-width 0.024
   "$@"
 )
