@@ -1,0 +1,20 @@
+{
+  "verdict": "FAIL",
+  "claim_boundary": "Native robot + semi-implicit rope release/drop sanity baseline: visible support, release, gravity-driven free fall, real ground contact, readable 1:1 video.",
+  "hard_fail_reasons": [
+    "sampled transitions are too static for conservative acceptance"
+  ],
+  "evidence": [
+    {
+      "timestamp_s": 0.0,
+      "frame_index": 0,
+      "frame_path": "sampled_frames/frame_000000.png",
+      "observation": "Review bundle contains evenly sampled frames across the video.",
+      "supports_claim": false
+    }
+  ],
+  "missing_or_ambiguous": [
+    "no separate manual skeptical review JSON was provided; fail closed until a reviewer cites timestamps and frames"
+  ],
+  "summary": "FAIL closed. Either a hard-fail criterion triggered or no separate skeptical reviewer supplied a defensible PASS."
+}
