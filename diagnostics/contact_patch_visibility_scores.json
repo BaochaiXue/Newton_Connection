@@ -1,0 +1,42 @@
+{
+  "hero": {
+    "camera": {
+      "fov": 33.0,
+      "pitch": -24.0,
+      "pos": [
+        0.9308223724365234,
+        -1.1416003704071045,
+        0.9019702672958374
+      ],
+      "target": [
+        0.026126153767108917,
+        -0.13683344423770905,
+        0.30000001192092896
+      ],
+      "yaw": 132.0
+    },
+    "pedestal_hidden_in_hero": true,
+    "push_focus_target_offset_m": 0.06689295336502656
+  },
+  "method": "camera-target alignment heuristic; full multimodal judgement still requires video review",
+  "run_id": "BEST_RUN",
+  "validation": {
+    "camera": {
+      "fov": 38.0,
+      "pitch": -23.0,
+      "pos": [
+        1.4288767576217651,
+        -0.7858306169509888,
+        0.9464282989501953
+      ],
+      "target": [
+        0.016126153990626335,
+        -0.1568334400653839,
+        0.2900000214576721
+      ],
+      "yaw": 156.0
+    },
+    "pedestal_hidden_in_hero": false,
+    "push_focus_target_offset_m": 0.04329853508492805
+  }
+}

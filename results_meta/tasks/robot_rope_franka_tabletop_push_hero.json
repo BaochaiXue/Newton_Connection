@@ -10,53 +10,56 @@
   },
   "bundle_root": "Newton/phystwin_bridge/results/robot_rope_franka",
   "authoritative_run": {
-    "run_id": "20260401_093102_fixeddt_c10_contactfix_cam",
+    "run_id": "20260401_203416_remotefix_truthcam_c12",
     "authoritative": true,
     "task_state": "promoted",
-    "claim_boundary": "Meeting-ready native Newton Franka + native Newton tabletop + PhysTwin rope tabletop-push hero demo under fixed sim_dt = 5e-5 and substeps = 667. This claims a readable, defensible tabletop push baseline, not final full manipulation.",
-    "local_artifact_root": "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_093102_fixeddt_c10_contactfix_cam",
-    "command_pointer": "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_093102_fixeddt_c10_contactfix_cam/run_command.txt",
+    "claim_boundary": "Meeting-ready native Newton Franka + native Newton tabletop + PhysTwin rope tabletop-push hero demo under fixed sim_dt = 5e-5 and substeps = 667. This claims a readable, defensible tabletop finger-push baseline whose visual rope thickness now matches the physical contact thickness. It does not claim full two-way coupling or final manipulation.",
+    "local_artifact_root": "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_203416_remotefix_truthcam_c12",
+    "command_pointer": "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_203416_remotefix_truthcam_c12/run_command.txt",
     "expected_artifacts": [
-      "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_093102_fixeddt_c10_contactfix_cam/hero_presentation.mp4",
-      "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_093102_fixeddt_c10_contactfix_cam/hero_debug.mp4",
-      "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_093102_fixeddt_c10_contactfix_cam/validation_camera.mp4",
-      "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_093102_fixeddt_c10_contactfix_cam/summary.json",
-      "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_093102_fixeddt_c10_contactfix_cam/physics_validation.json",
-      "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_093102_fixeddt_c10_contactfix_cam/contact_sheet.png",
-      "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_093102_fixeddt_c10_contactfix_cam/validation.md"
+      "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_203416_remotefix_truthcam_c12/hero_presentation.mp4",
+      "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_203416_remotefix_truthcam_c12/hero_debug.mp4",
+      "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_203416_remotefix_truthcam_c12/validation_camera.mp4",
+      "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_203416_remotefix_truthcam_c12/summary.json",
+      "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_203416_remotefix_truthcam_c12/physics_validation.json",
+      "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_203416_remotefix_truthcam_c12/contact_sheet.png",
+      "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_203416_remotefix_truthcam_c12/validation.md"
     ],
     "validator_outputs": [
-      "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_093102_fixeddt_c10_contactfix_cam/metrics.json",
-      "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_093102_fixeddt_c10_contactfix_cam/validation.md",
-      "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_093102_fixeddt_c10_contactfix_cam/ffprobe.json"
+      "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_203416_remotefix_truthcam_c12/metrics.json",
+      "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_203416_remotefix_truthcam_c12/validation.md",
+      "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_203416_remotefix_truthcam_c12/ffprobe.json"
     ],
     "verdict_pointers": [
-      "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_093102_fixeddt_c10_contactfix_cam/validation.md"
+      "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_203416_remotefix_truthcam_c12/validation.md",
+      "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_203416_remotefix_truthcam_c12/verdict.md",
+      "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_203416_remotefix_truthcam_c12/diagnostics/multimodal_review_20260401_203416_remotefix_truthcam_c12.md"
     ],
     "repo_friendly_evidence": {
       "summary": [
         "Native Newton Franka visibly approaches, contacts, and laterally pushes a PhysTwin rope across a native Newton tabletop.",
-        "The promoted contact-fix update starts visible contact earlier, reducing the impression that the rope moves before the finger arrives.",
-        "Strict validator and truthful manual review both pass on the promoted run."
+        "The promoted truth-fix update renders the rope at a thickness consistent with the physical rope collision radius, removing the earlier stand-off contact impression.",
+        "Strict validator, truthful manual review, and fail-closed full-video review all pass on the promoted run."
       ],
       "key_metrics": {
         "duration_s": 6.2,
-        "first_contact_time_s": 2.2011,
-        "contact_duration_s": 2.9348,
-        "gripper_center_path_length_m": 0.3289980292,
-        "min_clearance_min_m": -0.0103589874
+        "first_contact_time_s": 1.6675,
+        "actual_finger_box_first_contact_time_s": 1.6675,
+        "contact_duration_s": 2.96815,
+        "rope_surface_clearance_to_table_min_m": -0.004818812,
+        "min_clearance_min_m": -0.0128063839
       },
       "thumbnail_paths": [
-        "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_093102_fixeddt_c10_contactfix_cam/contact_sheet.png",
-        "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_093102_fixeddt_c10_contactfix_cam/contact_sheets/hero_presentation.png"
+        "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_203416_remotefix_truthcam_c12/contact_sheet.png",
+        "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_203416_remotefix_truthcam_c12/diagnostics/review_bundle_hero/event_sheet.png"
       ]
     },
     "why_passed": [
-      "Robot, table, rope, and contact patch are all readable in the hero camera.",
-      "Validation camera preserves the honest full geometry while still showing contact and rope response.",
-      "The fixed-timestep run passes strict validator objective gates and truthful manual review."
+      "Robot, table, rope, and contact patch are all readable in the hero camera without the earlier stand-off impression.",
+      "Validation camera preserves the honest full geometry while still showing real finger contact and rope response.",
+      "The fixed-timestep run passes strict validator objective gates, truthful manual review, and a fail-closed full-video review."
     ],
-    "predecessor": null,
+    "predecessor": "20260401_093102_fixeddt_c10_contactfix_cam",
     "superseded_by": null
   },
   "superseded_runs": [
@@ -73,6 +76,13 @@
       "local_artifact_root": "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_081639_fixeddt_c08_gatepass",
       "why_not_authoritative": "Earlier promoted tabletop hero was defendable, but the contact-fix successor starts visible contact earlier and better addresses the reported pre-contact rope-motion concern.",
       "superseded_by": "20260401_093102_fixeddt_c10_contactfix_cam"
+    },
+    {
+      "run_id": "20260401_093102_fixeddt_c10_contactfix_cam",
+      "status": "superseded",
+      "local_artifact_root": "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_093102_fixeddt_c10_contactfix_cam",
+      "why_not_authoritative": "c10 still left a stand-off / remote-interaction impression because the rope was rendered much thinner than the physical rope collision thickness and the visible-contact proof remained proxy-dominated. c12 fixes the visual-truth mismatch and re-certifies the finger-contact claim.",
+      "superseded_by": "20260401_203416_remotefix_truthcam_c12"
     }
   ],
   "local_only_surfaces": [

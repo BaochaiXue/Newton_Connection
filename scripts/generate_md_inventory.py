@@ -44,13 +44,13 @@ def _render_inventory_md(inventory: list[dict]) -> str:
     lines = _generated_header("# Markdown Inventory")
     lines.extend(
         [
-            "| Path | Classification | Owner | Replacement | Action | Indexed | Review | Auth Lang | Run IDs | `/home` |",
-            "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+            "| Path | Classification | Owner | Replacement | Action | Actionable | Indexed | Review | Enforced | Auth Lang | Run IDs | `/home` |",
+            "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
         ]
     )
     for row in inventory:
         lines.append(
-            "| `{path}` | `{classification}` | `{owner_surface}` | `{canonical_replacement}` | `{action}` | `{indexed_from_canonical_entrypoint}` | `{review_status}` | `{contains_authoritative_language}` | `{contains_run_ids}` | `{contains_machine_local_paths}` |".format(
+            "| `{path}` | `{classification}` | `{owner_surface}` | `{canonical_replacement}` | `{action}` | `{actionable_status}` | `{indexed_from_canonical_entrypoint}` | `{review_status}` | `{review_enforced}` | `{contains_authoritative_language}` | `{contains_run_ids}` | `{contains_machine_local_paths}` |".format(
                 **row
             )
         )
@@ -108,7 +108,7 @@ def _render_cleanup_md(inventory: list[dict], orphans: list[dict], deprecations:
             "",
         ]
     )
-    action_rows = [row for row in inventory if row["action"] != "KEEP"]
+    action_rows = [row for row in inventory if row["actionable_status"] == "actionable"]
     if not action_rows:
         lines.append("- No non-trivial cleanup actions are currently outstanding in the inventory snapshot.")
     else:
@@ -121,6 +121,13 @@ def _render_cleanup_md(inventory: list[dict], orphans: list[dict], deprecations:
             "",
             f"- deprecated/historical/local-only surfaces tracked: `{len(deprecations)}`.",
             f"- orphan surfaces tracked: `{len(orphans)}`.",
+            "",
+            "## Workflow Usage Status",
+            "",
+            "- `planner-spec`: partially load-bearing through the repo-native task/spec/plan chain, but not directly auditable per task.",
+            "- `milestone-contract` / `tasks/contracts/`: selectively load-bearing only when real contract files exist under `tasks/contracts/`.",
+            "- `handoff-resume` / `tasks/handoffs/`: selectively load-bearing only when real handoff files exist under `tasks/handoffs/`.",
+            "- `skeptical-video-audit`: partially load-bearing; scripts and hooks exist, but task closeout still needs explicit verdict-surface discipline.",
         ]
     )
     return "\n".join(lines)
@@ -133,13 +140,20 @@ def _render_staleness_md(rows: list[dict]) -> str:
         return "\n".join(lines)
     lines.extend(
         [
-            "| Path | Classification | Review | Age (d) | Interval (d) | Overgrown | Compressed | Action |",
-            "| --- | --- | --- | --- | --- | --- | --- | --- |",
+            "This report is intentionally narrowed to the enforced high-signal review scope plus any surface that is overgrown or line-compressed.",
+            "It is meant to function as a maintenance queue, not a permanent wall of red template files.",
+            "",
+        ]
+    )
+    lines.extend(
+        [
+            "| Path | Classification | Review | Age (d) | Interval (d) | Enforced | Overgrown | Compressed | Action |",
+            "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
         ]
     )
     for row in rows:
         lines.append(
-            "| `{path}` | `{classification}` | `{review_status}` | `{review_age_days}` | `{review_interval_days}` | `{overgrown_for_role}` | `{line_compressed}` | `{action}` |".format(
+            "| `{path}` | `{classification}` | `{review_status}` | `{review_age_days}` | `{review_interval_days}` | `{review_enforced}` | `{overgrown_for_role}` | `{line_compressed}` | `{action}` |".format(
                 **row
             )
         )
@@ -150,16 +164,27 @@ def _render_task_surface_md(rows: list[dict]) -> str:
     lines = _generated_header("# Task Surface Matrix")
     lines.extend(
         [
-            "| Task | Task Page | Spec | Plan | Implement | Status | Registry | Registry State | Current Run |",
-            "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+            "This matrix shows whether each active task has a full chain, registry backing, and real contract/handoff artifacts.",
+            "Template files alone do not count as workflow usage.",
+            "",
+        ]
+    )
+    lines.extend(
+        [
+            "| Task | Task Page | Spec | Plan | Implement | Status | Contract | Handoff | Registry | Registry State | Current Run |",
+            "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
         ]
     )
     for row in rows:
         lines.append(
-            "| `{task_slug}` | `{task_page}` | `{spec}` | `{plan}` | `{implement}` | `{status}` | `{registry_backed}` | `{registry_state}` | `{registry_run_id}` |".format(
+            "| `{task_slug}` | `{task_page}` | `{spec}` | `{plan}` | `{implement}` | `{status}` | `{contract}` | `{handoff}` | `{registry_backed}` | `{registry_state}` | `{registry_run_id}` |".format(
                 **row
             )
         )
+        if row["contract_paths"] or row["handoff_paths"]:
+            lines.append(
+                f"|  |  |  |  |  |  | `{row['contract_paths'] or '-'}` | `{row['handoff_paths'] or '-'}` |  |  |  |"
+            )
     return "\n".join(lines)
 
 

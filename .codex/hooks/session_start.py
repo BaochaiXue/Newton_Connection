@@ -14,8 +14,9 @@ def main() -> int:
     additional = (
         "Load the repo harness before editing: read AGENTS.md, docs/README.md, "
         "TODO.md, then the relevant docs/bridge/tasks page. Use scripts/ wrappers "
-        "when they exist. Update task/status docs for non-trivial work. For long "
-        "tasks use tasks/contracts and tasks/handoffs. If a run becomes authoritative, "
+        "when they exist. Update task/status docs for non-trivial work. For high-risk "
+        "or multi-session tasks, use tasks/contracts and tasks/handoffs selectively "
+        "instead of leaving the workflow implicit. If a run becomes authoritative, "
         "update results_meta before claiming completion. If you rename, deprecate, "
         "archive, or supersede a Markdown surface, update docs/generated/md_inventory.*, "
         "md_staleness_report.md, task_surface_matrix.md, the deprecation ledger, and run scripts/lint_harness_consistency.py before ending. "

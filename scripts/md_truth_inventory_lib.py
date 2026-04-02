@@ -125,6 +125,24 @@ CANONICAL_SURFACES = {
     "AGENTS.md",
 }
 
+REVIEW_ENFORCED_SURFACES = {
+    "TODO.md",
+    "docs/bridge/current_status.md",
+    "docs/bridge/open_questions.md",
+    "docs/bridge/experiment_index.md",
+    "docs/bridge/tasks/README.md",
+    "docs/archive/README.md",
+    "docs/archive/tasks/README.md",
+    "docs/generated/README.md",
+    "docs/runbooks/doc_gardening.md",
+    "results_meta/README.md",
+    "results_meta/DEPRECATED.md",
+    "results_meta/schema.md",
+    "tasks/README.md",
+    "tasks/contracts/README.md",
+    "tasks/handoffs/README.md",
+}
+
 ACTIVE_SUPPORTING_PATHS = {
     "docs/AGENTS.md",
     "docs/bridge/README.md",
@@ -551,9 +569,48 @@ def _default_review_interval(rel: str, classification: str) -> int | None:
     return None
 
 
+def _review_enforced(rel: str, classification: str) -> bool:
+    if classification == "GENERATED_CANONICAL":
+        return False
+    if rel in REVIEW_ENFORCED_SURFACES:
+        return True
+    if rel.startswith("docs/bridge/tasks/") and Path(rel).stem in active_task_slugs():
+        return True
+    return False
+
+
+def _in_review_scope(rel: str, classification: str) -> bool:
+    if classification == "GENERATED_CANONICAL":
+        return False
+    if rel in {
+        "TODO.md",
+        "docs/bridge/current_status.md",
+        "docs/bridge/open_questions.md",
+        "docs/bridge/tasks/README.md",
+        "docs/generated/README.md",
+        "docs/runbooks/doc_gardening.md",
+        "results_meta/README.md",
+        "results_meta/schema.md",
+        "tasks/README.md",
+        "tasks/contracts/README.md",
+        "tasks/handoffs/README.md",
+        "docs/bridge/tasks/markdown_harness_maintenance_upgrade.md",
+        "tasks/spec/markdown_harness_maintenance_upgrade.md",
+        "plans/active/markdown_harness_maintenance_upgrade.md",
+        "tasks/implement/markdown_harness_maintenance_upgrade.md",
+        "tasks/status/markdown_harness_maintenance_upgrade.md",
+    }:
+        return True
+    if rel.startswith("docs/bridge/tasks/") and Path(rel).stem in active_task_slugs():
+        return True
+    return False
+
+
 def _review_info(meta: dict[str, str], rel: str, classification: str) -> tuple[int | None, int | None, str]:
     if classification == "GENERATED_CANONICAL":
         return (None, None, "generated")
+    if not _in_review_scope(rel, classification):
+        return (None, None, "out_of_scope")
     interval_days = _parse_review_interval_days(meta.get("review_interval", "")) or _default_review_interval(rel, classification)
     last = meta.get("last_reviewed", "")
     if not last:
@@ -626,14 +683,23 @@ def build_inventory() -> list[dict]:
         row["indexed_from_canonical_entrypoint"] = rel in indexed
         row["overgrown_for_role"] = _overgrown_for_role(rel, row["line_count"])
         row["line_compressed"] = _line_compressed(row["max_line_length"], row["avg_nonblank_line_length"])
+        row["review_enforced"] = _review_enforced(rel, row["classification"])
         if row["classification"] in {"CANONICAL", "ACTIVE_SUPPORTING"} and not row["indexed_from_canonical_entrypoint"] and not _allow_unindexed(rel, row["classification"]):
             row["classification"] = "ORPHAN"
             row["reason"] = "Control-plane file is not indexed from canonical entrypoints or active task chains."
+            row["review_enforced"] = False
         row["action"] = _recommended_action(
             row["classification"],
             row["overgrown_for_role"],
             row["line_compressed"],
-            row["review_status"],
+            row["review_status"] if row["review_enforced"] else "ok",
+        )
+        row["actionable_status"] = (
+            "generated"
+            if row["classification"] == "GENERATED_CANONICAL"
+            else "actionable"
+            if row["action"] in {"REFORMAT", "STUB", "ARCHIVE", "MERGE", "DELETE"}
+            else "quiet"
         )
     return rows
 
@@ -662,9 +728,14 @@ def staleness_rows(inventory: list[dict]) -> list[dict]:
     return [
         row
         for row in inventory
-        if row["review_status"] in {"missing", "due", "parse_error"}
+        if (
+            row["review_enforced"] and row["review_status"] in {"missing", "due", "parse_error"}
+        )
         or row["overgrown_for_role"]
-        or row["line_compressed"]
+        or (
+            row["line_compressed"]
+            and row["classification"] in {"CANONICAL", "ACTIVE_SUPPORTING", "LOCAL_ONLY_SECONDARY"}
+        )
     ]
 
 
@@ -678,6 +749,10 @@ def task_surface_rows() -> list[dict]:
         implement = ROOT / f"tasks/implement/{slug}.md"
         status = ROOT / f"tasks/status/{slug}.md"
         registry_entry = registry.get(slug)
+        contract_files = sorted((ROOT / "tasks/contracts").glob(f"{slug}*.md"))
+        contract_files = [path for path in contract_files if path.name != "_contract_template.md"]
+        handoff_files = sorted((ROOT / "tasks/handoffs").glob(f"{slug}*.md"))
+        handoff_files = [path for path in handoff_files if path.name != "_handoff_template.md"]
         rows.append(
             {
                 "task_slug": slug,
@@ -686,6 +761,10 @@ def task_surface_rows() -> list[dict]:
                 "plan": plan.exists(),
                 "implement": implement.exists(),
                 "status": status.exists(),
+                "contract": bool(contract_files),
+                "handoff": bool(handoff_files),
+                "contract_paths": ", ".join(_relative(path) for path in contract_files),
+                "handoff_paths": ", ".join(_relative(path) for path in handoff_files),
                 "registry_backed": bool(registry_entry),
                 "registry_state": (registry_entry or {}).get("authoritative_run", {}).get("task_state", ""),
                 "registry_run_id": (registry_entry or {}).get("authoritative_run", {}).get("run_id", ""),

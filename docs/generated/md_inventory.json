@@ -1,6 +1,7 @@
 [
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 39.8,
     "canonical_replacement": "",
     "classification": "CANONICAL",
@@ -22,11 +23,13 @@
     "path": "AGENTS.md",
     "reason": "Canonical live surface for its concept.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 31.2,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -48,11 +51,13 @@
     "path": "Newton/phystwin_bridge/AGENTS.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "STUB",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 45.8,
     "canonical_replacement": "docs/bridge/current_status.md",
     "classification": "DEPRECATED_POINTER",
@@ -73,12 +78,14 @@
     "owner_surface": "bridge_control_plane",
     "path": "Newton/phystwin_bridge/STATUS.md",
     "reason": "Legacy subtree status surface kept only as a pointer for users who enter through `Newton/phystwin_bridge/`.",
-    "review_age_days": 0,
+    "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "ok"
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 38.2,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -100,11 +107,13 @@
     "path": "Newton/phystwin_bridge/demos/AGENTS.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 47.6,
     "canonical_replacement": "results_meta/tasks/self_collision_transfer.json",
     "classification": "HISTORICAL_ARCHIVE",
@@ -125,13 +134,15 @@
     "owner_surface": "self_collision_transfer",
     "path": "Newton/phystwin_bridge/results/final_self_collision_campaign_20260330_205935_4fdef39/README.md",
     "reason": "Superseded local campaign bundle. Current committed self-collision status lives in `results_meta/tasks/self_collision_transfer.json`.",
-    "review_age_days": 0,
-    "review_interval_days": 90,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "KEEP",
-    "avg_nonblank_line_length": 43.2,
+    "actionable_status": "quiet",
+    "avg_nonblank_line_length": 46.0,
     "canonical_replacement": "results_meta/tasks/self_collision_transfer.json",
     "classification": "LOCAL_ONLY_SECONDARY",
     "contains_authoritative_language": true,
@@ -139,10 +150,10 @@
     "contains_run_ids": false,
     "indexed_from_canonical_entrypoint": false,
     "line_compressed": false,
-    "line_count": 43,
-    "max_line_length": 136,
+    "line_count": 48,
+    "max_line_length": 197,
     "metadata_last_reviewed": "2026-04-01",
-    "metadata_notes": "Local blocked-bundle status only. Committed current meaning lives in `results_meta/` and the active self-collision task status.",
+    "metadata_notes": "Local blocked-bundle status only. This file preserves the older blocked campaign snapshot; newer scratch parity numbers live in the active task status and are not committed authority here.",
     "metadata_owner_surface": "self_collision_transfer",
     "metadata_review_interval": "30d",
     "metadata_status": "local_only_secondary",
@@ -150,13 +161,15 @@
     "overgrown_for_role": false,
     "owner_surface": "self_collision_transfer",
     "path": "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/FINAL_STATUS.md",
-    "reason": "Local blocked-bundle status only. Committed current meaning lives in `results_meta/` and the active self-collision task status.",
-    "review_age_days": 0,
-    "review_interval_days": 30,
-    "review_status": "ok"
+    "reason": "Local blocked-bundle status only. This file preserves the older blocked campaign snapshot; newer scratch parity numbers live in the active task status and are not committed authority here.",
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 41.6,
     "canonical_replacement": "results_meta/tasks/self_collision_transfer.json",
     "classification": "LOCAL_ONLY_SECONDARY",
@@ -177,12 +190,14 @@
     "owner_surface": "self_collision_transfer",
     "path": "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/README.md",
     "reason": "Local blocked-bundle overview only. Committed current/promoted/blocked meaning lives in `results_meta/` and the active self-collision task status.",
-    "review_age_days": 0,
-    "review_interval_days": 30,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 51.6,
     "canonical_replacement": "results_meta/tasks/robot_rope_franka_tabletop_push_hero.json",
     "classification": "LOCAL_ONLY_SECONDARY",
@@ -203,12 +218,14 @@
     "owner_surface": "robot_rope_franka_tabletop_push_hero",
     "path": "Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/README.md",
     "reason": "Local convenience mirror only. Do not use this file as the committed source of truth for current/promoted run meaning.",
-    "review_age_days": 0,
-    "review_interval_days": 30,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 37.7,
     "canonical_replacement": "results_meta/tasks/robot_rope_franka_tabletop_push_hero.json",
     "classification": "LOCAL_ONLY_SECONDARY",
@@ -229,12 +246,14 @@
     "owner_surface": "robot_rope_franka_tabletop_push_hero",
     "path": "Newton/phystwin_bridge/results/robot_rope_franka/README.md",
     "reason": "Local bundle-root overview only. Committed promoted-run meaning lives in results_meta.",
-    "review_age_days": 0,
-    "review_interval_days": 30,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 46.2,
     "canonical_replacement": "none",
     "classification": "CANONICAL",
@@ -256,11 +275,13 @@
     "path": "TODO.md",
     "reason": "User-provided replacement TODO list for the current meeting cycle. Keep this page short and route detail into the linked task pages.",
     "review_age_days": 0,
+    "review_enforced": true,
     "review_interval_days": 30,
     "review_status": "ok"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 25.8,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -282,11 +303,13 @@
     "path": "docs/AGENTS.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 34.0,
     "canonical_replacement": "",
     "classification": "CANONICAL",
@@ -308,11 +331,13 @@
     "path": "docs/PROJECT_MAP.md",
     "reason": "Canonical live surface for its concept.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 48.4,
     "canonical_replacement": "",
     "classification": "CANONICAL",
@@ -334,11 +359,13 @@
     "path": "docs/README.md",
     "reason": "Canonical live surface for its concept.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 35.8,
     "canonical_replacement": "",
     "classification": "CANONICAL",
@@ -360,11 +387,13 @@
     "path": "docs/STYLE_GUIDE.md",
     "reason": "Canonical live surface for its concept.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 41.8,
     "canonical_replacement": "none",
     "classification": "ACTIVE_SUPPORTING",
@@ -385,12 +414,14 @@
     "owner_surface": "docs_archive",
     "path": "docs/archive/README.md",
     "reason": "Canonical policy surface for documentation archives. Archived files must not remain in live-looking neighborhoods.",
-    "review_age_days": 0,
-    "review_interval_days": 30,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": true,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 45.5,
     "canonical_replacement": "none",
     "classification": "CANONICAL",
@@ -411,12 +442,14 @@
     "owner_surface": "docs_archive",
     "path": "docs/archive/tasks/README.md",
     "reason": "Singular archive neighborhood for historical bridge task pages that should not remain beside active task pages.",
-    "review_age_days": 0,
-    "review_interval_days": 30,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": true,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 47.3,
     "canonical_replacement": "none",
     "classification": "HISTORICAL_ARCHIVE",
@@ -437,12 +470,14 @@
     "owner_surface": "delivery_and_profiling_review_20260401",
     "path": "docs/archive/tasks/delivery_and_profiling_review_20260401.md",
     "reason": "Completed one-off review record; keep only as historical audit context, not as a live task surface.",
-    "review_age_days": 0,
+    "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "ok"
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 41.7,
     "canonical_replacement": "docs/bridge/tasks/markdown_harness_maintenance_upgrade.md",
     "classification": "HISTORICAL_ARCHIVE",
@@ -463,12 +498,14 @@
     "owner_surface": "markdown_harness_maintenance_upgrade",
     "path": "docs/archive/tasks/harness_engineering_upgrade.md",
     "reason": "Historical predecessor harness-upgrade task. The current active maintenance surface is `markdown_harness_maintenance_upgrade`.",
-    "review_age_days": 0,
-    "review_interval_days": 90,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 40.8,
     "canonical_replacement": "docs/bridge/tasks/markdown_harness_maintenance_upgrade.md",
     "classification": "HISTORICAL_ARCHIVE",
@@ -489,12 +526,14 @@
     "owner_surface": "markdown_harness_maintenance_upgrade",
     "path": "docs/archive/tasks/harness_markdown_cleanup_20260401.md",
     "reason": "Completed predecessor cleanup kept only as historical context for the current markdown-harness maintenance task.",
-    "review_age_days": 0,
+    "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "ok"
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 44.6,
     "canonical_replacement": "docs/bridge/tasks/markdown_harness_maintenance_upgrade.md",
     "classification": "HISTORICAL_ARCHIVE",
@@ -515,12 +554,14 @@
     "owner_surface": "markdown_harness_maintenance_upgrade",
     "path": "docs/archive/tasks/markdown_truthfulness_cleanup.md",
     "reason": "Historical predecessor cleanup task. The current active maintenance surface is `markdown_harness_maintenance_upgrade`.",
-    "review_age_days": 0,
-    "review_interval_days": 90,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 52.8,
     "canonical_replacement": "docs/bridge/tasks/rope_perf_apples_to_apples.md",
     "classification": "HISTORICAL_ARCHIVE",
@@ -541,12 +582,14 @@
     "owner_surface": "meeting_20260401_rope_profiling_rebuild",
     "path": "docs/archive/tasks/meeting_20260401_rope_profiling_rebuild.md",
     "reason": "Historical one-off meeting rebuild record. Current benchmark authority lives under `rope_perf_apples_to_apples`; current meeting-story maintenance lives under `slide_deck_overhaul`.",
-    "review_age_days": 0,
-    "review_interval_days": 90,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 41.1,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -568,12 +611,14 @@
     "path": "docs/bridge/README.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "KEEP",
-    "avg_nonblank_line_length": 53.1,
+    "actionable_status": "quiet",
+    "avg_nonblank_line_length": 54.1,
     "canonical_replacement": "none",
     "classification": "CANONICAL",
     "contains_authoritative_language": true,
@@ -581,8 +626,8 @@
     "contains_run_ids": false,
     "indexed_from_canonical_entrypoint": true,
     "line_compressed": false,
-    "line_count": 94,
-    "max_line_length": 177,
+    "line_count": 99,
+    "max_line_length": 200,
     "metadata_last_reviewed": "2026-04-01",
     "metadata_notes": "Short operational dashboard only. Do not turn this page into a run ledger or changelog dump.",
     "metadata_owner_surface": "bridge_control_plane",
@@ -594,11 +639,13 @@
     "path": "docs/bridge/current_status.md",
     "reason": "Short operational dashboard only. Do not turn this page into a run ledger or changelog dump.",
     "review_age_days": 0,
+    "review_enforced": true,
     "review_interval_days": 7,
     "review_status": "ok"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 40.7,
     "canonical_replacement": "none",
     "classification": "CANONICAL",
@@ -619,12 +666,14 @@
     "owner_surface": "bridge_control_plane",
     "path": "docs/bridge/experiment_index.md",
     "reason": "Canonical experiment-contract surface for bridge work; keep this as the durable index rather than a run ledger.",
-    "review_age_days": 0,
-    "review_interval_days": 30,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": true,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 48.9,
     "canonical_replacement": "none",
     "classification": "CANONICAL",
@@ -646,11 +695,13 @@
     "path": "docs/bridge/open_questions.md",
     "reason": "Canonical unresolved-question ledger for bridge work. Keep resolved items out of this page.",
     "review_age_days": 0,
+    "review_enforced": true,
     "review_interval_days": 30,
     "review_status": "ok"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 54.1,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -672,12 +723,14 @@
     "path": "docs/bridge/tasks/AGENTS.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "KEEP",
-    "avg_nonblank_line_length": 57.0,
+    "actionable_status": "quiet",
+    "avg_nonblank_line_length": 57.3,
     "canonical_replacement": "none",
     "classification": "CANONICAL",
     "contains_authoritative_language": true,
@@ -685,7 +738,7 @@
     "contains_run_ids": false,
     "indexed_from_canonical_entrypoint": true,
     "line_compressed": false,
-    "line_count": 53,
+    "line_count": 54,
     "max_line_length": 112,
     "metadata_last_reviewed": "2026-04-01",
     "metadata_notes": "Canonical bridge-task index. Keep active tasks separate from predecessor or one-off historical records.",
@@ -698,11 +751,13 @@
     "path": "docs/bridge/tasks/README.md",
     "reason": "Canonical bridge-task index. Keep active tasks separate from predecessor or one-off historical records.",
     "review_age_days": 0,
+    "review_enforced": true,
     "review_interval_days": 14,
     "review_status": "ok"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 25.7,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -724,11 +779,13 @@
     "path": "docs/bridge/tasks/_task_template.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "REFORMAT",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 42.8,
     "canonical_replacement": "none",
     "classification": "CANONICAL",
@@ -750,11 +807,13 @@
     "path": "docs/bridge/tasks/bunny_penetration_force_diagnostic.md",
     "reason": "Active canonical task page for the bunny penetration mechanism and meeting-facing board workflow.",
     "review_age_days": 0,
+    "review_enforced": true,
     "review_interval_days": 21,
     "review_status": "ok"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 42.6,
     "canonical_replacement": "none",
     "classification": "CANONICAL",
@@ -776,11 +835,13 @@
     "path": "docs/bridge/tasks/data_collection_protocol.md",
     "reason": "Active canonical task page for the bridge-side data collection procedure.",
     "review_age_days": 0,
+    "review_enforced": true,
     "review_interval_days": 21,
     "review_status": "ok"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 38.7,
     "canonical_replacement": "none",
     "classification": "CANONICAL",
@@ -802,11 +863,13 @@
     "path": "docs/bridge/tasks/fast_foundation_stereo.md",
     "reason": "Active canonical task page for the Fast-FoundationStereo decision.",
     "review_age_days": 0,
+    "review_enforced": true,
     "review_interval_days": 21,
     "review_status": "ok"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 37.6,
     "canonical_replacement": "none",
     "classification": "CANONICAL",
@@ -828,11 +891,13 @@
     "path": "docs/bridge/tasks/interactive_playground_profiling.md",
     "reason": "Methodology/umbrella profiling page only. Committed same-case rope benchmark truth belongs to `rope_perf_apples_to_apples`.",
     "review_age_days": 0,
+    "review_enforced": true,
     "review_interval_days": 21,
     "review_status": "ok"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 48.1,
     "canonical_replacement": "none",
     "classification": "CANONICAL",
@@ -854,11 +919,13 @@
     "path": "docs/bridge/tasks/markdown_harness_maintenance_upgrade.md",
     "reason": "Current canonical harness-maintenance task for markdown truthfulness, active-vs-historical separation, and registry-backed result authority.",
     "review_age_days": 0,
+    "review_enforced": true,
     "review_interval_days": 14,
     "review_status": "ok"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 46.6,
     "canonical_replacement": "none",
     "classification": "CANONICAL",
@@ -880,11 +947,13 @@
     "path": "docs/bridge/tasks/meeting_20260408_recall_part.md",
     "reason": "Meeting-specific task for bootstrapping the 2026-04-08 recall-only slide/transcript bundle.",
     "review_age_days": 0,
+    "review_enforced": true,
     "review_interval_days": 14,
     "review_status": "ok"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 39.3,
     "canonical_replacement": "none",
     "classification": "CANONICAL",
@@ -906,11 +975,41 @@
     "path": "docs/bridge/tasks/native_robot_rope_drop_release.md",
     "reason": "Active canonical task page for the native Franka support/release/free-fall baseline.",
     "review_age_days": 0,
+    "review_enforced": true,
     "review_interval_days": 21,
     "review_status": "ok"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
+    "avg_nonblank_line_length": 48.2,
+    "canonical_replacement": "none",
+    "classification": "CANONICAL",
+    "contains_authoritative_language": true,
+    "contains_machine_local_paths": false,
+    "contains_run_ids": true,
+    "indexed_from_canonical_entrypoint": true,
+    "line_compressed": false,
+    "line_count": 85,
+    "max_line_length": 137,
+    "metadata_last_reviewed": "2026-04-01",
+    "metadata_notes": "This task is a focused fail-closed investigation on the tabletop hero's apparent stand-off contact / remote-interaction problem.",
+    "metadata_owner_surface": "remote_interaction_root_cause",
+    "metadata_review_interval": "7d",
+    "metadata_status": "active",
+    "metadata_update_rule": "Update when the root-cause ranking, fix direction, or accepted evidence bundle changes.",
+    "overgrown_for_role": false,
+    "owner_surface": "remote_interaction_root_cause",
+    "path": "docs/bridge/tasks/remote_interaction_root_cause.md",
+    "reason": "This task is a focused fail-closed investigation on the tabletop hero's apparent stand-off contact / remote-interaction problem.",
+    "review_age_days": 0,
+    "review_enforced": true,
+    "review_interval_days": 7,
+    "review_status": "ok"
+  },
+  {
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 41.3,
     "canonical_replacement": "none",
     "classification": "CANONICAL",
@@ -932,11 +1031,13 @@
     "path": "docs/bridge/tasks/robot_deformable_demo.md",
     "reason": "Active canonical task page for the native Franka plus deformable baseline.",
     "review_age_days": 0,
+    "review_enforced": true,
     "review_interval_days": 21,
     "review_status": "ok"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 46.0,
     "canonical_replacement": "none",
     "classification": "CANONICAL",
@@ -958,11 +1059,13 @@
     "path": "docs/bridge/tasks/robot_rope_franka_tabletop_push_hero.md",
     "reason": "Active task page for the tabletop-push hero baseline. Committed promoted-run authority lives in `results_meta/`.",
     "review_age_days": 0,
+    "review_enforced": true,
     "review_interval_days": 21,
     "review_status": "ok"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 43.8,
     "canonical_replacement": "none",
     "classification": "CANONICAL",
@@ -984,11 +1087,13 @@
     "path": "docs/bridge/tasks/rope_perf_apples_to_apples.md",
     "reason": "Active canonical task page for the same-case rope replay benchmark.",
     "review_age_days": 0,
+    "review_enforced": true,
     "review_interval_days": 21,
     "review_status": "ok"
   },
   {
     "action": "REFORMAT",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 51.6,
     "canonical_replacement": "none",
     "classification": "CANONICAL",
@@ -1010,11 +1115,13 @@
     "path": "docs/bridge/tasks/self_collision_transfer.md",
     "reason": "Active canonical task page for the self-collision decision and strict parity blocker analysis.",
     "review_age_days": 0,
+    "review_enforced": true,
     "review_interval_days": 21,
     "review_status": "ok"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 44.1,
     "canonical_replacement": "none",
     "classification": "CANONICAL",
@@ -1036,11 +1143,13 @@
     "path": "docs/bridge/tasks/slide_deck_overhaul.md",
     "reason": "Active canonical task page for slide/transcript structure and review-deliverable upkeep.",
     "review_age_days": 0,
+    "review_enforced": true,
     "review_interval_days": 21,
     "review_status": "ok"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 39.8,
     "canonical_replacement": "none",
     "classification": "CANONICAL",
@@ -1062,11 +1171,13 @@
     "path": "docs/bridge/tasks/video_presentation_quality.md",
     "reason": "Active canonical task page for meeting-facing video readability and acceptance quality.",
     "review_age_days": 0,
+    "review_enforced": true,
     "review_interval_days": 21,
     "review_status": "ok"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 33.8,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -1088,11 +1199,13 @@
     "path": "docs/decisions/README.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 15.9,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -1114,11 +1227,13 @@
     "path": "docs/decisions/_decision_template.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 40.9,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -1140,11 +1255,13 @@
     "path": "docs/evals/README.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 39.5,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -1166,11 +1283,13 @@
     "path": "docs/evals/evaluator_rubric.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 32.2,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -1192,11 +1311,13 @@
     "path": "docs/evals/video_acceptance_rubric.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 27.2,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -1218,11 +1339,13 @@
     "path": "docs/evals/video_evaluator_prompt.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 34.7,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -1244,11 +1367,13 @@
     "path": "docs/generated/AGENTS.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 39.2,
     "canonical_replacement": "none",
     "classification": "CANONICAL",
@@ -1270,11 +1395,13 @@
     "path": "docs/generated/README.md",
     "reason": "Canonical README for in-repo generated docs. Use the public generator wrapper, not the compatibility alias.",
     "review_age_days": 0,
+    "review_enforced": true,
     "review_interval_days": 30,
     "review_status": "ok"
   },
   {
     "action": "GENERATED",
+    "actionable_status": "generated",
     "avg_nonblank_line_length": 40.8,
     "canonical_replacement": "python scripts/lint_harness_consistency.py` plus the repo control-plane files it checks",
     "classification": "GENERATED_CANONICAL",
@@ -1296,11 +1423,13 @@
     "path": "docs/generated/harness_audit.md",
     "reason": "Machine-maintained audit ledger. Update this file only when the harness audit itself changes.",
     "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
     "review_status": "generated"
   },
   {
     "action": "GENERATED",
+    "actionable_status": "generated",
     "avg_nonblank_line_length": 37.7,
     "canonical_replacement": "docs/generated/md_deprecation_matrix.md",
     "classification": "GENERATED_CANONICAL",
@@ -1322,12 +1451,14 @@
     "path": "docs/generated/harness_deprecations.md",
     "reason": "Generated deprecation ledger for harness/control-plane surfaces. Regenerate rather than treating this as a free-form scratchpad.",
     "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
     "review_status": "generated"
   },
   {
     "action": "GENERATED",
-    "avg_nonblank_line_length": 118.5,
+    "actionable_status": "generated",
+    "avg_nonblank_line_length": 137.7,
     "canonical_replacement": "",
     "classification": "GENERATED_CANONICAL",
     "contains_authoritative_language": true,
@@ -1335,7 +1466,7 @@
     "contains_run_ids": true,
     "indexed_from_canonical_entrypoint": false,
     "line_compressed": true,
-    "line_count": 173,
+    "line_count": 79,
     "max_line_length": 261,
     "metadata_last_reviewed": "",
     "metadata_notes": "",
@@ -1348,12 +1479,14 @@
     "path": "docs/generated/md_cleanup_report.md",
     "reason": "Generated control-plane surface.",
     "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
     "review_status": "generated"
   },
   {
     "action": "GENERATED",
-    "avg_nonblank_line_length": 230.7,
+    "actionable_status": "generated",
+    "avg_nonblank_line_length": 230.8,
     "canonical_replacement": "",
     "classification": "GENERATED_CANONICAL",
     "contains_authoritative_language": true,
@@ -1362,7 +1495,7 @@
     "indexed_from_canonical_entrypoint": true,
     "line_compressed": true,
     "line_count": 67,
-    "max_line_length": 338,
+    "max_line_length": 383,
     "metadata_last_reviewed": "",
     "metadata_notes": "",
     "metadata_owner_surface": "",
@@ -1374,12 +1507,14 @@
     "path": "docs/generated/md_deprecation_matrix.md",
     "reason": "Generated control-plane surface.",
     "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
     "review_status": "generated"
   },
   {
     "action": "GENERATED",
-    "avg_nonblank_line_length": 173.0,
+    "actionable_status": "generated",
+    "avg_nonblank_line_length": 197.5,
     "canonical_replacement": "",
     "classification": "GENERATED_CANONICAL",
     "contains_authoritative_language": true,
@@ -1387,8 +1522,8 @@
     "contains_run_ids": true,
     "indexed_from_canonical_entrypoint": false,
     "line_compressed": true,
-    "line_count": 193,
-    "max_line_length": 266,
+    "line_count": 200,
+    "max_line_length": 296,
     "metadata_last_reviewed": "",
     "metadata_notes": "",
     "metadata_owner_surface": "",
@@ -1400,11 +1535,13 @@
     "path": "docs/generated/md_inventory.md",
     "reason": "Generated control-plane surface.",
     "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
     "review_status": "generated"
   },
   {
     "action": "GENERATED",
+    "actionable_status": "generated",
     "avg_nonblank_line_length": 41.3,
     "canonical_replacement": "",
     "classification": "GENERATED_CANONICAL",
@@ -1426,21 +1563,23 @@
     "path": "docs/generated/md_orphans.md",
     "reason": "Generated control-plane surface.",
     "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
     "review_status": "generated"
   },
   {
     "action": "GENERATED",
-    "avg_nonblank_line_length": 126.6,
+    "actionable_status": "generated",
+    "avg_nonblank_line_length": 96.6,
     "canonical_replacement": "",
     "classification": "GENERATED_CANONICAL",
     "contains_authoritative_language": true,
     "contains_machine_local_paths": false,
-    "contains_run_ids": true,
+    "contains_run_ids": false,
     "indexed_from_canonical_entrypoint": false,
     "line_compressed": false,
-    "line_count": 105,
-    "max_line_length": 199,
+    "line_count": 12,
+    "max_line_length": 143,
     "metadata_last_reviewed": "",
     "metadata_notes": "",
     "metadata_owner_surface": "",
@@ -1452,12 +1591,14 @@
     "path": "docs/generated/md_staleness_report.md",
     "reason": "Generated control-plane surface.",
     "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
     "review_status": "generated"
   },
   {
     "action": "GENERATED",
-    "avg_nonblank_line_length": 107.5,
+    "actionable_status": "generated",
+    "avg_nonblank_line_length": 121.5,
     "canonical_replacement": "",
     "classification": "GENERATED_CANONICAL",
     "contains_authoritative_language": true,
@@ -1465,8 +1606,8 @@
     "contains_run_ids": true,
     "indexed_from_canonical_entrypoint": false,
     "line_compressed": false,
-    "line_count": 19,
-    "max_line_length": 159,
+    "line_count": 24,
+    "max_line_length": 179,
     "metadata_last_reviewed": "",
     "metadata_notes": "",
     "metadata_owner_surface": "",
@@ -1478,11 +1619,13 @@
     "path": "docs/generated/task_surface_matrix.md",
     "reason": "Generated control-plane surface.",
     "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
     "review_status": "generated"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 44.3,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -1504,11 +1647,13 @@
     "path": "docs/runbooks/README.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 40.9,
     "canonical_replacement": "none",
     "classification": "CANONICAL",
@@ -1530,11 +1675,13 @@
     "path": "docs/runbooks/doc_gardening.md",
     "reason": "Canonical runbook for markdown truthfulness maintenance and stale-doc garbage collection.",
     "review_age_days": 0,
+    "review_enforced": true,
     "review_interval_days": 30,
     "review_status": "ok"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 28.5,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -1556,11 +1703,13 @@
     "path": "docs/runbooks/local_dev.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 31.7,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -1582,11 +1731,13 @@
     "path": "docs/runbooks/pipeline_run.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 32.1,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -1608,11 +1759,13 @@
     "path": "docs/runbooks/release_send_pdf.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 31.1,
     "canonical_replacement": "",
     "classification": "CANONICAL",
@@ -1634,11 +1787,13 @@
     "path": "plans/README.md",
     "reason": "Canonical live surface for its concept.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 23.5,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -1660,11 +1815,13 @@
     "path": "plans/active/README.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 10.1,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -1686,11 +1843,13 @@
     "path": "plans/active/_plan_template.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 44.1,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -1712,11 +1871,13 @@
     "path": "plans/active/bunny_penetration_force_diagnostic.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 34.6,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -1738,11 +1899,13 @@
     "path": "plans/active/data_collection_protocol.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 34.9,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -1764,11 +1927,13 @@
     "path": "plans/active/fast_foundation_stereo.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 41.8,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -1790,11 +1955,13 @@
     "path": "plans/active/interactive_playground_profiling.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 48.1,
     "canonical_replacement": "none",
     "classification": "ACTIVE_SUPPORTING",
@@ -1816,11 +1983,13 @@
     "path": "plans/active/markdown_harness_maintenance_upgrade.md",
     "reason": "Active plan for the current markdown/control-plane maintenance pass.",
     "review_age_days": 0,
+    "review_enforced": false,
     "review_interval_days": 14,
     "review_status": "ok"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 44.7,
     "canonical_replacement": "none",
     "classification": "ACTIVE_SUPPORTING",
@@ -1841,12 +2010,14 @@
     "owner_surface": "meeting_20260408_recall_part",
     "path": "plans/active/meeting_20260408_recall_part.md",
     "reason": "Active plan for creating the initial 2026-04-08 recall-only meeting bundle.",
-    "review_age_days": 0,
-    "review_interval_days": 14,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 50.1,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -1868,11 +2039,41 @@
     "path": "plans/active/native_robot_rope_drop_release.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
+    "avg_nonblank_line_length": 44.5,
+    "canonical_replacement": "",
+    "classification": "ACTIVE_SUPPORTING",
+    "contains_authoritative_language": true,
+    "contains_machine_local_paths": false,
+    "contains_run_ids": false,
+    "indexed_from_canonical_entrypoint": true,
+    "line_compressed": false,
+    "line_count": 35,
+    "max_line_length": 79,
+    "metadata_last_reviewed": "",
+    "metadata_notes": "",
+    "metadata_owner_surface": "",
+    "metadata_review_interval": "",
+    "metadata_status": "",
+    "metadata_update_rule": "",
+    "overgrown_for_role": false,
+    "owner_surface": "remote_interaction_root_cause",
+    "path": "plans/active/remote_interaction_root_cause.md",
+    "reason": "Active execution-chain support surface.",
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
+  },
+  {
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 46.0,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -1894,11 +2095,13 @@
     "path": "plans/active/robot_deformable_demo.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 46.3,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -1920,11 +2123,13 @@
     "path": "plans/active/robot_rope_franka_tabletop_push_hero.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 50.9,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -1946,11 +2151,13 @@
     "path": "plans/active/rope_perf_apples_to_apples.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 50.9,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -1972,11 +2179,13 @@
     "path": "plans/active/self_collision_transfer.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 45.9,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -1998,11 +2207,13 @@
     "path": "plans/active/slide_deck_overhaul.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 41.5,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -2024,11 +2235,13 @@
     "path": "plans/active/video_presentation_quality.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 60.7,
     "canonical_replacement": "",
     "classification": "CANONICAL",
@@ -2050,11 +2263,13 @@
     "path": "plans/completed/README.md",
     "reason": "Canonical live surface for its concept.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 49.7,
     "canonical_replacement": "none",
     "classification": "HISTORICAL_ARCHIVE",
@@ -2075,12 +2290,14 @@
     "owner_surface": "delivery_and_profiling_review_20260401",
     "path": "plans/completed/delivery_and_profiling_review_20260401.md",
     "reason": "Completed one-off review record; keep only as historical audit context, not as a live operating surface.",
-    "review_age_days": 0,
+    "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "ok"
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 58.8,
     "canonical_replacement": "plans/active/self_collision_transfer.md",
     "classification": "HISTORICAL_ARCHIVE",
@@ -2101,12 +2318,14 @@
     "owner_surface": "self_collision_transfer",
     "path": "plans/completed/final_self_collision_campaign.md",
     "reason": "Historical campaign plan preserved for traceability only; do not use this file for current planning state.",
-    "review_age_days": 0,
+    "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "ok"
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 50.9,
     "canonical_replacement": "plans/active/markdown_harness_maintenance_upgrade.md",
     "classification": "HISTORICAL_ARCHIVE",
@@ -2127,12 +2346,14 @@
     "owner_surface": "markdown_harness_maintenance_upgrade",
     "path": "plans/completed/harness_engineering_upgrade.md",
     "reason": "Historical predecessor plan. Current markdown/control-plane maintenance planning lives under `markdown_harness_maintenance_upgrade`.",
-    "review_age_days": 0,
-    "review_interval_days": 90,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 49.7,
     "canonical_replacement": "plans/active/markdown_harness_maintenance_upgrade.md",
     "classification": "HISTORICAL_ARCHIVE",
@@ -2153,12 +2374,14 @@
     "owner_surface": "markdown_harness_maintenance_upgrade",
     "path": "plans/completed/harness_markdown_cleanup_20260401.md",
     "reason": "Completed predecessor cleanup kept only as historical context for the broader markdown truthfulness pass.",
-    "review_age_days": 0,
+    "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "ok"
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 49.9,
     "canonical_replacement": "plans/active/markdown_harness_maintenance_upgrade.md",
     "classification": "HISTORICAL_ARCHIVE",
@@ -2179,12 +2402,14 @@
     "owner_surface": "markdown_harness_maintenance_upgrade",
     "path": "plans/completed/markdown_truthfulness_cleanup.md",
     "reason": "Historical predecessor plan. Current markdown/control-plane maintenance planning lives under `markdown_harness_maintenance_upgrade`.",
-    "review_age_days": 0,
-    "review_interval_days": 90,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 49.6,
     "canonical_replacement": "none",
     "classification": "HISTORICAL_ARCHIVE",
@@ -2205,12 +2430,14 @@
     "owner_surface": "meeting_20260401_rope_profiling_rebuild",
     "path": "plans/completed/meeting_20260401_rope_profiling_rebuild.md",
     "reason": "Completed one-off plan moved out of `plans/active/` so it no longer competes with live planning surfaces.",
-    "review_age_days": 0,
-    "review_interval_days": 90,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "STUB",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 47.9,
     "canonical_replacement": "plans/active/self_collision_transfer.md",
     "classification": "DEPRECATED_POINTER",
@@ -2231,12 +2458,14 @@
     "owner_surface": "self_collision_transfer",
     "path": "plans/completed/self_collision_transfer_decision.md",
     "reason": "Deprecated slug alias kept only for discoverability; do not record new planning state under `_decision`.",
-    "review_age_days": 0,
+    "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "ok"
+    "review_status": "out_of_scope"
   },
   {
     "action": "STUB",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 38.4,
     "canonical_replacement": "results_meta/README.md",
     "classification": "DEPRECATED_POINTER",
@@ -2257,12 +2486,14 @@
     "owner_surface": "results_meta",
     "path": "results/README.md",
     "reason": "Local bundle overview only. Do not use this page as the committed source of truth for current run meaning.",
-    "review_age_days": 0,
+    "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "ok"
+    "review_status": "out_of_scope"
   },
   {
     "action": "STUB",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 42.3,
     "canonical_replacement": "results_meta/tasks/bunny_penetration_force_diagnostic.json",
     "classification": "DEPRECATED_POINTER",
@@ -2283,12 +2514,14 @@
     "owner_surface": "bunny_penetration_force_diagnostic",
     "path": "results/bunny_force_visualization/INDEX.md",
     "reason": "Local-only pointer stub. Do not use this file as committed authority for the current bunny board run.",
-    "review_age_days": 0,
+    "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "ok"
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 39.2,
     "canonical_replacement": "",
     "classification": "LOCAL_ONLY_SECONDARY",
@@ -2310,11 +2543,13 @@
     "path": "results/bunny_force_visualization/QA_WORKFLOW.md",
     "reason": "Tracked local-only result/navigation surface; committed authority lives elsewhere.",
     "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "missing"
+    "review_status": "out_of_scope"
   },
   {
     "action": "STUB",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 53.8,
     "canonical_replacement": "results_meta/tasks/bunny_penetration_force_diagnostic.json",
     "classification": "DEPRECATED_POINTER",
@@ -2335,12 +2570,14 @@
     "owner_surface": "bunny_penetration_force_diagnostic",
     "path": "results/bunny_force_visualization/README.md",
     "reason": "Local bundle overview only. Use `results_meta/` for current committed run meaning.",
-    "review_age_days": 0,
+    "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "ok"
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 31.4,
     "canonical_replacement": "",
     "classification": "LOCAL_ONLY_SECONDARY",
@@ -2362,11 +2599,13 @@
     "path": "results/bunny_force_visualization/VERDICT_TEMPLATE.md",
     "reason": "Tracked local-only result/navigation surface; committed authority lives elsewhere.",
     "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "missing"
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 44.6,
     "canonical_replacement": "",
     "classification": "LOCAL_ONLY_SECONDARY",
@@ -2388,11 +2627,13 @@
     "path": "results/bunny_force_visualization/archive/README.md",
     "reason": "Tracked local-only result/navigation surface; committed authority lives elsewhere.",
     "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "missing"
+    "review_status": "out_of_scope"
   },
   {
     "action": "STUB",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 41.2,
     "canonical_replacement": "results_meta/tasks/native_robot_rope_drop_release.json",
     "classification": "DEPRECATED_POINTER",
@@ -2413,12 +2654,14 @@
     "owner_surface": "native_robot_rope_drop_release",
     "path": "results/native_robot_rope_drop_release/BEST_RUN.md",
     "reason": "Local-only pointer stub. Do not use this file as the committed authority for current best-run meaning.",
-    "review_age_days": 0,
+    "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "ok"
+    "review_status": "out_of_scope"
   },
   {
     "action": "STUB",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 36.1,
     "canonical_replacement": "results_meta/tasks/native_robot_rope_drop_release.json",
     "classification": "DEPRECATED_POINTER",
@@ -2439,12 +2682,14 @@
     "owner_surface": "native_robot_rope_drop_release",
     "path": "results/native_robot_rope_drop_release/README.md",
     "reason": "Local bundle overview only. Do not use this page as the committed authority for the current best run.",
-    "review_age_days": 0,
+    "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "ok"
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 37.8,
     "canonical_replacement": "",
     "classification": "LOCAL_ONLY_SECONDARY",
@@ -2466,11 +2711,13 @@
     "path": "results/native_robot_rope_drop_release/SLIDE_READY.md",
     "reason": "Tracked local-only result/navigation surface; committed authority lives elsewhere.",
     "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "missing"
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 56.9,
     "canonical_replacement": "",
     "classification": "LOCAL_ONLY_SECONDARY",
@@ -2492,11 +2739,13 @@
     "path": "results/native_robot_rope_drop_release/runs/20260331_035032_native_franka_smoke_drag_off/README.md",
     "reason": "Tracked local-only result/navigation surface; committed authority lives elsewhere.",
     "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "missing"
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 57.3,
     "canonical_replacement": "",
     "classification": "LOCAL_ONLY_SECONDARY",
@@ -2518,11 +2767,13 @@
     "path": "results/native_robot_rope_drop_release/runs/20260331_040614_native_franka_drag_off_w5_readable/README.md",
     "reason": "Tracked local-only result/navigation surface; committed authority lives elsewhere.",
     "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "missing"
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 57.2,
     "canonical_replacement": "",
     "classification": "LOCAL_ONLY_SECONDARY",
@@ -2544,11 +2795,13 @@
     "path": "results/native_robot_rope_drop_release/runs/20260331_041101_native_franka_drag_on_w5_readable/README.md",
     "reason": "Tracked local-only result/navigation surface; committed authority lives elsewhere.",
     "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "missing"
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 57.4,
     "canonical_replacement": "",
     "classification": "LOCAL_ONLY_SECONDARY",
@@ -2570,11 +2823,13 @@
     "path": "results/native_robot_rope_drop_release/runs/20260331_232106_native_franka_recoilfix_drag_off_w5/README.md",
     "reason": "Tracked local-only result/navigation surface; committed authority lives elsewhere.",
     "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "missing"
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 57.3,
     "canonical_replacement": "",
     "classification": "LOCAL_ONLY_SECONDARY",
@@ -2596,11 +2851,13 @@
     "path": "results/native_robot_rope_drop_release/runs/20260331_232459_native_franka_recoilfix_drag_on_w5/README.md",
     "reason": "Tracked local-only result/navigation surface; committed authority lives elsewhere.",
     "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "missing"
+    "review_status": "out_of_scope"
   },
   {
     "action": "STUB",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 38.6,
     "canonical_replacement": "results_meta/tasks/robot_deformable_demo.json",
     "classification": "DEPRECATED_POINTER",
@@ -2621,12 +2878,14 @@
     "owner_surface": "robot_deformable_demo",
     "path": "results/robot_deformable_demo/BEST_RUN.md",
     "reason": "Local-only pointer stub. Do not use this file as the committed authority for current best-run meaning.",
-    "review_age_days": 0,
+    "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "ok"
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 43.0,
     "canonical_replacement": "results/robot_deformable_demo/README.md",
     "classification": "HISTORICAL_ARCHIVE",
@@ -2647,12 +2906,14 @@
     "owner_surface": "robot_deformable_demo",
     "path": "results/robot_deformable_demo/LEGACY_CANDIDATES.md",
     "reason": "Historical local archive of older candidate bundles; not a live decision surface.",
-    "review_age_days": 0,
+    "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "ok"
+    "review_status": "out_of_scope"
   },
   {
     "action": "STUB",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 33.2,
     "canonical_replacement": "results_meta/tasks/robot_deformable_demo.json",
     "classification": "DEPRECATED_POINTER",
@@ -2673,12 +2934,14 @@
     "owner_surface": "robot_deformable_demo",
     "path": "results/robot_deformable_demo/README.md",
     "reason": "Local bundle overview only. Do not use this page as the committed authority for the current best run.",
-    "review_age_days": 0,
+    "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "ok"
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 46.0,
     "canonical_replacement": "",
     "classification": "LOCAL_ONLY_SECONDARY",
@@ -2700,11 +2963,13 @@
     "path": "results/robot_deformable_demo/SLIDE_READY.md",
     "reason": "Tracked local-only result/navigation surface; committed authority lives elsewhere.",
     "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "missing"
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 41.7,
     "canonical_replacement": "",
     "classification": "LOCAL_ONLY_SECONDARY",
@@ -2726,11 +2991,13 @@
     "path": "results/robot_deformable_demo/runs/20260330_213045_native_franka_lift_release_presentation/README.md",
     "reason": "Tracked local-only result/navigation surface; committed authority lives elsewhere.",
     "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "missing"
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 49.0,
     "canonical_replacement": "",
     "classification": "LOCAL_ONLY_SECONDARY",
@@ -2752,11 +3019,13 @@
     "path": "results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation/README.md",
     "reason": "Tracked local-only result/navigation surface; committed authority lives elsewhere.",
     "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "missing"
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 25.3,
     "canonical_replacement": "",
     "classification": "LOCAL_ONLY_SECONDARY",
@@ -2778,11 +3047,13 @@
     "path": "results/robot_deformable_demo/runs/README.md",
     "reason": "Tracked local-only result/navigation surface; committed authority lives elsewhere.",
     "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "missing"
+    "review_status": "out_of_scope"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 74.5,
     "canonical_replacement": "results_meta/tasks/rope_perf_apples_to_apples.json",
     "classification": "LOCAL_ONLY_SECONDARY",
@@ -2803,12 +3074,14 @@
     "owner_surface": "rope_perf_apples_to_apples",
     "path": "results/rope_perf_apples_to_apples/BEST_EVIDENCE.md",
     "reason": "Local evidence summary for quick bundle browsing. Committed authority lives in `results_meta/`.",
-    "review_age_days": 0,
-    "review_interval_days": 30,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 52.0,
     "canonical_replacement": "results_meta/tasks/rope_perf_apples_to_apples.json",
     "classification": "LOCAL_ONLY_SECONDARY",
@@ -2829,12 +3102,14 @@
     "owner_surface": "rope_perf_apples_to_apples",
     "path": "results/rope_perf_apples_to_apples/README.md",
     "reason": "Local methodology summary for the rope benchmark bundle. Committed authority lives in `results_meta/`.",
-    "review_age_days": 0,
-    "review_interval_days": 30,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 33.7,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -2856,11 +3131,13 @@
     "path": "results_meta/AGENTS.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 50.9,
     "canonical_replacement": "none",
     "classification": "CANONICAL",
@@ -2881,12 +3158,14 @@
     "owner_surface": "results_registry",
     "path": "results_meta/DEPRECATED.md",
     "reason": "Canonical deprecation ledger for result-authority surfaces that must no longer sound committed-truth.",
-    "review_age_days": 0,
-    "review_interval_days": 30,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": true,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "GENERATED",
+    "actionable_status": "generated",
     "avg_nonblank_line_length": 107.0,
     "canonical_replacement": "python scripts/sync_results_registry.py",
     "classification": "GENERATED_CANONICAL",
@@ -2908,11 +3187,13 @@
     "path": "results_meta/INDEX.md",
     "reason": "Generated committed index over `results_meta/tasks/*.json`. Regenerate instead of hand-editing.",
     "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
     "review_status": "generated"
   },
   {
     "action": "GENERATED",
+    "actionable_status": "generated",
     "avg_nonblank_line_length": 68.8,
     "canonical_replacement": "python scripts/sync_results_registry.py",
     "classification": "GENERATED_CANONICAL",
@@ -2934,11 +3215,13 @@
     "path": "results_meta/LATEST.md",
     "reason": "Generated latest-view over `results_meta/tasks/*.json`. Regenerate instead of hand-editing.",
     "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
     "review_status": "generated"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 37.0,
     "canonical_replacement": "none",
     "classification": "CANONICAL",
@@ -2960,11 +3243,13 @@
     "path": "results_meta/README.md",
     "reason": "Canonical committed authority README for result meaning. Local bundle surfaces must defer to this subtree.",
     "review_age_days": 0,
+    "review_enforced": true,
     "review_interval_days": 30,
     "review_status": "ok"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 26.1,
     "canonical_replacement": "none",
     "classification": "CANONICAL",
@@ -2986,11 +3271,13 @@
     "path": "results_meta/schema.md",
     "reason": "Canonical schema for committed result-authority entries under results_meta/tasks/.",
     "review_age_days": 0,
+    "review_enforced": true,
     "review_interval_days": 30,
     "review_status": "ok"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 36.1,
     "canonical_replacement": "",
     "classification": "CANONICAL",
@@ -3012,11 +3299,13 @@
     "path": "tasks/AGENTS.md",
     "reason": "Canonical live surface for its concept.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 40.0,
     "canonical_replacement": "none",
     "classification": "CANONICAL",
@@ -3038,37 +3327,41 @@
     "path": "tasks/README.md",
     "reason": "Execution-layer map for task artifacts. Active and historical task chains must not share the same neighborhood silently.",
     "review_age_days": 0,
+    "review_enforced": true,
     "review_interval_days": 14,
     "review_status": "ok"
   },
   {
-    "action": "REFORMAT",
-    "avg_nonblank_line_length": 38.2,
-    "canonical_replacement": "",
+    "action": "KEEP",
+    "actionable_status": "quiet",
+    "avg_nonblank_line_length": 45.1,
+    "canonical_replacement": "none",
     "classification": "CANONICAL",
-    "contains_authoritative_language": false,
+    "contains_authoritative_language": true,
     "contains_machine_local_paths": false,
     "contains_run_ids": false,
     "indexed_from_canonical_entrypoint": false,
     "line_compressed": false,
-    "line_count": 16,
-    "max_line_length": 73,
-    "metadata_last_reviewed": "",
-    "metadata_notes": "",
-    "metadata_owner_surface": "",
-    "metadata_review_interval": "",
-    "metadata_status": "",
-    "metadata_update_rule": "",
+    "line_count": 34,
+    "max_line_length": 141,
+    "metadata_last_reviewed": "2026-04-01",
+    "metadata_notes": "Contracts are selectively load-bearing. They are required for high-risk or expensive iteration loops, not for every task by default.",
+    "metadata_owner_surface": "task_execution",
+    "metadata_review_interval": "30d",
+    "metadata_status": "canonical",
+    "metadata_update_rule": "Update when contract policy or the set of tasks that are expected to use contracts changes.",
     "overgrown_for_role": false,
     "owner_surface": "task_execution",
     "path": "tasks/contracts/README.md",
-    "reason": "Canonical live surface for its concept.",
-    "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "reason": "Contracts are selectively load-bearing. They are required for high-risk or expensive iteration loops, not for every task by default.",
+    "review_age_days": 0,
+    "review_enforced": true,
+    "review_interval_days": 30,
+    "review_status": "ok"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 18.2,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -3090,21 +3383,23 @@
     "path": "tasks/contracts/_contract_template.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
-    "avg_nonblank_line_length": 37.8,
+    "action": "KEEP",
+    "actionable_status": "quiet",
+    "avg_nonblank_line_length": 46.3,
     "canonical_replacement": "",
     "classification": "CANONICAL",
-    "contains_authoritative_language": false,
+    "contains_authoritative_language": true,
     "contains_machine_local_paths": false,
     "contains_run_ids": false,
-    "indexed_from_canonical_entrypoint": false,
+    "indexed_from_canonical_entrypoint": true,
     "line_compressed": false,
-    "line_count": 13,
-    "max_line_length": 79,
+    "line_count": 68,
+    "max_line_length": 105,
     "metadata_last_reviewed": "",
     "metadata_notes": "",
     "metadata_owner_surface": "",
@@ -3112,15 +3407,45 @@
     "metadata_status": "",
     "metadata_update_rule": "",
     "overgrown_for_role": false,
-    "owner_surface": "task_execution",
-    "path": "tasks/handoffs/README.md",
+    "owner_surface": "markdown_harness_maintenance_upgrade",
+    "path": "tasks/contracts/markdown_harness_maintenance_upgrade.md",
     "reason": "Canonical live surface for its concept.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
+    "avg_nonblank_line_length": 43.7,
+    "canonical_replacement": "none",
+    "classification": "CANONICAL",
+    "contains_authoritative_language": true,
+    "contains_machine_local_paths": false,
+    "contains_run_ids": false,
+    "indexed_from_canonical_entrypoint": false,
+    "line_compressed": false,
+    "line_count": 31,
+    "max_line_length": 131,
+    "metadata_last_reviewed": "2026-04-01",
+    "metadata_notes": "Handoffs are selectively load-bearing. They are required for multi-session or blocked tasks, not as universal boilerplate.",
+    "metadata_owner_surface": "task_execution",
+    "metadata_review_interval": "30d",
+    "metadata_status": "canonical",
+    "metadata_update_rule": "Update when handoff policy or the set of tasks expected to use structured handoffs changes.",
+    "overgrown_for_role": false,
+    "owner_surface": "task_execution",
+    "path": "tasks/handoffs/README.md",
+    "reason": "Handoffs are selectively load-bearing. They are required for multi-session or blocked tasks, not as universal boilerplate.",
+    "review_age_days": 0,
+    "review_enforced": true,
+    "review_interval_days": 30,
+    "review_status": "ok"
+  },
+  {
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 16.0,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -3142,11 +3467,41 @@
     "path": "tasks/handoffs/_handoff_template.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
+    "avg_nonblank_line_length": 44.8,
+    "canonical_replacement": "",
+    "classification": "CANONICAL",
+    "contains_authoritative_language": true,
+    "contains_machine_local_paths": false,
+    "contains_run_ids": false,
+    "indexed_from_canonical_entrypoint": true,
+    "line_compressed": false,
+    "line_count": 50,
+    "max_line_length": 90,
+    "metadata_last_reviewed": "",
+    "metadata_notes": "",
+    "metadata_owner_surface": "",
+    "metadata_review_interval": "",
+    "metadata_status": "",
+    "metadata_update_rule": "",
+    "overgrown_for_role": false,
+    "owner_surface": "markdown_harness_maintenance_upgrade",
+    "path": "tasks/handoffs/markdown_harness_maintenance_upgrade.md",
+    "reason": "Canonical live surface for its concept.",
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
+  },
+  {
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 42.3,
     "canonical_replacement": "none",
     "classification": "CANONICAL",
@@ -3167,12 +3522,14 @@
     "owner_surface": "task_history",
     "path": "tasks/history/README.md",
     "reason": "Archive neighborhood for completed, superseded, or alias task-chain artifacts that should not live beside active execution files.",
-    "review_age_days": 0,
-    "review_interval_days": 30,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 47.0,
     "canonical_replacement": "none",
     "classification": "HISTORICAL_ARCHIVE",
@@ -3193,12 +3550,14 @@
     "owner_surface": "delivery_and_profiling_review_20260401",
     "path": "tasks/history/implement/delivery_and_profiling_review_20260401.md",
     "reason": "Historical one-off review runbook preserved for traceability only.",
-    "review_age_days": 0,
+    "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "ok"
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 44.1,
     "canonical_replacement": "tasks/implement/self_collision_transfer.md",
     "classification": "HISTORICAL_ARCHIVE",
@@ -3219,12 +3578,14 @@
     "owner_surface": "self_collision_transfer",
     "path": "tasks/history/implement/final_self_collision_campaign.md",
     "reason": "Historical campaign runbook kept only to preserve the original campaign procedure.",
-    "review_age_days": 0,
+    "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "ok"
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 43.6,
     "canonical_replacement": "tasks/implement/markdown_harness_maintenance_upgrade.md",
     "classification": "HISTORICAL_ARCHIVE",
@@ -3245,12 +3606,14 @@
     "owner_surface": "markdown_harness_maintenance_upgrade",
     "path": "tasks/history/implement/harness_engineering_upgrade.md",
     "reason": "Historical predecessor runbook. Current markdown/control-plane maintenance execution lives under `markdown_harness_maintenance_upgrade`.",
-    "review_age_days": 0,
-    "review_interval_days": 90,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 41.9,
     "canonical_replacement": "tasks/implement/markdown_harness_maintenance_upgrade.md",
     "classification": "HISTORICAL_ARCHIVE",
@@ -3271,12 +3634,14 @@
     "owner_surface": "markdown_harness_maintenance_upgrade",
     "path": "tasks/history/implement/harness_markdown_cleanup_20260401.md",
     "reason": "Historical predecessor runbook; kept only to preserve the earlier cleanup record.",
-    "review_age_days": 0,
+    "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "ok"
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 47.9,
     "canonical_replacement": "tasks/implement/markdown_harness_maintenance_upgrade.md",
     "classification": "HISTORICAL_ARCHIVE",
@@ -3297,12 +3662,14 @@
     "owner_surface": "markdown_harness_maintenance_upgrade",
     "path": "tasks/history/implement/markdown_truthfulness_cleanup.md",
     "reason": "Historical predecessor runbook. Current markdown/control-plane maintenance execution lives under `markdown_harness_maintenance_upgrade`.",
-    "review_age_days": 0,
-    "review_interval_days": 90,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 53.0,
     "canonical_replacement": "none",
     "classification": "HISTORICAL_ARCHIVE",
@@ -3323,12 +3690,14 @@
     "owner_surface": "meeting_20260401_rope_profiling_rebuild",
     "path": "tasks/history/implement/meeting_20260401_rope_profiling_rebuild.md",
     "reason": "Historical one-off runbook moved out of `tasks/implement/` so it no longer competes with live execution surfaces.",
-    "review_age_days": 0,
-    "review_interval_days": 90,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 44.4,
     "canonical_replacement": "none",
     "classification": "HISTORICAL_ARCHIVE",
@@ -3349,12 +3718,14 @@
     "owner_surface": "delivery_and_profiling_review_20260401",
     "path": "tasks/history/spec/delivery_and_profiling_review_20260401.md",
     "reason": "Historical one-off review spec; do not reuse as a live task surface.",
-    "review_age_days": 0,
+    "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "ok"
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 46.5,
     "canonical_replacement": "tasks/spec/self_collision_transfer.md",
     "classification": "HISTORICAL_ARCHIVE",
@@ -3375,12 +3746,14 @@
     "owner_surface": "self_collision_transfer",
     "path": "tasks/history/spec/final_self_collision_campaign.md",
     "reason": "Historical campaign spec kept for traceability only; current self-collision work belongs to the canonical task.",
-    "review_age_days": 0,
+    "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "ok"
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 39.3,
     "canonical_replacement": "docs/bridge/tasks/markdown_harness_maintenance_upgrade.md",
     "classification": "HISTORICAL_ARCHIVE",
@@ -3401,12 +3774,14 @@
     "owner_surface": "markdown_harness_maintenance_upgrade",
     "path": "tasks/history/spec/harness_engineering_upgrade.md",
     "reason": "Historical predecessor spec. Current markdown/control-plane maintenance lives under `markdown_harness_maintenance_upgrade`.",
-    "review_age_days": 0,
-    "review_interval_days": 90,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 41.1,
     "canonical_replacement": "tasks/spec/markdown_harness_maintenance_upgrade.md",
     "classification": "HISTORICAL_ARCHIVE",
@@ -3427,12 +3802,14 @@
     "owner_surface": "markdown_harness_maintenance_upgrade",
     "path": "tasks/history/spec/harness_markdown_cleanup_20260401.md",
     "reason": "Historical predecessor spec; do not update this file for current markdown truth work.",
-    "review_age_days": 0,
+    "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "ok"
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 41.4,
     "canonical_replacement": "docs/bridge/tasks/markdown_harness_maintenance_upgrade.md",
     "classification": "HISTORICAL_ARCHIVE",
@@ -3453,12 +3830,14 @@
     "owner_surface": "markdown_harness_maintenance_upgrade",
     "path": "tasks/history/spec/markdown_truthfulness_cleanup.md",
     "reason": "Historical predecessor spec. Current markdown/control-plane maintenance lives under `markdown_harness_maintenance_upgrade`.",
-    "review_age_days": 0,
-    "review_interval_days": 90,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 46.0,
     "canonical_replacement": "none",
     "classification": "HISTORICAL_ARCHIVE",
@@ -3479,12 +3858,14 @@
     "owner_surface": "meeting_20260401_rope_profiling_rebuild",
     "path": "tasks/history/spec/meeting_20260401_rope_profiling_rebuild.md",
     "reason": "Historical one-off spec moved out of `tasks/spec/` so it no longer reads like active work.",
-    "review_age_days": 0,
-    "review_interval_days": 90,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "STUB",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 44.9,
     "canonical_replacement": "tasks/spec/self_collision_transfer.md",
     "classification": "DEPRECATED_POINTER",
@@ -3505,12 +3886,14 @@
     "owner_surface": "self_collision_transfer",
     "path": "tasks/history/spec/self_collision_transfer_decision.md",
     "reason": "Deprecated slug alias kept only for discoverability; do not add new implementation state under `_decision`.",
-    "review_age_days": 0,
+    "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "ok"
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 40.9,
     "canonical_replacement": "none",
     "classification": "HISTORICAL_ARCHIVE",
@@ -3531,12 +3914,14 @@
     "owner_surface": "delivery_and_profiling_review_20260401",
     "path": "tasks/history/status/delivery_and_profiling_review_20260401.md",
     "reason": "Completed one-off review status log; not a live source of truth for current work.",
-    "review_age_days": 0,
+    "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "ok"
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 51.2,
     "canonical_replacement": "tasks/status/self_collision_transfer.md",
     "classification": "HISTORICAL_ARCHIVE",
@@ -3557,12 +3942,14 @@
     "owner_surface": "self_collision_transfer",
     "path": "tasks/history/status/final_self_collision_campaign.md",
     "reason": "Historical campaign log preserved for traceability only; current self-collision state lives under the canonical task.",
-    "review_age_days": 0,
+    "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "ok"
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 44.4,
     "canonical_replacement": "tasks/status/markdown_harness_maintenance_upgrade.md",
     "classification": "HISTORICAL_ARCHIVE",
@@ -3583,12 +3970,14 @@
     "owner_surface": "markdown_harness_maintenance_upgrade",
     "path": "tasks/history/status/harness_engineering_upgrade.md",
     "reason": "Historical predecessor status log. Current markdown/control-plane maintenance state lives under `markdown_harness_maintenance_upgrade`.",
-    "review_age_days": 0,
-    "review_interval_days": 90,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 39.8,
     "canonical_replacement": "tasks/status/markdown_harness_maintenance_upgrade.md",
     "classification": "HISTORICAL_ARCHIVE",
@@ -3609,12 +3998,14 @@
     "owner_surface": "markdown_harness_maintenance_upgrade",
     "path": "tasks/history/status/harness_markdown_cleanup_20260401.md",
     "reason": "Historical predecessor status log; current markdown truth state lives under the canonical cleanup task.",
-    "review_age_days": 0,
+    "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "ok"
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 45.8,
     "canonical_replacement": "tasks/status/markdown_harness_maintenance_upgrade.md",
     "classification": "HISTORICAL_ARCHIVE",
@@ -3635,12 +4026,14 @@
     "owner_surface": "markdown_harness_maintenance_upgrade",
     "path": "tasks/history/status/markdown_truthfulness_cleanup.md",
     "reason": "Historical predecessor status log. Current markdown/control-plane maintenance state lives under `markdown_harness_maintenance_upgrade`.",
-    "review_age_days": 0,
-    "review_interval_days": 90,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "ARCHIVE",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 47.8,
     "canonical_replacement": "none",
     "classification": "HISTORICAL_ARCHIVE",
@@ -3661,12 +4054,14 @@
     "owner_surface": "meeting_20260401_rope_profiling_rebuild",
     "path": "tasks/history/status/meeting_20260401_rope_profiling_rebuild.md",
     "reason": "Historical one-off status moved out of `tasks/status/` so it no longer appears active.",
-    "review_age_days": 0,
-    "review_interval_days": 90,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "STUB",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 49.9,
     "canonical_replacement": "tasks/status/self_collision_transfer.md",
     "classification": "DEPRECATED_POINTER",
@@ -3687,12 +4082,14 @@
     "owner_surface": "self_collision_transfer",
     "path": "tasks/history/status/self_collision_transfer_decision.md",
     "reason": "Deprecated slug alias preserved only for discoverability; do not treat this file as live status.",
-    "review_age_days": 0,
+    "review_age_days": null,
+    "review_enforced": false,
     "review_interval_days": null,
-    "review_status": "ok"
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 30.0,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -3714,11 +4111,13 @@
     "path": "tasks/implement/README.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 12.7,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -3740,11 +4139,13 @@
     "path": "tasks/implement/_implement_template.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 34.2,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -3766,11 +4167,13 @@
     "path": "tasks/implement/bunny_penetration_force_diagnostic.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 40.5,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -3792,11 +4195,13 @@
     "path": "tasks/implement/data_collection_protocol.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 36.8,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -3818,11 +4223,13 @@
     "path": "tasks/implement/fast_foundation_stereo.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 37.6,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -3844,11 +4251,13 @@
     "path": "tasks/implement/interactive_playground_profiling.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 49.4,
     "canonical_replacement": "none",
     "classification": "ACTIVE_SUPPORTING",
@@ -3870,11 +4279,13 @@
     "path": "tasks/implement/markdown_harness_maintenance_upgrade.md",
     "reason": "Runbook for the current markdown/control-plane maintenance pass.",
     "review_age_days": 0,
+    "review_enforced": false,
     "review_interval_days": 14,
     "review_status": "ok"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 39.8,
     "canonical_replacement": "none",
     "classification": "ACTIVE_SUPPORTING",
@@ -3895,12 +4306,14 @@
     "owner_surface": "meeting_20260408_recall_part",
     "path": "tasks/implement/meeting_20260408_recall_part.md",
     "reason": "Runbook for creating the first 2026-04-08 recall-only meeting bundle.",
-    "review_age_days": 0,
-    "review_interval_days": 14,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 50.0,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -3922,11 +4335,41 @@
     "path": "tasks/implement/native_robot_rope_drop_release.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
+    "avg_nonblank_line_length": 52.3,
+    "canonical_replacement": "",
+    "classification": "ACTIVE_SUPPORTING",
+    "contains_authoritative_language": true,
+    "contains_machine_local_paths": false,
+    "contains_run_ids": false,
+    "indexed_from_canonical_entrypoint": true,
+    "line_compressed": false,
+    "line_count": 35,
+    "max_line_length": 113,
+    "metadata_last_reviewed": "",
+    "metadata_notes": "",
+    "metadata_owner_surface": "",
+    "metadata_review_interval": "",
+    "metadata_status": "",
+    "metadata_update_rule": "",
+    "overgrown_for_role": false,
+    "owner_surface": "remote_interaction_root_cause",
+    "path": "tasks/implement/remote_interaction_root_cause.md",
+    "reason": "Active execution-chain support surface.",
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
+  },
+  {
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 42.4,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -3948,11 +4391,13 @@
     "path": "tasks/implement/robot_deformable_demo.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 39.5,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -3974,11 +4419,13 @@
     "path": "tasks/implement/robot_rope_franka_tabletop_push_hero.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 43.5,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -4000,11 +4447,13 @@
     "path": "tasks/implement/rope_perf_apples_to_apples.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 59.6,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -4026,11 +4475,13 @@
     "path": "tasks/implement/self_collision_transfer.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "REFORMAT",
+    "actionable_status": "actionable",
     "avg_nonblank_line_length": 59.4,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -4052,11 +4503,13 @@
     "path": "tasks/implement/slide_deck_overhaul.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 39.5,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -4078,11 +4531,13 @@
     "path": "tasks/implement/video_presentation_quality.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 23.2,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -4104,11 +4559,13 @@
     "path": "tasks/spec/README.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 9.7,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -4130,11 +4587,13 @@
     "path": "tasks/spec/_spec_template.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 39.5,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -4156,11 +4615,13 @@
     "path": "tasks/spec/bunny_penetration_force_diagnostic.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 34.5,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -4182,11 +4643,13 @@
     "path": "tasks/spec/data_collection_protocol.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 33.9,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -4208,11 +4671,13 @@
     "path": "tasks/spec/fast_foundation_stereo.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 37.2,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -4234,11 +4699,13 @@
     "path": "tasks/spec/interactive_playground_profiling.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 45.0,
     "canonical_replacement": "none",
     "classification": "ACTIVE_SUPPORTING",
@@ -4260,11 +4727,13 @@
     "path": "tasks/spec/markdown_harness_maintenance_upgrade.md",
     "reason": "Bounded spec for the current harness-maintenance upgrade; supersedes broader predecessor cleanup tasks for active execution.",
     "review_age_days": 0,
+    "review_enforced": false,
     "review_interval_days": 14,
     "review_status": "ok"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 40.0,
     "canonical_replacement": "none",
     "classification": "ACTIVE_SUPPORTING",
@@ -4285,12 +4754,14 @@
     "owner_surface": "meeting_20260408_recall_part",
     "path": "tasks/spec/meeting_20260408_recall_part.md",
     "reason": "Bounded execution spec for the 2026-04-08 recall-only meeting bundle.",
-    "review_age_days": 0,
-    "review_interval_days": 14,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 39.9,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -4312,11 +4783,41 @@
     "path": "tasks/spec/native_robot_rope_drop_release.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
+    "avg_nonblank_line_length": 39.7,
+    "canonical_replacement": "",
+    "classification": "ACTIVE_SUPPORTING",
+    "contains_authoritative_language": true,
+    "contains_machine_local_paths": false,
+    "contains_run_ids": false,
+    "indexed_from_canonical_entrypoint": true,
+    "line_compressed": false,
+    "line_count": 46,
+    "max_line_length": 78,
+    "metadata_last_reviewed": "",
+    "metadata_notes": "",
+    "metadata_owner_surface": "",
+    "metadata_review_interval": "",
+    "metadata_status": "",
+    "metadata_update_rule": "",
+    "overgrown_for_role": false,
+    "owner_surface": "remote_interaction_root_cause",
+    "path": "tasks/spec/remote_interaction_root_cause.md",
+    "reason": "Active execution-chain support surface.",
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
+  },
+  {
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 41.5,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -4338,11 +4839,13 @@
     "path": "tasks/spec/robot_deformable_demo.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 44.0,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -4364,11 +4867,13 @@
     "path": "tasks/spec/robot_rope_franka_tabletop_push_hero.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 50.6,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -4390,11 +4895,13 @@
     "path": "tasks/spec/rope_perf_apples_to_apples.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 43.3,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -4416,11 +4923,13 @@
     "path": "tasks/spec/self_collision_transfer.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 40.2,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -4442,11 +4951,13 @@
     "path": "tasks/spec/slide_deck_overhaul.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 36.2,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -4468,11 +4979,13 @@
     "path": "tasks/spec/video_presentation_quality.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 26.0,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -4494,11 +5007,13 @@
     "path": "tasks/status/README.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 17.7,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -4520,11 +5035,13 @@
     "path": "tasks/status/_status_template.md",
     "reason": "Supporting control-plane surface.",
     "review_age_days": null,
-    "review_interval_days": 90,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 43.5,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -4546,11 +5063,13 @@
     "path": "tasks/status/bunny_penetration_force_diagnostic.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 37.1,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -4572,11 +5091,13 @@
     "path": "tasks/status/data_collection_protocol.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 36.7,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -4598,11 +5119,13 @@
     "path": "tasks/status/fast_foundation_stereo.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 46.1,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -4624,21 +5147,23 @@
     "path": "tasks/status/interactive_playground_profiling.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "KEEP",
-    "avg_nonblank_line_length": 59.1,
+    "actionable_status": "quiet",
+    "avg_nonblank_line_length": 51.1,
     "canonical_replacement": "none",
     "classification": "ACTIVE_SUPPORTING",
     "contains_authoritative_language": true,
     "contains_machine_local_paths": false,
-    "contains_run_ids": true,
+    "contains_run_ids": false,
     "indexed_from_canonical_entrypoint": true,
     "line_compressed": false,
-    "line_count": 83,
-    "max_line_length": 227,
+    "line_count": 104,
+    "max_line_length": 91,
     "metadata_last_reviewed": "2026-04-01",
     "metadata_notes": "Live status log for the current markdown/control-plane maintenance pass.",
     "metadata_owner_surface": "markdown_harness_maintenance_upgrade",
@@ -4650,11 +5175,13 @@
     "path": "tasks/status/markdown_harness_maintenance_upgrade.md",
     "reason": "Live status log for the current markdown/control-plane maintenance pass.",
     "review_age_days": 0,
+    "review_enforced": false,
     "review_interval_days": 7,
     "review_status": "ok"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 48.0,
     "canonical_replacement": "none",
     "classification": "ACTIVE_SUPPORTING",
@@ -4675,12 +5202,14 @@
     "owner_surface": "meeting_20260408_recall_part",
     "path": "tasks/status/meeting_20260408_recall_part.md",
     "reason": "Live status log for the 2026-04-08 meeting recall bootstrap.",
-    "review_age_days": 0,
-    "review_interval_days": 7,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 47.7,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -4702,11 +5231,41 @@
     "path": "tasks/status/native_robot_rope_drop_release.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
+    "avg_nonblank_line_length": 43.2,
+    "canonical_replacement": "",
+    "classification": "ACTIVE_SUPPORTING",
+    "contains_authoritative_language": true,
+    "contains_machine_local_paths": false,
+    "contains_run_ids": false,
+    "indexed_from_canonical_entrypoint": true,
+    "line_compressed": false,
+    "line_count": 36,
+    "max_line_length": 79,
+    "metadata_last_reviewed": "",
+    "metadata_notes": "",
+    "metadata_owner_surface": "",
+    "metadata_review_interval": "",
+    "metadata_status": "",
+    "metadata_update_rule": "",
+    "overgrown_for_role": false,
+    "owner_surface": "remote_interaction_root_cause",
+    "path": "tasks/status/remote_interaction_root_cause.md",
+    "reason": "Active execution-chain support surface.",
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
+  },
+  {
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 41.1,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -4728,11 +5287,13 @@
     "path": "tasks/status/robot_deformable_demo.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 43.0,
     "canonical_replacement": "none",
     "classification": "ACTIVE_SUPPORTING",
@@ -4753,13 +5314,15 @@
     "owner_surface": "robot_rope_franka_tabletop_push_hero",
     "path": "tasks/status/robot_rope_franka_tabletop_push_hero.md",
     "reason": "Live status page for the tabletop-push hero task. Committed authority lives in `results_meta/`; local result trees are secondary.",
-    "review_age_days": 0,
-    "review_interval_days": 14,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
-    "avg_nonblank_line_length": 47.2,
+    "action": "KEEP",
+    "actionable_status": "quiet",
+    "avg_nonblank_line_length": 49.3,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
     "contains_authoritative_language": true,
@@ -4767,8 +5330,8 @@
     "contains_run_ids": true,
     "indexed_from_canonical_entrypoint": true,
     "line_compressed": false,
-    "line_count": 98,
-    "max_line_length": 88,
+    "line_count": 104,
+    "max_line_length": 122,
     "metadata_last_reviewed": "",
     "metadata_notes": "",
     "metadata_owner_surface": "",
@@ -4780,11 +5343,13 @@
     "path": "tasks/status/rope_perf_apples_to_apples.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 61.6,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -4806,11 +5371,13 @@
     "path": "tasks/status/self_collision_transfer.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
     "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 46.1,
     "canonical_replacement": "none",
     "classification": "ACTIVE_SUPPORTING",
@@ -4831,12 +5398,14 @@
     "owner_surface": "slide_deck_overhaul",
     "path": "tasks/status/slide_deck_overhaul.md",
     "reason": "Live status page for the deck-overhaul task. Keep this page current-state-first; do not accumulate a resend/rebuild changelog that produces multiple conflicting \u201ccurrent\u201d claims.",
-    "review_age_days": 0,
-    "review_interval_days": 14,
-    "review_status": "ok"
+    "review_age_days": null,
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   },
   {
-    "action": "REFORMAT",
+    "action": "KEEP",
+    "actionable_status": "quiet",
     "avg_nonblank_line_length": 35.7,
     "canonical_replacement": "",
     "classification": "ACTIVE_SUPPORTING",
@@ -4858,7 +5427,8 @@
     "path": "tasks/status/video_presentation_quality.md",
     "reason": "Active execution-chain support surface.",
     "review_age_days": null,
-    "review_interval_days": 21,
-    "review_status": "missing"
+    "review_enforced": false,
+    "review_interval_days": null,
+    "review_status": "out_of_scope"
   }
 ]

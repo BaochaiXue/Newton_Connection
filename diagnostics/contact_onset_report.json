@@ -1,0 +1,22 @@
+{
+  "run_id": "BEST_RUN",
+  "summary_first_contact_frame": 66,
+  "summary_first_contact_time_s": 2.2011000000000003,
+  "summary_contact_proxy_counts": {
+    "finger_span": 88
+  },
+  "summary_contact_peak_proxy": "finger_span",
+  "proxy_finger_span_first_contact_frame": 66,
+  "proxy_finger_span_first_contact_time_s": 2.2011000000000003,
+  "actual_any_finger_box_first_contact_frame": 50,
+  "actual_any_finger_box_first_contact_time_s": 1.6675000000000002,
+  "actual_left_tip_first_contact_frame": 50,
+  "actual_left_tip_first_contact_time_s": 1.6675000000000002,
+  "rope_lateral_motion_frame": 63,
+  "rope_lateral_motion_time_s": 2.1010500000000003,
+  "rope_deformation_frame": 63,
+  "rope_deformation_time_s": 2.1010500000000003,
+  "rope_motion_threshold_m": 0.003,
+  "rope_deformation_threshold_m": 0.005,
+  "dominant_proxy_issue": "finger_span"
+}

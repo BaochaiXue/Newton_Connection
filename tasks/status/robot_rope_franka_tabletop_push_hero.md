@@ -23,7 +23,7 @@
   - `results_meta/INDEX.md`
   - `results_meta/LATEST.md`
 - Current committed run id:
-  - `20260401_093102_fixeddt_c10_contactfix_cam`
+  - `20260401_203416_remotefix_truthcam_c12`
 
 ## Local Navigation Surfaces
 
@@ -36,12 +36,12 @@
 
 ## Current Focus
 
-- preserve the accepted fixed-timestep tabletop hero bundle and its rerun path
+- preserve the truth-fixed tabletop hero bundle and its rerun path
 
 ## Latest Findings
 
 - Accepted run:
-  - `Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_093102_fixeddt_c10_contactfix_cam/`
+  - `Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_203416_remotefix_truthcam_c12/`
 - Local convenience mirror:
   - `Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/`
 - Winning implementation details:
@@ -49,23 +49,31 @@
   - native Newton Franka + native Newton table + PhysTwin rope remain intact
   - tabletop hero switched from unreliable tabletop IK to a tabletop-only
     native joint-space waypoint controller
-  - table raised to a readable workbench height so the contact line is legible
-  - hero presentation hides the oversized visual pedestal while validation view
+  - remote-interaction root cause was diagnosed as a visual-truth mismatch plus
+    proxy/camera ambiguity, not a hidden helper or Newton-core bug
+  - rope render radius is now aligned with the physical rope collision radius
+  - hero/debug contact reporting is now grounded in actual finger-box contact
+    instead of `finger_span` as the primary proof surface
+  - hero presentation still hides the oversized pedestal while validation view
     keeps the full geometry honest
 - Accepted run evidence:
   - `hero_presentation.mp4`, `hero_debug.mp4`, `validation_camera.mp4`
   - `duration_s = 6.2`
   - `contact_started = true`
-  - `first_contact_phase = push`
-  - `first_contact_time_s = 2.2011`
-  - `contact_duration_s = 2.9348`
-  - `min_clearance_min_m = -0.0103589874`
+  - `first_contact_phase = approach`
+  - `first_contact_time_s = 1.6675`
+  - `actual_finger_box_first_contact_time_s = 1.6675`
+  - `contact_duration_s = 2.96815`
+  - `contact_peak_proxy = right_tip_box`
+  - `min_clearance_min_m = -0.0128063839`
   - `preroll_settle_pass = true`
   - strict validator `overall_pass = true`
+  - truthful manual review `all YES`
   - canonical rerun wrapper:
     - `scripts/run_robot_rope_franka_tabletop_hero.sh`
-  - contact-causality improvement over the older promoted cut:
-    - visible contact starts earlier and the pre-contact rope drift is reduced
+  - remote-interaction review:
+    - full-video review now says the visible Franka finger itself is clearly the
+      contactor and the earlier stand-off impression is gone
 
 ## Current Blocker
 

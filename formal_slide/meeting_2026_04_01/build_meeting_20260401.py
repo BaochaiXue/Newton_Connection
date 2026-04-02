@@ -892,6 +892,22 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "twocol",
+        "title": "Robot Baseline R0: Native Robot + Semi-Implicit Rope Release/Drop Sanity Baseline",
+        "common_settings": "`demo_robot_rope_franka.py` | `drop_release_baseline` | native Franka | semi-implicit | real ground | 1:1 video | drag OFF authoritative, drag ON validated A/B.",
+        "left_label": "Authoritative OFF run\nrecoil-fixed stage-0 baseline",
+        "left_path": ROBOT_DROP_BASELINE_OFF_GIF,
+        "right_label": "Matched ON run\nA/B drag comparison",
+        "right_path": ROBOT_DROP_BASELINE_ON_GIF,
+        "transcript": [
+            "在进入 tabletop push 之前，我先把更窄的 robot stage-0 baseline 单独点出来。",
+            "这页不是 final manipulation claim，而是 `drop_release_baseline` 的 sanity baseline：native Newton Franka 在场，rope 先被 support，再 release，然后在 semi-implicit pipeline 里自由下落并撞到 real ground。",
+            "当前 authoritative OFF run 的关键数字是：release time 大约 `0.40 s`，first ground contact 大约 `0.7168 s`，impact speed 大约 `3.11 m/s`，early-fall acceleration 拟合约 `-9.80 m/s^2`。",
+            "右侧的 drag ON 是 matched A/B。当前 repo 里的结论是 drag 影响是 minor，不是这个 baseline 的主问题来源。",
+            "所以这页的作用很窄：它证明 native robot integration、semi-implicit rope free fall、real ground contact 和 1:1 readable video 这四件事已经成立，但不把它说成 full two-way coupling。",
+        ],
+    },
+    {
+        "kind": "twocol",
         "title": "Conclusion R1: Native Tabletop Push Is Defendable, Not Full 2-Way Coupling",
         "common_settings": "`demo_robot_rope_franka.py` | `tabletop_push_hero` | fixed `sim_dt=5e-5`, `substeps=667` | real native finger contact, but robot motion is still commanded open-loop.",
         "left_label": "Hero view\npromoted `c10` contact-fix run",

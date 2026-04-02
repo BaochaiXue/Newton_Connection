@@ -22,15 +22,17 @@ defensible even if automatic validation passes.
 
 ## Current Status
 
-- Active root-cause investigation started on `2026-04-01`.
-- The current promoted tabletop run remains:
-  - `Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_093102_fixeddt_c10_contactfix_cam`
-- Early evidence already suggests the issue may be a combination of:
-  - thick rope collision radius,
-  - aggressive diagnostic proxies,
-  - control-reference / visible-finger mismatch,
-  - and presentation-layer ambiguity.
-- This task does not assume the cause; it exists to rank and prove it.
+- Completed on `2026-04-01`.
+- Winning replacement run:
+  - `Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_203416_remotefix_truthcam_c12`
+- Root-cause conclusion:
+  - no hidden helper
+  - no Newton-core bug evidence
+  - primary issue was a visual-truth mismatch: the old tabletop hero rendered
+    the rope much thinner than the physical rope collision thickness
+  - secondary contributors were proxy semantics (`finger_span`) and hero-camera
+    ambiguity
+- This task exists to preserve the evidence bundle backing that conclusion.
 
 ## Code Entry Points
 

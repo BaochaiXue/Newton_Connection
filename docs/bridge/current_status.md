@@ -31,7 +31,7 @@ Detailed result meaning belongs in:
 - `self_collision_transfer`
   - separate demo-ready progress from blocked strict parity
 - `robot_rope_franka_tabletop_push_hero`
-  - preserve the promoted tabletop-push hero bundle and keep its authority routing truthful
+  - preserve the truth-fixed tabletop-push hero bundle and keep its authority routing truthful
 
 ## Current Blockers
 
@@ -57,11 +57,11 @@ Detailed result meaning belongs in:
 - `robot_rope_franka_tabletop_push_hero`
   - task status: `tasks/status/robot_rope_franka_tabletop_push_hero.md`
   - committed authority: `results_meta/tasks/robot_rope_franka_tabletop_push_hero.json`
-  - current meaning: readable tabletop-push hero baseline under fixed `sim_dt = 5e-5`, `substeps = 667`
+  - current meaning: readable tabletop-push hero baseline under fixed `sim_dt = 5e-5`, `substeps = 667`, now with the rope render thickness aligned to the physical contact thickness and the visible finger-contact claim re-certified
 - `rope_perf_apples_to_apples`
   - task status: `tasks/status/rope_perf_apples_to_apples.md`
   - committed authority: `results_meta/tasks/rope_perf_apples_to_apples.json`
-  - current meaning: same-case rope replay benchmark with both visible-viewer E1 and no-render A0/A1/B0 rows; Newton A1 remains slower than PhysTwin B0 on the committed baseline
+  - current meaning: same-case no-render rope replay benchmark; visible-viewer `E1` exists only as practical supporting context, and Newton A1 remains slower than PhysTwin B0 on the committed baseline
 
 ## Active Workstreams
 

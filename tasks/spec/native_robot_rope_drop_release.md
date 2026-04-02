@@ -21,9 +21,10 @@ the semi-implicit pipeline.
 - current robot demo:
   `Newton/phystwin_bridge/demos/demo_robot_rope_franka.py`
 - existing robot result bundle:
-  `results/robot_deformable_demo/`
+  `results/native_robot_rope_drop_release/`
 - related validation:
-  `scripts/validate_robot_deformable_demo.py`
+  `scripts/validate_robot_rope_drop_release_physics.py`
+  `scripts/validate_native_robot_rope_drop_release_video.py`
 
 ## Outputs
 

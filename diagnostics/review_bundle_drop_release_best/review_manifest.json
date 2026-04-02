@@ -1,0 +1,183 @@
+{
+  "video_path": "/home/xinjie/Newton_Connection/results/native_robot_rope_drop_release/runs/20260331_232106_native_franka_recoilfix_drag_off_w5/final_presentation.mp4",
+  "frame_count": 44,
+  "fps": 30.0,
+  "duration_s": 1.466667,
+  "sample_count": 12,
+  "sampled_frames": [
+    {
+      "frame_index": 0,
+      "timestamp_s": 0.0,
+      "frame_path": "sampled_frames/frame_000000.png",
+      "mean_luma": 87.28107204861111,
+      "dark_pixel_ratio": 0.0,
+      "black_screen_flag": false
+    },
+    {
+      "frame_index": 4,
+      "timestamp_s": 0.13333333333333333,
+      "frame_path": "sampled_frames/frame_000004.png",
+      "mean_luma": 87.727314453125,
+      "dark_pixel_ratio": 0.0,
+      "black_screen_flag": false
+    },
+    {
+      "frame_index": 8,
+      "timestamp_s": 0.26666666666666666,
+      "frame_path": "sampled_frames/frame_000008.png",
+      "mean_luma": 87.70282552083333,
+      "dark_pixel_ratio": 0.0,
+      "black_screen_flag": false
+    },
+    {
+      "frame_index": 12,
+      "timestamp_s": 0.4,
+      "frame_path": "sampled_frames/frame_000012.png",
+      "mean_luma": 87.67699978298612,
+      "dark_pixel_ratio": 0.0,
+      "black_screen_flag": false
+    },
+    {
+      "frame_index": 16,
+      "timestamp_s": 0.5333333333333333,
+      "frame_path": "sampled_frames/frame_000016.png",
+      "mean_luma": 87.45170789930556,
+      "dark_pixel_ratio": 0.0,
+      "black_screen_flag": false
+    },
+    {
+      "frame_index": 20,
+      "timestamp_s": 0.6666666666666666,
+      "frame_path": "sampled_frames/frame_000020.png",
+      "mean_luma": 87.43037760416667,
+      "dark_pixel_ratio": 0.0,
+      "black_screen_flag": false
+    },
+    {
+      "frame_index": 23,
+      "timestamp_s": 0.7666666666666667,
+      "frame_path": "sampled_frames/frame_000023.png",
+      "mean_luma": 87.60152452256945,
+      "dark_pixel_ratio": 0.0,
+      "black_screen_flag": false
+    },
+    {
+      "frame_index": 27,
+      "timestamp_s": 0.9,
+      "frame_path": "sampled_frames/frame_000027.png",
+      "mean_luma": 87.60142252604167,
+      "dark_pixel_ratio": 0.0,
+      "black_screen_flag": false
+    },
+    {
+      "frame_index": 31,
+      "timestamp_s": 1.0333333333333334,
+      "frame_path": "sampled_frames/frame_000031.png",
+      "mean_luma": 87.60142252604167,
+      "dark_pixel_ratio": 0.0,
+      "black_screen_flag": false
+    },
+    {
+      "frame_index": 35,
+      "timestamp_s": 1.1666666666666667,
+      "frame_path": "sampled_frames/frame_000035.png",
+      "mean_luma": 87.60142252604167,
+      "dark_pixel_ratio": 0.0,
+      "black_screen_flag": false
+    },
+    {
+      "frame_index": 39,
+      "timestamp_s": 1.3,
+      "frame_path": "sampled_frames/frame_000039.png",
+      "mean_luma": 87.60142252604167,
+      "dark_pixel_ratio": 0.0,
+      "black_screen_flag": false
+    },
+    {
+      "frame_index": 43,
+      "timestamp_s": 1.4333333333333333,
+      "frame_path": "sampled_frames/frame_000043.png",
+      "mean_luma": 87.60140190972223,
+      "dark_pixel_ratio": 0.0,
+      "black_screen_flag": false
+    }
+  ],
+  "windows": [
+    {
+      "label": "release",
+      "center_frame": 43,
+      "frames": [
+        {
+          "frame_index": 39,
+          "timestamp_s": 1.3,
+          "frame_path": "windows/release/frame_000039.png"
+        },
+        {
+          "frame_index": 40,
+          "timestamp_s": 1.3333333333333333,
+          "frame_path": "windows/release/frame_000040.png"
+        },
+        {
+          "frame_index": 41,
+          "timestamp_s": 1.3666666666666667,
+          "frame_path": "windows/release/frame_000041.png"
+        },
+        {
+          "frame_index": 42,
+          "timestamp_s": 1.4,
+          "frame_path": "windows/release/frame_000042.png"
+        },
+        {
+          "frame_index": 43,
+          "timestamp_s": 1.4333333333333333,
+          "frame_path": "windows/release/frame_000043.png"
+        }
+      ]
+    },
+    {
+      "label": "ground_contact",
+      "center_frame": 43,
+      "frames": [
+        {
+          "frame_index": 39,
+          "timestamp_s": 1.3,
+          "frame_path": "windows/ground_contact/frame_000039.png"
+        },
+        {
+          "frame_index": 40,
+          "timestamp_s": 1.3333333333333333,
+          "frame_path": "windows/ground_contact/frame_000040.png"
+        },
+        {
+          "frame_index": 41,
+          "timestamp_s": 1.3666666666666667,
+          "frame_path": "windows/ground_contact/frame_000041.png"
+        },
+        {
+          "frame_index": 42,
+          "timestamp_s": 1.4,
+          "frame_path": "windows/ground_contact/frame_000042.png"
+        },
+        {
+          "frame_index": 43,
+          "timestamp_s": 1.4333333333333333,
+          "frame_path": "windows/ground_contact/frame_000043.png"
+        }
+      ]
+    }
+  ],
+  "contact_sheet": "/home/xinjie/Newton_Connection/diagnostics/review_bundle_drop_release_best/contact_sheet.png",
+  "event_sheet": "/home/xinjie/Newton_Connection/diagnostics/review_bundle_drop_release_best/event_sheet.png",
+  "black_frame_fraction": 0.0,
+  "repeat_transition_fraction": 0.7272727272727273,
+  "motion_density": 0.09090909090909091,
+  "max_static_run_fraction": 0.5454545454545454,
+  "pair_diff_mean": 0.798936621875989,
+  "pair_diff_max": 7.739849090576172,
+  "required_assets_present": {
+    "sampled_frames": true,
+    "windows": true,
+    "contact_sheet": true,
+    "event_sheet": true
+  }
+}

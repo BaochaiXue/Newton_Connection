@@ -1,0 +1,19 @@
+{
+  "run_id": "BEST_RUN",
+  "rope_collision_radius_m": 0.02600238099694252,
+  "ee_contact_radius_arg_m": 0.055,
+  "diagnostic_proxy_radius_m": 0.033,
+  "rope_diameter_m": 0.05200476199388504,
+  "diagnostic_proxy_diameter_m": 0.066,
+  "left_tip_box_size_m": [
+    0.017500000074505806,
+    0.015200000256299973,
+    0.01850000023841858
+  ],
+  "right_tip_box_size_m": [
+    0.017500000074505806,
+    0.015200000256299973,
+    0.01850000023841858
+  ],
+  "rope_total_mass_kg": 3.0
+}

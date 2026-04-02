@@ -17,6 +17,8 @@ WATCH_TERMS = (
     "sync_results_registry.py",
     "generate_md_inventory.py",
     "generate_md_truth_inventory.py",
+    "tasks/contracts/",
+    "tasks/handoffs/",
     "docs/archive/tasks/",
     "docs/bridge/tasks/",
     "docs/bridge/current_status.md",
@@ -61,6 +63,7 @@ def main() -> int:
                 "docs/generated/md_staleness_report.md, docs/generated/task_surface_matrix.md, "
                 "update docs/generated/harness_deprecations.md, and rerun scripts/lint_harness_consistency.py. "
                 " Historical bridge task pages should move to docs/archive/tasks/, not remain in docs/bridge/tasks/. "
+                " If you added or changed a contract/handoff, regenerate task_surface_matrix.md so workflow usage stays auditable. "
                 "If you touched tracked local-only pointers under results/ or subtree status stubs, keep them explicitly local-only "
                 "and aligned with results_meta before you move on."
             ),

@@ -39,7 +39,7 @@ drop/release baseline:
   - `results/native_robot_rope_drop_release/`
 - This task is the follow-on hero-demo workstream for a real tabletop push.
 - Accepted run:
-  - `Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_093102_fixeddt_c10_contactfix_cam`
+  - `Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_203416_remotefix_truthcam_c12`
 - Local convenience mirror:
   - `Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/`
 
@@ -48,9 +48,17 @@ Accepted implementation note:
 - the winning run keeps the robot native to Newton and the rope on the
   PhysTwin -> Newton bridge, but uses a tabletop-only native joint-space
   waypoint controller because the earlier tabletop IK path did not reliably
-  hit the contact line under the fixed timestep. The current promoted contact-fix
-  update starts visible contact earlier, reducing the impression that the rope
-  moves before the finger arrives.
+  hit the contact line under the fixed timestep.
+- The accepted visual-truth fix does **not** add a hidden helper and does **not**
+  touch `Newton/newton/`.
+- The promoted c12 update makes the tabletop claim defensible by:
+  - rendering the rope at a thickness consistent with the physical rope
+    collision radius instead of the earlier thin capped render
+  - switching tabletop contact reporting from proxy-dominated `finger_span`
+    semantics to actual finger-box contact evidence
+  - tightening the hero camera around the real fingertip contact patch
+- The result is still a baseline contact demo, not full two-way coupling or
+  full manipulation.
 
 ## Code Entry Points
 

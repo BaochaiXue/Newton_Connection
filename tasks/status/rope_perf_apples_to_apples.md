@@ -13,6 +13,9 @@
   - `formal_slide/meeting_2026_04_01/bridge_meeting_20260401.pptx`
   - `formal_slide/meeting_2026_04_01/transcript.md`
   - `formal_slide/meeting_2026_04_01/transcript.pdf`
+- Committed claim boundary remains:
+  - same-case, no-render, apples-to-apples rope replay benchmark
+- The visible-viewer `E1` row is supporting practical context only; it is not the registry-backed promoted scope by itself
 
 ## Last Completed Step
 
@@ -48,7 +51,7 @@
 - Added a file-backed audit for the rebuild:
   - `formal_slide/meeting_2026_04_01/todo2_rope_profiling_rebuild_audit_20260401.md`
 
-## 2026-04-01 Real-Viewer Relevance Update
+## 2026-04-01 Real-Viewer Relevance Update (Supporting Context)
 
 - Added an explicit old visible-viewer baseline:
   - `results/rope_perf_apples_to_apples/newton/E0_viewer_baseline_end_to_end/`
@@ -69,6 +72,9 @@
     replay with render OFF
   - therefore the profiling story is valuable to the viewer because it shows
     render is not the first optimization target on this clean rope baseline
+- This row is supporting viewer-facing context for the slide story.
+- The committed promoted benchmark meaning still lives in the no-render
+  apples-to-apples scope recorded in `results_meta/tasks/rope_perf_apples_to_apples.json`.
 
 ## Next Step
 

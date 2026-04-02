@@ -3,7 +3,7 @@
 ## State
 
 - Status: recoil-fixed stage-0 baseline promoted
-- Last updated: 2026-03-31
+- Last updated: 2026-04-01
 
 ## Authoritative Path
 

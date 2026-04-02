@@ -10,74 +10,95 @@
 
 ## Current State
 
-Completed for the resumed 2026-04-01 maintenance pass.
+Completed for the current semantic-hardening follow-up after the initial
+2026-04-01 cleanup pass.
 
-The repo already has the right harness shape. This pass finished the remaining
-semantic cleanup needed so archived task pages, local result surfaces, and
-generated ledgers tell one truthful current-vs-historical story.
+This pass was structural cleanup plus workflow hardening, not routine
+housekeeping only.
 
 ## Audited Issues
 
-- active-vs-historical leakage survived in the execution/task neighborhood:
-  - `meeting_20260401_rope_profiling_rebuild` had completed but still lived in
-    active execution directories before this pass
-- several local result surfaces under `Newton/phystwin_bridge/results/` still
-  read like plausible current authority:
-  - superseded `final_self_collision_campaign_20260330_205935_4fdef39/README.md`
-  - blocked-bundle `final_self_collision_campaign_20260331_033636_533f3d0/README.md`
-  - blocked-bundle `final_self_collision_campaign_20260331_033636_533f3d0/FINAL_STATUS.md`
-  - `robot_rope_franka/BEST_RUN/README.md`
-- `tasks/status/slide_deck_overhaul.md` had accumulated contradictory current
-  slide counts inside one live status block
-- generated inventory/lint still need a final refresh after the archive and
-  local-authority wording changes land
+- `remote_interaction_root_cause` had a full active chain in execution
+  directories but was missing from the canonical active task index
+- `robot_rope_franka` local manifests still drifted from the registry-backed
+  current run and local-only policy:
+  - root `manifest.json` still pointed at the old `c08` run
+  - `BEST_RUN/manifest.json` still used promoted-best wording and
+    machine-local absolute paths
+- `rope_perf_apples_to_apples` wording had started to broaden the
+  registry-backed no-render claim boundary by treating visible-viewer `E1` as
+  part of the committed meaning rather than supporting context
+- generated maintenance reports were still too noisy:
+  - `md_staleness_report.md` behaved like a permanent red backlog
+  - `md_cleanup_report.md` still dumped too many low-signal `REFORMAT` rows
+- contracts and handoffs still existed mostly as templates and were not yet
+  demonstrably used by a live active task
 
 ## Changes Implemented
 
-- confirmed the active maintenance task chain remains the only canonical
-  markdown-harness upgrade workstream
-- carried the one-off `meeting_20260401_rope_profiling_rebuild` chain through
-  the singular archive/history locations already established in the repo:
-  - `docs/archive/tasks/meeting_20260401_rope_profiling_rebuild.md`
-  - `plans/completed/meeting_20260401_rope_profiling_rebuild.md`
-  - `tasks/history/spec/meeting_20260401_rope_profiling_rebuild.md`
-  - `tasks/history/implement/meeting_20260401_rope_profiling_rebuild.md`
-  - `tasks/history/status/meeting_20260401_rope_profiling_rebuild.md`
-- introduced `docs/archive/tasks/README.md` and updated the live task index to
-  route historical task pages there instead of leaving them beside active task
-  pages
-- tightened inventory/lint logic so the archive task neighborhood is visible to
-  the harness and non-active task pages still living in `docs/bridge/tasks/`
-  can be flagged mechanically
-- downgraded the remaining risky self-collision campaign bundle surfaces into
-  explicit local-only records and aligned `results_meta/tasks/self_collision_transfer.json`
-  to say so
-- verified `tasks/status/slide_deck_overhaul.md` now presents one coherent
-  current deck/review workflow instead of contradictory current counts
+- continued the same maintenance line rather than opening a second overlapping
+  cleanup task
+- indexed `remote_interaction_root_cause` in `docs/bridge/tasks/README.md` and
+  surfaced it in `docs/bridge/current_status.md`, removing the hidden-active
+  chain problem
+- corrected `robot_rope_franka` local manifest authority drift:
+  - root `manifest.json` now mirrors the current `c10` local run id
+  - `BEST_RUN/manifest.json` now uses local-only mirror wording, relative paths,
+    and an explicit `authoritative_source`
+- narrowed `rope_perf_apples_to_apples` wording so the registry-backed current
+  meaning remains the no-render apples-to-apples benchmark and `E1` stays
+  supporting context only
+- made the blocked self-collision `FINAL_STATUS.md` more explicit as an older
+  local blocked snapshot, not the latest parity numbers
+- narrowed maintenance-report actionability:
+  - `md_staleness_report.md` now covers the enforced high-signal review scope
+    plus genuinely overgrown/compressed surfaces
+  - `md_cleanup_report.md` now emphasizes actionable archive/stub/reformat
+    decisions instead of every possible low-signal row
+- extended `task_surface_matrix.md` to show real contract/handoff usage rather
+  than only chain existence and registry backing
+- converted contracts/handoffs from pure template status to selective live use
+  by adding:
+  - `tasks/contracts/markdown_harness_maintenance_upgrade.md`
+  - `tasks/handoffs/markdown_harness_maintenance_upgrade.md`
+- updated `tasks/contracts/README.md` and `tasks/handoffs/README.md` so they
+  honestly describe current status as selectively load-bearing rather than
+  universally mature
 
 ## Remaining Blockers
 
-- no remaining structural blocker for active-vs-historical separation
-- remaining maintenance debt is the broader metadata/review-age rollout across
-  older supporting surfaces surfaced by `docs/generated/md_staleness_report.md`
+- no blocker for the completed semantic-hardening pass
+- remaining maintenance debt is review-age metadata rollout across older
+  high-value
+  supporting surfaces that still appear in the narrowed staleness queue
 
 ## Exact Next Step
 
-- use `docs/generated/md_staleness_report.md` for the next batch of targeted
-  metadata/review-age cleanup, starting with high-value canonical surfaces such
-  as `AGENTS.md`, `docs/README.md`, `docs/bridge/open_questions.md`, and
-  `results_meta/schema.md`
-- keep future historical task pages out of `docs/bridge/tasks/` and place them
-  directly into `docs/archive/tasks/`
+- use the narrowed staleness queue for the next routine metadata pass rather
+  than opening another overlapping cleanup task
+- keep future hidden subtask chains out of active execution directories unless
+  they are also indexed in the live task map
+- continue review-age cleanup only on the narrowed high-signal scope reported by
+  `docs/generated/md_staleness_report.md`
 
 ## Validation Commands Run
 
-- `python scripts/lint_harness_consistency.py`
-  - current result during this resumed pass: `FAIL`
-- `rg --files docs/bridge/tasks plans/active tasks/spec tasks/implement tasks/status | rg 'meeting_20260401_rope_profiling_rebuild|markdown_harness_maintenance_upgrade|markdown_truthfulness_cleanup|harness_engineering_upgrade'`
-- `git status --short`
-- `sed -n '1,260p' Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/README.md`
 - `python scripts/sync_results_registry.py`
 - `python scripts/generate_md_inventory.py`
 - `python scripts/lint_harness_consistency.py`
-  - final result after regeneration: `PASS`
+- final result after the latest semantic-hardening changes: `PASS`
+- targeted audit reads over:
+  - `docs/bridge/current_status.md`
+  - `docs/bridge/tasks/README.md`
+  - `tasks/status/rope_perf_apples_to_apples.md`
+  - `tasks/status/self_collision_transfer.md`
+  - `results_meta/tasks/robot_rope_franka_tabletop_push_hero.json`
+  - `Newton/phystwin_bridge/results/robot_rope_franka/manifest.json`
+  - `Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/manifest.json`
+
+## Current Pass Type
+
+- structural cleanup: yes
+- routine maintenance: yes
+- contract used: yes
+- handoff used: yes
