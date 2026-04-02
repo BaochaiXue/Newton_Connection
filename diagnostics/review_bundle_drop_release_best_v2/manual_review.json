@@ -1,0 +1,19 @@
+{
+  "verdict": "PASS",
+  "evidence": [
+    {
+      "timestamp_s": 1.2,
+      "frame_index": 12,
+      "frame_path": "windows/release/frame_000012.png",
+      "observation": "The robot is visibly present and the rope is just releasing from the support region under the gripper.",
+      "supports_claim": true
+    },
+    {
+      "timestamp_s": 2.1,
+      "frame_index": 21,
+      "frame_path": "windows/impact/frame_000021.png",
+      "observation": "The rope is visibly in the ground-impact phase after a readable free-fall interval, and the ground plane is visible in frame.",
+      "supports_claim": true
+    }
+  ]
+}
