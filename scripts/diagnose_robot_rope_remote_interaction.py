@@ -188,10 +188,13 @@ def main() -> int:
     else:
         particle_radius_arr = particle_radius_arr[:n_obj]
     particle_radius = float(np.mean(particle_radius_arr))
-    render_particle_radius = min(
-        float(particle_radius) * float(demo_args.particle_radius_vis_scale),
-        float(demo_args.particle_radius_vis_min),
-    )
+    vis_scale = None if demo_args.particle_radius_vis_scale is None else float(demo_args.particle_radius_vis_scale)
+    vis_cap = None if demo_args.particle_radius_vis_min is None else float(demo_args.particle_radius_vis_min)
+    if vis_scale is None and vis_cap is None:
+        render_particle_radius = float(particle_radius)
+    else:
+        scaled = float(particle_radius) * (1.0 if vis_scale is None else vis_scale)
+        render_particle_radius = scaled if vis_cap is None else min(scaled, vis_cap)
 
     proxy_radii = module._gripper_contact_proxy_radii(float(demo_args.ee_contact_radius))
 
