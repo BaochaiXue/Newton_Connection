@@ -32,6 +32,8 @@ Detailed result meaning belongs in:
   - separate demo-ready progress from blocked strict parity
 - `robot_rope_franka_tabletop_push_hero`
   - preserve the truth-fixed tabletop-push hero bundle and keep its authority routing truthful
+- `robot_rope_franka_physical_blocking`
+  - stronger follow-on task is now blocked at bridge/demo level because the currently accessible SemiImplicit articulation actuation surfaces do not yet deliver real physically blocked robot motion
 
 ## Current Blockers
 
@@ -39,6 +41,8 @@ Detailed result meaning belongs in:
   - operator exactness is strong, but full strict rollout parity remains blocked
 - `interactive_playground_profiling`
   - the exploratory profiling page must stay clearly separate from the committed rope benchmark truth under `rope_perf_apples_to_apples`
+- `robot_rope_franka_physical_blocking`
+  - readable tabletop rope-push baseline exists, but the stronger physical robot-blocking follow-on is blocked by the current bridge/demo-level actuation path
 
 ## Promoted Surfaces At A Glance
 
@@ -58,6 +62,10 @@ Detailed result meaning belongs in:
   - task status: `tasks/status/robot_rope_franka_tabletop_push_hero.md`
   - committed authority: `results_meta/tasks/robot_rope_franka_tabletop_push_hero.json`
   - current meaning: readable tabletop-push hero baseline under fixed `sim_dt = 5e-5`, `substeps = 667`, now with the rope render thickness aligned to the physical contact thickness and the visible finger-contact claim re-certified
+- `robot_rope_franka_physical_blocking`
+  - task status: `tasks/status/robot_rope_franka_physical_blocking.md`
+  - committed authority: none yet
+  - current meaning: stronger follow-on task that proved the old path is non-physical and is currently blocked by a bridge/demo-level articulation actuation limit
 - `rope_perf_apples_to_apples`
   - task status: `tasks/status/rope_perf_apples_to_apples.md`
   - committed authority: `results_meta/tasks/rope_perf_apples_to_apples.json`
@@ -73,6 +81,7 @@ Detailed result meaning belongs in:
 - `video_presentation_quality`
 - `robot_deformable_demo`
 - `robot_rope_franka_tabletop_push_hero`
+- `robot_rope_franka_physical_blocking`
 - `native_robot_rope_drop_release`
 - `interactive_playground_profiling`
 - `rope_perf_apples_to_apples`

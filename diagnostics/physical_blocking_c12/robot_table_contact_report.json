@@ -1,0 +1,13 @@
+{
+  "run_id": "BEST_RUN",
+  "robot_table_first_contact_time_s": null,
+  "robot_table_contact_duration_s": 0.0,
+  "robot_table_penetration_min_m": 0.028793636709451675,
+  "left_finger_table_penetration_min_m": 0.028793636709451675,
+  "right_finger_table_penetration_min_m": 0.042895201593637466,
+  "ee_target_to_actual_error_during_block_mean_m": null,
+  "ee_target_to_actual_error_during_block_max_m": null,
+  "normal_speed_into_table_after_contact_mean_m_s": null,
+  "normal_speed_into_table_after_contact_max_m_s": null,
+  "hidden_helper_detected": false
+}

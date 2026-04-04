@@ -1,41 +1,54 @@
 # Root Cause Ranked Report
 
-Investigated run: `/home/xinjie/Newton_Connection/Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN`
+Last updated: 2026-04-03
 
 ## Ranked Hypotheses
 
-1. H8 combination case
-   Primary contributors are H5 rope thickness vs render mismatch, H7/H2 presentation ambiguity around the real fingertip collider, and H3 centerline-style control/reference semantics.
-2. H5 rope particle collision thickness plus render mismatch is large
-   Rope collision radius is `0.026002 m`, but render-only particle radius is capped to `0.004 m`, so the visible rope is only about `15.4%` of the physical contact radius.
-3. H2 URDF collider vs visual mesh mismatch is real and matters
-   Actual first solver-like contact occurs on `left_box_3`, the real fingertip collision box, while the viewer sees the visual mesh rather than the raw box colliders.
-4. H7 camera / presentation contributes
-   The hero view is more ambiguous than the validation view around the contact patch.
-5. H3 control-reference semantics are mismatched with the visible claim
-   The promoted joint-trajectory path reports a gripper-center target rather than a fingertip target, with about `0.0657 m` mean offset to the nearest fingertip center.
-6. H4 diagnostic / proxy geometry is too aggressive
-   Current summary reports only `finger_span` contact counts: `{'finger_span': 88}`, but actual fingertip-box contact occurs earlier than the proxy onset, so this is a truth-surface problem more than the primary physical cause.
-7. H1 hidden helper exists
-   Rejected. No hidden physical influencer was found in the visible tabletop clip path.
+1. **H1. The current tabletop controller is effectively kinematic / state-overwriting**
+   - confidence: high
+   - evidence:
+     - direct `state_in.joint_q/joint_qd` writes before `solver.step()`
+     - direct `state_out.joint_q/joint_qd` writes after `solver.step()`
+     - near-zero target-tracking error during large table penetration in
+       `c20_clean`
 
-## Primary Root Cause
+2. **H2. Joint targets and gains exist, but the direct assignment path wins**
+   - confidence: high
+   - evidence:
+     - builder sets `joint_target_pos/ke/kd`
+     - runtime tabletop path never passes a meaningful `control` object into
+       the semi-implicit solve
 
-The current remote-interaction impression is primarily a bridge/demo-layer visual-truth issue, not a Newton core failure.
-The strongest concrete mismatch is that the rope physically collides as a `0.026 m`-radius particle cloud, while the tabletop render path caps the visible particle radius to `0.004 m`. The actual fingertip collision box therefore reaches the rope before the visible rope looks thick enough, and the hero camera plus centerline-style diagnostics amplify that ambiguity.
+3. **H5. The promoted tabletop task was never intended to claim physically blocked robot motion**
+   - confidence: high
+   - evidence:
+     - task page and results metadata describe a readable baseline, not blocked
+       robot actuation
+     - accepted `c12` does not even contact the table in the new blocking audit
 
-## Newton Core Verdict
+4. **H3. Robot-table collisions may exist but are not enough to stop the hand**
+   - confidence: medium
+   - evidence:
+     - table box and URDF finger boxes are present
+     - collision generation is called
+     - but state overwrite makes it impossible to conclude solver contacts are
+       ineffective by themselves
 
-No evidence currently points to Newton core itself as the primary culprit.
+5. **H4. Gains may be too stiff after actuation becomes honest**
+   - confidence: medium
+   - evidence:
+     - likely secondary issue once direct overwrite is removed
 
-## Hidden Helper Verdict
+## Explicit Answers
 
-`hidden_helper_exists = false`
-`hidden_helper_affects_visible_clip = false`
-
-## Targeted Fix Direction
-
-1. Make the rope rendering honest to the physical rope collision thickness first.
-2. Keep the visible contactor as the real fingertip / finger pad and demote `finger_span` to auxiliary diagnostics only.
-3. Retarget the hero framing to show the fingertip contact patch more directly.
-4. Revisit actual rope physics thickness only if the stand-off feeling remains after the visual-truth fix.
+1. Is the current tabletop path physically actuated or effectively kinematic?
+   - effectively kinematic
+2. Is table penetration caused primarily by state overwrite / control semantics?
+   - yes
+3. Are actual robot-table collisions present but being numerically overpowered?
+   - possibly, but not the primary root cause
+4. Is there any hidden helper?
+   - no
+5. Can this be fixed at bridge/demo level without touching `Newton/newton/`?
+   - likely yes; the interface surface exists via `model.control()` and solver
+     drive terms, but it still needs to be implemented and validated
