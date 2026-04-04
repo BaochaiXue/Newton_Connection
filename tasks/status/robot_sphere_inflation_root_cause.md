@@ -38,6 +38,15 @@
   - `H6 controller semantics matter for stronger physics claims, but are
     secondary for this specific question`
 
+## ee_contact_radius Decision
+
+- `ee_contact_radius` should remain available only as a diagnostic/proxy knob.
+- It is **not** a real robot contact geometry parameter.
+- It is **not** valid as contact proof.
+- It is **not** allowed as a final acceptance surface.
+- If future tabletop claims depend on it again, that should be treated as a
+  regression.
+
 ## Key Evidence
 
 - In promoted c12, the tabletop command target remains gripper-center based.

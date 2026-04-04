@@ -60,6 +60,19 @@ Accepted implementation note:
 - The result is still a baseline contact demo, not full two-way coupling or
   full manipulation.
 
+Important geometry-truth guardrail:
+
+- `--ee-contact-radius` is now treated as `diagnostic only`.
+- It may still size gripper-center / left-finger / right-finger / finger-span
+  proxy overlays and offline proxy-clearance reports.
+- It does **not** change the real Franka finger collider geometry.
+- It is **not** valid as final contact proof.
+- It is **not** allowed as a final acceptance surface for this task.
+- Final tabletop contact claims must stay grounded in:
+  - actual finger-box contact evidence for the direct-finger baseline
+  - or the explicitly visible rigid tool collider for the tool-mediated
+    baseline
+
 ## Code Entry Points
 
 - Main demo:

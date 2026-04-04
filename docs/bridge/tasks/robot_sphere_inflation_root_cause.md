@@ -84,6 +84,11 @@ The evidence-backed recommendation is:
 
 - do not treat sphere inflation as a physical need
 - keep sphere inflation at most as a temporary diagnostic aid
+- treat `ee_contact_radius` as `diagnostic only`, not as a real robot contactor
+  size parameter
+- do not use `ee_contact_radius`-driven proxy surfaces as contact proof
+- do not allow `ee_contact_radius`-driven proxy surfaces as a final acceptance
+  surface
 - use direct-finger re-certification only after reference geometry and
   laydown/path alignment are corrected
 - treat the promoted visible-tool baseline as the current conservative honest

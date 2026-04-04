@@ -37,6 +37,8 @@
 ## Current Focus
 
 - preserve the truth-fixed tabletop hero bundle and its rerun path
+- keep `ee_contact_radius` explicitly downgraded to diagnostic-only semantics
+  so proxy radii cannot drift back into the task's proof surface
 
 ## Latest Findings
 
@@ -78,3 +80,17 @@
 ## Current Blocker
 
 - No open blocker for the accepted tabletop-push hero milestone.
+
+## Proof-Surface Guardrail
+
+- `ee_contact_radius` is `diagnostic only`.
+- It may still affect proxy overlays and offline proxy-clearance reports for:
+  - `gripper_center`
+  - `left_finger`
+  - `right_finger`
+  - `finger_span`
+- It does **not** change the real finger collider geometry.
+- It is **not** valid as final contact proof.
+- It is **not** allowed as a final acceptance surface for this task.
+- Accepted tabletop contact claims must remain grounded in actual finger-box
+  contact evidence.
