@@ -33,6 +33,14 @@
   - `tool_vs_collider_report.md` passes with collider/render geometry match
   - `rope_visual_vs_physical_thickness_report.md` confirms rope render thickness equals physical thickness
   - standard hero validator now passes truthfully after manual review was completed
+  - skeptical evaluator layer now also passes after adding explicit timestamped review evidence:
+    - `diagnostics/review_bundle_hero/skeptical_audit.json`
+    - `diagnostics/review_bundle_validation/skeptical_audit.json`
+  - artifact contract now also passes after adding candidate-local `README.md` and `command.txt`
+  - skeptical video audits now pass on all three prepared review bundles:
+    - `diagnostics/review_bundle_hero/skeptical_audit.md`
+    - `diagnostics/review_bundle_debug/skeptical_audit.md`
+    - `diagnostics/review_bundle_validation/skeptical_audit.md`
 
 ## Next Step
 
@@ -45,6 +53,6 @@
 ## Current Guardrail
 
 - Do not change `results_meta/tasks/robot_rope_franka_tabletop_push_hero.json`
-- Do not create `results_meta/tasks/robot_visible_rigid_tool_baseline.json`
-  until a real pass exists
+- Do not change `results_meta/tasks/robot_visible_rigid_tool_baseline.json`
+  unless a new run truthfully supersedes the promoted c07 claim
 - Do not claim direct finger contact or physical blocking in this task

@@ -59,7 +59,13 @@ It does **not** claim:
 - The promoted run mounts a visible red crossbar-style capsule tool on `fr3_link7`.
 - That visible tool is the real physical contactor in hero/debug/validation views.
 - Tool contact begins before visible rope lateral motion and deformation.
+- The promoted bundle now includes separate skeptical video audits over the prepared hero and validation review bundles.
 - The result is meeting-safe as a **tool-mediated** contact baseline only.
+- The promoted candidate now also has:
+  - passing standard hero validation
+  - passing fail-closed skeptical review bundles for hero/debug/validation
+  - a passing repo-native artifact-contract check after adding candidate-local
+    `README.md` and `command.txt`
 
 ## Expected Artifacts
 

@@ -71,11 +71,11 @@ COMMON_ARGS=(
   --tabletop-ee-offset-z 0.22
   --rope-line-width 0.006
   --visible-tool-mode short_rod
-  --visible-tool-body right_finger
+  --visible-tool-body link7
   --visible-tool-radius 0.0055
-  --visible-tool-half-height 0.0100
-  --visible-tool-offset 0.0 0.0105 0.0605
-  --visible-tool-axis z
+  --visible-tool-half-height 0.0180
+  --visible-tool-offset 0.0 -0.0340 0.1860
+  --visible-tool-axis x
   "$@"
 )
 
@@ -95,6 +95,8 @@ DEBUG_CMD=(
   --render-mode debug
   --camera-profile hero
   --overlay-label
+  --load-history-from-dir "${PRESENT_DIR}"
+  --load-history-prefix robot_visible_tool_tabletop_hero
   "${COMMON_ARGS[@]}"
 )
 
@@ -104,6 +106,8 @@ VALIDATION_CMD=(
   --prefix robot_visible_tool_tabletop_hero_validation
   --render-mode presentation
   --camera-profile validation
+  --load-history-from-dir "${PRESENT_DIR}"
+  --load-history-prefix robot_visible_tool_tabletop_hero
   "${COMMON_ARGS[@]}"
 )
 

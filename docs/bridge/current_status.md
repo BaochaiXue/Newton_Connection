@@ -69,7 +69,7 @@ Detailed result meaning belongs in:
 - `robot_visible_rigid_tool_baseline`
   - task status: `tasks/status/robot_visible_rigid_tool_baseline.md`
   - committed authority: `results_meta/tasks/robot_visible_rigid_tool_baseline.json`
-  - current meaning: promoted tool-mediated tabletop baseline where a visible rigid robot-mounted crossbar is the real physical contactor for the bridged rope
+  - current meaning: promoted tool-mediated tabletop baseline where a visible rigid robot-mounted crossbar is the real physical contactor for the bridged rope, now backed by separate skeptical video audits on the prepared hero and validation review bundles
 - `robot_rope_franka_physical_blocking`
   - task status: `tasks/status/robot_rope_franka_physical_blocking.md`
   - committed authority: none yet

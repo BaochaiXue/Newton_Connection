@@ -36,7 +36,9 @@
     "verdict_pointers": [
       "Newton/phystwin_bridge/results/robot_visible_rigid_tool_baseline/candidates/20260404_141534_c07_link7_bar/validation.md",
       "Newton/phystwin_bridge/results/robot_visible_rigid_tool_baseline/candidates/20260404_141534_c07_link7_bar/multimodal_review.md",
-      "Newton/phystwin_bridge/results/robot_visible_rigid_tool_baseline/candidates/20260404_141534_c07_link7_bar/tool_contact_onset_report.json"
+      "Newton/phystwin_bridge/results/robot_visible_rigid_tool_baseline/candidates/20260404_141534_c07_link7_bar/tool_contact_onset_report.json",
+      "Newton/phystwin_bridge/results/robot_visible_rigid_tool_baseline/candidates/20260404_141534_c07_link7_bar/diagnostics/review_bundle_hero/skeptical_audit.md",
+      "Newton/phystwin_bridge/results/robot_visible_rigid_tool_baseline/candidates/20260404_141534_c07_link7_bar/diagnostics/review_bundle_validation/skeptical_audit.md"
     ],
     "repo_friendly_evidence": {
       "summary": [
@@ -55,10 +57,16 @@
     "why_passed": [
       "The visible tool itself is the believable contactor in the hero view rather than a hidden or proxy shape.",
       "Tool-to-rope contact timing is conservative: contact begins before visible rope motion and deformation, with no multi-frame stand-off gap flagged by diagnostics.",
-      "Standard hero validator, geometry-truth diagnostics, and truthful manual review now all pass under the conservative tool-mediated claim."
+      "Standard hero validator, geometry-truth diagnostics, truthful manual review, and the separate skeptical video audits now all pass under the conservative tool-mediated claim."
     ],
     "predecessor": null,
     "superseded_by": null
   },
+  "superseded_runs": [],
+  "local_only_surfaces": [
+    "Newton/phystwin_bridge/results/robot_visible_rigid_tool_baseline/README.md",
+    "Newton/phystwin_bridge/results/robot_visible_rigid_tool_baseline/BEST_RUN/README.md",
+    "Newton/phystwin_bridge/results/robot_visible_rigid_tool_baseline/BEST_RUN/manifest.json"
+  ],
   "updated_at": "2026-04-04"
 }
