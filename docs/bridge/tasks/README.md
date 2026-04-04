@@ -28,6 +28,7 @@ Each task page should answer:
 - [robot_deformable_demo.md](./robot_deformable_demo.md)
 - [robot_rope_franka_tabletop_push_hero.md](./robot_rope_franka_tabletop_push_hero.md)
 - [robot_rope_franka_physical_blocking.md](./robot_rope_franka_physical_blocking.md)
+- [robot_visible_rigid_tool_baseline.md](./robot_visible_rigid_tool_baseline.md)
 - [remote_interaction_root_cause.md](./remote_interaction_root_cause.md)
 - [native_robot_rope_drop_release.md](./native_robot_rope_drop_release.md)
 - [interactive_playground_profiling.md](./interactive_playground_profiling.md)

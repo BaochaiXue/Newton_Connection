@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `self_collision_transfer`
-> last_reviewed: `2026-04-01`
+> last_reviewed: `2026-04-04`
 > review_interval: `21d`
 > update_rule: `Update when strict-scope interpretation, current blocker, or decision evidence changes.`
 > notes: Active canonical task page for the self-collision decision and strict parity blocker analysis.
@@ -77,6 +77,14 @@ The repo already contains the right scaffolding for a decision:
 - `Newton/phystwin_bridge/tools/other/diagnose_controller_spring_semantics.py`
   - checks whether controller-connected spring forces still differ from
     PhysTwin `control_x/control_v` semantics
+- `Newton/phystwin_bridge/tools/other/run_ground_contact_self_collision_rmse_matrix.py`
+  - canonical controlled `2 x 2` RMSE runner on the PhysTwin-native cloth +
+    implicit-ground reference scene
+  - varies only:
+    - self-collision law: `off | phystwin`
+    - ground-contact law: `native | phystwin`
+  - writes one comparable report per case plus a combined fairness check and
+    RMSE matrix summary
 
 That means the next step is not “add more framework”, but “turn the current framework into decision evidence”.
 
@@ -121,6 +129,25 @@ For that strict cloth parity path, `phystwin` should now mean:
 - frame-frozen explicit collision table by default
 - object-only candidate build / consumption semantics
 - dynamic-query candidate generation only as a debug override
+
+## Controlled Cloth + Ground Matrix
+
+To isolate the remaining parity gap cleanly, the bridge now also tracks a
+controlled cloth + implicit-ground `2 x 2` matrix under the same strict IR:
+
+- `case_1_self_off_ground_native`
+- `case_2_self_off_ground_phystwin`
+- `case_3_self_phystwin_ground_native`
+- `case_4_self_phystwin_ground_phystwin`
+
+This matrix is the right surface for answering:
+
+- how much RMSE changes when only the ground law changes
+- how much RMSE changes when only the self-collision law changes
+- whether the two laws show an interaction effect on the same scene
+
+The matrix must stay on the PhysTwin-native cloth + implicit-ground scene. Do
+not substitute cloth+box, bunny, rope, or robot scenes for this comparison.
 
 ## Follow-Up Sanity Check
 

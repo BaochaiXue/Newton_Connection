@@ -1,14 +1,14 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `bridge_control_plane`
-> last_reviewed: `2026-04-01`
+> last_reviewed: `2026-04-04`
 > review_interval: `7d`
 > update_rule: `Update when active workstreams, blockers, or promoted result meaning changes. Keep detailed run notes in task status pages and results_meta.`
 > notes: Short operational dashboard only. Do not turn this page into a run ledger or changelog dump.
 
 # Current Status
 
-Last updated: 2026-04-01
+Last updated: 2026-04-04
 
 This page is the shortest operational dashboard for the bridge project.
 
@@ -29,7 +29,7 @@ Detailed result meaning belongs in:
 - `rope_perf_apples_to_apples`
   - maintain the same-case rope replay benchmark as the committed performance reference, now with an explicit real-viewer E1 row
 - `self_collision_transfer`
-  - separate demo-ready progress from blocked strict parity
+  - keep the new fair `2 x 2` cloth+ground matrix visible while strict parity remains blocked
 - `robot_rope_franka_tabletop_push_hero`
   - preserve the truth-fixed tabletop-push hero bundle and keep its authority routing truthful
 - `robot_rope_franka_physical_blocking`
@@ -38,7 +38,7 @@ Detailed result meaning belongs in:
 ## Current Blockers
 
 - `self_collision_transfer`
-  - operator exactness is strong, but full strict rollout parity remains blocked
+  - operator exactness is strong and the fair `2 x 2` matrix is now in place, but full strict rollout parity remains blocked and the best current full-rollout case is still `self=phystwin, ground=native`
 - `interactive_playground_profiling`
   - the exploratory profiling page must stay clearly separate from the committed rope benchmark truth under `rope_perf_apples_to_apples`
 - `robot_rope_franka_physical_blocking`

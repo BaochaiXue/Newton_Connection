@@ -22,6 +22,11 @@ the PhysTwin-native cloth parity scene:
   with object-only candidate semantics
 - `off/native/custom` stay on their existing compatibility paths
 - cloth+box `phystwin` is intentionally guarded as unsupported
+- a canonical controlled `2 x 2` cloth+implicit-ground RMSE runner now exists:
+  - `Newton/phystwin_bridge/tools/other/run_ground_contact_self_collision_rmse_matrix.py`
+  - it exposes the two intended law axes independently:
+    - `self_collision_law = off | phystwin`
+    - `ground_contact_law = native | phystwin`
 
 Local scratch validation notes:
 
@@ -77,6 +82,30 @@ Local scratch validation notes:
   - short-rollout `force_abs_max = 389.3789927564146`
   - `pass = false`
   - `Newton/phystwin_bridge/results/tmp_controller_spring_diag_v2/controller_spring_diagnostic.json`
+- controlled `2 x 2` full 302-frame cloth+ground RMSE matrix now exists:
+  - root:
+    - `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260404_140154_e11491a`
+  - fairness check: `pass = true`
+  - exact case labels:
+    - `case_1_self_off_ground_native`
+    - `case_2_self_off_ground_phystwin`
+    - `case_3_self_phystwin_ground_native`
+    - `case_4_self_phystwin_ground_phystwin`
+  - `rmse_mean` results:
+    - case 1: `0.00976876262575388`
+    - case 2: `0.009609504602849483`
+    - case 3: `0.008761118166148663`
+    - case 4: `0.009012339636683464`
+  - best case by `rmse_mean` is now:
+    - `case_3_self_phystwin_ground_native`
+  - current main-effect reading from the fair matrix:
+    - with ground fixed to native, turning on PhysTwin-style self-collision improves `rmse_mean` by about `1.01e-3`
+    - with self fixed to off, switching ground native -> PhysTwin-style improves `rmse_mean` by only about `1.59e-4`
+    - the current interaction effect on `rmse_mean` is positive (`~4.10e-4`), so combining both PhysTwin-style laws is not the best full-rollout pair on this scene
+  - matrix summary:
+    - `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260404_140154_e11491a/rmse_matrix_summary.json`
+  - fairness check:
+    - `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260404_140154_e11491a/fairness_check.md`
 - OFF regression remains acceptable:
   - `rmse_mean = 0.00476811733096838`
   - `Newton/phystwin_bridge/results/tmp_off_ground_regression_60_postsync/off_ground_regression60_rollout_report.json`
@@ -86,8 +115,17 @@ Local scratch validation notes:
 
 ## Last Completed Step
 
-Promoted frozen explicit collision-table semantics to the strict `phystwin`
-default and added dedicated table/controller diagnosis harnesses:
+Added the canonical controlled `2 x 2` cloth+ground RMSE runner and ran the
+full 302-frame matrix on the strict cloth reference scene:
+
+- `tools/other/run_ground_contact_self_collision_rmse_matrix.py`
+- bridge-side independent law exposure through:
+  - `tools/core/newton_import_ir.py`
+  - `tools/core/phystwin_contact_stack.py`
+  - `tools/core/validate_parity.py`
+
+The older frozen-table / controller diagnostics remain relevant supporting
+evidence:
 
 - `tools/core/phystwin_contact_stack.py`
 - shared importer path via `tools/core/newton_import_ir.py`
@@ -98,25 +136,34 @@ default and added dedicated table/controller diagnosis harnesses:
 
 ## Next Step
 
-Use the new diagnostics to determine whether controller-spring semantics are the
-next dominant blocker after candidate-table sync:
+Use the new fair `2 x 2` matrix plus the existing diagnostics to determine why
+`case_3_self_phystwin_ground_native` currently beats the fully PhysTwin-style
+pair on full rollout:
 
 - validate the controller-spring harness against a narrower one-step reference if needed
-- decide whether to rework strict `phystwin` controller representation so it is closer to PhysTwin `control_x/control_v` semantics
-- rerun full strict parity after that change
+- decide whether the current positive interaction term is mainly due to:
+  - controller-spring semantics
+  - force/ground timing interaction
+  - or remaining collision-table runtime differences
+- rerun the fair `2 x 2` matrix after the next bridge-side change
 - update `results_meta/tasks/self_collision_transfer.json` only if a new
   committed current bundle is actually promoted
 
 ## Blocking Issues
 
-- strict self-collision parity still misses the `1e-5` gate even after default
-  frame-frozen explicit-table sync
+- the fair `2 x 2` matrix still misses the strict `1e-5` gate in all four cases
+- under the current full 302-frame cloth+ground comparison, the best case is
+  `self=phystwin, ground=native`, not the fully PhysTwin-style pair
 - strict `phystwin` scope is intentionally narrow and does not yet cover box or
   other Newton-only rigid-support contacts
 
 ## Artifact Paths
 
 - `results_meta/tasks/self_collision_transfer.json`
+- `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260404_140154_e11491a/README.md`
+- `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260404_140154_e11491a/fairness_check.md`
+- `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260404_140154_e11491a/rmse_matrix.csv`
+- `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260404_140154_e11491a/rmse_matrix_summary.json`
 - `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/FINAL_STATUS.md`
 - `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/matrix/self_collision_decision.md`
 - `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/parity/strict_self_collision_parity_summary.json`

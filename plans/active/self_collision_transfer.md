@@ -4,35 +4,38 @@
 
 Drive self-collision work to one explicit engineering decision.
 
-Current engineering milestone: land a shared strict bridge-side `phystwin`
-contact stack for the PhysTwin-native cloth self-collision case without
-changing any default `off` behavior, then use the new diagnostics to identify
-the next rollout mismatch after candidate-table sync.
+Current engineering milestone: expose a fair bridge-side `2 x 2` RMSE matrix
+on the PhysTwin-native cloth + implicit-ground reference case, so self-collision
+law and ground-contact law can be varied independently before the next rollout
+mismatch diagnosis.
 
 ## Constraints
 
 - no Newton core edits
-- use box-support as the main decision scene
-- keep bunny as a sanity check, not the primary decision scene
+- keep the cloth + implicit-ground PhysTwin reference case fixed for the
+  controlled RMSE matrix
+- keep cloth+box and bunny as secondary scene evidence only
 - strict `phystwin` parity is limited to pairwise self-collision plus implicit
   `z=0` ground-plane contact
 - cloth+box `phystwin` must fail fast instead of silently mixing box contact
 
 ## Milestones
 
-1. run the controlled box decision matrix
-2. land the shared strict `phystwin` bridge stack and wire it into the importer
-3. promote frame-frozen explicit-table semantics to the strict `phystwin` default
-4. keep cloth+box `phystwin` explicitly unsupported while preserving `off/native/custom`
-5. run sanity-check, parity-regression, and rollout-mismatch diagnostics on the selected mode
-6. write the final decision summary
+1. expose independent `self_collision_law` and `ground_contact_law` controls in the bridge layer
+2. add the canonical `2 x 2` cloth+ground RMSE matrix runner with fairness check
+3. run all four cases on the same strict cloth IR and record the matrix
+4. use the matrix to quantify main effects and interaction before further blocker diagnosis
+5. keep cloth+box `phystwin` explicitly unsupported while preserving `off/native/custom`
+6. write the updated task status and blocker interpretation
 
 ## Validation
 
-- the task ends in A, B, or C
-- decision evidence is slide-ready
+- the matrix is a fair controlled comparison
+- the matrix root satisfies the artifact contract
+- remaining blocker is stated against the matrix evidence, not guessed
 
 ## Notes
 
 - Backfilled during the harness upgrade so the active task set has a full chain.
-- Current next blocker candidate after table sync: controller-spring semantics.
+- The new matrix is not a promotion surface by itself; it is local blocked
+  evidence until a new committed authority surface is chosen.
