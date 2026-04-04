@@ -1,0 +1,28 @@
+{
+  "direct_runs": {
+    "c12_direct_baseline": "/home/xinjie/Newton_Connection/Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN",
+    "c15_true0p1_tabletop_curve": "/home/xinjie/Newton_Connection/Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260402_140811_physradius0p1_c15",
+    "c16_true0p25_tabletop_curve": "/home/xinjie/Newton_Connection/Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260403_000517_physradius0p25_c16",
+    "c19_true0p1_shallowcurve": "/home/xinjie/Newton_Connection/Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260403_005533_true0p1_shallowcurve_bx054_by020_bz006_c19",
+    "c20_true0p1_shallowcurve_clean": "/home/xinjie/Newton_Connection/Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260403_010241_true0p1_shallowcurve_bx054_by020_bz006_c20_clean"
+  },
+  "visible_tool_run": "/home/xinjie/Newton_Connection/Newton/phystwin_bridge/results/robot_visible_rigid_tool_baseline/BEST_RUN",
+  "proxy_sweep": {
+    "tiny_minclamp": {
+      "ee_contact_radius_arg_m": 0.005,
+      "effective_proxy_radius_m": 0.012
+    },
+    "small": {
+      "ee_contact_radius_arg_m": 0.03,
+      "effective_proxy_radius_m": 0.018
+    },
+    "accepted_nominal": {
+      "ee_contact_radius_arg_m": 0.055,
+      "effective_proxy_radius_m": 0.033
+    },
+    "inflated": {
+      "ee_contact_radius_arg_m": 0.08,
+      "effective_proxy_radius_m": 0.048
+    }
+  }
+}

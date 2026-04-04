@@ -40,7 +40,7 @@ Detailed result meaning belongs in:
 ## Current Blockers
 
 - `self_collision_transfer`
-  - operator exactness is strong and the fair `2 x 2` matrix is now in place, but full strict rollout parity remains blocked and the best current full-rollout case is still `self=phystwin, ground=native`
+  - operator exactness is strong and the fair `2 x 2` matrix is now in place, but the old `case_3 > case_4` ranking is not fully reproducible on the latest code and the mechanism is now localized as a rollout-level interaction blocker rather than an isolated self-collision-law blocker
 - `interactive_playground_profiling`
   - the exploratory profiling page must stay clearly separate from the committed rope benchmark truth under `rope_perf_apples_to_apples`
 - `robot_rope_franka_physical_blocking`

@@ -82,6 +82,35 @@ Local scratch validation notes:
   - short-rollout `force_abs_max = 389.3789927564146`
   - `pass = false`
   - `Newton/phystwin_bridge/results/tmp_controller_spring_diag_v2/controller_spring_diagnostic.json`
+- dedicated `case_3` vs `case_4` diagnosis root now exists:
+  - `Newton/phystwin_bridge/results/self_collision_case3_vs_case4_diagnosis_20260404_162159_6cb033a`
+  - hypotheses are recorded in:
+    - `.../hypotheses.md`
+  - reproducibility check:
+    - the original `case_3 > case_4` ranking is **not perfectly stable** on the latest code
+    - case 3 reruns observed `rmse_mean` in roughly `[0.00894, 0.00978]`
+    - case 4 reruns observed `rmse_mean` in roughly `[0.00910, 0.01058]`
+    - ranking is not stable across repeats
+    - `.../reproducibility_check.md`
+  - first-divergence localization from the original matrix:
+    - first positive frame where `rmse_case4 - rmse_case3 > 0`: `42`
+    - first persistent positive frame (10-frame consecutive criterion): `146`
+    - `.../first_divergence_report.md`
+  - step-level instrumentation around frames `41-43` and `119-121`:
+    - by frame `41`, the two cases already have large state differences before the eventual parity ranking flip
+    - the case-3 vs case-4 post-self and post-step velocity differences are already on the order of `2.3e-1`
+    - at frame `121`, both cases have zero active PhysTwin-style ground nodes in the diagnostic summary, yet the post-step velocity gap remains large
+    - this means the late gap is not just a one-step ground-activation event; it is a carried whole-rollout state difference
+    - `.../step_diag_current/step_diagnostics.json`
+  - timing-fix trial:
+    - forcing the native-ground branch to share PhysTwin-style gravity+drag timing before self-collision did **not** make case 4 overtake case 3
+    - both cases became worse, and case 4 degraded more strongly
+    - therefore timing mismatch is real but not the sole dominant explanation
+    - `.../before_after_compare.md`
+  - current best explanation:
+    - the old `case_3 > case_4` outcome is not a clean single-cause result
+    - the strongest supported reading is rollout-level interaction mismatch dominated by controller-spring semantics plus contact-state / collision-table sensitivity
+    - native-ground timing differences are contributory, but not sufficient by themselves
 - controlled `2 x 2` full 302-frame cloth+ground RMSE matrix now exists:
   - root:
     - `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260404_140154_e11491a`
@@ -102,6 +131,13 @@ Local scratch validation notes:
     - with ground fixed to native, turning on PhysTwin-style self-collision improves `rmse_mean` by about `1.01e-3`
     - with self fixed to off, switching ground native -> PhysTwin-style improves `rmse_mean` by only about `1.59e-4`
     - the current interaction effect on `rmse_mean` is positive (`~4.10e-4`), so combining both PhysTwin-style laws is not the best full-rollout pair on this scene
+  - additional frame-window reading:
+    - `case_4_self_phystwin_ground_phystwin` is better than `case_3_self_phystwin_ground_native` through the early rollout, but becomes worse in later windows
+    - this strengthens the reading that the remaining issue is a late rollout interaction, not a simple local-law failure
+  - newly identified hidden implementation nuance:
+    - in the current bridge implementation, `ground_contact_law=native` does not only change the ground integrator
+    - it also changes when gravity/drag are injected relative to self-collision, because the native-ground branch applies self-collision on a more Newton-like pre-gravity / pre-drag velocity state, while the PhysTwin-style ground branch applies self-collision after PhysTwin-style gravity+drag injection
+    - therefore the current `2 x 2` matrix is controlled at the config surface, but it does not yet isolate a pure ground-law swap at the whole-step timing level
   - matrix summary:
     - `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260404_140154_e11491a/rmse_matrix_summary.json`
   - fairness check:
@@ -115,10 +151,11 @@ Local scratch validation notes:
 
 ## Last Completed Step
 
-Added the canonical controlled `2 x 2` cloth+ground RMSE runner and ran the
-full 302-frame matrix on the strict cloth reference scene:
+Added the canonical controlled `2 x 2` cloth+ground RMSE runner and then
+followed it with a dedicated case-3-vs-case-4 mechanism diagnosis:
 
 - `tools/other/run_ground_contact_self_collision_rmse_matrix.py`
+- `tools/other/diagnose_case3_case4_mechanism.py`
 - bridge-side independent law exposure through:
   - `tools/core/newton_import_ir.py`
   - `tools/core/phystwin_contact_stack.py`
@@ -136,24 +173,24 @@ evidence:
 
 ## Next Step
 
-Use the new fair `2 x 2` matrix plus the existing diagnostics to determine why
-`case_3_self_phystwin_ground_native` currently beats the fully PhysTwin-style
-pair on full rollout:
+Use the new case-3-vs-case-4 diagnosis to decide the next blocker-localization step:
 
-- validate the controller-spring harness against a narrower one-step reference if needed
-- decide whether the current positive interaction term is mainly due to:
-  - controller-spring semantics
-  - force/ground timing interaction
-  - or remaining collision-table runtime differences
-- rerun the fair `2 x 2` matrix after the next bridge-side change
+- tighten the controller-spring diagnosis around the same frame window used by the case3/case4 mechanism script
+- decide whether the next bridge-side experiment should target:
+  - controller representation
+  - collision-table runtime determinism / ordering
+  - or both
+- only rerun the fair `2 x 2` matrix again after that next targeted bridge-side change
 - update `results_meta/tasks/self_collision_transfer.json` only if a new
   committed current bundle is actually promoted
 
 ## Blocking Issues
 
 - the fair `2 x 2` matrix still misses the strict `1e-5` gate in all four cases
-- under the current full 302-frame cloth+ground comparison, the best case is
-  `self=phystwin, ground=native`, not the fully PhysTwin-style pair
+- the original `case_3 > case_4` ranking is not stable enough to treat as a
+  clean causal ground-law result
+- the current mechanism evidence points to rollout-level interaction mismatch,
+  not a remaining isolated self-collision-law mismatch
 - strict `phystwin` scope is intentionally narrow and does not yet cover box or
   other Newton-only rigid-support contacts
 
@@ -164,6 +201,11 @@ pair on full rollout:
 - `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260404_140154_e11491a/fairness_check.md`
 - `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260404_140154_e11491a/rmse_matrix.csv`
 - `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260404_140154_e11491a/rmse_matrix_summary.json`
+- `Newton/phystwin_bridge/results/self_collision_case3_vs_case4_diagnosis_20260404_162159_6cb033a/README.md`
+- `Newton/phystwin_bridge/results/self_collision_case3_vs_case4_diagnosis_20260404_162159_6cb033a/reproducibility_check.md`
+- `Newton/phystwin_bridge/results/self_collision_case3_vs_case4_diagnosis_20260404_162159_6cb033a/first_divergence_report.md`
+- `Newton/phystwin_bridge/results/self_collision_case3_vs_case4_diagnosis_20260404_162159_6cb033a/before_after_compare.md`
+- `Newton/phystwin_bridge/results/self_collision_case3_vs_case4_diagnosis_20260404_162159_6cb033a/diagnostics_summary.json`
 - `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/FINAL_STATUS.md`
 - `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/matrix/self_collision_decision.md`
 - `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/parity/strict_self_collision_parity_summary.json`

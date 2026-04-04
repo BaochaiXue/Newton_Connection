@@ -1,0 +1,255 @@
+{
+  "proxy_sweep": {},
+  "direct_runs": {
+    "c12_direct_baseline": {
+      "run_dir": "/home/xinjie/Newton_Connection/Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN",
+      "actual_first_contact": {
+        "frame": 50,
+        "time_s": 1.6675000000000002,
+        "source": "left_tip_box",
+        "actual_contact_source": "left_tip_box",
+        "target_to_contact_surface_norm_m": 0.07804761826992035,
+        "target_to_contact_surface_xy_m": 0.0488554909825325,
+        "target_to_contact_surface_z_m": 0.060865193605422974,
+        "gripper_center_to_contact_surface_norm_m": 0.07804898172616959,
+        "gripper_center_to_contact_surface_xy_m": 0.04885344207286835,
+        "gripper_center_to_contact_surface_z_m": 0.06086859107017517,
+        "gripper_center_to_contacting_rope_particle_norm_m": 0.09812072664499283,
+        "gripper_center_to_contacting_rope_particle_xy_m": 0.0532967709004879,
+        "gripper_center_to_contacting_rope_particle_z_m": 0.08238404989242554
+      },
+      "rope_response": {
+        "lateral_motion_frame": 92,
+        "lateral_motion_time_s": 3.0682000000000005,
+        "deformation_frame": 59,
+        "deformation_time_s": 1.9676500000000003
+      },
+      "proxy_sweep": {
+        "tiny_minclamp": {
+          "ee_contact_radius_arg_m": 0.005,
+          "effective_proxy_radius_m": 0.012,
+          "proxy_gripper_center_first_contact_frame": null,
+          "proxy_gripper_center_first_contact_time_s": null
+        },
+        "small": {
+          "ee_contact_radius_arg_m": 0.03,
+          "effective_proxy_radius_m": 0.018,
+          "proxy_gripper_center_first_contact_frame": null,
+          "proxy_gripper_center_first_contact_time_s": null
+        },
+        "accepted_nominal": {
+          "ee_contact_radius_arg_m": 0.055,
+          "effective_proxy_radius_m": 0.033,
+          "proxy_gripper_center_first_contact_frame": 78,
+          "proxy_gripper_center_first_contact_time_s": 2.6013
+        },
+        "inflated": {
+          "ee_contact_radius_arg_m": 0.08,
+          "effective_proxy_radius_m": 0.048,
+          "proxy_gripper_center_first_contact_frame": 59,
+          "proxy_gripper_center_first_contact_time_s": 1.9676500000000003
+        }
+      }
+    },
+    "c15_true0p1_tabletop_curve": {
+      "run_dir": "/home/xinjie/Newton_Connection/Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260402_140811_physradius0p1_c15",
+      "actual_first_contact": {
+        "frame": 130,
+        "time_s": 4.335500000000001,
+        "source": "left_tip_box",
+        "actual_contact_source": "left_tip_box",
+        "target_to_contact_surface_norm_m": 0.06759440898895264,
+        "target_to_contact_surface_xy_m": 0.0394054539501667,
+        "target_to_contact_surface_z_m": 0.054920077323913574,
+        "gripper_center_to_contact_surface_norm_m": 0.06759249418973923,
+        "gripper_center_to_contact_surface_xy_m": 0.03940306976437569,
+        "gripper_center_to_contact_surface_z_m": 0.054919421672821045,
+        "gripper_center_to_contacting_rope_particle_norm_m": 0.0674099549651146,
+        "gripper_center_to_contacting_rope_particle_xy_m": 0.0381578765809536,
+        "gripper_center_to_contacting_rope_particle_z_m": 0.05557048320770264
+      },
+      "rope_response": {
+        "lateral_motion_frame": null,
+        "lateral_motion_time_s": null,
+        "deformation_frame": 138,
+        "deformation_time_s": 4.6023000000000005
+      },
+      "proxy_sweep": {
+        "tiny_minclamp": {
+          "ee_contact_radius_arg_m": 0.005,
+          "effective_proxy_radius_m": 0.012,
+          "proxy_gripper_center_first_contact_frame": null,
+          "proxy_gripper_center_first_contact_time_s": null
+        },
+        "small": {
+          "ee_contact_radius_arg_m": 0.03,
+          "effective_proxy_radius_m": 0.018,
+          "proxy_gripper_center_first_contact_frame": null,
+          "proxy_gripper_center_first_contact_time_s": null
+        },
+        "accepted_nominal": {
+          "ee_contact_radius_arg_m": 0.055,
+          "effective_proxy_radius_m": 0.033,
+          "proxy_gripper_center_first_contact_frame": null,
+          "proxy_gripper_center_first_contact_time_s": null
+        },
+        "inflated": {
+          "ee_contact_radius_arg_m": 0.08,
+          "effective_proxy_radius_m": 0.048,
+          "proxy_gripper_center_first_contact_frame": 87,
+          "proxy_gripper_center_first_contact_time_s": 2.9014500000000005
+        }
+      }
+    },
+    "c16_true0p25_tabletop_curve": {
+      "run_dir": "/home/xinjie/Newton_Connection/Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260403_000517_physradius0p25_c16",
+      "actual_first_contact": {
+        "frame": 109,
+        "time_s": 3.6351500000000003,
+        "source": "right_tip_box",
+        "actual_contact_source": "right_tip_box",
+        "target_to_contact_surface_norm_m": 0.0753466933965683,
+        "target_to_contact_surface_xy_m": 0.062437936663627625,
+        "target_to_contact_surface_z_m": 0.04217378795146942,
+        "gripper_center_to_contact_surface_norm_m": 0.07534607499837875,
+        "gripper_center_to_contact_surface_xy_m": 0.06243743374943733,
+        "gripper_center_to_contact_surface_z_m": 0.04217343032360077,
+        "gripper_center_to_contacting_rope_particle_norm_m": 0.07988271117210388,
+        "gripper_center_to_contacting_rope_particle_xy_m": 0.06357355415821075,
+        "gripper_center_to_contacting_rope_particle_z_m": 0.04836994409561157
+      },
+      "rope_response": {
+        "lateral_motion_frame": 99,
+        "lateral_motion_time_s": 3.3016500000000004,
+        "deformation_frame": null,
+        "deformation_time_s": null
+      },
+      "proxy_sweep": {
+        "tiny_minclamp": {
+          "ee_contact_radius_arg_m": 0.005,
+          "effective_proxy_radius_m": 0.012,
+          "proxy_gripper_center_first_contact_frame": null,
+          "proxy_gripper_center_first_contact_time_s": null
+        },
+        "small": {
+          "ee_contact_radius_arg_m": 0.03,
+          "effective_proxy_radius_m": 0.018,
+          "proxy_gripper_center_first_contact_frame": null,
+          "proxy_gripper_center_first_contact_time_s": null
+        },
+        "accepted_nominal": {
+          "ee_contact_radius_arg_m": 0.055,
+          "effective_proxy_radius_m": 0.033,
+          "proxy_gripper_center_first_contact_frame": null,
+          "proxy_gripper_center_first_contact_time_s": null
+        },
+        "inflated": {
+          "ee_contact_radius_arg_m": 0.08,
+          "effective_proxy_radius_m": 0.048,
+          "proxy_gripper_center_first_contact_frame": 90,
+          "proxy_gripper_center_first_contact_time_s": 3.0015000000000005
+        }
+      }
+    },
+    "c19_true0p1_shallowcurve": {
+      "run_dir": "/home/xinjie/Newton_Connection/Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260403_005533_true0p1_shallowcurve_bx054_by020_bz006_c19",
+      "actual_first_contact": {
+        "frame": 37,
+        "time_s": 1.23395,
+        "source": "left_tip_box",
+        "actual_contact_source": "left_tip_box",
+        "target_to_contact_surface_norm_m": 0.06948903948068619,
+        "target_to_contact_surface_xy_m": 0.038958337157964706,
+        "target_to_contact_surface_z_m": 0.057541072368621826,
+        "gripper_center_to_contact_surface_norm_m": 0.06949108093976974,
+        "gripper_center_to_contact_surface_xy_m": 0.03895695507526398,
+        "gripper_center_to_contact_surface_z_m": 0.05754446983337402,
+        "gripper_center_to_contacting_rope_particle_norm_m": 0.07095807790756226,
+        "gripper_center_to_contacting_rope_particle_xy_m": 0.03883364796638489,
+        "gripper_center_to_contacting_rope_particle_z_m": 0.05938851833343506
+      },
+      "rope_response": {
+        "lateral_motion_frame": 42,
+        "lateral_motion_time_s": 1.4007000000000003,
+        "deformation_frame": 43,
+        "deformation_time_s": 1.4340500000000003
+      },
+      "proxy_sweep": {
+        "tiny_minclamp": {
+          "ee_contact_radius_arg_m": 0.005,
+          "effective_proxy_radius_m": 0.012,
+          "proxy_gripper_center_first_contact_frame": null,
+          "proxy_gripper_center_first_contact_time_s": null
+        },
+        "small": {
+          "ee_contact_radius_arg_m": 0.03,
+          "effective_proxy_radius_m": 0.018,
+          "proxy_gripper_center_first_contact_frame": 80,
+          "proxy_gripper_center_first_contact_time_s": 2.668
+        },
+        "accepted_nominal": {
+          "ee_contact_radius_arg_m": 0.055,
+          "effective_proxy_radius_m": 0.033,
+          "proxy_gripper_center_first_contact_frame": 63,
+          "proxy_gripper_center_first_contact_time_s": 2.1010500000000003
+        },
+        "inflated": {
+          "ee_contact_radius_arg_m": 0.08,
+          "effective_proxy_radius_m": 0.048,
+          "proxy_gripper_center_first_contact_frame": 50,
+          "proxy_gripper_center_first_contact_time_s": 1.6675000000000002
+        }
+      }
+    },
+    "c20_true0p1_shallowcurve_clean": {
+      "run_dir": "/home/xinjie/Newton_Connection/Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260403_010241_true0p1_shallowcurve_bx054_by020_bz006_c20_clean",
+      "actual_first_contact": {
+        "frame": 85,
+        "time_s": 2.8347500000000005,
+        "source": "right_box_0",
+        "actual_contact_source": "right_box_0",
+        "target_to_contact_surface_norm_m": 0.06560953706502914,
+        "target_to_contact_surface_xy_m": 0.06442665308713913,
+        "target_to_contact_surface_z_m": 0.012402340769767761,
+        "gripper_center_to_contact_surface_norm_m": 0.06560896337032318,
+        "gripper_center_to_contact_surface_xy_m": 0.06442607194185257,
+        "gripper_center_to_contact_surface_z_m": 0.012402310967445374,
+        "gripper_center_to_contacting_rope_particle_norm_m": 0.06607384234666824,
+        "gripper_center_to_contacting_rope_particle_xy_m": 0.06475726515054703,
+        "gripper_center_to_contacting_rope_particle_z_m": 0.01312437653541565
+      },
+      "rope_response": {
+        "lateral_motion_frame": 83,
+        "lateral_motion_time_s": 2.7680500000000006,
+        "deformation_frame": 26,
+        "deformation_time_s": 0.8671000000000001
+      },
+      "proxy_sweep": {
+        "tiny_minclamp": {
+          "ee_contact_radius_arg_m": 0.005,
+          "effective_proxy_radius_m": 0.012,
+          "proxy_gripper_center_first_contact_frame": 70,
+          "proxy_gripper_center_first_contact_time_s": 2.3345000000000002
+        },
+        "small": {
+          "ee_contact_radius_arg_m": 0.03,
+          "effective_proxy_radius_m": 0.018,
+          "proxy_gripper_center_first_contact_frame": 60,
+          "proxy_gripper_center_first_contact_time_s": 2.0010000000000003
+        },
+        "accepted_nominal": {
+          "ee_contact_radius_arg_m": 0.055,
+          "effective_proxy_radius_m": 0.033,
+          "proxy_gripper_center_first_contact_frame": 52,
+          "proxy_gripper_center_first_contact_time_s": 1.7342000000000002
+        },
+        "inflated": {
+          "ee_contact_radius_arg_m": 0.08,
+          "effective_proxy_radius_m": 0.048,
+          "proxy_gripper_center_first_contact_frame": 46,
+          "proxy_gripper_center_first_contact_time_s": 1.5341000000000002
+        }
+      }
+    }
+  }
+}

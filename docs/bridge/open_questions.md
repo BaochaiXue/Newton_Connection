@@ -46,6 +46,9 @@ This page records unresolved bridge questions that still matter technically.
 - On the fair cloth + implicit-ground `2 x 2` matrix, why is the current best
   full-rollout pair `self=phystwin, ground=native` instead of the fully
   PhysTwin-style pair?
+- How much of that current `case_3` advantage is due to the native-ground
+  branch still carrying a more Newton-like gravity/drag timing order, rather
+  than the ground-contact law in isolation?
 - Can we add peak-over-time overlap metrics so the self-collision decision is
   not based only on final-frame statistics?
 - After choosing a self-collision path, does the same choice remain compatible
