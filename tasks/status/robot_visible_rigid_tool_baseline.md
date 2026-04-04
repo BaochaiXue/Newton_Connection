@@ -24,19 +24,24 @@
 - Rejected early branches fail-closed:
   - finger-mounted vertical tool variants (`c01`..`c06`) either hid the tool inside the finger silhouette, let bare finger geometry read as the true contactor, or left the hero contact patch too ambiguous
 - Promoted [20260404_141534_c07_link7_bar](/home/xinjie/Newton_Connection/Newton/phystwin_bridge/results/robot_visible_rigid_tool_baseline/candidates/20260404_141534_c07_link7_bar):
+  - initial promoted run proved the link7 crossbar geometry and tool-mediated claim direction
+  - but the bundle still used three separate reruns, which left hero/debug/validation with inconsistent tool-vs-finger onset ordering
+- Superseded by [20260404_145031_c08_samehistory](/home/xinjie/Newton_Connection/Newton/phystwin_bridge/results/robot_visible_rigid_tool_baseline/candidates/20260404_145031_c08_samehistory):
+  - same conservative link7 crossbar tool geometry
+  - hero/debug/validation are now rendered from one saved rollout history rather than three independent reruns
+  - all three summaries now agree:
+    - `actual_tool_first_contact_time_s = 1.7342`
+    - `actual_finger_box_first_contact_time_s = 3.43505`
+  - `tool_contact_onset_report.json` keeps `multi_frame_standoff_detected = false`
+  - standard hero validator passes truthfully
+  - repo-native artifact-contract check passes
+  - skeptical review bundles now pass on hero/debug/validation
   - visible red crossbar-style capsule mounted on `fr3_link7`
-  - `actual_tool_first_contact_time_s = 1.7342`
   - `tool_contact_duration_s = 2.96815`
   - `first_rope_lateral_motion_time_s = 2.30115`
   - `first_rope_deformation_time_s = 2.3345`
-  - `tool_contact_onset_report.json` reports `multi_frame_standoff_detected = false`
   - `tool_vs_collider_report.md` passes with collider/render geometry match
   - `rope_visual_vs_physical_thickness_report.md` confirms rope render thickness equals physical thickness
-  - standard hero validator now passes truthfully after manual review was completed
-  - skeptical evaluator layer now also passes after adding explicit timestamped review evidence:
-    - `diagnostics/review_bundle_hero/skeptical_audit.json`
-    - `diagnostics/review_bundle_validation/skeptical_audit.json`
-  - artifact contract now also passes after adding candidate-local `README.md` and `command.txt`
   - skeptical video audits now pass on all three prepared review bundles:
     - `diagnostics/review_bundle_hero/skeptical_audit.md`
     - `diagnostics/review_bundle_debug/skeptical_audit.md`

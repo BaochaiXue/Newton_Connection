@@ -50,7 +50,7 @@ It does **not** claim:
   - `docs/bridge/tasks/robot_rope_franka_physical_blocking.md`
 - Promoted visible-tool baseline:
   - `results_meta/tasks/robot_visible_rigid_tool_baseline.json`
-  - authoritative run: `20260404_141534_c07_link7_bar`
+  - authoritative run: `20260404_145031_c08_samehistory`
 - Existing entry point reused:
   - `Newton/phystwin_bridge/demos/demo_robot_rope_franka.py`
 
@@ -59,6 +59,7 @@ It does **not** claim:
 - The promoted run mounts a visible red crossbar-style capsule tool on `fr3_link7`.
 - That visible tool is the real physical contactor in hero/debug/validation views.
 - Tool contact begins before visible rope lateral motion and deformation.
+- The authoritative rerender now keeps hero/debug/validation on one saved rollout history, so all three views agree on tool-first contact ordering.
 - The promoted bundle now includes separate skeptical video audits over the prepared hero and validation review bundles.
 - The result is meeting-safe as a **tool-mediated** contact baseline only.
 - The promoted candidate now also has:

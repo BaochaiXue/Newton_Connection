@@ -33,7 +33,7 @@ Detailed result meaning belongs in:
 - `robot_rope_franka_tabletop_push_hero`
   - preserve the truth-fixed tabletop-push hero bundle and keep its authority routing truthful
 - `robot_visible_rigid_tool_baseline`
-  - preserve the newly promoted tool-mediated tabletop baseline; keep it clearly separate from both the direct-finger tabletop baseline and the blocked physical-blocking task
+  - preserve the newly promoted tool-mediated tabletop baseline; keep it clearly separate from both the direct-finger tabletop baseline and the blocked physical-blocking task, and keep its canonical rerender path single-history so hero/debug/validation cannot drift apart
 - `robot_rope_franka_physical_blocking`
   - stronger follow-on task is now blocked at bridge/demo level because the currently accessible SemiImplicit articulation actuation surfaces do not yet deliver real physically blocked robot motion
 
@@ -69,7 +69,7 @@ Detailed result meaning belongs in:
 - `robot_visible_rigid_tool_baseline`
   - task status: `tasks/status/robot_visible_rigid_tool_baseline.md`
   - committed authority: `results_meta/tasks/robot_visible_rigid_tool_baseline.json`
-  - current meaning: promoted tool-mediated tabletop baseline where a visible rigid robot-mounted crossbar is the real physical contactor for the bridged rope, now backed by separate skeptical video audits on the prepared hero and validation review bundles
+  - current meaning: promoted tool-mediated tabletop baseline where a visible rigid robot-mounted crossbar is the real physical contactor for the bridged rope, now backed by separate skeptical video audits and a single-rollout three-view bundle
 - `robot_rope_franka_physical_blocking`
   - task status: `tasks/status/robot_rope_franka_physical_blocking.md`
   - committed authority: none yet
