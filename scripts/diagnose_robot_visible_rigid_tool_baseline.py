@@ -7,6 +7,7 @@ import importlib.util
 import json
 import math
 import shlex
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -17,6 +18,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 DEMO_DIR = ROOT / "Newton" / "phystwin_bridge" / "demos"
 DEMO_PATH = DEMO_DIR / "demo_robot_rope_franka.py"
+PREPARE_REVIEW_BUNDLE = ROOT / "scripts" / "prepare_video_review_bundle.py"
 
 
 def parse_args() -> argparse.Namespace:
@@ -117,6 +119,25 @@ def _quat_angle_deg(q_curr: np.ndarray, q_prev: np.ndarray) -> float:
     dq = _quat_relative(np.asarray(q_curr, dtype=np.float32), np.asarray(q_prev, dtype=np.float32))
     w = float(np.clip(abs(dq[3]), -1.0, 1.0))
     return float(math.degrees(2.0 * math.acos(w)))
+
+
+def _run_review_bundle(video: Path, out_dir: Path, event_frames: list[int], event_labels: list[str]) -> dict[str, Any]:
+    cmd = [
+        sys.executable,
+        str(PREPARE_REVIEW_BUNDLE),
+        "--video",
+        str(video),
+        "--out-dir",
+        str(out_dir),
+        "--sample-count",
+        "12",
+        "--window-radius",
+        "2",
+    ]
+    for frame, label in zip(event_frames, event_labels, strict=True):
+        cmd.extend(["--event-frame", str(int(frame)), "--event-label", str(label)])
+    subprocess.run(cmd, check=True)
+    return json.loads((out_dir / "review_manifest.json").read_text(encoding="utf-8"))
 
 
 def main() -> int:
@@ -398,6 +419,52 @@ def main() -> int:
             "- hidden_helper_affects_visible_clip: `false`",
             "",
             "The only new rigid contactor in this baseline is the explicitly visible tool capsule attached to the robot body.",
+        ],
+    )
+
+    peak_push_frame = int(summary.get("contact_peak_frame") or tool_contact_frame or 0)
+    review_events = [
+        0 if tool_contact_frame is None else int(tool_contact_frame),
+        0 if rope_motion_frame is None else int(rope_motion_frame),
+        0 if rope_deformation_frame is None else int(rope_deformation_frame),
+        int(peak_push_frame),
+    ]
+    review_labels = ["tool_contact", "rope_motion", "rope_deformation", "peak_push"]
+    review_specs = [
+        ("hero", run_dir / "hero_presentation.mp4", out_dir / "review_bundle_hero"),
+        ("debug", run_dir / "hero_debug.mp4", out_dir / "review_bundle_debug"),
+        ("validation", run_dir / "validation_camera.mp4", out_dir / "review_bundle_validation"),
+    ]
+    review_manifests: dict[str, Any] = {}
+    for name, video_path, bundle_dir in review_specs:
+        review_manifests[name] = _run_review_bundle(video_path, bundle_dir, review_events, review_labels)
+
+    hero_event_sheet = out_dir / "review_bundle_hero" / "event_sheet.png"
+    if hero_event_sheet.exists():
+        subprocess.run(["cp", "-f", str(hero_event_sheet), str(run_dir / "event_sheet.png")], check=True)
+
+    _write_md(
+        out_dir / "multimodal_review.md",
+        [
+            "# Multimodal Review",
+            "",
+            "- reviewer_used: `fail-closed local review bundles over the full hero/debug/validation videos; no stronger multimodal video reviewer was available in this environment`",
+            f"- first_actual_tool_contact_frame: `{tool_contact_frame}`",
+            f"- first_actual_tool_contact_time_s: `{None if tool_contact_frame is None else float(tool_contact_frame * frame_dt)}`",
+            f"- first_rope_lateral_motion_frame: `{rope_motion_frame}`",
+            f"- first_rope_lateral_motion_time_s: `{None if rope_motion_frame is None else float(rope_motion_frame * frame_dt)}`",
+            f"- first_rope_deformation_frame: `{rope_deformation_frame}`",
+            f"- first_rope_deformation_time_s: `{None if rope_deformation_frame is None else float(rope_deformation_frame * frame_dt)}`",
+            f"- multi_frame_standoff_detected: `{onset_payload['multi_frame_standoff_detected']}`",
+            "",
+            "## Review Bundles",
+            f"- hero: `diagnostics/review_bundle_hero/`",
+            f"- debug: `diagnostics/review_bundle_debug/`",
+            f"- validation: `diagnostics/review_bundle_validation/`",
+            "",
+            "## Conservative Status",
+            "- This file records the full-video evidence bundle and timing relationship only.",
+            "- Final PASS/FAIL still requires a truthful manual review surface.",
         ],
     )
 

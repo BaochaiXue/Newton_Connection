@@ -44,12 +44,22 @@ It does **not** claim:
 ## Current State
 
 - Opened on `2026-04-04`.
-- Existing baseline to preserve:
+- Existing baseline preserved:
   - `results_meta/tasks/robot_rope_franka_tabletop_push_hero.json`
-- Existing stronger blocked follow-on to preserve:
+- Existing stronger blocked follow-on preserved:
   - `docs/bridge/tasks/robot_rope_franka_physical_blocking.md`
-- Existing entry point to reuse:
+- Promoted visible-tool baseline:
+  - `results_meta/tasks/robot_visible_rigid_tool_baseline.json`
+  - authoritative run: `20260404_141534_c07_link7_bar`
+- Existing entry point reused:
   - `Newton/phystwin_bridge/demos/demo_robot_rope_franka.py`
+
+## Current Best Meaning
+
+- The promoted run mounts a visible red crossbar-style capsule tool on `fr3_link7`.
+- That visible tool is the real physical contactor in hero/debug/validation views.
+- Tool contact begins before visible rope lateral motion and deformation.
+- The result is meeting-safe as a **tool-mediated** contact baseline only.
 
 ## Expected Artifacts
 

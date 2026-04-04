@@ -32,6 +32,8 @@ Detailed result meaning belongs in:
   - keep the new fair `2 x 2` cloth+ground matrix visible while strict parity remains blocked
 - `robot_rope_franka_tabletop_push_hero`
   - preserve the truth-fixed tabletop-push hero bundle and keep its authority routing truthful
+- `robot_visible_rigid_tool_baseline`
+  - preserve the newly promoted tool-mediated tabletop baseline; keep it clearly separate from both the direct-finger tabletop baseline and the blocked physical-blocking task
 - `robot_rope_franka_physical_blocking`
   - stronger follow-on task is now blocked at bridge/demo level because the currently accessible SemiImplicit articulation actuation surfaces do not yet deliver real physically blocked robot motion
 
@@ -43,6 +45,8 @@ Detailed result meaning belongs in:
   - the exploratory profiling page must stay clearly separate from the committed rope benchmark truth under `rope_perf_apples_to_apples`
 - `robot_rope_franka_physical_blocking`
   - readable tabletop rope-push baseline exists, but the stronger physical robot-blocking follow-on is blocked by the current bridge/demo-level actuation path
+- `robot_visible_rigid_tool_baseline`
+  - no blocker at the current conservative claim boundary; the promoted run is now the tool-mediated meeting-safe intermediary
 
 ## Promoted Surfaces At A Glance
 
@@ -62,6 +66,10 @@ Detailed result meaning belongs in:
   - task status: `tasks/status/robot_rope_franka_tabletop_push_hero.md`
   - committed authority: `results_meta/tasks/robot_rope_franka_tabletop_push_hero.json`
   - current meaning: readable tabletop-push hero baseline under fixed `sim_dt = 5e-5`, `substeps = 667`, now with the rope render thickness aligned to the physical contact thickness and the visible finger-contact claim re-certified
+- `robot_visible_rigid_tool_baseline`
+  - task status: `tasks/status/robot_visible_rigid_tool_baseline.md`
+  - committed authority: `results_meta/tasks/robot_visible_rigid_tool_baseline.json`
+  - current meaning: promoted tool-mediated tabletop baseline where a visible rigid robot-mounted crossbar is the real physical contactor for the bridged rope
 - `robot_rope_franka_physical_blocking`
   - task status: `tasks/status/robot_rope_franka_physical_blocking.md`
   - committed authority: none yet
@@ -81,6 +89,7 @@ Detailed result meaning belongs in:
 - `video_presentation_quality`
 - `robot_deformable_demo`
 - `robot_rope_franka_tabletop_push_hero`
+- `robot_visible_rigid_tool_baseline`
 - `robot_rope_franka_physical_blocking`
 - `native_robot_rope_drop_release`
 - `interactive_playground_profiling`
