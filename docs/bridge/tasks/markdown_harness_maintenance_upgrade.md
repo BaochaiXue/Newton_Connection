@@ -1,10 +1,10 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `markdown_harness_maintenance_upgrade`
-> last_reviewed: `2026-04-01`
+> last_reviewed: `2026-04-05`
 > review_interval: `14d`
 > update_rule: `Update when markdown authority, task taxonomy, inventory generation, or lint policy changes.`
-> notes: Current canonical harness-maintenance task for markdown truthfulness, active-vs-historical separation, and registry-backed result authority.
+> notes: Current canonical harness-maintenance task for markdown truthfulness, active-vs-historical separation, registry-backed result authority, and outcome-first agent reporting.
 
 # Task: Markdown Harness Maintenance Upgrade
 
@@ -32,6 +32,7 @@ structure; it is semantic drift:
 - `results_meta/` completeness and local-only pointer hygiene
 - markdown inventory / staleness / task-surface generation
 - lint / hook reinforcement for ongoing maintenance
+- outcome-first user-facing reporting discipline for future Codex runs
 
 ## Canonical Entry Points
 
@@ -51,6 +52,7 @@ structure; it is semantic drift:
 - current-status dashboard split/trim
 - active-vs-historical execution-directory cleanup
 - stronger markdown maintenance policy and enforcement
+- durable reporting contract in repo instructions and hooks so chat summaries stay focused on outcomes
 
 ## Success Criteria
 
@@ -60,6 +62,7 @@ structure; it is semantic drift:
 - tracked local result surfaces are explicitly local-only or registry-backed
 - generated inventory, staleness, and task-surface ledgers match the filesystem
 - lint catches markdown truth drift mechanically
+- future agent summaries are steered toward changes/problems/findings/artifacts/next step, not process diaries
 
 ## Related Pages
 

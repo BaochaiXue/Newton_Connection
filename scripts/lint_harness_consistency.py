@@ -19,10 +19,16 @@ TASK_HISTORY_DIR = ROOT / "tasks/history"
 CURRENT_STATUS = ROOT / "docs/bridge/current_status.md"
 TASKS_README = ROOT / "docs/bridge/tasks/README.md"
 DOC_GARDENING = ROOT / "docs/runbooks/doc_gardening.md"
+AGENT_REPORTING = ROOT / "docs/runbooks/agent_reporting.md"
 GENERATED_README = ROOT / "docs/generated/README.md"
 RESULTS_README = ROOT / "results_meta/README.md"
 HARNESS_AUDIT = ROOT / "docs/generated/harness_audit.md"
 MD_INVENTORY_JSON = ROOT / "docs/generated/md_inventory.json"
+ROOT_AGENTS = ROOT / "AGENTS.md"
+TASKS_AGENTS = ROOT / "tasks/AGENTS.md"
+SESSION_START_HOOK = ROOT / ".codex/hooks/session_start.py"
+POST_TOOL_HOOK = ROOT / ".codex/hooks/post_tool_use_review.py"
+STOP_HOOK = ROOT / ".codex/hooks/stop_continue.py"
 GENERATED_REQUIRED = [
     ROOT / "docs/generated/md_inventory.md",
     ROOT / "docs/generated/md_inventory.json",
@@ -52,6 +58,7 @@ BASE_REQUIRED_METADATA_SURFACES = {
     "docs/archive/README.md",
     "docs/archive/tasks/README.md",
     "docs/generated/README.md",
+    "docs/runbooks/agent_reporting.md",
     "docs/runbooks/doc_gardening.md",
     "results_meta/README.md",
     "results_meta/DEPRECATED.md",
@@ -266,6 +273,39 @@ def _issues_from_generator_story() -> list[str]:
     return issues
 
 
+def _issues_from_reporting_discipline() -> list[str]:
+    issues: list[str] = []
+    if not AGENT_REPORTING.exists():
+        issues.append("missing docs/runbooks/agent_reporting.md")
+        return issues
+
+    runbook_text = AGENT_REPORTING.read_text(encoding="utf-8", errors="ignore").lower()
+    for needle in ("what changed", "problem", "conclusion", "next step"):
+        if needle not in runbook_text:
+            issues.append(f"agent_reporting.md is missing required reporting guidance: {needle}")
+
+    ag_text = ROOT_AGENTS.read_text(encoding="utf-8", errors="ignore")
+    if "docs/runbooks/agent_reporting.md" not in ag_text:
+        issues.append("AGENTS.md must point to docs/runbooks/agent_reporting.md")
+
+    tasks_text = TASKS_AGENTS.read_text(encoding="utf-8", errors="ignore")
+    if "docs/runbooks/agent_reporting.md" not in tasks_text:
+        issues.append("tasks/AGENTS.md must point to docs/runbooks/agent_reporting.md")
+
+    session_text = SESSION_START_HOOK.read_text(encoding="utf-8", errors="ignore").lower()
+    if "what changed" not in session_text or "next step" not in session_text:
+        issues.append("session_start hook does not remind agents to report changes and next step")
+
+    post_text = POST_TOOL_HOOK.read_text(encoding="utf-8", errors="ignore").lower()
+    if "what changed" not in post_text or "conclusion" not in post_text:
+        issues.append("post_tool_use_review hook does not reinforce outcome-first reporting")
+
+    stop_text = STOP_HOOK.read_text(encoding="utf-8", errors="ignore").lower()
+    if "outcome-first" not in stop_text or "before vs after" not in stop_text:
+        issues.append("stop_continue hook does not enforce the reporting-discipline heuristic")
+    return issues
+
+
 def _issues_from_authority_surfaces(fresh_inventory: list[dict[str, Any]], registry_entries: dict[str, dict[str, Any]]) -> list[str]:
     issues: list[str] = []
     fresh_by_path = {row["path"]: row for row in fresh_inventory}
@@ -422,6 +462,7 @@ def _collect_issues() -> list[str]:
     issues.extend(_issues_from_current_status(fresh_inventory, registry_entries))
     issues.extend(_issues_from_metadata(active_slugs, fresh_inventory))
     issues.extend(_issues_from_generator_story())
+    issues.extend(_issues_from_reporting_discipline())
     issues.extend(_issues_from_authority_surfaces(fresh_inventory, registry_entries))
     issues.extend(_issues_from_archived_task_pages())
     issues.extend(_issues_from_registry_json(registry_entries))

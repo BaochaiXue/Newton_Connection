@@ -1,7 +1,7 @@
 > status: canonical
 > canonical_replacement: none
 > owner_surface: `docs_archive`
-> last_reviewed: `2026-04-01`
+> last_reviewed: `2026-04-05`
 > review_interval: `30d`
 > update_rule: `Update when historical bridge task pages are moved into or out of this subtree.`
 > notes: Singular archive neighborhood for historical bridge task pages that should not remain beside active task pages.

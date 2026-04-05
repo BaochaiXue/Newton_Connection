@@ -2,6 +2,10 @@
 
 ## Current Milestone
 
+## What Changed
+
+## Current Conclusion
+
 ## Exact Next Command
 
 ```bash
@@ -12,7 +16,7 @@
 
 ## Last Failed Acceptance Criterion
 
-## Key Artifact Paths
+## Key GIF / Artifact Paths
 
 - 
 

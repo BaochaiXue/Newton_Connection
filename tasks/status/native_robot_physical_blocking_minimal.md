@@ -14,8 +14,8 @@
     currently accessible bridge/demo actuation layer
 - Created the new minimal task chain focused on Stage 0 blocking first
 - Added:
-  - [geometry_truth_inventory.md](/home/xinjie/Newton_Connection/diagnostics/geometry_truth_inventory.md)
-  - [native_robot_physical_blocking_minimal_board.md](/home/xinjie/Newton_Connection/diagnostics/native_robot_physical_blocking_minimal_board.md)
+  - [geometry_truth_inventory.md](../../diagnostics/geometry_truth_inventory.md)
+  - [native_robot_physical_blocking_minimal_board.md](../../diagnostics/native_robot_physical_blocking_minimal_board.md)
 - Reproduced a stronger local diagnosis against the current repo state:
   - in `joint_target_drive`, `solver.step(...)` changes `state_out.body_q`
   - the subsequent `newton.eval_fk(state_out.joint_q, ...)` in the demo path
@@ -31,7 +31,7 @@
     Franka smoke and yields non-zero recovered `joint_q` motion after
     `eval_ik`
 - Added the stronger recheck note:
-  - [bridge_layer_limit_recheck_20260404.md](/home/xinjie/Newton_Connection/diagnostics/bridge_layer_limit_recheck_20260404.md)
+  - [bridge_layer_limit_recheck_20260404.md](../../diagnostics/bridge_layer_limit_recheck_20260404.md)
   - current interpretation now includes:
     - stable bridge/demo-level Franka SemiImplicit build with
       `ignore_inertial_definitions=True`

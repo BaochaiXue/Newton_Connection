@@ -1,17 +1,18 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `markdown_harness_maintenance_upgrade`
-> last_reviewed: `2026-04-01`
+> last_reviewed: `2026-04-05`
 > review_interval: `14d`
 > update_rule: `Update when milestones or validation steps change materially.`
-> notes: Active plan for the current markdown/control-plane maintenance pass.
+> notes: Active plan for the current markdown/control-plane maintenance pass, including outcome-first reporting enforcement.
 
 # Plan: markdown_harness_maintenance_upgrade
 
 ## Goal
 
 Make markdown truth surfaces harder to misuse by tightening taxonomy,
-authority, inventory generation, and lint enforcement.
+authority, inventory generation, lint enforcement, and agent reporting
+discipline.
 
 ## Constraints
 
@@ -27,6 +28,7 @@ authority, inventory generation, and lint enforcement.
 4. normalize inventory generation, staleness reporting, and task-surface reporting
 5. strengthen lint/hooks and regenerate ledgers
 6. enforce review metadata on active canonical task pages
+7. encode outcome-first user reporting in AGENTS/runbook/hooks
 
 ## Validation
 
@@ -38,3 +40,4 @@ authority, inventory generation, and lint enforcement.
 
 - this task is the current canonical home for markdown-harness maintenance
 - predecessor cleanup/harness tasks remain historical context only
+- report the maintenance outcomes, not only the maintenance mechanics

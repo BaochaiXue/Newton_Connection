@@ -1,64 +1,64 @@
-# Contract: markdown_harness_maintenance_upgrade / semantic-hardening-pass
+# Contract: markdown_harness_maintenance_upgrade / reporting-discipline-hardening
 
 ## Goal
 
-Finish the current semantic-hardening pass so the markdown/result-authority
-harness is quieter, more truthful, and mechanically enforceable.
+Make future Codex summaries in this repo outcome-first by encoding the
+reporting contract into repo-visible instructions and hooks.
 
 ## Scope Boundary
 
 - In scope:
-  - report/actionability cleanup for generated maintenance surfaces
-  - active-vs-historical task-index consistency
-  - result-authority drift between local manifests and `results_meta/`
-  - honest status for contract/handoff usage
+  - repo-visible reporting rules for user-facing summaries
+  - startup/post-tool/stop-hook guidance for outcome-first reporting
+  - maintenance task-chain updates that describe the new reporting contract
+  - keeping the reporting rule aligned with the existing markdown harness
 - Out of scope:
   - Newton core changes
-  - new experiment reruns
-  - large content rewrites unrelated to harness truthfulness
+  - experiment reruns
+  - unrelated result-authority cleanups
 
 ## Required Inputs
 
-- `docs/generated/md_inventory.*`
-- `docs/generated/md_cleanup_report.md`
-- `docs/generated/md_staleness_report.md`
-- `docs/generated/task_surface_matrix.md`
-- `results_meta/tasks/*.json`
-- `docs/bridge/current_status.md`
-- active task status pages affected by authority drift
+- `AGENTS.md`
+- `tasks/AGENTS.md`
+- `docs/runbooks/agent_reporting.md`
+- `docs/runbooks/doc_gardening.md`
+- `.codex/hooks/session_start.py`
+- `.codex/hooks/post_tool_use_review.py`
+- `.codex/hooks/stop_continue.py`
+- active markdown-maintenance task-chain files
 
 ## Required Outputs
 
-- regenerated generated ledgers
-- corrected robot-tabletop local manifest authority surfaces
-- explicit active-task indexing for `remote_interaction_root_cause`
-- at least one real contract and one real handoff artifact under the task-execution scaffolding
+- explicit reporting runbook
+- AGENTS/tasks-AGENTS guidance for outcome-first summaries
+- hook reminders/blockers that reduce process-first completion reports
+- regenerated generated ledgers after the control-plane edits
 
 ## Hard-Fail Conditions
 
-- `results_meta/` and generated task/result summaries disagree on the current run
-- a local result surface still overclaims committed authority
-- `md_staleness_report.md` remains a permanently noisy red wall
-- the lint still passes only because the report scope is hidden instead of documented
+- the repo still lacks a clear reporting contract for user-facing summaries
+- hooks still tolerate process-heavy completion messages without any steer
+- reporting expectations still live only in chat, not in versioned files
 
 ## Acceptance Criteria
 
 - `python scripts/generate_md_inventory.py` regenerates without ambiguity
 - `python scripts/lint_harness_consistency.py` passes
-- `robot_rope_franka` local manifests no longer drift from `results_meta/`
-- `remote_interaction_root_cause` is either indexed as active or no longer lives as a hidden active chain
-- `task_surface_matrix.md` shows real contract/handoff usage for at least one active task
+- `AGENTS.md` tells future agents to report changes, solved problems, findings,
+  conclusions, artifact paths, and next steps
+- `docs/runbooks/agent_reporting.md` exists as the canonical reporting runbook
+- the hooks now remind or lightly block against meta-heavy completion messages
 
 ## Evaluator Evidence Required
 
 - validator command(s):
   - `python scripts/generate_md_inventory.py`
-  - `python scripts/sync_results_registry.py` if registry JSON changes
   - `python scripts/lint_harness_consistency.py`
 - artifact paths:
+  - `docs/runbooks/agent_reporting.md`
+  - `docs/generated/md_inventory.md`
   - `docs/generated/md_cleanup_report.md`
-  - `docs/generated/md_staleness_report.md`
-  - `docs/generated/task_surface_matrix.md`
 - skeptical review required: no
 
 ## Next Command After Acceptance

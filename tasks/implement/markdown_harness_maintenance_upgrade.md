@@ -1,10 +1,10 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `markdown_harness_maintenance_upgrade`
-> last_reviewed: `2026-04-01`
+> last_reviewed: `2026-04-05`
 > review_interval: `14d`
 > update_rule: `Update when the execution sequence or canonical commands change.`
-> notes: Runbook for the current markdown/control-plane maintenance pass.
+> notes: Runbook for the current markdown/control-plane maintenance pass, including reporting-discipline hardening.
 
 # Implement: markdown_harness_maintenance_upgrade
 
@@ -32,7 +32,8 @@ rg -n 'docs/archive/tasks|meeting_20260401_rope_profiling_rebuild' docs tasks pl
 4. align local result surfaces with `results_meta/`
 5. move historical bridge task pages out of `docs/bridge/tasks/`
 6. add review metadata to active canonical task pages
-7. regenerate ledgers and rerun lint
+7. encode outcome-first user reporting in AGENTS/runbooks/hooks
+8. regenerate ledgers and rerun lint
 
 ## Validation
 
@@ -41,3 +42,4 @@ rg -n 'docs/archive/tasks|meeting_20260401_rope_profiling_rebuild' docs tasks pl
 - no local result pointer still sounds canonical without registry backing
 - no completed historical task chain remains in an active execution directory
 - no historical bridge task page remains in `docs/bridge/tasks/`
+- reporting rules now steer future agents toward outcomes instead of process-only summaries

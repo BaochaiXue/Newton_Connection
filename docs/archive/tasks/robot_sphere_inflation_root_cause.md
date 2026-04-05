@@ -1,10 +1,10 @@
-> status: active
+> status: historical
 > canonical_replacement: none
 > owner_surface: `robot_sphere_inflation_root_cause`
-> last_reviewed: `2026-04-04`
-> review_interval: `14d`
-> update_rule: `Update when the ranked mechanism story, decisive experiment set, or honest next-step recommendation changes.`
-> notes: Mechanism-identification task for why inflated robot spheres/proxies appeared necessary in the tabletop rope case.
+> last_reviewed: `2026-04-05`
+> review_interval: `60d`
+> update_rule: `Historical record only; update only if its replacement or historical scope needs clarification.`
+> notes: Historical mechanism study moved out of the active task index after the ranked conclusion stabilized.
 
 # Task: Why Robot Spheres Need Inflation In The Rope Case
 

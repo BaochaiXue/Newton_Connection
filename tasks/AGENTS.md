@@ -35,3 +35,34 @@ Then refresh `docs/generated/md_inventory.*` and rerun
 
 Use `tasks/contracts/` for milestone acceptance and `tasks/handoffs/` for
 session-to-session resume state.
+
+## User-Facing Reporting
+
+When reporting task progress or closeout to the user, lead with:
+
+1. what changed
+2. what problem was solved or clarified
+3. what conclusion now holds
+4. which artifact to inspect
+5. the next step
+
+Do not make the report mainly about files read, tools/skills used, task-chain
+bookkeeping, or other internal process chatter.
+
+## User-Facing Reporting
+
+Task status files may keep detailed commands and bookkeeping, but user-facing
+updates should not mirror that raw log.
+
+Canonical details live in [docs/runbooks/agent_reporting.md](../docs/runbooks/agent_reporting.md).
+
+When reporting task progress, lead with:
+
+1. what changed
+2. what problem was resolved
+3. findings or conclusions
+4. relevant GIF/video/artifact paths
+5. next step
+
+Keep inventory/lint/task-chain maintenance as one short closeout note unless
+the user explicitly asks for the maintenance details.

@@ -32,3 +32,4 @@ Depending on the change, update one or more of:
 
 - do not rewrite stable docs just to match phrasing
 - do not leave changed workflows undocumented
+- do not report the change back as process choreography; summarize the user-facing change, solved problem, conclusion, artifact path, and next step

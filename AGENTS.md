@@ -81,6 +81,70 @@ For any long-running or multi-step task:
 5. Update status docs after each meaningful checkpoint.
 6. Prefer committing only after the task state is documented.
 
+## User-Facing Reporting
+
+Agent reports to the user must be outcome-first.
+
+Default reporting order:
+
+1. what changed
+2. what problem was solved or unblocked
+3. what was found or concluded
+4. which artifacts are worth opening (`GIF`, `MP4`, `PPTX`, `PDF`, result bundle)
+5. the next step
+
+Do not use the user-facing report to narrate internal process unless the user
+explicitly asked for that level of detail.
+
+Avoid filling the report with:
+
+- files read
+- tools or skills used
+- prompt strategy
+- subagent orchestration details
+- task-chain maintenance chatter
+- inventory / lint / registry housekeeping
+
+Exception:
+
+- if the task itself is harness maintenance, report the harness change and the
+  problem it fixes, not the fact that you performed an audit
+
+## Reporting Discipline
+
+User-facing progress updates and final summaries must be outcome-first.
+
+Canonical details live in [docs/runbooks/agent_reporting.md](./docs/runbooks/agent_reporting.md).
+
+Lead with:
+
+1. what changed
+2. what problem was solved
+3. what was learned or concluded
+4. which GIF/video/artifact paths are worth checking, when relevant
+5. the exact next step
+
+Keep validation as a short tail note after the outcome.
+
+Keep harness bookkeeping short and trailing:
+
+- task-chain creation
+- status-doc refresh
+- inventory/lint runs
+- hook/metadata maintenance
+
+Do not let the main report become a process diary. Avoid leading with:
+
+- "I read ..."
+- "I updated the status page ..."
+- "I regenerated the inventory ..."
+- "I ran lint ..."
+- bookkeeping headings such as `Before vs After`, `Files Deleted`,
+  `Files Archived`, or `Validation Commands Run`
+
+Those are closeout details, not the headline. Mention validation in one short
+line at the end unless the user explicitly asks for the full command log.
+
 ## Artifact Contract
 
 Serious experiments should not live only as loose files in `tmp/`.

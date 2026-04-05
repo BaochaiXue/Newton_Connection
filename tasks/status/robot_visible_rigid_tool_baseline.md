@@ -12,21 +12,21 @@
   - old promoted tabletop finger baseline remains authoritative
   - blocked physical-blocking task remains separate
   - this task is only the honest visible-tool intermediary baseline
-- Implemented the visible-tool bridge path in [demo_robot_rope_franka.py](/home/xinjie/Newton_Connection/Newton/phystwin_bridge/demos/demo_robot_rope_franka.py):
+- Implemented the visible-tool bridge path in [demo_robot_rope_franka.py](../../Newton/phystwin_bridge/demos/demo_robot_rope_franka.py):
   - visible-tool parser args
   - actual capsule shape attachment in the Newton model
   - render path using the same finalized capsule dimensions/transform
   - tool-aware summary metrics and contact proof surface
   - visible-tool-specific camera presets for tabletop hero
 - Added the canonical tool wrapper and diagnostics:
-  - [run_robot_visible_rigid_tool_baseline.sh](/home/xinjie/Newton_Connection/scripts/run_robot_visible_rigid_tool_baseline.sh)
-  - [diagnose_robot_visible_rigid_tool_baseline.py](/home/xinjie/Newton_Connection/scripts/diagnose_robot_visible_rigid_tool_baseline.py)
+  - [run_robot_visible_rigid_tool_baseline.sh](../../scripts/run_robot_visible_rigid_tool_baseline.sh)
+  - [diagnose_robot_visible_rigid_tool_baseline.py](../../scripts/diagnose_robot_visible_rigid_tool_baseline.py)
 - Rejected early branches fail-closed:
   - finger-mounted vertical tool variants (`c01`..`c06`) either hid the tool inside the finger silhouette, let bare finger geometry read as the true contactor, or left the hero contact patch too ambiguous
-- Promoted [20260404_141534_c07_link7_bar](/home/xinjie/Newton_Connection/Newton/phystwin_bridge/results/robot_visible_rigid_tool_baseline/candidates/20260404_141534_c07_link7_bar):
+- Promoted [20260404_141534_c07_link7_bar](../../Newton/phystwin_bridge/results/robot_visible_rigid_tool_baseline/candidates/20260404_141534_c07_link7_bar):
   - initial promoted run proved the link7 crossbar geometry and tool-mediated claim direction
   - but the bundle still used three separate reruns, which left hero/debug/validation with inconsistent tool-vs-finger onset ordering
-- Superseded by [20260404_145031_c08_samehistory](/home/xinjie/Newton_Connection/Newton/phystwin_bridge/results/robot_visible_rigid_tool_baseline/candidates/20260404_145031_c08_samehistory):
+- Superseded by [20260404_145031_c08_samehistory](../../Newton/phystwin_bridge/results/robot_visible_rigid_tool_baseline/candidates/20260404_145031_c08_samehistory):
   - same conservative link7 crossbar tool geometry
   - hero/debug/validation are now rendered from one saved rollout history rather than three independent reruns
   - all three summaries now agree:

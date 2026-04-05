@@ -1,7 +1,7 @@
 > status: canonical
 > canonical_replacement: none
 > owner_surface: `task_history`
-> last_reviewed: `2026-04-01`
+> last_reviewed: `2026-04-05`
 > review_interval: `30d`
 > update_rule: `Update when execution-layer historical files are moved into or out of this subtree.`
 > notes: Archive neighborhood for completed, superseded, or alias task-chain artifacts that should not live beside active execution files.

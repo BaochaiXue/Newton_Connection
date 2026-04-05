@@ -2,10 +2,16 @@
 
 ## Current State
 
-## Last Completed Step
+## What Changed This Pass
+
+## Problem Solved
+
+## Findings / Conclusions
+
+## GIF / Artifact Paths To Review
 
 ## Next Step
 
 ## Blocking Issues
 
-## Artifact Paths
+## Validation

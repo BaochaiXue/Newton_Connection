@@ -1,17 +1,18 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `markdown_harness_maintenance_upgrade`
-> last_reviewed: `2026-04-01`
+> last_reviewed: `2026-04-05`
 > review_interval: `14d`
 > update_rule: `Update when scope, constraints, or done criteria for the current markdown-maintenance pass change.`
-> notes: Bounded spec for the current harness-maintenance upgrade; supersedes broader predecessor cleanup tasks for active execution.
+> notes: Bounded spec for the current harness-maintenance upgrade; includes truthful user-facing reporting as part of harness enforcement.
 
 # Spec: markdown_harness_maintenance_upgrade
 
 ## Goal
 
 Upgrade the repo's existing markdown/control-plane harness so stale or
-historical surfaces cannot plausibly masquerade as current truth.
+historical surfaces cannot plausibly masquerade as current truth, and so
+future Codex updates report outcomes instead of bookkeeping.
 
 ## Non-Goals
 
@@ -36,6 +37,8 @@ historical surfaces cannot plausibly masquerade as current truth.
 - historical bridge task pages routed through `docs/archive/tasks/`
 - refreshed generated markdown ledgers
 - stronger lint/hook policy for markdown drift
+- explicit outcome-first reporting policy for user-facing agent summaries
+- outcome-first reporting contract encoded in durable repo instructions
 
 ## Constraints
 
@@ -50,3 +53,5 @@ historical surfaces cannot plausibly masquerade as current truth.
 - generator/lint docs name one public inventory entrypoint
 - active canonical task pages expose review metadata
 - markdown maintenance becomes part of normal closeout instead of one-off cleanup
+- future agent reports are steered toward outcomes instead of housekeeping
+- user-facing Codex summaries are mechanically steered toward changes, resolved problems, findings, artifact pointers, and next step

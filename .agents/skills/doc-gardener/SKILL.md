@@ -41,6 +41,12 @@ When this skill leads to edits, finish by:
 3. aligning `results_meta/` if promoted/current result meaning changed
 4. rerunning `python scripts/lint_harness_consistency.py`
 5. keeping `docs/bridge/current_status.md` short and dashboard-like
+6. reporting the work outcome-first:
+   - what changed
+   - what problem was solved
+   - what conclusion now holds
+   - what artifact is worth checking
+   - what the next step is
 
 ## Rule
 

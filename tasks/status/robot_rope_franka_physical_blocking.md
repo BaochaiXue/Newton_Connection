@@ -13,18 +13,18 @@
 
 - Created the new stronger task chain.
 - Completed the first control/contact diagnosis pass and added:
-  - [control_update_order_report.md](/home/xinjie/Newton_Connection/diagnostics/control_update_order_report.md)
-  - [control_timeline.md](/home/xinjie/Newton_Connection/diagnostics/control_timeline.md)
-  - [suspected_kinematic_override.md](/home/xinjie/Newton_Connection/diagnostics/suspected_kinematic_override.md)
-  - [pre_fix_multimodal_review.md](/home/xinjie/Newton_Connection/diagnostics/pre_fix_multimodal_review.md)
-  - [root_cause_ranked_report.md](/home/xinjie/Newton_Connection/diagnostics/root_cause_ranked_report.md)
+  - [control_update_order_report.md](../../diagnostics/control_update_order_report.md)
+  - [control_timeline.md](../../diagnostics/control_timeline.md)
+  - [suspected_kinematic_override.md](../../diagnostics/suspected_kinematic_override.md)
+  - [pre_fix_multimodal_review.md](../../diagnostics/pre_fix_multimodal_review.md)
+  - [root_cause_ranked_report.md](../../diagnostics/root_cause_ranked_report.md)
 - Added new stronger-task tooling:
-  - [diagnose_robot_rope_physical_blocking.py](/home/xinjie/Newton_Connection/scripts/diagnose_robot_rope_physical_blocking.py)
-  - [validate_robot_rope_franka_physical_blocking.py](/home/xinjie/Newton_Connection/scripts/validate_robot_rope_franka_physical_blocking.py)
-  - [run_robot_rope_franka_physical_blocking.sh](/home/xinjie/Newton_Connection/scripts/run_robot_rope_franka_physical_blocking.sh)
+  - [diagnose_robot_rope_physical_blocking.py](../../scripts/diagnose_robot_rope_physical_blocking.py)
+  - [validate_robot_rope_franka_physical_blocking.py](../../scripts/validate_robot_rope_franka_physical_blocking.py)
+  - [run_robot_rope_franka_physical_blocking.sh](../../scripts/run_robot_rope_franka_physical_blocking.sh)
 - Added explicit limit-proof surfaces:
-  - [bridge_layer_limit_proof.md](/home/xinjie/Newton_Connection/diagnostics/bridge_layer_limit_proof.md)
-  - [minimal_core_change_proposal.md](/home/xinjie/Newton_Connection/diagnostics/minimal_core_change_proposal.md)
+  - [bridge_layer_limit_proof.md](../../diagnostics/bridge_layer_limit_proof.md)
+  - [minimal_core_change_proposal.md](../../diagnostics/minimal_core_change_proposal.md)
 
 ## Latest Findings
 
@@ -36,11 +36,11 @@
 - This strongly suggests contact reaction cannot persist as tracking error under
   the current path
 - Strongest current numerical proof:
-  - [BEST_RUN blocking diagnostic](/home/xinjie/Newton_Connection/Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/diagnostics_blocking/robot_table_contact_report.json)
+  - [BEST_RUN blocking diagnostic](../../Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/diagnostics_blocking/robot_table_contact_report.json)
     shows the accepted baseline never meaningfully contacts the table:
     - `robot_table_first_contact_time_s = null`
     - minimum finger-table clearance stays positive at about `+0.0288 m`
-  - [c19 blocking diagnostic](/home/xinjie/Newton_Connection/diagnostics/physical_blocking_c19/robot_table_contact_report.json)
+  - [c19 blocking diagnostic](../../diagnostics/physical_blocking_c19/robot_table_contact_report.json)
     shows the stronger true-size candidate reaches the table but still behaves
     kinematically:
     - `robot_table_penetration_min_m = -0.037999`
@@ -84,7 +84,7 @@
   - lowered attachment gains
 - Only if Stage 0 still fails honestly after that should the task return to the
   minimal core/API proposal in
-  [minimal_core_change_proposal.md](/home/xinjie/Newton_Connection/diagnostics/minimal_core_change_proposal.md).
+  [minimal_core_change_proposal.md](../../diagnostics/minimal_core_change_proposal.md).
 - Keep the stronger-task docs truthful and preserve the old readable tabletop
   baseline as the only accepted robot-rope authority for now.
 

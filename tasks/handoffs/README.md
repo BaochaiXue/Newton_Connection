@@ -1,7 +1,7 @@
 > status: canonical
 > canonical_replacement: none
 > owner_surface: `task_execution`
-> last_reviewed: `2026-04-01`
+> last_reviewed: `2026-04-05`
 > review_interval: `30d`
 > update_rule: `Update when handoff policy or the set of tasks expected to use structured handoffs changes.`
 > notes: Handoffs are selectively load-bearing. They are required for multi-session or blocked tasks, not as universal boilerplate.
@@ -15,6 +15,9 @@ resets.
 
 Each handoff should let a fresh agent resume without reconstructing hidden chat
 state.
+
+Keep the handoff outcome-first: what changed, what conclusion now holds, which
+artifacts matter, and what exact command comes next.
 
 ## Current Usage Status
 

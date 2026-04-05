@@ -4,6 +4,20 @@
 
 Semantic-hardening follow-up after the initial fail-closed cleanup pass.
 
+## What Changed
+
+- outcome-first reporting was added to AGENTS, task templates, and
+  `docs/runbooks/agent_reporting.md`
+- stop hooks now push back on bookkeeping-first closeouts
+- the same maintenance line still owns this work; no parallel cleanup task was
+  created
+
+## Current Conclusion
+
+The missing harness piece was reporting discipline, not another task system.
+Future summaries should now default to changes, solved problems, conclusions,
+artifacts, and next steps.
+
 ## Exact Next Command
 
 ```bash
@@ -12,39 +26,38 @@ python scripts/generate_md_inventory.py && python scripts/lint_harness_consisten
 
 ## Current Blocker
 
-No structural blocker. Remaining work is about reducing report noise,
-aligning local manifests with `results_meta`, and keeping workflow-usage status
-honest.
+No structural blocker. Remaining work is routine metadata upkeep, not another
+reporting-design pass.
 
 ## Last Failed Acceptance Criterion
 
-`md_staleness_report.md` was too noisy to function as a maintenance queue, and
-`robot_rope_franka` local manifests still drifted from the registry-backed
-current run.
+Agent closeouts were still too bookkeeping-heavy even after validation and
+authority drift were hardened.
 
-## Key Artifact Paths
+## Key GIF / Artifact Paths
 
-- `docs/generated/md_cleanup_report.md`
+- `docs/runbooks/agent_reporting.md`
+- `.codex/hooks/session_start.py`
+- `.codex/hooks/post_tool_use_review.py`
+- `.codex/hooks/stop_continue.py`
 - `docs/generated/md_staleness_report.md`
 - `docs/generated/task_surface_matrix.md`
-- `results_meta/tasks/robot_rope_franka_tabletop_push_hero.json`
-- `Newton/phystwin_bridge/results/robot_rope_franka/manifest.json`
-- `Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/manifest.json`
 
 ## What Not To Redo
 
-- do not recreate a second inventory story
-- do not expand `current_status.md` back into a ledger
-- do not treat contracts/handoffs as universal boilerplate; keep them selective and honest
+- do not create a second reporting runbook
+- do not reopen a parallel harness-maintenance task for the same issue
+- do not let closeouts fall back to deleted/archived file inventories as the
+  main story
 
 ## Missing Evidence
 
-- fresh regenerated reports after the narrowed staleness scope lands
-- passing lint after the latest authority/index updates
+- fresh future turns showing the new closeout discipline holds without manual
+  correction
 
 ## Context Reset Recommendation
 
 - recommended: yes
 - reason:
-  - this task is specifically about durable repo state, so the handoff should
-    let a fresh agent continue without relying on chat archaeology
+  - this task is about durable repo state, so a fresh agent should be able to
+    resume from files instead of chat memory

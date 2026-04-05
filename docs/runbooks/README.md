@@ -18,5 +18,7 @@ Examples:
   - canonical pipeline / demo execution flow
 - [release_send_pdf.md](./release_send_pdf.md)
   - release-gated PDF send flow
+- [agent_reporting.md](./agent_reporting.md)
+  - canonical outcome-first reporting contract for Codex progress updates and closeouts
 - [doc_gardening.md](./doc_gardening.md)
   - markdown truthfulness closeout flow for rename / deprecate / archive / supersede work

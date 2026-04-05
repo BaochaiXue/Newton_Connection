@@ -1,3 +1,11 @@
+> status: historical
+> canonical_replacement: none
+> owner_surface: `robot_sphere_inflation_root_cause`
+> last_reviewed: `2026-04-05`
+> review_interval: `60d`
+> update_rule: `Historical record only.`
+> notes: Historical runbook for the completed sphere-inflation root-cause study.
+
 # Runbook: robot_sphere_inflation_root_cause
 
 ## Canonical Inputs

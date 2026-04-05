@@ -1,14 +1,14 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `bridge_control_plane`
-> last_reviewed: `2026-04-04`
+> last_reviewed: `2026-04-05`
 > review_interval: `7d`
 > update_rule: `Update when active workstreams, blockers, or promoted result meaning changes. Keep detailed run notes in task status pages and results_meta.`
 > notes: Short operational dashboard only. Do not turn this page into a run ledger or changelog dump.
 
 # Current Status
 
-Last updated: 2026-04-04
+Last updated: 2026-04-05
 
 This page is the shortest operational dashboard for the bridge project.
 
@@ -21,7 +21,7 @@ Detailed result meaning belongs in:
 ## Current Priorities
 
 - `markdown_harness_maintenance_upgrade`
-  - keep the markdown/control-plane harness fail-closed: dashboard scope, inventory generation, local-only result wording, and lint enforcement
+  - keep the markdown/control-plane harness fail-closed: dashboard scope, inventory generation, local-only result wording, lint enforcement, and outcome-first agent reporting
 - `slide_deck_overhaul`
   - keep the 2026-04-01 meeting deck hypothesis-driven and evidence-first
 - `meeting_20260408_recall_part`
@@ -32,12 +32,18 @@ Detailed result meaning belongs in:
   - keep the new fair `2 x 2` cloth+ground matrix visible while strict parity remains blocked
 - `robot_rope_franka_tabletop_push_hero`
   - preserve the truth-fixed tabletop-push hero bundle and keep its authority routing truthful
+- `robot_rope_true_size_recalibration`
+  - keep the true-size recovery task explicit while the thinner physical-radius default remains exploratory and non-authoritative
 - `robot_rope_franka_semiimplicit_oneway`
   - preserve the new conservative one-way SemiImplicit baseline and keep it clearly de-scoped from both physical blocking and full two-way-coupling claims
 - `robot_visible_rigid_tool_baseline`
   - preserve the newly promoted tool-mediated tabletop baseline; keep it clearly separate from both the direct-finger tabletop baseline and the blocked physical-blocking task, and keep its canonical rerender path single-history so hero/debug/validation cannot drift apart
 - `robot_rope_franka_physical_blocking`
   - stronger follow-on task has been re-opened: the old bridge-layer limit proof is no longer sufficient after identifying stale post-step FK overwrite plus destabilizing default articulation attachment gains in the `joint_target_drive` path
+- `native_robot_physical_blocking_minimal`
+  - keep the Stage-0 rigid-only blocking proof separate from the rope-integrated blocking follow-on
+- `remote_interaction_root_cause`
+  - keep the true-size regression diagnosis explicit so recalibration work does not hide inside the tabletop hero chain
 
 ## Current Blockers
 
@@ -51,6 +57,10 @@ Detailed result meaning belongs in:
   - no blocker at the current conservative claim boundary; the promoted run is now the tool-mediated meeting-safe intermediary
 - `robot_rope_franka_semiimplicit_oneway`
   - no blocker at the current conservative claim boundary; the promoted Path A bundle reuses the accepted c12 rollout under a narrower SemiImplicit one-way claim
+- `robot_rope_true_size_recalibration`
+  - true-size repair is still exploratory and must not override the accepted `c12` baseline without a new honest pass
+- `native_robot_physical_blocking_minimal`
+  - Stage-0 rigid-only blocking proof is not complete yet, so the stronger rope-integrated blocking claim stays blocked
 
 ## Promoted Surfaces At A Glance
 
@@ -78,6 +88,10 @@ Detailed result meaning belongs in:
   - task status: `tasks/status/robot_rope_franka_semiimplicit_oneway.md`
   - committed authority: `results_meta/tasks/robot_rope_franka_semiimplicit_oneway.json`
   - current meaning: promoted conservative direct-finger tabletop baseline re-certified from the accepted c12 rollout, with explicit SolverSemiImplicit deformable interaction and a truthful one-way robot->rope claim only
+- `native_robot_physical_blocking_minimal`
+  - task status: `tasks/status/native_robot_physical_blocking_minimal.md`
+  - committed authority: none yet
+  - current meaning: Stage-0 native rigid-only blocking workstream that must pass before any stronger rope-integrated blocking claim
 - `robot_rope_franka_physical_blocking`
   - task status: `tasks/status/robot_rope_franka_physical_blocking.md`
   - committed authority: none yet
@@ -97,9 +111,12 @@ Detailed result meaning belongs in:
 - `video_presentation_quality`
 - `robot_deformable_demo`
 - `robot_rope_franka_tabletop_push_hero`
+- `robot_rope_true_size_recalibration`
 - `robot_rope_franka_semiimplicit_oneway`
 - `robot_visible_rigid_tool_baseline`
+- `native_robot_physical_blocking_minimal`
 - `robot_rope_franka_physical_blocking`
+- `remote_interaction_root_cause`
 - `native_robot_rope_drop_release`
 - `interactive_playground_profiling`
 - `rope_perf_apples_to_apples`

@@ -36,6 +36,7 @@ Supporting harness sections:
 
 - [runbooks/README.md](./runbooks/README.md)
   - reusable operational instructions
+  - includes the canonical outcome-first reporting contract for user-facing updates
 - [evals/README.md](./evals/README.md)
   - evaluator rubrics and validation standards
 - [decisions/README.md](./decisions/README.md)

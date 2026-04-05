@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `doc_gardening`
-> last_reviewed: `2026-04-01`
+> last_reviewed: `2026-04-05`
 > review_interval: `30d`
 > update_rule: `Update when markdown closeout policy, inventory generation, or review-age expectations change.`
 > notes: Canonical runbook for markdown truthfulness maintenance and stale-doc garbage collection.
@@ -15,6 +15,26 @@ deprecated, archived, promoted, or superseded.
 
 Markdown truthfulness is part of the harness. When the filesystem and the docs
 disagree, make them converge immediately.
+
+When reporting the cleanup to the user, follow
+[`agent_reporting.md`](./agent_reporting.md): lead with the change, the problem
+it fixes, the resulting conclusion, and the next step instead of narrating the
+maintenance process.
+
+## User-Facing Closeout Rule
+
+When a maintenance pass is reported back to the user, the summary must stay
+outcome-first:
+
+1. what changed
+2. what ambiguity or stale surface was removed
+3. what conclusion or new truth rule now holds
+4. which artifact/GIF/video surfaces are worth checking, when relevant
+5. what the next step is
+
+Do not lead with inventory regeneration, lint commands, hook edits, or task
+scaffolding. Those belong in a short trailing validation note, not the main
+headline.
 
 ## Closeout Flow
 
@@ -30,6 +50,9 @@ disagree, make them converge immediately.
 9. Review `docs/generated/md_staleness_report.md` and `docs/generated/task_surface_matrix.md`.
 10. Run `python scripts/lint_harness_consistency.py`.
 11. Refresh local bundle pointers only if they still add local convenience.
+12. When reporting the pass, follow `docs/runbooks/agent_reporting.md`: lead
+    with changes, solved problems, conclusions, artifacts, and next steps, not
+    bookkeeping.
 
 ## Required Metadata For Deprecated / Historical Files
 

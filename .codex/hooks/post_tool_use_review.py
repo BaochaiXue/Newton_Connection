@@ -65,7 +65,9 @@ def main() -> int:
                 " Historical bridge task pages should move to docs/archive/tasks/, not remain in docs/bridge/tasks/. "
                 " If you added or changed a contract/handoff, regenerate task_surface_matrix.md so workflow usage stays auditable. "
                 "If you touched tracked local-only pointers under results/ or subtree status stubs, keep them explicitly local-only "
-                "and aligned with results_meta before you move on."
+                "and aligned with results_meta before you move on. When you summarize the work, foreground the user-facing outcome "
+                "(what changed, what problem was solved, what conclusion now holds, what artifact to inspect, and the next step) "
+                "instead of hook/process bookkeeping."
             ),
         },
     }
