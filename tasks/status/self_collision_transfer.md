@@ -140,6 +140,35 @@ Local scratch validation notes:
     - before fix, case 3 and case 4 ranges drifted enough to destabilize ranking
     - after fix, both ranges collapse to single values and the ranking is stable
     - `.../before_after_compare.md`
+- stable case-3-vs-case-4 follow-up root now exists:
+  - `Newton/phystwin_bridge/results/self_collision_transfer_case3_vs_case4_followup_20260404_210334_ac9ec33`
+  - stable first-divergence localization:
+    - first positive frame: `40`
+    - first persistent positive frame: `107`
+    - peak positive frame: `137`
+    - `.../first_divergence_report.md`
+  - stable step-level reading:
+    - case 4 is **better** in the early rollout and only becomes persistently worse starting at `frame 107`
+    - at `frame 107 / substep 0`, case 3 still has `444` native-ground active particles while case 4 has only `6` PhysTwin-style active ground particles
+    - by the peak-error window near `frame 137`, both cases already have `0` active ground particles, yet `post_step_qd_diff.abs_max` remains about `0.369`
+    - self-collision candidate totals and active self-contact node counts are already very similar in that peak window
+    - this means the stable case-4 failure is not a live collision-table event and not a one-step ground-contact event; it is carried rollout history
+  - controller-spring rerun on the same follow-up root:
+    - one-step `force_abs_max = 0.008296423599108448`
+    - short-rollout `force_abs_max = 385.33102652135346`
+    - `pass = false`
+  - current best-supported explanation on the stable root:
+    - native-ground is not winning because native self-collision is the correct final semantics
+    - instead, native-ground appears to act as a stabilizing compensator for a broader whole-step bridge mismatch
+    - the most supported sub-causes are:
+      - controller-spring semantics mismatch
+      - rollout-level interaction between ground-contact history and self-collision history
+      - native-vs-PhysTwin ground timing / damping differences as a contributory factor
+      - collision-table runtime mismatch is no longer the dominant explanation after the determinism fix
+  - final recommendation from this follow-up:
+    - recommendation remains `C. Bridge-side PhysTwin-style self-collision is necessary`
+    - the stable `case_3 > case_4` result does **not** overturn that recommendation
+    - it instead says the remaining blocker sits outside the isolated self-collision operator itself
 - controlled `2 x 2` full 302-frame cloth+ground RMSE matrix now exists:
   - root:
     - `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260404_140154_e11491a`
@@ -206,21 +235,20 @@ evidence:
 
 Now that the fair `2 x 2` matrix ranking is reproducible, resume mechanism diagnosis on the stable surface:
 
-- revisit `case_3` vs `case_4` with the reproducible post-fix matrix root as the canonical comparison surface
-- tighten the controller-spring diagnosis around the stable ranking outcome rather than the older unstable one
-- separate:
-  - remaining whole-step interaction mismatch
-  - native-vs-PhysTwin ground timing semantics
-  - and the now-fixed reproducibility issue
-- keep `results_meta/tasks/self_collision_transfer.json` aligned to the reproducible matrix root while the physics blocker remains open
+- keep the stable follow-up diagnosis visible as the current mechanism explanation surface
+- if a future bridge-side fix targets the remaining blocker, compare it against:
+  - the reproducible matrix root
+  - the stable case-3-vs-case-4 follow-up root
+- only promote a new root into `results_meta` if it actually changes the stable comparison surface or closes the remaining blocker
 
 ## Blocking Issues
 
 - the fair `2 x 2` matrix still misses the strict `1e-5` gate in all four cases
 - after the determinism fix, the `case_3 > case_4` ranking is now stable, but
-  the physical cause of that stable ordering is still unresolved
-- the current mechanism evidence still points to rollout-level interaction
-  mismatch, not a remaining isolated self-collision-law mismatch
+  the final bridge-side fix for that stable ordering is still unresolved
+- the current mechanism evidence now localizes the stable case-4 disadvantage to
+  rollout-level interaction mismatch plus controller-spring semantics mismatch,
+  not a remaining isolated self-collision-law mismatch
 - strict `phystwin` scope is intentionally narrow and does not yet cover box or
   other Newton-only rigid-support contacts
 
@@ -241,6 +269,10 @@ Now that the fair `2 x 2` matrix ranking is reproducible, resume mechanism diagn
 - `Newton/phystwin_bridge/results/ground_contact_self_collision_repro_fix_20260404_200830_aa5e607/ranking_stability_report.md`
 - `Newton/phystwin_bridge/results/ground_contact_self_collision_repro_fix_20260404_200830_aa5e607/before_after_compare.md`
 - `Newton/phystwin_bridge/results/ground_contact_self_collision_repro_fix_20260404_200830_aa5e607/final_verdict.json`
+- `Newton/phystwin_bridge/results/self_collision_transfer_case3_vs_case4_followup_20260404_210334_ac9ec33/first_divergence_report.md`
+- `Newton/phystwin_bridge/results/self_collision_transfer_case3_vs_case4_followup_20260404_210334_ac9ec33/diagnostics_summary.json`
+- `Newton/phystwin_bridge/results/self_collision_transfer_case3_vs_case4_followup_20260404_210334_ac9ec33/before_after_compare.md`
+- `Newton/phystwin_bridge/results/self_collision_transfer_case3_vs_case4_followup_20260404_210334_ac9ec33/final_recommendation.md`
 - `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/FINAL_STATUS.md`
 - `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/matrix/self_collision_decision.md`
 - `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/parity/strict_self_collision_parity_summary.json`

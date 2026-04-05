@@ -40,7 +40,7 @@ Detailed result meaning belongs in:
 ## Current Blockers
 
 - `self_collision_transfer`
-  - operator exactness is strong and the fair `2 x 2` matrix ranking is now reproducible after a bridge-side determinism fix, but strict parity still remains blocked and the current blocker is still rollout-level interaction mismatch rather than an isolated self-collision-law issue
+  - operator exactness is strong and the fair `2 x 2` matrix ranking is now reproducible after a bridge-side determinism fix; the stable `case_3 > case_4` gap is now localized as rollout-level interaction mismatch plus controller-spring semantics mismatch, not as an isolated self-collision-law issue
 - `interactive_playground_profiling`
   - the exploratory profiling page must stay clearly separate from the committed rope benchmark truth under `rope_perf_apples_to_apples`
 - `robot_rope_franka_physical_blocking`

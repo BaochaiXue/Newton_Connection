@@ -43,17 +43,12 @@ This page records unresolved bridge questions that still matter technically.
   - native enough
   - custom filtered penalty enough
   - bridge-side PhysTwin-style needed
-- On the now-reproducible fair cloth + implicit-ground `2 x 2` matrix, why is
-  the stable best full-rollout pair still `self=phystwin, ground=native`
-  instead of the fully PhysTwin-style pair?
-- How much of that stable `case_3` advantage is due to the native-ground
-  branch carrying different whole-step timing, rather than the ground-contact
-  law in isolation?
-- After the determinism fix, which remaining mechanism dominates the stable
-  `case_3 > case_4` ordering:
-  - controller-spring semantics
-  - native-vs-PhysTwin ground timing
-  - or some remaining whole-step interaction between the two?
+- After localizing the stable `case_3 > case_4` ordering to whole-step
+  interaction plus controller-spring semantics mismatch, what is the smallest
+  bridge-side fix that actually lets the fully PhysTwin-style pair overtake the
+  native-ground compensating path?
+- Can the remaining controller-spring mismatch be reduced without changing
+  Newton core, or has the task reached a genuine bridge-layer limit?
 - Can we add peak-over-time overlap metrics so the self-collision decision is
   not based only on final-frame statistics?
 - After choosing a self-collision path, does the same choice remain compatible
