@@ -1,35 +1,44 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `meeting_20260408_recall_part`
-> last_reviewed: `2026-04-01`
+> last_reviewed: `2026-04-05`
 > review_interval: `7d`
-> update_rule: `Update after each meaningful bootstrap/build milestone for the 2026-04-08 recall bundle.`
-> notes: Live status log for the 2026-04-08 meeting recall bootstrap.
+> update_rule: `Update after each meaningful bootstrap/build milestone for the 2026-04-08 meeting bundle.`
+> notes: Live status log for the 2026-04-08 meeting bundle, which started as recall-only and now includes appended weekly sections.
 
 # Status: meeting_20260408_recall_part
 
 ## Current State
 
-Initial recall-only draft generated.
+- Active
+- Current meeting bundle now includes:
+  - recall block
+  - stable self-collision mechanism section
+  - conservative robot SemiImplicit section
 
 ## Last Completed Step
 
-- Corrected the target meeting date from `2026-04-10` to `2026-04-08`
-- Created the new meeting bundle under `formal_slide/meeting_2026_04_08/`
-- Added a lightweight builder that reuses the `2026-04-01` recall infrastructure
-- Generated the first recall-only artifacts:
+- Preserved the existing recall scaffold and stable self-collision update
+- Extended the `2026-04-08` bundle with a robot section sourced from current promoted authorities:
+  - `robot_visible_rigid_tool_baseline`
+  - `robot_rope_franka_semiimplicit_oneway`
+- Added same-rollout hero+validation composite GIF generation for both robot baselines
+- Rebuilt the meeting artifacts:
   - `formal_slide/meeting_2026_04_08/bridge_meeting_20260408_recall_initial.pptx`
   - `formal_slide/meeting_2026_04_08/transcript.md`
   - `formal_slide/meeting_2026_04_08/transcript.pdf`
-- Current initial draft size/state:
-  - `7` slides
-  - recall only
-  - bundle-local `gif/` assets generated successfully
+- New robot media artifacts:
+  - `formal_slide/meeting_2026_04_08/gif/robot_visible_rigid_tool_baseline_hero_validation_deck.gif`
+  - `formal_slide/meeting_2026_04_08/gif/robot_rope_franka_semiimplicit_oneway_hero_validation_deck.gif`
+- Current draft size/state:
+  - `11` slides
+  - `29 MB` PPTX
+  - bundle-local `gif/` and `images/` assets generated successfully
 
 ## Next Step
 
-- decide how much of the remaining `2026-04-08` meeting should stay in the main deck after recall
-- extend this bundle with the new weekly result sections when their claim boundaries are ready
+- Decide whether additional weekly sections beyond self-collision + robot should be appended.
+- If the Wednesday narrative is shortened, keep Slide 10 as the primary robot visual and Slide 11 as the conservative authority backup.
 
 ## Blocking Issues
 
@@ -39,6 +48,8 @@ Initial recall-only draft generated.
 
 - `python -m py_compile formal_slide/meeting_2026_04_08/build_meeting_20260408.py`
 - `python formal_slide/meeting_2026_04_08/build_meeting_20260408.py`
+- current result:
+  - pass
 - optional harness check run after task-page/index updates:
   - `python scripts/generate_md_inventory.py`
   - `python scripts/lint_harness_consistency.py`
