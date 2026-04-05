@@ -36,10 +36,27 @@ Poor slide structure hides real progress. The advisor feedback was explicit:
 ## Success Criteria
 
 - each slide supports one hypothesis or one conclusion
+- each slide remains readable within roughly `15-20 s`
+- detailed explanation lives in the transcript, not as on-slide text walls
+- slides stay English; transcript stays Chinese with English terminology
+- full deck is scoped for a `~30 min` talk rather than a dump of every artifact
 - visuals dominate over text where possible
 - transcript is explanatory, not redundant filler
 - deck order matches the intended story
 - the shipped full-deck PPTX stays below `100 MB` without manual post-build cleanup
+
+## Current Formatting Policy
+
+- keep slide text minimal:
+  - a short title
+  - at most a few short bullets or one short note line
+- if code appears on slides:
+  - Python syntax highlighting
+  - monospace font
+  - no more than `20` visible lines per excerpt
+  - highlight no more than `5` key lines
+  - on-slide analysis limited to `1-2` short sentences
+- push detailed mechanism explanation into transcript paragraphs
 
 ## Open Questions
 

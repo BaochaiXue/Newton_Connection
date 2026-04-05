@@ -19,6 +19,11 @@ Tracked as an active task with a stable `0401` bundle workflow:
   slide-plus-transcript review PDF
 - release sends are expected to use the latest regenerated review PDF, not a
   stale export
+- current active style constraint for new decks:
+  - one claim per slide
+  - `15-20 s` reading density
+  - English slides + Chinese transcript
+  - detailed analysis moved off-slide
 
 ## Last Completed Step
 
@@ -44,6 +49,12 @@ If the `0401` deck changes again:
 - rebuild both the PPTX and the paired review PDF from source
 - preserve the PPTX size gate
 - avoid turning this page into a resend ledger
+
+If the `0408` deck continues to evolve:
+
+- keep the Wednesday deck near a `30 min` story length
+- preserve the short-slide policy
+- avoid adding long code dumps unless they satisfy the code-slide constraints
 
 ## Blocking Issues
 

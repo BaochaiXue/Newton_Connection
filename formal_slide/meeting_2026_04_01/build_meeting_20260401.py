@@ -418,12 +418,11 @@ RECALL_SLIDES: list[dict] = [
         "kind": "title",
         "title": "Xinjie Zhang",
         "subtitle": [
-            "April 1 meeting opening.",
-            "Today's five-part agenda:",
+            "April 1 meeting.",
             "1. Recall",
             "2. Performance analysis",
             "3. Penetration analysis",
-            "4. Controlled self-collision / ground-contact laws",
+            "4. Self-collision / ground-contact laws",
             "5. Robotic with deformable objects",
         ],
         "transcript": [
@@ -464,8 +463,8 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "table_gif",
-        "title": "H1: Why did the rope viewer miss realtime before, and why does it reach realtime now?",
-        "note": "All three rows use the same rope case and the same replay semantics. Only the replay path or rendering setting changes.",
+        "title": "H1: Replay Feeding Was The First Realtime Bottleneck",
+        "note": "Same rope case. Same replay. Only replay feeding or rendering changes.",
         "gif_label": "Same rope replay object",
         "gif_path": PERF_ROPE_CASE_GIF,
         "columns": ["Measurement", "Value", "What it means"],
@@ -485,8 +484,8 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "table_gif",
-        "title": "H2: What stays fixed in the controlled rope benchmark?",
-        "note": "This page defines the fairness controls only. The benchmark-row names are explained on the next slide.",
+        "title": "H2: Fair Rope Benchmark = Same Replay, Physics, And GPU",
+        "note": "Fairness controls only.",
         "gif_label": "Controlled rope replay",
         "gif_path": PERF_ROPE_CASE_GIF,
         "columns": ["Control", "Setting", "Why it matters"],
@@ -506,8 +505,8 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "table_gif",
-        "title": "H2b: What do E1, A0, A1, and B0 mean?",
-        "note": "This page defines the benchmark rows in plain language.",
+        "title": "H3: E1, A0, A1, And B0 Are Four Rows Of One Benchmark",
+        "note": "Plain-language row definitions.",
         "gif_label": "Same rope replay object",
         "gif_path": PERF_ROPE_CASE_GIF,
         "columns": ["Name", "Plain-language meaning", "Question answered"],
@@ -527,8 +526,8 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "table_gif",
-        "title": "H3: Under the same rope replay, how far is Newton from PhysTwin?",
-        "note": "The viewer row answers a practical question. The A0/A1/B0 rows answer the apples-to-apples simulator question.",
+        "title": "Result P1: Newton A1 Is Still 3.30x Slower Than PhysTwin B0",
+        "note": "Viewer row = practical speed. A0/A1/B0 = apples-to-apples simulator speed.",
         "gif_label": "Same rope replay",
         "gif_path": PERF_ROPE_CASE_GIF,
         "columns": ["Config", "Main metric", "RTF", "Plain-language reading"],
@@ -549,8 +548,8 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "table_gif",
-        "title": "H4: What does A0 -> A1 actually isolate?",
-        "note": "Definition used here: controller replay overhead = the extra overhead needed to feed the same replay trajectory into Newton.",
+        "title": "H4: A0 -> A1 Isolates Replay Overhead, Not The Whole Gap",
+        "note": "A0 and A1 differ only in how the same replay is fed into Newton.",
         "gif_label": "Same rope replay",
         "gif_path": PERF_ROPE_CASE_GIF,
         "columns": ["Evidence", "Value", "Human meaning"],
@@ -570,8 +569,8 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "code_twocol_large",
-        "title": "H5: What the residual gap suggests — and what it does NOT prove",
-        "note": "Core code on both sides. Nsight agrees with this direction: Newton A1 API time is mostly `cuLaunchKernel`, while PhysTwin B0 API time is mostly `cudaGraphLaunch_v10000`.",
+        "title": "H5: Residual Gap Points To Execution Structure",
+        "note": "Core code + Nsight point to execution structure; this is not full root-cause proof.",
         "left_label": "[Newton/newton/newton/_src/solvers/semi_implicit/solver_semi_implicit.py : 141-145, 160-165, 172-177]\nNewton still advances the replay by visiting many solver stages in sequence.",
         "left_path": CODE_PERF_EXECUTION_NEWTON_PNG,
         "right_label": "[PhysTwin/qqtt/model/diff_simulator/spring_mass_warp.py : 768-782, 800-802]\nPhysTwin captures and replays the rope step through a forward graph.",
@@ -604,13 +603,11 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "body",
-        "title": "H6: What should we optimize next for the real viewer?",
+        "title": "H6: Optimize Replay Organization Before Render Tuning",
         "bullets": [
-            f"**Keep the right baseline:** use the A1-style precomputed replay path when the goal is viewer diagnosis, because A0 -> A1 already saves about `{A0_TO_A1:.2f}x`.",
-            f"**Do not start with rendering only:** on this rope case, viewer ON is only about `{A1_TO_E1:.2f}x` slower than the same replay with rendering OFF.",
-            "**Target the replay organization next:** the remaining gap is more consistent with many separated Newton launches than with replay feeding alone.",
-            "**Only then micro-optimize:** after we reduce replay-organization overhead, we can decide whether kernel-level tuning is still worth the effort.",
-            "**Scope:** this roadmap is for the controlled rope replay benchmark only; it does not settle self-collision or bunny-contact questions.",
+            f"**Baseline first:** A1 should replace A0 for viewer diagnosis because A0 -> A1 already saves `{A0_TO_A1:.2f}x`.",
+            f"**Render is not first:** on this rope case, viewer ON is only `{A1_TO_E1:.2f}x` slower than the same replay with render OFF.",
+            "**Next target:** reduce replay-organization overhead before any kernel micro-optimization.",
         ],
         "transcript": [
             "最后一页只讲这整段 profiling 对 real viewer 到底有什么实际价值。",
@@ -624,11 +621,11 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "body",
-        "title": "Hypothesis F1: A Force Video Must Preserve Both Global Cloth Behavior And Local Contact Mechanism",
+        "title": "F1: Force Video Must Show Global Motion And Local Mechanism",
         "bullets": [
             "**Hypothesis:** a local patch alone is not enough; the whole cloth must stay visible.",
             "**Method:** pair a global phenomenon view with a local force zoom.",
-            "**Expected result:** one force video should explain both motion and contact mechanism.",
+            "**Goal:** one force video should explain both motion and contact mechanism.",
         ],
         "transcript": [
             "这里开始进入第三段 penetration analysis。",
@@ -640,7 +637,7 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "grid",
-        "title": "Result F1: Global Phenomenon Videos Now Cover The Whole Penetration Process",
+        "title": "F2: Four Phenomenon Videos Show The Full Penetration Process",
         "common_settings": None,
         "items": [
             ("Bunny baseline\nfull process", ACCEPTED_PHENO_GIF["bunny_baseline"]),
@@ -657,7 +654,7 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "grid",
-        "title": "Result F2: Split Single-Panel Videos Now Match The Current 2x2 Board",
+        "title": "F3: Split Panels Match The Current 2x2 Board",
         "common_settings": None,
         "items": [
             ("Box penalty\nsingle panel", CURRENT_BUNNY_PANEL_GIF["box_penalty"]),
@@ -675,7 +672,7 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "image",
-        "title": "Result F3: The New 2x2 Board Makes The Box-vs-Bunny Comparison Immediate",
+        "title": "F4: The New 2x2 Board Makes Box-vs-Bunny Immediate",
         "note": "TL box penalty, TR box total, BL bunny penalty, BR bunny total.",
         "path": CURRENT_BUNNY_BOARD_GIF,
         "transcript": [
@@ -688,8 +685,8 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "image",
-        "title": "Result F4: A 4x Slow-Motion Board Makes Contact Development Easier To Read",
-        "note": "Same board as F3, but the video is slowed 4x and labeled `4x slow motion` inside the clip.",
+        "title": "F5: 4x Slow Motion Makes Contact Development Easier To Read",
+        "note": "Same board as F4, but slowed 4x.",
         "path": CURRENT_BUNNY_SLOW_BOARD_GIF,
         "transcript": [
             "这一页是 F3 的补充版本，不改实验设定，只改播放节奏。",
@@ -700,14 +697,12 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "body",
-        "title": "H4: Native Newton And PhysTwin-Style Contact Laws Are Not The Same Semantics",
+        "title": "S1: Separate Self-Collision Law From Ground-Contact Law",
         "bullets": [
-            "**native Newton self-collision:** Newton particle-contact semantics.",
-            "**PhysTwin-style self-collision:** bridge-side implementation of PhysTwin pairwise object-collision semantics.",
-            "**native Newton ground-contact:** Newton particle-vs-ground contact pipeline.",
-            "**PhysTwin-style ground-contact:** bridge-side implicit `z=0` ground integrator.",
+            "**Self-collision axis:** native Newton vs PhysTwin-style law.",
+            "**Ground-contact axis:** native Newton vs PhysTwin-style law.",
             "**Fixed scene:** one cloth reference case with one implicit ground plane.",
-            "**Takeaway:** below we discuss the two laws separately, not one monolithic `mode`.",
+            "**Takeaway:** analyze the two laws separately.",
         ],
         "transcript": [
             "这里开始我先统一术语，不再说 `phystwin mode` 或者 `Newton way` 这种容易混淆的词。",
@@ -717,8 +712,8 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "table",
-        "title": "H5: We Isolate Self-Collision Law And Ground-Contact Law As Two Separate Axes",
-        "note": "Controlled 2x2 matrix on one fixed cloth + implicit-ground reference scene. Runner: `Newton/phystwin_bridge/tools/other/run_ground_contact_self_collision_rmse_matrix.py`.",
+        "title": "S2: A 2x2 Matrix Isolates The Two Laws",
+        "note": "One cloth reference case. One 2x2 law matrix.",
         "title_size": 24,
         "note_font_size": 10,
         "cell_font_size": 13,
@@ -737,8 +732,8 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "table",
-        "title": "Current Status: Operator-Level Exactness Is Strong, But Rollout-Level Parity Remains Blocked",
-        "note": "Sources: `docs/bridge/current_status.md`, `results_meta/tasks/self_collision_transfer.json`, `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260404_140154_e11491a/rmse_matrix.csv`, `.../fairness_check.md`.",
+        "title": "S3: Operator Exactness Passes; Rollout Parity Is Still Blocked",
+        "note": "Best full-rollout case is mixed: PhysTwin-style self-collision + native ground.",
         "title_size": 24,
         "note_font_size": 10,
         "cell_font_size": 13,
@@ -759,8 +754,8 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "twocol",
-        "title": "Robot Baseline R0: Native Robot + Semi-Implicit Rope Release/Drop Sanity Baseline",
-        "common_settings": "`demo_robot_rope_franka.py` | `drop_release_baseline` | native Franka | semi-implicit | real ground | 1:1 video | drag OFF authoritative, drag ON validated A/B.",
+        "title": "R0: Native Robot Release/Drop Is A Sanity Baseline",
+        "common_settings": "`drop_release_baseline` | native Franka | semi-implicit rope | real ground | 1:1 video.",
         "left_label": "Authoritative OFF run\nrecoil-fixed stage-0 baseline",
         "left_path": ROBOT_DROP_BASELINE_OFF_GIF,
         "right_label": "Matched ON run\nA/B drag comparison",
@@ -775,8 +770,8 @@ RECALL_SLIDES: list[dict] = [
     },
     {
         "kind": "twocol",
-        "title": "Conclusion R1: Native Tabletop Push Is Defendable, Not Full 2-Way Coupling",
-        "common_settings": "`demo_robot_rope_franka.py` | `tabletop_push_hero` | fixed `sim_dt=5e-5`, `substeps=667` | real native finger contact, but robot motion is still commanded open-loop.",
+        "title": "R1: Tabletop Push Is A Contact Baseline, Not Full 2-Way Coupling",
+        "common_settings": "`tabletop_push_hero` | fixed `sim_dt=5e-5`, `substeps=667` | native finger contact | open-loop robot motion.",
         "left_label": "Hero view\npromoted `c10` contact-fix run",
         "left_path": ROBOT_TABLETOP_HERO_GIF,
         "right_label": "Validation view\nsame promoted run",

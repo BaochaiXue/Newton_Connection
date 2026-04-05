@@ -27,6 +27,11 @@ carry the current weekly result sections once their claim boundaries are ready.
   - recall block
   - stable self-collision update
   - conservative robot section
+- current presentation policy for this bundle:
+  - one claim per slide
+  - readable within `15-20 s`
+  - English on-slide, Chinese in transcript
+  - detailed mechanism reasoning pushed into transcript
 
 ## Code Entry Points
 
@@ -55,6 +60,7 @@ python formal_slide/meeting_2026_04_08/build_meeting_20260408.py
 - the default build generates the current meeting PPTX and transcript
 - the recall part is in English on-slide and Chinese in transcript
 - later weekly sections can be appended without rebuilding the harness from scratch
+- the current deck remains understandable on first pass, not only after reading the transcript
 - the robot section stays conservative:
   - visible-tool slide as the best meeting-facing visual
   - direct-finger slide as the promoted conservative authority
