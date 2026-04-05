@@ -1,0 +1,26 @@
+{
+  "run_id": "20260404_145031_c08_samehistory",
+  "task": "robot_visible_rigid_tool_baseline",
+  "status": "promoted",
+  "run_command_txt": "run_command.txt",
+  "videos": {
+    "hero_presentation": "hero_presentation.mp4",
+    "hero_debug": "hero_debug.mp4",
+    "validation_camera": "validation_camera.mp4"
+  },
+  "artifacts": {
+    "summary_json": "summary.json",
+    "metrics_json": "metrics.json",
+    "validation_md": "validation.md",
+    "ffprobe_json": "ffprobe.json",
+    "contact_sheet": "contact_sheet.png",
+    "event_sheet": "event_sheet.png",
+    "keyframes_dir": "keyframes/",
+    "physics_validation_json": "physics_validation.json",
+    "tool_geometry_report": "tool_geometry_report.md",
+    "tool_vs_collider_report": "tool_vs_collider_report.md",
+    "rope_visual_vs_physical_thickness_report": "rope_visual_vs_physical_thickness_report.md",
+    "multimodal_review": "multimodal_review.md",
+    "diagnostics_dir": "diagnostics/"
+  }
+}

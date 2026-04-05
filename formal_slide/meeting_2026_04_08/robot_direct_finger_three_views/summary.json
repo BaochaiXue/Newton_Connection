@@ -1,0 +1,27 @@
+{
+  "task_slug": "robot_rope_franka_semiimplicit_oneway",
+  "source_run_id": "20260404_215523_c12_samehistory_oneway",
+  "claim_boundary": "Conservative Newton-native tabletop rope baseline: native Newton Franka + native Newton tabletop + bridged PhysTwin rope, with deformable interaction handled under SolverSemiImplicit and a truthful one-way robot->rope claim only. This does not claim articulated physical blocking, full two-way coupling, or self-collision parity.",
+  "source_root": "/home/xinjie/Newton_Connection/Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway/candidates/20260404_215523_c12_samehistory_oneway",
+  "export_root": "formal_slide/meeting_2026_04_08/robot_direct_finger_three_views",
+  "views": {
+    "hero_presentation": {
+      "mp4": "hero_presentation.mp4",
+      "gif": "hero_presentation.gif"
+    },
+    "hero_debug": {
+      "mp4": "hero_debug.mp4",
+      "gif": "hero_debug.gif"
+    },
+    "validation_camera": {
+      "mp4": "validation_camera.mp4",
+      "gif": "validation_camera.gif"
+    }
+  },
+  "key_metrics": {
+    "task_duration_s": 6.2,
+    "actual_tool_first_contact_time_s": null,
+    "actual_finger_box_first_contact_time_s": 1.6675000000000002,
+    "contact_duration_s": 2.9681500000000005
+  }
+}

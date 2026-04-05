@@ -53,6 +53,9 @@ python formal_slide/meeting_2026_04_08/build_meeting_20260408.py
 - deck-local media derived from current promoted robot authorities:
   - `formal_slide/meeting_2026_04_08/gif/robot_visible_rigid_tool_baseline_hero_validation_deck.gif`
   - `formal_slide/meeting_2026_04_08/gif/robot_rope_franka_semiimplicit_oneway_hero_validation_deck.gif`
+- slide-ready three-view robot exports:
+  - `formal_slide/meeting_2026_04_08/robot_visible_tool_three_views/`
+  - `formal_slide/meeting_2026_04_08/robot_direct_finger_three_views/`
 
 ## Success Criteria
 

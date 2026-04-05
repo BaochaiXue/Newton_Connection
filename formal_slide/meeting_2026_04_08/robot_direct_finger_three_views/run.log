@@ -1,0 +1,9 @@
+[export_robot_slide_views] source_root=/home/xinjie/Newton_Connection/Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway/candidates/20260404_215523_c12_samehistory_oneway
+[export_robot_slide_views] out_dir=formal_slide/meeting_2026_04_08/robot_direct_finger_three_views
+[export_robot_slide_views] wrote:
+  formal_slide/meeting_2026_04_08/robot_direct_finger_three_views/hero_presentation.mp4
+  formal_slide/meeting_2026_04_08/robot_direct_finger_three_views/hero_presentation.gif
+  formal_slide/meeting_2026_04_08/robot_direct_finger_three_views/hero_debug.mp4
+  formal_slide/meeting_2026_04_08/robot_direct_finger_three_views/hero_debug.gif
+  formal_slide/meeting_2026_04_08/robot_direct_finger_three_views/validation_camera.mp4
+  formal_slide/meeting_2026_04_08/robot_direct_finger_three_views/validation_camera.gif

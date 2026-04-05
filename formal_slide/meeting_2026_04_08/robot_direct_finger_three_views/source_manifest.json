@@ -1,0 +1,22 @@
+{
+  "run_id": "20260404_215523_c12_samehistory_oneway",
+  "task": "robot_rope_franka_semiimplicit_oneway",
+  "status": "promoted",
+  "source_run": "/home/xinjie/Newton_Connection/Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN",
+  "videos": {
+    "hero_presentation": "hero_presentation.mp4",
+    "hero_debug": "hero_debug.mp4",
+    "validation_camera": "validation_camera.mp4"
+  },
+  "artifacts": {
+    "summary_json": "summary.json",
+    "metrics_json": "metrics.json",
+    "validation_md": "validation.md",
+    "ffprobe_json": "ffprobe.json",
+    "contact_sheet": "contact_sheet.png",
+    "keyframes_dir": "keyframes/",
+    "solver_audit": "solver_audit.md",
+    "geometry_truth_report": "geometry_truth_report.md",
+    "multimodal_review": "multimodal_review.md"
+  }
+}

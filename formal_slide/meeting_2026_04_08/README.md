@@ -16,6 +16,10 @@ This folder is the local bundle for the current `2026-04-08` meeting draft.
   - deck-sized GIF copies used by this meeting bundle
 - `images/`
   - generated static analysis boards used by this meeting bundle
+- `robot_visible_tool_three_views/`
+  - slide-ready `mp4 + gif` export of the promoted visible-tool robot baseline
+- `robot_direct_finger_three_views/`
+  - slide-ready `mp4 + gif` export of the promoted direct-finger conservative robot baseline
 
 ## Current Scope
 
@@ -43,6 +47,17 @@ The generated GIF copies still live locally in this folder under `gif/`, includi
 
 - `robot_visible_rigid_tool_baseline_hero_validation_deck.gif`
 - `robot_rope_franka_semiimplicit_oneway_hero_validation_deck.gif`
+
+Additional slide-ready three-view exports:
+
+- `robot_visible_tool_three_views/`
+  - `hero_presentation.mp4/.gif`
+  - `hero_debug.mp4/.gif`
+  - `validation_camera.mp4/.gif`
+- `robot_direct_finger_three_views/`
+  - `hero_presentation.mp4/.gif`
+  - `hero_debug.mp4/.gif`
+  - `validation_camera.mp4/.gif`
 
 ## Common Build Command
 

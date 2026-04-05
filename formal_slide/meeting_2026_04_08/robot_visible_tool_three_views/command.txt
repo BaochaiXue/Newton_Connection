@@ -1,0 +1,1 @@
+scripts/export_robot_slide_views.sh --task-slug robot_visible_rigid_tool_baseline --out-dir /home/xinjie/Newton_Connection/formal_slide/meeting_2026_04_08/robot_visible_tool_three_views --gif-width 960 --gif-fps 10 --gif-max-colors 128

@@ -32,6 +32,9 @@
   - `robot_visible_rigid_tool_baseline`
   - `robot_rope_franka_semiimplicit_oneway`
 - Added same-rollout hero+validation composite GIF generation for both robot baselines
+- Added slide-ready three-view exports for both promoted robot baselines:
+  - `formal_slide/meeting_2026_04_08/robot_visible_tool_three_views/`
+  - `formal_slide/meeting_2026_04_08/robot_direct_finger_three_views/`
 - Rebuilt the meeting artifacts:
   - `formal_slide/meeting_2026_04_08/bridge_meeting_20260408_recall_initial.pptx`
   - `formal_slide/meeting_2026_04_08/transcript.md`
@@ -39,6 +42,18 @@
 - New robot media artifacts:
   - `formal_slide/meeting_2026_04_08/gif/robot_visible_rigid_tool_baseline_hero_validation_deck.gif`
   - `formal_slide/meeting_2026_04_08/gif/robot_rope_franka_semiimplicit_oneway_hero_validation_deck.gif`
+  - `formal_slide/meeting_2026_04_08/robot_visible_tool_three_views/hero_presentation.mp4`
+  - `formal_slide/meeting_2026_04_08/robot_visible_tool_three_views/hero_presentation.gif`
+  - `formal_slide/meeting_2026_04_08/robot_visible_tool_three_views/hero_debug.mp4`
+  - `formal_slide/meeting_2026_04_08/robot_visible_tool_three_views/hero_debug.gif`
+  - `formal_slide/meeting_2026_04_08/robot_visible_tool_three_views/validation_camera.mp4`
+  - `formal_slide/meeting_2026_04_08/robot_visible_tool_three_views/validation_camera.gif`
+  - `formal_slide/meeting_2026_04_08/robot_direct_finger_three_views/hero_presentation.mp4`
+  - `formal_slide/meeting_2026_04_08/robot_direct_finger_three_views/hero_presentation.gif`
+  - `formal_slide/meeting_2026_04_08/robot_direct_finger_three_views/hero_debug.mp4`
+  - `formal_slide/meeting_2026_04_08/robot_direct_finger_three_views/hero_debug.gif`
+  - `formal_slide/meeting_2026_04_08/robot_direct_finger_three_views/validation_camera.mp4`
+  - `formal_slide/meeting_2026_04_08/robot_direct_finger_three_views/validation_camera.gif`
 - Current draft size/state:
   - `10` slides
   - `25 MB` PPTX
@@ -57,6 +72,9 @@
 
 - `python -m py_compile formal_slide/meeting_2026_04_08/build_meeting_20260408.py`
 - `python formal_slide/meeting_2026_04_08/build_meeting_20260408.py`
+- `scripts/export_robot_slide_views.sh`
+- `python scripts/validate_experiment_artifacts.py formal_slide/meeting_2026_04_08/robot_visible_tool_three_views --require-video --require-gif`
+- `python scripts/validate_experiment_artifacts.py formal_slide/meeting_2026_04_08/robot_direct_finger_three_views --require-video --require-gif`
 - current result:
   - pass
 - optional harness check run after task-page/index updates:

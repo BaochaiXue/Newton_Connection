@@ -1,0 +1,27 @@
+{
+  "task_slug": "robot_visible_rigid_tool_baseline",
+  "source_run_id": "20260404_145031_c08_samehistory",
+  "claim_boundary": "Meeting-safe intermediary baseline: a native Newton Franka carries a visible rigid tool, and that same visible rigid tool is the real physical contactor that pushes the bridged PhysTwin rope across the native Newton tabletop. This does not claim direct finger contact, robot-table physical blocking, or full two-way coupling.",
+  "source_root": "/home/xinjie/Newton_Connection/Newton/phystwin_bridge/results/robot_visible_rigid_tool_baseline/candidates/20260404_145031_c08_samehistory",
+  "export_root": "/home/xinjie/Newton_Connection/formal_slide/meeting_2026_04_08/robot_visible_tool_three_views",
+  "views": {
+    "hero_presentation": {
+      "mp4": "hero_presentation.mp4",
+      "gif": "hero_presentation.gif"
+    },
+    "hero_debug": {
+      "mp4": "hero_debug.mp4",
+      "gif": "hero_debug.gif"
+    },
+    "validation_camera": {
+      "mp4": "validation_camera.mp4",
+      "gif": "validation_camera.gif"
+    }
+  },
+  "key_metrics": {
+    "task_duration_s": 6.2,
+    "actual_tool_first_contact_time_s": 1.7342000000000002,
+    "actual_finger_box_first_contact_time_s": 3.4350500000000004,
+    "contact_duration_s": 2.9681500000000005
+  }
+}

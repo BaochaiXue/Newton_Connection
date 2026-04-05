@@ -1,0 +1,1 @@
+scripts/export_robot_slide_views.sh --task-slug robot_rope_franka_semiimplicit_oneway --out-dir formal_slide/meeting_2026_04_08/robot_direct_finger_three_views --gif-width 960 --gif-fps 10 --gif-max-colors 128
