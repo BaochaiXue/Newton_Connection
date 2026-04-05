@@ -32,6 +32,8 @@ Detailed result meaning belongs in:
   - keep the new fair `2 x 2` cloth+ground matrix visible while strict parity remains blocked
 - `robot_rope_franka_tabletop_push_hero`
   - preserve the truth-fixed tabletop-push hero bundle and keep its authority routing truthful
+- `robot_rope_franka_semiimplicit_oneway`
+  - preserve the new conservative one-way SemiImplicit baseline and keep it clearly de-scoped from both physical blocking and full two-way-coupling claims
 - `robot_visible_rigid_tool_baseline`
   - preserve the newly promoted tool-mediated tabletop baseline; keep it clearly separate from both the direct-finger tabletop baseline and the blocked physical-blocking task, and keep its canonical rerender path single-history so hero/debug/validation cannot drift apart
 - `robot_rope_franka_physical_blocking`
@@ -47,6 +49,8 @@ Detailed result meaning belongs in:
   - readable tabletop rope-push baseline exists, but the stronger physical robot-blocking follow-on still lacks a Stage-0 rigid-only proof; the bridge-layer path is now under re-test rather than being treated as definitively impossible
 - `robot_visible_rigid_tool_baseline`
   - no blocker at the current conservative claim boundary; the promoted run is now the tool-mediated meeting-safe intermediary
+- `robot_rope_franka_semiimplicit_oneway`
+  - no blocker at the current conservative claim boundary; the promoted Path A bundle reuses the accepted c12 rollout under a narrower SemiImplicit one-way claim
 
 ## Promoted Surfaces At A Glance
 
@@ -70,6 +74,10 @@ Detailed result meaning belongs in:
   - task status: `tasks/status/robot_visible_rigid_tool_baseline.md`
   - committed authority: `results_meta/tasks/robot_visible_rigid_tool_baseline.json`
   - current meaning: promoted tool-mediated tabletop baseline where a visible rigid robot-mounted crossbar is the real physical contactor for the bridged rope, now backed by separate skeptical video audits and a single-rollout three-view bundle
+- `robot_rope_franka_semiimplicit_oneway`
+  - task status: `tasks/status/robot_rope_franka_semiimplicit_oneway.md`
+  - committed authority: `results_meta/tasks/robot_rope_franka_semiimplicit_oneway.json`
+  - current meaning: promoted conservative direct-finger tabletop baseline re-certified from the accepted c12 rollout, with explicit SolverSemiImplicit deformable interaction and a truthful one-way robot->rope claim only
 - `robot_rope_franka_physical_blocking`
   - task status: `tasks/status/robot_rope_franka_physical_blocking.md`
   - committed authority: none yet
@@ -89,6 +97,7 @@ Detailed result meaning belongs in:
 - `video_presentation_quality`
 - `robot_deformable_demo`
 - `robot_rope_franka_tabletop_push_hero`
+- `robot_rope_franka_semiimplicit_oneway`
 - `robot_visible_rigid_tool_baseline`
 - `robot_rope_franka_physical_blocking`
 - `native_robot_rope_drop_release`

@@ -1,0 +1,69 @@
+{
+  "registry_version": 1,
+  "task_slug": "robot_rope_franka_semiimplicit_oneway",
+  "task_chain": {
+    "task_page": "docs/bridge/tasks/robot_rope_franka_semiimplicit_oneway.md",
+    "spec": "tasks/spec/robot_rope_franka_semiimplicit_oneway.md",
+    "plan": "plans/active/robot_rope_franka_semiimplicit_oneway.md",
+    "implement": "tasks/implement/robot_rope_franka_semiimplicit_oneway.md",
+    "status": "tasks/status/robot_rope_franka_semiimplicit_oneway.md"
+  },
+  "bundle_root": "Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway",
+  "authoritative_run": {
+    "run_id": "20260404_215523_c12_samehistory_oneway",
+    "authoritative": true,
+    "task_state": "promoted",
+    "claim_boundary": "Conservative Newton-native tabletop rope baseline: native Newton Franka + native Newton tabletop + bridged PhysTwin rope, with deformable interaction handled under SolverSemiImplicit and a truthful one-way robot->rope claim only. This does not claim articulated physical blocking, full two-way coupling, or self-collision parity.",
+    "local_artifact_root": "Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway/candidates/20260404_215523_c12_samehistory_oneway",
+    "command_pointer": "Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway/candidates/20260404_215523_c12_samehistory_oneway/run_command.txt",
+    "expected_artifacts": [
+      "Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway/candidates/20260404_215523_c12_samehistory_oneway/hero_presentation.mp4",
+      "Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway/candidates/20260404_215523_c12_samehistory_oneway/hero_debug.mp4",
+      "Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway/candidates/20260404_215523_c12_samehistory_oneway/validation_camera.mp4",
+      "Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway/candidates/20260404_215523_c12_samehistory_oneway/summary.json",
+      "Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway/candidates/20260404_215523_c12_samehistory_oneway/contact_sheet.png",
+      "Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway/candidates/20260404_215523_c12_samehistory_oneway/solver_audit.md",
+      "Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway/candidates/20260404_215523_c12_samehistory_oneway/geometry_truth_report.md",
+      "Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway/candidates/20260404_215523_c12_samehistory_oneway/multimodal_review.md"
+    ],
+    "validator_outputs": [
+      "Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway/candidates/20260404_215523_c12_samehistory_oneway/metrics.json",
+      "Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway/candidates/20260404_215523_c12_samehistory_oneway/validation.md",
+      "Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway/candidates/20260404_215523_c12_samehistory_oneway/ffprobe.json"
+    ],
+    "verdict_pointers": [
+      "Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway/candidates/20260404_215523_c12_samehistory_oneway/validation.md",
+      "Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway/candidates/20260404_215523_c12_samehistory_oneway/solver_audit.md",
+      "Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway/candidates/20260404_215523_c12_samehistory_oneway/geometry_truth_report.md",
+      "Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway/candidates/20260404_215523_c12_samehistory_oneway/multimodal_review.md"
+    ],
+    "repo_friendly_evidence": {
+      "summary": [
+        "The chosen bundle re-certifies the accepted c12 direct-finger tabletop rollout under a weaker, truthful claim: deformable rope interaction is under SolverSemiImplicit and one-way robot->rope is sufficient.",
+        "Hero/debug/validation are all rerendered from the same saved presentation history.",
+        "Geometry truth remains explicit: actual finger-box contact is the proof surface, rope render thickness matches physical thickness, and no hidden helper is present."
+      ],
+      "key_metrics": {
+        "duration_s": 6.2,
+        "first_contact_time_s": 1.6675,
+        "actual_finger_box_first_contact_time_s": 1.6675,
+        "rope_deformation_time_s": 1.96765,
+        "rope_lateral_motion_time_s": 3.0682
+      }
+    },
+    "why_passed": [
+      "The bundle makes SolverSemiImplicit usage explicit without reviving physical-blocking or full two-way-coupling claims.",
+      "The direct-finger geometry-truth fix remains intact: actual finger-box contact is the proof surface and ee-contact-radius stays diagnostic only.",
+      "The new same-history rerender keeps hero/debug/validation on one saved rollout history while the conservative full-video review remains PASS."
+    ],
+    "predecessor": "20260401_203416_remotefix_truthcam_c12",
+    "superseded_by": null
+  },
+  "superseded_runs": [],
+  "local_only_surfaces": [
+    "Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway/README.md",
+    "Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway/BEST_RUN/README.md",
+    "Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway/BEST_RUN/manifest.json"
+  ],
+  "updated_at": "2026-04-04"
+}
