@@ -111,6 +111,35 @@ Local scratch validation notes:
     - the old `case_3 > case_4` outcome is not a clean single-cause result
     - the strongest supported reading is rollout-level interaction mismatch dominated by controller-spring semantics plus contact-state / collision-table sensitivity
     - native-ground timing differences are contributory, but not sufficient by themselves
+- reproducibility fix root now exists:
+  - `Newton/phystwin_bridge/results/ground_contact_self_collision_repro_fix_20260404_200830_aa5e607`
+  - canonical repeated-runner:
+    - `Newton/phystwin_bridge/tools/other/run_ground_contact_self_collision_repro_audit.py`
+  - applied bridge-side determinism fixes:
+    - frozen collision-table rows are now explicitly sorted before consumption
+    - strict bridge spring-force accumulation now uses a deterministic incident-spring traversal order instead of the older accumulation path
+  - repeated full-matrix reruns completed:
+    - `5` repeated full `302`-frame matrix reruns
+    - same commit, same machine, same device, same environment surface
+  - final reproducibility verdict:
+    - `REPRODUCIBLE`
+    - ranking invariant across all five reruns:
+      - `case_3_self_phystwin_ground_native`
+      - `case_2_self_off_ground_phystwin`
+      - `case_1_self_off_ground_native`
+      - `case_4_self_phystwin_ground_phystwin`
+  - residual metric drift:
+    - `0.0` on `x0_rmse`, `rmse_mean`, `rmse_max`, `first30_rmse`, and `last30_rmse` for all four cases
+    - rollout `.npz` hashes and `rmse_curve.csv` hashes are bitwise identical across all five reruns
+  - stable post-fix `rmse_mean` values:
+    - case 1: `0.009801863692700863`
+    - case 2: `0.009633512236177921`
+    - case 3: `0.009368138387799263`
+    - case 4: `0.011009568348526955`
+  - before/after comparison:
+    - before fix, case 3 and case 4 ranges drifted enough to destabilize ranking
+    - after fix, both ranges collapse to single values and the ranking is stable
+    - `.../before_after_compare.md`
 - controlled `2 x 2` full 302-frame cloth+ground RMSE matrix now exists:
   - root:
     - `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260404_140154_e11491a`
@@ -151,11 +180,13 @@ Local scratch validation notes:
 
 ## Last Completed Step
 
-Added the canonical controlled `2 x 2` cloth+ground RMSE runner and then
-followed it with a dedicated case-3-vs-case-4 mechanism diagnosis:
+Added the canonical controlled `2 x 2` cloth+ground RMSE runner, followed it
+with a dedicated case-3-vs-case-4 mechanism diagnosis, and then fixed the
+ranking reproducibility bug with a repeated full-matrix audit runner:
 
 - `tools/other/run_ground_contact_self_collision_rmse_matrix.py`
 - `tools/other/diagnose_case3_case4_mechanism.py`
+- `tools/other/run_ground_contact_self_collision_repro_audit.py`
 - bridge-side independent law exposure through:
   - `tools/core/newton_import_ir.py`
   - `tools/core/phystwin_contact_stack.py`
@@ -173,24 +204,23 @@ evidence:
 
 ## Next Step
 
-Use the new case-3-vs-case-4 diagnosis to decide the next blocker-localization step:
+Now that the fair `2 x 2` matrix ranking is reproducible, resume mechanism diagnosis on the stable surface:
 
-- tighten the controller-spring diagnosis around the same frame window used by the case3/case4 mechanism script
-- decide whether the next bridge-side experiment should target:
-  - controller representation
-  - collision-table runtime determinism / ordering
-  - or both
-- only rerun the fair `2 x 2` matrix again after that next targeted bridge-side change
-- update `results_meta/tasks/self_collision_transfer.json` only if a new
-  committed current bundle is actually promoted
+- revisit `case_3` vs `case_4` with the reproducible post-fix matrix root as the canonical comparison surface
+- tighten the controller-spring diagnosis around the stable ranking outcome rather than the older unstable one
+- separate:
+  - remaining whole-step interaction mismatch
+  - native-vs-PhysTwin ground timing semantics
+  - and the now-fixed reproducibility issue
+- keep `results_meta/tasks/self_collision_transfer.json` aligned to the reproducible matrix root while the physics blocker remains open
 
 ## Blocking Issues
 
 - the fair `2 x 2` matrix still misses the strict `1e-5` gate in all four cases
-- the original `case_3 > case_4` ranking is not stable enough to treat as a
-  clean causal ground-law result
-- the current mechanism evidence points to rollout-level interaction mismatch,
-  not a remaining isolated self-collision-law mismatch
+- after the determinism fix, the `case_3 > case_4` ranking is now stable, but
+  the physical cause of that stable ordering is still unresolved
+- the current mechanism evidence still points to rollout-level interaction
+  mismatch, not a remaining isolated self-collision-law mismatch
 - strict `phystwin` scope is intentionally narrow and does not yet cover box or
   other Newton-only rigid-support contacts
 
@@ -206,6 +236,11 @@ Use the new case-3-vs-case-4 diagnosis to decide the next blocker-localization s
 - `Newton/phystwin_bridge/results/self_collision_case3_vs_case4_diagnosis_20260404_162159_6cb033a/first_divergence_report.md`
 - `Newton/phystwin_bridge/results/self_collision_case3_vs_case4_diagnosis_20260404_162159_6cb033a/before_after_compare.md`
 - `Newton/phystwin_bridge/results/self_collision_case3_vs_case4_diagnosis_20260404_162159_6cb033a/diagnostics_summary.json`
+- `Newton/phystwin_bridge/results/ground_contact_self_collision_repro_fix_20260404_200830_aa5e607/README.md`
+- `Newton/phystwin_bridge/results/ground_contact_self_collision_repro_fix_20260404_200830_aa5e607/repro_audit_summary.md`
+- `Newton/phystwin_bridge/results/ground_contact_self_collision_repro_fix_20260404_200830_aa5e607/ranking_stability_report.md`
+- `Newton/phystwin_bridge/results/ground_contact_self_collision_repro_fix_20260404_200830_aa5e607/before_after_compare.md`
+- `Newton/phystwin_bridge/results/ground_contact_self_collision_repro_fix_20260404_200830_aa5e607/final_verdict.json`
 - `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/FINAL_STATUS.md`
 - `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/matrix/self_collision_decision.md`
 - `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/parity/strict_self_collision_parity_summary.json`

@@ -43,6 +43,12 @@ COMMON_ARGS=(
   --anchor-count-per-end 2
   --ik-target-blend 0.20
   --auto-set-weight 3.0
+  --joint-target-ke 100.0
+  --joint-target-kd 10.0
+  --finger-target-ke 20.0
+  --finger-target-kd 2.0
+  --solver-joint-attach-ke 50.0
+  --solver-joint-attach-kd 5.0
   --particle-radius-scale 0.1
   --tabletop-initial-pose tabletop_shallow_curve
   --tabletop-hero-hide-pedestal

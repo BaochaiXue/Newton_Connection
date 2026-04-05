@@ -8,54 +8,61 @@
     "implement": "tasks/implement/self_collision_transfer.md",
     "status": "tasks/status/self_collision_transfer.md"
   },
-  "bundle_root": "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0",
+  "bundle_root": "Newton/phystwin_bridge/results/ground_contact_self_collision_repro_fix_20260404_200830_aa5e607",
   "authoritative_run": {
-    "run_id": "final_self_collision_campaign_20260331_033636_533f3d0",
+    "run_id": "ground_contact_self_collision_repro_fix_20260404_200830_aa5e607",
     "authoritative": false,
     "task_state": "blocked",
-    "claim_boundary": "Current bridge-side self-collision campaign root for cloth+box decision evidence, exactness proof, QC-passing hero demo, and blocked strict parity. This is the current focus bundle, not a completed final decision surface.",
-    "local_artifact_root": "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0",
-    "command_pointer": "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/command.sh",
+    "claim_boundary": "Current bridge-side reproducible cloth+implicit-ground 2x2 RMSE comparison surface for the self-collision task. It fixes the old ranking instability at the same commit and environment, but strict parity still remains blocked and the task is not yet complete.",
+    "local_artifact_root": "Newton/phystwin_bridge/results/ground_contact_self_collision_repro_fix_20260404_200830_aa5e607",
+    "command_pointer": "Newton/phystwin_bridge/results/ground_contact_self_collision_repro_fix_20260404_200830_aa5e607/command.sh",
     "expected_artifacts": [
-      "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/FINAL_STATUS.md",
-      "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/matrix/self_collision_decision.md",
-      "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/equivalence/verify_phystwin_self_collision_equivalence.json",
-      "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/selected/self_collision_on_cloth_box_phystwin.mp4",
-      "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/parity/strict_self_collision_parity_summary.json"
+      "Newton/phystwin_bridge/results/ground_contact_self_collision_repro_fix_20260404_200830_aa5e607/README.md",
+      "Newton/phystwin_bridge/results/ground_contact_self_collision_repro_fix_20260404_200830_aa5e607/repro_audit_summary.md",
+      "Newton/phystwin_bridge/results/ground_contact_self_collision_repro_fix_20260404_200830_aa5e607/ranking_stability_report.md",
+      "Newton/phystwin_bridge/results/ground_contact_self_collision_repro_fix_20260404_200830_aa5e607/before_after_compare.md",
+      "Newton/phystwin_bridge/results/ground_contact_self_collision_repro_fix_20260404_200830_aa5e607/final_verdict.json"
     ],
     "validator_outputs": [
-      "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/video_qc/final_video_qc_report.md",
-      "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/video_qc/phystwin_topdown_v3/video_qc.json",
-      "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/equivalence/verify_phystwin_self_collision_equivalence.json",
-      "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/parity/strict_self_collision_parity_summary.json"
+      "Newton/phystwin_bridge/results/ground_contact_self_collision_repro_fix_20260404_200830_aa5e607/artifact_validation.log",
+      "Newton/phystwin_bridge/results/ground_contact_self_collision_repro_fix_20260404_200830_aa5e607/final_verdict.json"
     ],
     "verdict_pointers": [
-      "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/video_qc/final_video_qc_report.md",
-      "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/FINAL_STATUS.md"
+      "Newton/phystwin_bridge/results/ground_contact_self_collision_repro_fix_20260404_200830_aa5e607/final_verdict.json",
+      "Newton/phystwin_bridge/results/ground_contact_self_collision_repro_fix_20260404_200830_aa5e607/ranking_stability_report.md"
     ],
     "repo_friendly_evidence": {
       "summary": [
-        "Bridge-side PhysTwin exactness passes at operator level.",
-        "QC-passing cloth-box hero demo exists, but strict self-collision parity remains blocked."
+        "The fair cloth+implicit-ground 2x2 matrix ranking is now reproducible across five repeated reruns.",
+        "Strict parity remains blocked, but the ranking is now a stable comparison surface instead of a drifting one."
       ],
       "key_metrics": {
-        "max_abs_dv": 1.1324882507324219e-06,
-        "median_rel_dv": 4.070106739010465e-08,
-        "rmse_mean": 0.025657856836915016,
-        "rmse_max": 0.11557811498641968
+        "case_1_rmse_mean": 0.009801863692700863,
+        "case_2_rmse_mean": 0.009633512236177921,
+        "case_3_rmse_mean": 0.009368138387799263,
+        "case_4_rmse_mean": 0.011009568348526955,
+        "ranking_reproducible": 1.0,
+        "metric_bitwise_stable": 1.0
       },
       "thumbnail_paths": [
-        "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/video_qc/phystwin_topdown_v3/contact_sheet.png"
+        "Newton/phystwin_bridge/results/ground_contact_self_collision_repro_fix_20260404_200830_aa5e607/repro_audit_summary.md"
       ]
     },
     "why_passed": [
-      "Operator-level exactness evidence is strong and the selected cloth-box hero video passes QC.",
-      "The remaining blocker is explicit and documented rather than hidden."
+      "The ranking instability is fixed and the current fair matrix now repeats bitwise under the same commit and environment.",
+      "The remaining blocker is now physics/mechanism interpretation, not reproducibility."
     ],
-    "predecessor": "final_self_collision_campaign_20260330_205935_4fdef39",
+    "predecessor": "ground_contact_self_collision_rmse_matrix_20260404_140154_e11491a",
     "superseded_by": null
   },
   "superseded_runs": [
+    {
+      "run_id": "ground_contact_self_collision_rmse_matrix_20260404_140154_e11491a",
+      "status": "superseded",
+      "local_artifact_root": "Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260404_140154_e11491a",
+      "why_not_authoritative": "This was the first fair cloth+ground 2x2 matrix root, but its ranking was not stable enough under repeated reruns and it has been replaced by the reproducibility-fixed 20260404 audit root.",
+      "superseded_by": "ground_contact_self_collision_repro_fix_20260404_200830_aa5e607"
+    },
     {
       "run_id": "final_self_collision_campaign_20260330_205935_4fdef39",
       "status": "superseded",
@@ -69,5 +76,5 @@
     "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/FINAL_STATUS.md",
     "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/matrix/self_collision_decision.md"
   ],
-  "updated_at": "2026-04-01"
+  "updated_at": "2026-04-04"
 }

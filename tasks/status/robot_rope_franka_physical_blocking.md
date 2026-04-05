@@ -5,8 +5,9 @@
 - Active
 - This is a new stronger task, separate from the accepted tabletop-push
   baseline
-- Current state is now: `blocked by bridge/demo-level articulation actuation
-  limit in the accessible SemiImplicit path`
+- Current state is now: `re-opened; the old bridge-layer limit proof is no
+  longer sufficient after identifying stale post-step FK overwrite plus
+  destabilizing default attachment gains in the joint_target_drive path`
 
 ## Last Completed Step
 
@@ -61,16 +62,28 @@
     all left `joint_q` unchanged in the current accessible bridge/demo path
 - Current interpretation:
   - the old overwrite path is definitively non-physical
-  - the intended bridge-layer actuation surfaces are present in the API shape
-    but are not producing actual articulated motion on this SemiImplicit native
-    Franka path
-  - this is now treated as a bridge-layer limit, not a mere tuning issue
+  - but the previous bridge-layer limit proof is now incomplete:
+    - `joint_target_drive` used to re-run `eval_fk(state_out.joint_q, ...)`
+      after `solver.step(...)`, which overwrote solver-integrated body motion
+      with stale reduced coordinates
+    - current local control smokes show `SolverSemiImplicit` articulation
+      targets can remain stable for simple revolute and pure-robot Franka cases
+      once `joint_attach_ke/kd` are reduced to a non-explosive regime such as
+      roughly `50 / 5`
+  - the task therefore moves back from “bridge-layer impossible” to
+    “bridge-layer stronger benchmark still unproven, but no core change is
+    justified yet”
 
 ## Next Step
 
-- Do not continue spending time on more gain sweeps against the current
-  inaccessible actuation surfaces.
-- If work continues, start from the proposal in
+- Build the simpler Stage-0 rigid-only blocking benchmark before touching the
+  rope again.
+- Keep `joint_target_drive` on the repaired bridge-layer path:
+  - no post-step FK overwrite
+  - explicit reduced-state resync through `eval_ik`
+  - lowered attachment gains
+- Only if Stage 0 still fails honestly after that should the task return to the
+  minimal core/API proposal in
   [minimal_core_change_proposal.md](/home/xinjie/Newton_Connection/diagnostics/minimal_core_change_proposal.md).
 - Keep the stronger-task docs truthful and preserve the old readable tabletop
   baseline as the only accepted robot-rope authority for now.

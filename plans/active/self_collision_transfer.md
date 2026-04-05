@@ -4,9 +4,9 @@
 
 Drive self-collision work to one explicit engineering decision.
 
-Current engineering milestone: explain the `case_3_self_phystwin_ground_native`
-vs `case_4_self_phystwin_ground_phystwin` gap with mechanism evidence rather
-than just matrix numbers.
+Current engineering milestone: keep the fair cloth + implicit-ground `2 x 2`
+matrix reproducible first, then resume mechanism diagnosis on top of the
+stable comparison surface.
 
 ## Constraints
 
@@ -20,22 +20,23 @@ than just matrix numbers.
 
 ## Milestones
 
-1. reproduce case 3 and case 4 exactly and verify whether the old ranking is stable
-2. localize the first frame and the first persistent regime where case 4 becomes worse than case 3 in the original matrix
-3. instrument the bridge step around those regions to see whether the difference enters before self-collision, after self-collision, or at ground / integration
-4. test the smallest bridge-side timing hypothesis directly
-5. keep cloth+box `phystwin` explicitly unsupported while preserving `off/native/custom`
-6. write the updated task status and blocker interpretation
+1. make the fair `2 x 2` matrix ranking reproducible across repeated reruns at the same commit and environment
+2. keep the determinism fix bridge-side only
+3. preserve the fair matrix surface: same IR, same dt/substeps, same evaluator, same scene
+4. keep cloth+box `phystwin` explicitly unsupported while preserving `off/native/custom`
+5. once reproducibility is fixed, resume case-3-vs-case-4 mechanism diagnosis on the stable matrix surface
 
 ## Validation
 
-- the diagnosis root contains explicit hypotheses, reproducibility evidence, first-divergence evidence, and a cause classification
-- remaining blocker is stated against mechanism evidence, not guessed
+- the reproducibility audit root contains at least 5 repeated full matrix reruns
+- ranking order is invariant across reruns
+- residual metric drift is quantified; bitwise equality is preferred when achievable
+- remaining blocker is stated against the reproducible matrix surface, not against an unstable ranking
 
 ## Notes
 
 - Backfilled during the harness upgrade so the active task set has a full chain.
 - The new matrix is not a promotion surface by itself; it is local blocked
   evidence until a new committed authority surface is chosen.
-- Current diagnostic question: why the old matrix made case 3 beat case 4, and
-  whether that ranking is stable enough to trust causally.
+- Current diagnostic question after the repro fix: why the now-stable matrix
+  still makes case 3 beat case 4.

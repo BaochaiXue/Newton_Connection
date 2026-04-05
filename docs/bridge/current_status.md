@@ -35,16 +35,16 @@ Detailed result meaning belongs in:
 - `robot_visible_rigid_tool_baseline`
   - preserve the newly promoted tool-mediated tabletop baseline; keep it clearly separate from both the direct-finger tabletop baseline and the blocked physical-blocking task, and keep its canonical rerender path single-history so hero/debug/validation cannot drift apart
 - `robot_rope_franka_physical_blocking`
-  - stronger follow-on task is now blocked at bridge/demo level because the currently accessible SemiImplicit articulation actuation surfaces do not yet deliver real physically blocked robot motion
+  - stronger follow-on task has been re-opened: the old bridge-layer limit proof is no longer sufficient after identifying stale post-step FK overwrite plus destabilizing default articulation attachment gains in the `joint_target_drive` path
 
 ## Current Blockers
 
 - `self_collision_transfer`
-  - operator exactness is strong and the fair `2 x 2` matrix is now in place, but the old `case_3 > case_4` ranking is not fully reproducible on the latest code and the mechanism is now localized as a rollout-level interaction blocker rather than an isolated self-collision-law blocker
+  - operator exactness is strong and the fair `2 x 2` matrix ranking is now reproducible after a bridge-side determinism fix, but strict parity still remains blocked and the current blocker is still rollout-level interaction mismatch rather than an isolated self-collision-law issue
 - `interactive_playground_profiling`
   - the exploratory profiling page must stay clearly separate from the committed rope benchmark truth under `rope_perf_apples_to_apples`
 - `robot_rope_franka_physical_blocking`
-  - readable tabletop rope-push baseline exists, but the stronger physical robot-blocking follow-on is blocked by the current bridge/demo-level actuation path
+  - readable tabletop rope-push baseline exists, but the stronger physical robot-blocking follow-on still lacks a Stage-0 rigid-only proof; the bridge-layer path is now under re-test rather than being treated as definitively impossible
 - `robot_visible_rigid_tool_baseline`
   - no blocker at the current conservative claim boundary; the promoted run is now the tool-mediated meeting-safe intermediary
 
@@ -73,7 +73,7 @@ Detailed result meaning belongs in:
 - `robot_rope_franka_physical_blocking`
   - task status: `tasks/status/robot_rope_franka_physical_blocking.md`
   - committed authority: none yet
-  - current meaning: stronger follow-on task that proved the old path is non-physical and is currently blocked by a bridge/demo-level articulation actuation limit
+  - current meaning: stronger follow-on task where the old overwrite path is still proven non-physical, but the previous bridge-layer impossibility claim is under reassessment after fixing stale FK overwrite and lowering destabilizing articulation attachment gains
 - `rope_perf_apples_to_apples`
   - task status: `tasks/status/rope_perf_apples_to_apples.md`
   - committed authority: `results_meta/tasks/rope_perf_apples_to_apples.json`

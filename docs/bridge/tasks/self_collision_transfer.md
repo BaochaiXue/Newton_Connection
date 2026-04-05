@@ -85,6 +85,11 @@ The repo already contains the right scaffolding for a decision:
     - ground-contact law: `native | phystwin`
   - writes one comparable report per case plus a combined fairness check and
     RMSE matrix summary
+- `Newton/phystwin_bridge/tools/other/run_ground_contact_self_collision_repro_audit.py`
+  - repeated reproducibility runner for the same canonical `2 x 2` matrix
+  - fixes the environment surface (`PYTHONHASHSEED`, single-thread BLAS/OpenMP)
+  - repeats the full matrix multiple times and reports ranking stability,
+    per-case drift, and rollout-hash equality
 
 That means the next step is not “add more framework”, but “turn the current framework into decision evidence”.
 
