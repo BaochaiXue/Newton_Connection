@@ -7,6 +7,12 @@
 
 ## Last Completed Step
 
+- Fixed the presentation-render gating in
+  `Newton/phystwin_bridge/demos/demo_robot_rope_franka.py` so final
+  presentation/validation renders no longer leak generic robot collision
+  geometry into the visible clip.
+- Re-rendered the slide-facing direct-finger and visible-tool exports from the
+  same saved rollout histories after that fix.
 - Re-read the current control plane and accepted robot baselines
 - Read the Newton examples map at the repo level and extracted the relevant
   solver patterns

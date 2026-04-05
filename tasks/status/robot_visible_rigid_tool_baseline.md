@@ -8,6 +8,13 @@
 
 ## Last Completed Step
 
+- Fixed a presentation-render geometry leak in
+  [demo_robot_rope_franka.py](../../Newton/phystwin_bridge/demos/demo_robot_rope_franka.py):
+  - `presentation` no longer renders generic robot collision geometry
+  - the actual visible tool capsule is now rendered explicitly from its real
+    collider dimensions instead
+  - result: slide-facing hero/validation videos no longer show the stray green
+    collision primitive that previously leaked into final presentation renders
 - Preserved the task boundary:
   - old promoted tabletop finger baseline remains authoritative
   - blocked physical-blocking task remains separate

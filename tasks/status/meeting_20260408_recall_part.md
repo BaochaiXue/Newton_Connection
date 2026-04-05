@@ -16,7 +16,7 @@
   - stable self-collision mechanism section
   - conservative robot SemiImplicit section
 - current story shape:
-  - `10` slides
+  - `12` slides
   - tightened for `~30 min`
   - lower text density with detailed analysis moved to transcript
 
@@ -35,6 +35,11 @@
 - Added slide-ready three-view exports for both promoted robot baselines:
   - `formal_slide/meeting_2026_04_08/robot_visible_tool_three_views/`
   - `formal_slide/meeting_2026_04_08/robot_direct_finger_three_views/`
+- Fixed and replaced the robot slide media after removing a presentation-render
+  collision-geometry leak:
+  - `hero_presentation.mp4` / `validation_camera.mp4` for both robot exports
+    were re-rendered from saved rollout histories
+  - the deck-local robot GIFs were rebuilt from the cleaned videos
 - Rebuilt the meeting artifacts:
   - `formal_slide/meeting_2026_04_08/bridge_meeting_20260408_recall_initial.pptx`
   - `formal_slide/meeting_2026_04_08/transcript.md`
@@ -55,7 +60,7 @@
   - `formal_slide/meeting_2026_04_08/robot_direct_finger_three_views/validation_camera.mp4`
   - `formal_slide/meeting_2026_04_08/robot_direct_finger_three_views/validation_camera.gif`
 - Current draft size/state:
-  - `10` slides
+  - `12` slides
   - `25 MB` PPTX
   - bundle-local `gif/` and `images/` assets generated successfully
 

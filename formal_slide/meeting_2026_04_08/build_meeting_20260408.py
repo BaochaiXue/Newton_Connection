@@ -69,6 +69,8 @@ def _extract_number_from_markdown(path: Path, label: str) -> float:
 
 ROBOT_ONEWAY_ROOT = _require_promoted_root("robot_rope_franka_semiimplicit_oneway")
 ROBOT_TOOL_ROOT = _require_promoted_root("robot_visible_rigid_tool_baseline")
+ROBOT_ONEWAY_EXPORT_ROOT = MEETING_DIR / "robot_direct_finger_three_views"
+ROBOT_TOOL_EXPORT_ROOT = MEETING_DIR / "robot_visible_tool_three_views"
 
 ROBOT_ONEWAY_SUMMARY = json.loads((ROBOT_ONEWAY_ROOT / "summary.json").read_text(encoding="utf-8"))
 ROBOT_TOOL_SUMMARY = json.loads((ROBOT_TOOL_ROOT / "summary.json").read_text(encoding="utf-8"))
@@ -80,10 +82,26 @@ ROBOT_ONEWAY_LATERAL_TIME_S = _extract_number_from_markdown(ROBOT_ONEWAY_MULTIMO
 ROBOT_TOOL_DEFORMATION_TIME_S = float(ROBOT_TOOL_CONTACT_ONSET["first_rope_deformation_time_s"])
 ROBOT_TOOL_LATERAL_TIME_S = float(ROBOT_TOOL_CONTACT_ONSET["first_rope_lateral_motion_time_s"])
 
-ROBOT_ONEWAY_HERO_MP4 = ROBOT_ONEWAY_ROOT / "hero_presentation.mp4"
-ROBOT_ONEWAY_VALIDATION_MP4 = ROBOT_ONEWAY_ROOT / "validation_camera.mp4"
-ROBOT_TOOL_HERO_MP4 = ROBOT_TOOL_ROOT / "hero_presentation.mp4"
-ROBOT_TOOL_VALIDATION_MP4 = ROBOT_TOOL_ROOT / "validation_camera.mp4"
+ROBOT_ONEWAY_HERO_MP4 = (
+    (ROBOT_ONEWAY_EXPORT_ROOT / "hero_presentation.mp4")
+    if (ROBOT_ONEWAY_EXPORT_ROOT / "hero_presentation.mp4").exists()
+    else (ROBOT_ONEWAY_ROOT / "hero_presentation.mp4")
+)
+ROBOT_ONEWAY_VALIDATION_MP4 = (
+    (ROBOT_ONEWAY_EXPORT_ROOT / "validation_camera.mp4")
+    if (ROBOT_ONEWAY_EXPORT_ROOT / "validation_camera.mp4").exists()
+    else (ROBOT_ONEWAY_ROOT / "validation_camera.mp4")
+)
+ROBOT_TOOL_HERO_MP4 = (
+    (ROBOT_TOOL_EXPORT_ROOT / "hero_presentation.mp4")
+    if (ROBOT_TOOL_EXPORT_ROOT / "hero_presentation.mp4").exists()
+    else (ROBOT_TOOL_ROOT / "hero_presentation.mp4")
+)
+ROBOT_TOOL_VALIDATION_MP4 = (
+    (ROBOT_TOOL_EXPORT_ROOT / "validation_camera.mp4")
+    if (ROBOT_TOOL_EXPORT_ROOT / "validation_camera.mp4").exists()
+    else (ROBOT_TOOL_ROOT / "validation_camera.mp4")
+)
 
 ROBOT_ONEWAY_HERO_VALIDATION_GIF = DECK_GIF_DIR / "robot_rope_franka_semiimplicit_oneway_hero_validation_deck.gif"
 ROBOT_TOOL_HERO_VALIDATION_GIF = DECK_GIF_DIR / "robot_visible_rigid_tool_baseline_hero_validation_deck.gif"
