@@ -25,6 +25,7 @@ TEMPLATE_PPTX = ROOT / "formal_slide" / "meeting_2026_04_01" / "templates" / "My
 OUT_PPTX = MEETING_DIR / "bridge_meeting_20260408_recall_initial.pptx"
 DECK_GIF_DIR = MEETING_DIR / "gif"
 IMAGE_DIR = MEETING_DIR / "images"
+VIDEO_DIR = MEETING_DIR / "video"
 DEFAULT_MAX_PPTX_MB = 100.0
 DEFAULT_MAX_GIF_MB = 40.0
 
@@ -50,6 +51,14 @@ CODE_GROUND_NATIVE_PNG = IMAGE_DIR / "code_ground_native_order.png"
 CODE_GROUND_PHYSTWIN_PNG = IMAGE_DIR / "code_ground_phystwin_order.png"
 CODE_CONTROLLER_PHYSTWIN_PNG = IMAGE_DIR / "code_controller_phystwin.png"
 CODE_CONTROLLER_BRIDGE_PNG = IMAGE_DIR / "code_controller_bridge.png"
+SELF_CASE3_REPORT = STABLE_MATRIX_ROOT / "case_3_self_phystwin_ground_native" / "case_3_self_phystwin_ground_native_rollout_report.json"
+SELF_CASE4_REPORT = STABLE_MATRIX_ROOT / "case_4_self_phystwin_ground_phystwin" / "case_4_self_phystwin_ground_phystwin_rollout_report.json"
+SELF_CASE3_MP4 = VIDEO_DIR / "case3_stable_cmp_2x3.mp4"
+SELF_CASE4_MP4 = VIDEO_DIR / "case4_stable_cmp_2x3.mp4"
+SELF_CASE3_GIF = DECK_GIF_DIR / "case3_stable_cmp_2x3.gif"
+SELF_CASE4_GIF = DECK_GIF_DIR / "case4_stable_cmp_2x3.gif"
+SELF_CASE_DIR = ROOT / "Newton" / "phystwin_bridge" / "inputs" / "cases" / "blue_cloth_double_lift_around"
+RENDER_COMPARISON_2X3 = ROOT / "Newton" / "phystwin_bridge" / "tools" / "other" / "render_comparison_2x3_mp4.py"
 
 
 def _require_promoted_root(task_slug: str) -> Path:
@@ -207,18 +216,46 @@ RECALL_SLIDES: list[dict] = [
 
 SELF_COLLISION_SLIDES: list[dict] = [
     {
-        "kind": "image",
-        "title": "Self-Collision: The Case-3-Over-Case-4 Ranking Is Now Stable",
-        "path": SELF_COLLISION_BOARD_PNG,
-        "note": (
-            "Top-left: stable 2x2 matrix. Top-right: per-frame RMSE. Bottom: mechanism evidence around frames 40 / 107 / 137."
-        ),
+        "kind": "table",
+        "title": "Self-Collision: Stable 2x2 RMSE Matrix",
+        "note": "Same cloth scene, same strict IR, same dt/substeps, same evaluator. Only self-collision law and ground-contact law vary.",
+        "title_size": 24,
+        "note_font_size": 10,
+        "cell_font_size": 12,
+        "columns": [
+            "Case",
+            "Self law",
+            "Ground law",
+            "rmse_mean",
+            "rmse_max",
+            "first30",
+            "last30",
+        ],
+        "rows": [
+            ["case 1", "off", "native", "0.009802", "0.016899", "0.002359", "0.012850"],
+            ["case 2", "off", "PhysTwin-style", "0.009634", "0.016842", "0.000624", "0.012816"],
+            ["case 3", "PhysTwin-style", "native", "0.009368", "0.018532", "0.002445", "0.014180"],
+            ["case 4", "PhysTwin-style", "PhysTwin-style", "0.011010", "0.033716", "0.000444", "0.010409"],
+        ],
         "transcript": [
-            "这一页是本周 self-collision 章节的核心证据页。",
-            "左上角是稳定的 `2 x 2` matrix，最优 full-rollout 组合仍然是 case 3，也就是 PhysTwin-style self-collision 加 native Newton ground-contact。",
-            "右上角是 case 3 和 case 4 的 per-frame RMSE 曲线。这里最关键的不是谁最后均值更小，而是 case 4 在 early rollout 其实更好，它是在 frame 40 首次翻符号、并在 frame 107 开始进入持续更差区间。",
-            "下排把机制证据压在一张图里：左边是 frame 40、107、137 的 active ground particle 对比，右边是 self-contact active nodes 加 controller mismatch reminder。",
-            "所以这页只想传达一句话：case 4 不是因为 local self-collision law 错了才输，而是因为 fully PhysTwin-style branch 暴露了 bridge 里剩余的 whole-step mismatch。",
+            "这一页先只放稳定的 `2 x 2` RMSE matrix，让听众先看到数，不先讲解释。",
+            "这四组现在已经是同一提交、同一环境下稳定可复现的结果。",
+            "最重要的 reading 只有两句：第一，best full-rollout pair 仍然是 case 3；第二，fully PhysTwin-style pair 也就是 case 4 反而不是最优。",
+        ],
+    },
+    {
+        "kind": "twocol",
+        "title": "Self-Collision: Stable 2x3 Compare For Case 3 And Case 4",
+        "common_settings": "Each panel is a 2x3 compare: top row = Newton Bridge rollout, bottom row = PhysTwin reference rollout.",
+        "left_label": "case 3\nPhysTwin-style self-collision + native Newton ground-contact",
+        "left_path": SELF_CASE3_GIF,
+        "right_label": "case 4\nPhysTwin-style self-collision + PhysTwin-style ground-contact",
+        "right_path": SELF_CASE4_GIF,
+        "transcript": [
+            "这一页现在用的是和之前 slides 里一致的 `2x3` compare 格式。",
+            "也就是说，每一边都不是单 camera clip，而是同一个 case 的三视角 compare：上排是 Newton Bridge rollout，下排是 PhysTwin reference rollout。",
+            "左边是 case 3，右边是 case 4，唯一差别仍然是 ground-contact law。",
+            "这样老师不需要脑补 reference，因为每个 case 自己就带着 reference row，所以 case 3 和 case 4 的误差表现会更直观。",
         ],
     },
     {
@@ -289,46 +326,40 @@ ROBOT_SLIDES: list[dict] = [
     },
     {
         "kind": "gif_bullets",
-        "title": "Robot: Best Meeting Visual Is The Honest Visible-Tool Baseline",
-        "gif_label": "Same rollout. Left: hero presentation. Right: validation camera.\nVisible rigid tool is the actual physical contactor.",
-        "gif_path": ROBOT_TOOL_HERO_VALIDATION_GIF,
-        "note": (
-            "Visible short rod = actual physical contactor. Same rollout on both sides."
-        ),
-        "bullets": [
-            "The visible tool is the real contactor.",
-            f"Tool contact: `{ROBOT_TOOL_SUMMARY['actual_tool_first_contact_time_s']:.2f} s` -> rope lateral motion: `{ROBOT_TOOL_LATERAL_TIME_S:.2f} s` -> deformation: `{ROBOT_TOOL_DEFORMATION_TIME_S:.2f} s`.",
-            "This is the clearest meeting-facing visual because geometry truth is easy to see.",
-            "Claim: tool-mediated one-way robot -> rope only.",
-        ],
-        "transcript": [
-            "这一页我先放这周最适合上会的 visual result。",
-            "它不是 direct-finger claim，而是更保守、更直观的 visible-tool baseline：native Franka 挂一个可见 short rod，这根 rod 本身就是实际接触体。",
-            "这里我把 hero 和 validation 放成同一条 rollout 的双视角，左边更适合 presentation，右边更适合确认 contact story。",
-            f"这个结果的好处很直接：tool first contact 是清楚的，`{ROBOT_TOOL_SUMMARY['actual_tool_first_contact_time_s']:.2f}` 秒先接触，rope 的 lateral motion 和 deformation 都更晚，所以不会给人 remote push 的感觉。",
-            "所以如果周三现场只需要一条最容易被接受的 robot visual，我会优先停这一页，而且我会明确说它是 tool-mediated one-way baseline，不是更强的 blocking physics claim。",
-        ],
-    },
-    {
-        "kind": "gif_bullets",
-        "title": "Robot: The Promoted Direct-Finger Result Still Matters",
+        "title": "Robot: Main Demo Is Now The Direct-Finger Baseline",
         "gif_label": "Same rollout. Left: hero presentation. Right: validation camera.\nActual finger-box contact remains the proof surface.",
         "gif_path": ROBOT_ONEWAY_HERO_VALIDATION_GIF,
         "note": (
             "Promoted conservative task: `robot_rope_franka_semiimplicit_oneway`."
         ),
         "bullets": [
-            "This is the current conservative direct-finger authority.",
+            "This is the current main slide-facing robot demo.",
             f"Finger contact: `{ROBOT_ONEWAY_SUMMARY['actual_finger_box_first_contact_time_s']:.2f} s` -> deformation: `{ROBOT_ONEWAY_DEFORMATION_TIME_S:.2f} s` -> lateral motion: `{ROBOT_ONEWAY_LATERAL_TIME_S:.2f} s`.",
-            "Proof surface stays actual finger-box contact, not proxy radii.",
+            "No visible tool is present in the clip; the contactor is the robot finger itself.",
             "Claim stays one-way only.",
         ],
         "transcript": [
-            "这一页再把 currently promoted 的 direct-finger path 摆出来。",
-            "我保留这页的原因不是因为它比 visible-tool 更好看，而是因为它对应的是当前被重新认证过的 conservative authority。",
-            f"这里同样是 same-rollout 双视角，而且 proof surface 仍然是 actual finger-box contact。也就是说，`{ROBOT_ONEWAY_SUMMARY['actual_finger_box_first_contact_time_s']:.2f}` 秒才算真正接触，之后 rope deformation 和 lateral motion 才开始。",
-            "这页要讲清楚两点：第一，deformable interaction 是 `SolverSemiImplicit`；第二，这不是 full two-way，也不是 physical blocking。",
-            "所以周三如果老师追问当前 direct-finger claim 到底站到哪里，这页就是最安全的答案。",
+            "这一页现在改成 direct-finger 主展示页。",
+            "也就是说，主线里不再放 visible-tool 那条带红色 short rod 的 clip，而是直接用 robot 手指本体去接触 rope 的 conservative baseline。",
+            "这里我把 hero 和 validation 放成同一条 rollout 的双视角，左边更适合 presentation，右边更适合确认 contact story。",
+            f"这里的 proof surface 仍然是 actual finger-box contact。也就是说，`{ROBOT_ONEWAY_SUMMARY['actual_finger_box_first_contact_time_s']:.2f}` 秒才算真正接触，之后 rope deformation 和 lateral motion 才开始。",
+            "所以这页的主要价值是：画面里不再有额外工具杆子，同时 claim 依然保持保守，不会被误听成 physical blocking 或 full two-way coupling。",
+        ],
+    },
+    {
+        "kind": "body",
+        "title": "Robot: Why The Visible-Tool Baseline Is No Longer In The Main Deck",
+        "bullets": [
+            "It remains a valid honest baseline.",
+            "But it visibly adds a short rod to the robot hand.",
+            "For Wednesday, the cleaner direct-finger clip is easier to present.",
+            "The tool-mediated version stays available as backup only.",
+        ],
+        "transcript": [
+            "这一页只解释一个换页决策：为什么我把 visible-tool 从主线里拿掉了。",
+            "答案不是因为它不 honest。它仍然是 honest baseline，而且 contact readability 其实更直接。",
+            "但因为画面里会多出一根 short rod，周三主线更容易被听众误以为我们还在靠额外工具做展示。",
+            "所以这次 deck 里我把它降成 backup，不再占主展示位。",
         ],
     },
     {
@@ -337,12 +368,12 @@ ROBOT_SLIDES: list[dict] = [
         "bullets": [
             "Recall: bridge baseline is not the open question.",
             "Self-collision: stable ranking, mechanism narrowed, recommendation unchanged.",
-            "Robot: best meeting visual is the honest visible-tool baseline.",
-            "Authority: direct-finger SemiImplicit one-way path is still the promoted conservative result.",
+            "Robot: main deck now shows the direct-finger SemiImplicit baseline.",
+            "Visible-tool baseline remains available only as backup material.",
         ],
         "transcript": [
             "最后一页只做收尾，不加新信息。",
-            "如果周三只记住四句话，我希望就是这四条：bridge baseline 不是 open question；self-collision 的 stable ranking 已经拿到了；最适合上会的 robot visual 是 honest visible-tool baseline；而 direct-finger 这条 conservative authority 也已经被重新认证。",
+            "如果周三只记住四句话，我希望就是这四条：bridge baseline 不是 open question；self-collision 的 stable ranking 已经拿到了；robot 主线现在展示 direct-finger conservative baseline；visible-tool 只作为 backup。",
             "这样整场汇报的边界就很清楚：我们有真实进展，但没有 overclaim 到 physical blocking 或 full two-way coupling。",
         ],
     },
@@ -537,6 +568,45 @@ def _build_self_collision_mechanism_board() -> None:
     plt.close(fig)
 
 
+def _ensure_self_collision_case_videos() -> None:
+    VIDEO_DIR.mkdir(parents=True, exist_ok=True)
+    def render_if_needed(report_path: Path, out_mp4: Path, newton_label: str) -> None:
+        newest_input = max(report_path.stat().st_mtime, RENDER_COMPARISON_2X3.stat().st_mtime)
+        if out_mp4.exists() and out_mp4.stat().st_mtime >= newest_input:
+            return
+        subprocess.run(
+            [
+                sys.executable,
+                str(RENDER_COMPARISON_2X3),
+                "--report",
+                str(report_path),
+                "--newton-label",
+                newton_label,
+                "--phystwin-label",
+                "PhysTwin Reference Rollout",
+                "--camera-indices",
+                "0,1,2",
+                "--out-mp4",
+                str(out_mp4),
+            ],
+            check=True,
+            cwd=str(ROOT),
+        )
+
+    render_if_needed(
+        SELF_CASE3_REPORT,
+        SELF_CASE3_MP4,
+        "Case 3 Newton Bridge",
+    )
+    render_if_needed(
+        SELF_CASE4_REPORT,
+        SELF_CASE4_MP4,
+        "Case 4 Newton Bridge",
+    )
+    shared._ensure_resized_gif(SELF_CASE3_MP4, SELF_CASE3_GIF, width=960, fps=8, max_colors=96)
+    shared._ensure_resized_gif(SELF_CASE4_MP4, SELF_CASE4_GIF, width=960, fps=8, max_colors=96)
+
+
 def _build_self_collision_code_assets() -> None:
     newton_solver = ROOT / "Newton" / "newton" / "newton" / "_src" / "solvers" / "semi_implicit" / "solver_semi_implicit.py"
     bridge_stack = ROOT / "Newton" / "phystwin_bridge" / "tools" / "core" / "phystwin_contact_stack.py"
@@ -588,6 +658,7 @@ def _build_self_collision_code_assets() -> None:
 def _prepare_generated_assets() -> None:
     DECK_GIF_DIR.mkdir(parents=True, exist_ok=True)
     _build_self_collision_mechanism_board()
+    _ensure_self_collision_case_videos()
     _build_self_collision_code_assets()
     _ensure_hstack_gif(ROBOT_TOOL_HERO_MP4, ROBOT_TOOL_VALIDATION_MP4, ROBOT_TOOL_HERO_VALIDATION_GIF)
     _ensure_hstack_gif(ROBOT_ONEWAY_HERO_MP4, ROBOT_ONEWAY_VALIDATION_MP4, ROBOT_ONEWAY_HERO_VALIDATION_GIF)
@@ -662,6 +733,17 @@ def build_meeting_deck(prs: Presentation, slides: list[dict] | None = None) -> N
                 slide["right_label"],
                 slide["right_path"],
                 note=slide.get("note"),
+            )
+        elif kind == "table":
+            shared._table(
+                prs,
+                slide["title"],
+                slide["columns"],
+                slide["rows"],
+                note=slide.get("note"),
+                title_size=slide.get("title_size", 28),
+                note_font_size=slide.get("note_font_size", 11),
+                cell_font_size=slide.get("cell_font_size", 15),
             )
         elif kind == "image":
             shared._image_slide(

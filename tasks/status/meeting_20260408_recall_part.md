@@ -26,7 +26,7 @@
   - explicit agenda / claim-boundary slide
   - compressed recall to two slides
   - kept self-collision to one evidence slide + one conclusion slide
-  - kept robot to one scope slide + two result slides + one close slide
+  - kept robot to one scope slide + one direct-finger main slide + one backup-decision slide + one close slide
 - Preserved the existing stable self-collision update
 - Kept the robot section sourced from current promoted authorities:
   - `robot_visible_rigid_tool_baseline`
@@ -60,14 +60,17 @@
   - `formal_slide/meeting_2026_04_08/robot_direct_finger_three_views/validation_camera.mp4`
   - `formal_slide/meeting_2026_04_08/robot_direct_finger_three_views/validation_camera.gif`
 - Current draft size/state:
-  - `12` slides
-  - `25 MB` PPTX
+  - `13` slides
+  - `42 MB` PPTX
   - bundle-local `gif/` and `images/` assets generated successfully
 
 ## Next Step
 
 - Decide whether additional weekly sections beyond self-collision + robot should be appended.
 - If the Wednesday narrative is shortened further, keep the visible-tool robot slide as the primary visual and the direct-finger slide as the authority backup.
+- Current Wednesday robot order:
+  - main: direct-finger baseline
+  - backup: visible-tool baseline
 
 ## Blocking Issues
 

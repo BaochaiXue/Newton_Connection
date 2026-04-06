@@ -65,8 +65,8 @@ python formal_slide/meeting_2026_04_08/build_meeting_20260408.py
 - later weekly sections can be appended without rebuilding the harness from scratch
 - the current deck remains understandable on first pass, not only after reading the transcript
 - the robot section stays conservative:
-  - visible-tool slide as the best meeting-facing visual
-  - direct-finger slide as the promoted conservative authority
+  - direct-finger slide as the main deck robot visual
+  - visible-tool slide demoted to backup-only explanation
 
 ## Open Questions
 
