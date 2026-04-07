@@ -57,14 +57,17 @@ Current diagnostic lean:
 
 - the old readable tabletop path remains non-physical because it overwrites
   joint state directly
-- but the earlier bridge-layer limit proof is now under reassessment because:
-  - `joint_target_drive` previously erased solver-integrated body motion by
-    re-running FK from stale `joint_q`
-  - current local smokes show the SemiImplicit articulation path becomes
-    numerically stable only after lowering `joint_attach_ke/kd` into a much
-    smaller range
-- a Newton core change is therefore not yet justified; Stage-0 rigid-only
-  blocking must be retried on the repaired bridge-layer path first
+- the repaired bridge-layer `joint_target_drive` path now keeps solver body
+  truth and explicit reduced-state resync instead of stale post-step FK
+  overwrite
+- Stage-0 rigid-only direct-finger blocking has already passed locally on that
+  repaired bridge-layer path
+- the remaining blocker is now rope-integrated presentation quality:
+  - same controller truth and same direct-finger proof surface work
+    numerically
+  - but current rope-integrated candidates still let too much of the hand/arm
+    settle onto the table, so the stronger visual claim is not yet honest
+- a Newton core change is still not justified at this boundary
 
 ## Expected Artifacts
 

@@ -52,7 +52,7 @@ Detailed result meaning belongs in:
 - `interactive_playground_profiling`
   - the exploratory profiling page must stay clearly separate from the committed rope benchmark truth under `rope_perf_apples_to_apples`
 - `robot_rope_franka_physical_blocking`
-  - readable tabletop rope-push baseline exists, but the stronger physical robot-blocking follow-on still lacks a Stage-0 rigid-only proof; the bridge-layer path is now under re-test rather than being treated as definitively impossible
+  - readable tabletop rope-push baseline exists, and the stronger bridge-layer path now has a truthful Stage-0 rigid-only proof; the remaining blocker is the rope-integrated direct-finger presentation quality, not the old stale-FK overwrite claim
 - `robot_visible_rigid_tool_baseline`
   - no blocker at the current conservative claim boundary; the promoted run is now the tool-mediated meeting-safe intermediary
 - `robot_rope_franka_semiimplicit_oneway`
@@ -60,7 +60,7 @@ Detailed result meaning belongs in:
 - `robot_rope_true_size_recalibration`
   - true-size repair is still exploratory and must not override the accepted `c12` baseline without a new honest pass
 - `native_robot_physical_blocking_minimal`
-  - Stage-0 rigid-only blocking proof is not complete yet, so the stronger rope-integrated blocking claim stays blocked
+  - Stage-0 rigid-only blocking proof is complete locally; the stronger rope-integrated direct-finger follow-on still lacks a visually honest pass
 
 ## Promoted Surfaces At A Glance
 

@@ -255,7 +255,6 @@ def main() -> int:
 
     left_idx = int(meta["left_finger_index"])
     right_idx = int(meta["right_finger_index"])
-    ee_idx = int(meta["ee_body_index"])
 
     source = DEMO_PATH.read_text(encoding="utf-8")
     control_sites = {
@@ -281,7 +280,7 @@ def main() -> int:
     shape_tf = np.asarray(model.shape_transform.numpy() if hasattr(model.shape_transform, "numpy") else model.shape_transform)
     import newton  # local import after path bootstrap
 
-    relevant_body_ids = {ee_idx, left_idx, right_idx}
+    relevant_body_ids = {left_idx, right_idx}
     relevant_boxes: list[dict[str, Any]] = []
     world_boxes: list[dict[str, Any]] = []
     for shape_idx in range(int(model.shape_count)):
@@ -314,7 +313,6 @@ def main() -> int:
         "run_id": run_dir.name,
         "table_box": table_box,
         "relevant_robot_boxes": relevant_boxes,
-        "ee_body_index": ee_idx,
         "left_finger_index": left_idx,
         "right_finger_index": right_idx,
     }
@@ -350,8 +348,6 @@ def main() -> int:
             return f"left_box_{entry['shape_index']}"
         if label.endswith("/fr3_rightfinger"):
             return f"right_box_{entry['shape_index']}"
-        if label.endswith("/fr3_link7"):
-            return f"ee_box_{entry['shape_index']}"
         return f"box_{entry['shape_index']}"
 
     center_series: dict[str, np.ndarray] = {}
@@ -391,10 +387,8 @@ def main() -> int:
 
     left_names = [name for name in center_series if name.startswith("left_box")]
     right_names = [name for name in center_series if name.startswith("right_box")]
-    ee_names = [name for name in center_series if name.startswith("ee_box")]
     left_min = float(np.min(np.stack([min_dist_series[name] for name in left_names], axis=0))) if left_names else None
     right_min = float(np.min(np.stack([min_dist_series[name] for name in right_names], axis=0))) if right_names else None
-    ee_min = float(np.min(np.stack([min_dist_series[name] for name in ee_names], axis=0))) if ee_names else None
 
     actual_gripper = 0.5 * (body_q[:, left_idx, :3] + body_q[:, right_idx, :3])
     ee_error = np.linalg.norm(actual_gripper - ee_target_pos, axis=1)
@@ -428,7 +422,7 @@ def main() -> int:
         "robot_table_worst_penetration_box": str(global_name[worst_penetration_frame]),
         "left_finger_table_penetration_min_m": left_min,
         "right_finger_table_penetration_min_m": right_min,
-        "ee_body_table_penetration_min_m": ee_min,
+        "proof_surface": "actual_multi_box_finger_colliders",
         "ee_target_to_actual_error_during_block_mean_m": (
             None if not np.any(contact_mask) else float(np.mean(ee_error[contact_mask]))
         ),

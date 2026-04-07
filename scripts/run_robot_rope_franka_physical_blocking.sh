@@ -4,23 +4,41 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 NEWTON_ROOT="${ROOT}/Newton"
 SCRIPT="${NEWTON_ROOT}/phystwin_bridge/demos/demo_robot_rope_franka.py"
-HERO_VALIDATOR="${ROOT}/scripts/validate_robot_rope_franka_hero.py"
 BLOCK_VALIDATOR="${ROOT}/scripts/validate_robot_rope_franka_physical_blocking.py"
+ARTIFACT_VALIDATOR="${ROOT}/scripts/validate_experiment_artifacts.py"
+DIAG_SCRIPT="${ROOT}/scripts/diagnose_robot_rope_physical_blocking.py"
 RESULT_ROOT="${NEWTON_ROOT}/phystwin_bridge/results/robot_rope_franka_physical_blocking"
-STAMP="$(date +%Y%m%d_%H%M%S)"
+
+BLOCKING_STAGE="rigid_only"
 SHORT_TAG="${SHORT_TAG:-default}"
-if [[ "${1:-}" == "--tag" ]]; then
-  SHORT_TAG="${2:-default}"
-  shift 2
-fi
-RUN_ID="${STAMP}_${SHORT_TAG}"
+EXTRA_ARGS=()
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --tag)
+      SHORT_TAG="${2:-default}"
+      shift 2
+      ;;
+    --blocking-stage)
+      BLOCKING_STAGE="${2:?missing blocking stage}"
+      shift 2
+      ;;
+    *)
+      EXTRA_ARGS+=("$1")
+      shift
+      ;;
+  esac
+done
+
+STAMP="$(date +%Y%m%d_%H%M%S)"
+RUN_ID="${STAMP}_${BLOCKING_STAGE}_${SHORT_TAG}"
 RUN_DIR="${RESULT_ROOT}/candidates/${RUN_ID}"
 PRESENT_DIR="${RUN_DIR}/presentation/work"
 DEBUG_DIR="${RUN_DIR}/debug/work"
 VALIDATION_DIR="${RUN_DIR}/validation/work"
 SIM_DIR="${RUN_DIR}/sim/history"
-
-mkdir -p "${PRESENT_DIR}" "${DEBUG_DIR}" "${VALIDATION_DIR}" "${SIM_DIR}"
+DIAG_DIR="${RUN_DIR}/diagnostics"
+mkdir -p "${PRESENT_DIR}" "${DEBUG_DIR}" "${VALIDATION_DIR}" "${SIM_DIR}" "${DIAG_DIR}"
 
 RUN_COMMAND_TXT="${RUN_DIR}/run_command.txt"
 STDOUT_LOG="${RUN_DIR}/stdout.log"
@@ -31,6 +49,7 @@ MANUAL_REVIEW_JSON="${RUN_DIR}/manual_review.json"
 
 COMMON_ARGS=(
   --task tabletop_push_hero
+  --blocking-stage "${BLOCKING_STAGE}"
   --tabletop-control-mode joint_target_drive
   --sim-dt 5.0e-5
   --substeps 667
@@ -49,7 +68,10 @@ COMMON_ARGS=(
   --finger-target-kd 2.0
   --solver-joint-attach-ke 50.0
   --solver-joint-attach-kd 5.0
-  --particle-radius-scale 0.1
+  --default-body-armature 0.01
+  --default-joint-armature 0.01
+  --ignore-urdf-inertial-definitions
+  --visible-tool-mode none
   --tabletop-initial-pose tabletop_shallow_curve
   --tabletop-hero-hide-pedestal
   --tabletop-preroll-settle-seconds 3.5
@@ -74,8 +96,9 @@ COMMON_ARGS=(
   --tabletop-push-clearance-z 0.008
   --tabletop-retract-clearance-z 0.05
   --tabletop-ee-offset-z 0.22
+  --particle-radius-scale 0.1
   --rope-line-width 0.024
-  "$@"
+  "${EXTRA_ARGS[@]}"
 )
 
 PRESENT_CMD=(
@@ -94,6 +117,8 @@ DEBUG_CMD=(
   --render-mode debug
   --camera-profile hero
   --overlay-label
+  --load-history-from-dir "${PRESENT_DIR}"
+  --load-history-prefix robot_rope_tabletop_hero
   "${COMMON_ARGS[@]}"
 )
 
@@ -103,6 +128,8 @@ VALIDATION_CMD=(
   --prefix robot_rope_tabletop_hero_validation
   --render-mode presentation
   --camera-profile validation
+  --load-history-from-dir "${PRESENT_DIR}"
+  --load-history-prefix robot_rope_tabletop_hero
   "${COMMON_ARGS[@]}"
 )
 
@@ -111,6 +138,7 @@ VALIDATION_CMD=(
   printf '%q ' "${DEBUG_CMD[@]}"; printf '\n'
   printf '%q ' "${VALIDATION_CMD[@]}"; printf '\n'
 } > "${RUN_COMMAND_TXT}"
+cp -f "${RUN_COMMAND_TXT}" "${RUN_DIR}/command.txt"
 
 env | sort > "${ENV_TXT}"
 if git -C "${NEWTON_ROOT}" rev-parse HEAD > "${GIT_REV_TXT}" 2>/dev/null; then
@@ -136,6 +164,7 @@ EOF
 
 {
   echo "[run_robot_rope_franka_physical_blocking] run_dir=${RUN_DIR}"
+  echo "[run_robot_rope_franka_physical_blocking] stage=${BLOCKING_STAGE}"
   echo "[run_robot_rope_franka_physical_blocking] presentation=${PRESENT_CMD[*]}"
   echo "[run_robot_rope_franka_physical_blocking] debug=${DEBUG_CMD[*]}"
   echo "[run_robot_rope_franka_physical_blocking] validation=${VALIDATION_CMD[*]}"
@@ -154,23 +183,41 @@ if [[ -n "${SUMMARY_SRC}" ]]; then
   cp -f "${SUMMARY_SRC}" "${RUN_DIR}/summary.json"
 fi
 
-if [[ -f "${RUN_DIR}/presentation/physics_validation.json" ]]; then
-  cp -f "${RUN_DIR}/presentation/physics_validation.json" "${RUN_DIR}/physics_validation.json"
-elif [[ -f "${RUN_DIR}/presentation/work/physics_validation.json" ]]; then
+if [[ -f "${RUN_DIR}/presentation/work/physics_validation.json" ]]; then
   cp -f "${RUN_DIR}/presentation/work/physics_validation.json" "${RUN_DIR}/physics_validation.json"
+elif [[ -f "${RUN_DIR}/presentation/physics_validation.json" ]]; then
+  cp -f "${RUN_DIR}/presentation/physics_validation.json" "${RUN_DIR}/physics_validation.json"
 fi
 
 find "${PRESENT_DIR}" -maxdepth 1 -name '*.npy' -exec cp -f {} "${SIM_DIR}/" \;
 
-HERO_RC=0
-python "${HERO_VALIDATOR}" "${RUN_DIR}" --manual-review-json "${MANUAL_REVIEW_JSON}" || HERO_RC=$?
+python "${DIAG_SCRIPT}" "${RUN_DIR}" --out-dir "${DIAG_DIR}" >> "${STDOUT_LOG}" 2>> "${STDERR_LOG}"
+cp -f "${DIAG_DIR}/robot_table_contact_report.json" "${RUN_DIR}/robot_table_contact_report.json"
+cp -f "${DIAG_DIR}/ee_target_vs_actual_plot.png" "${RUN_DIR}/ee_target_vs_actual_plot.png"
+cp -f "${DIAG_DIR}/robot_table_penetration_plot.png" "${RUN_DIR}/robot_table_penetration_plot.png"
+cp -f "${DIAG_DIR}/robot_table_contact_sheet.png" "${RUN_DIR}/robot_table_contact_sheet.png"
+
 BLOCK_RC=0
 python "${BLOCK_VALIDATOR}" "${RUN_DIR}" || BLOCK_RC=$?
+cp -f "${RUN_DIR}/blocking_metrics.json" "${RUN_DIR}/metrics.json"
+cp -f "${RUN_DIR}/blocking_validation.md" "${RUN_DIR}/validation.md"
+
+cat > "${RUN_DIR}/README.md" <<EOF
+# robot_rope_franka_physical_blocking
+
+Stage: \`${BLOCKING_STAGE}\`
+
+This candidate uses the native Franka direct-finger path with \`joint_target_drive\`
+as the controller truth surface. hero/debug/validation are rendered from one
+saved rollout history. The final proof surface is the actual imported Franka
+finger-box collider set against the native tabletop box.
+EOF
 
 cat > "${RUN_DIR}/manifest.json" <<EOF
 {
   "run_id": "${RUN_ID}",
   "task": "robot_rope_franka_physical_blocking",
+  "blocking_stage": "${BLOCKING_STAGE}",
   "status": "candidate",
   "run_command_txt": "run_command.txt",
   "videos": {
@@ -180,17 +227,18 @@ cat > "${RUN_DIR}/manifest.json" <<EOF
   },
   "artifacts": {
     "summary_json": "summary.json",
-    "metrics_json": "metrics.json",
-    "validation_md": "validation.md",
-    "ffprobe_json": "ffprobe.json",
-    "contact_sheet": "contact_sheet.png",
-    "keyframes_dir": "keyframes/",
     "physics_validation_json": "physics_validation.json",
-    "physical_blocking_validation_json": "physical_blocking_validation.json",
+    "robot_table_contact_report_json": "robot_table_contact_report.json",
+    "ee_target_vs_actual_plot_png": "ee_target_vs_actual_plot.png",
+    "robot_table_penetration_plot_png": "robot_table_penetration_plot.png",
+    "robot_table_contact_sheet_png": "robot_table_contact_sheet.png",
     "diagnostics_dir": "diagnostics/"
   }
 }
 EOF
+
+ARTIFACT_RC=0
+python "${ARTIFACT_VALIDATOR}" "${RUN_DIR}" --require-video || ARTIFACT_RC=$?
 
 echo
 echo "Candidate run directory:"
@@ -199,9 +247,8 @@ echo "Key outputs:"
 echo "  ${RUN_DIR}/hero_presentation.mp4"
 echo "  ${RUN_DIR}/hero_debug.mp4"
 echo "  ${RUN_DIR}/validation_camera.mp4"
-echo "  ${RUN_DIR}/metrics.json"
-echo "  ${RUN_DIR}/validation.md"
-echo "  ${RUN_DIR}/physical_blocking_validation.json"
+echo "  ${RUN_DIR}/robot_table_contact_report.json"
+echo "  ${RUN_DIR}/blocking_metrics.json"
 echo "Validator exit codes:"
-echo "  hero=${HERO_RC}"
 echo "  blocking=${BLOCK_RC}"
+echo "  artifact=${ARTIFACT_RC}"
