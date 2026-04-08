@@ -5,7 +5,7 @@ This folder is the local bundle for the current `2026-04-08` meeting draft.
 ## Structure
 
 - `build_meeting_20260408.py`
-  - folder-local Python entry point for generating the recall + self-collision + robot slides and transcript
+  - folder-local Python entry point for generating the recall + performance + self-collision + robot slides and transcript
 - `bridge_meeting_20260408_recall_initial.pptx`
   - latest generated PPTX
 - `transcript.md`
@@ -27,6 +27,7 @@ This bundle currently includes:
 
 - opening
 - recall block
+- rope performance profiling block
 - stable self-collision / ground-contact mechanism update
 - conservative robot SemiImplicit section:
   - visible-tool meeting visual

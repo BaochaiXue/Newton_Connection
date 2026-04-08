@@ -13,14 +13,30 @@
 - Active
 - Current meeting bundle now includes:
   - recall block
+  - rope performance profiling block
   - stable self-collision mechanism section
   - conservative robot SemiImplicit section
 - current story shape:
-  - `13` slides
+  - `16` slides
   - tightened for `~30 min`
   - lower text density with detailed analysis moved to transcript
 
 ## Last Completed Step
+
+- Inserted a new rope performance profiling block between recall and
+  self-collision:
+  - committed rope benchmark summary
+  - latest one-to-one rope matchup summary
+  - replay-organization takeaway slide
+- Rebuilt the full `2026-04-08` meeting bundle with the profiling section:
+  - `formal_slide/meeting_2026_04_08/bridge_meeting_20260408_recall_initial.pptx`
+  - `formal_slide/meeting_2026_04_08/transcript.md`
+  - `formal_slide/meeting_2026_04_08/transcript.pdf`
+- Confirmed the current bundle now holds:
+  - `16` slides
+  - `48 MB` PPTX budget still safe
+
+## Previous Completed Step
 
 - Rebuilt the full `2026-04-08` meeting bundle against the current promoted
   robot authorities:
@@ -35,9 +51,6 @@
 - Revalidated the deck-local robot export bundles:
   - `formal_slide/meeting_2026_04_08/robot_visible_tool_three_views/`
   - `formal_slide/meeting_2026_04_08/robot_direct_finger_three_views/`
-
-## Previous Completed Step
-
 - Reworked the deck story to be clearer and shorter:
   - explicit agenda / claim-boundary slide
   - compressed recall to two slides
@@ -83,7 +96,7 @@
 ## Next Step
 
 - Decide whether additional weekly sections beyond self-collision + robot should
-  be appended.
+  still be appended.
 - If the Wednesday narrative is shortened further, preserve the current robot
   order unless a new claim boundary is explicitly chosen:
   - main: direct-finger baseline

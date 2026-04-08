@@ -25,6 +25,7 @@ carry the current weekly result sections once their claim boundaries are ready.
 - Current included sections:
   - opening page
   - recall block
+  - rope performance profiling update
   - stable self-collision update
   - conservative robot section
 - current presentation policy for this bundle:
@@ -33,7 +34,7 @@ carry the current weekly result sections once their claim boundaries are ready.
   - English on-slide, Chinese in transcript
   - detailed mechanism reasoning pushed into transcript
 - current generated bundle state:
-  - `13` slides
+  - `16` slides
   - rebuilt against the current promoted robot authorities on `2026-04-08`
 
 ## Code Entry Points

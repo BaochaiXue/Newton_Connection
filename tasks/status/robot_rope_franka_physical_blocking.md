@@ -236,6 +236,20 @@
     - compared with the earlier `lowprofile_nobox_settle005`, the accepted-hero
       base offset materially improves rope motion while keeping the same
       no-collapse / no-nonfinger-loading pass surface
+- Canonical wrapper re-run after the default update confirms the mitigation is
+  now the actual default entrypoint rather than only a historical candidate:
+  - [auto_fix_20260408](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260408_092911_rope_integrated_auto_fix_20260408)
+  - key metrics:
+    - `tabletop_settle_seconds = 0.05`
+    - `first_contact_phase = hold`
+    - `first_contact_time_s = 3.9353`
+    - `robot_table_first_contact_phase = approach`
+    - `robot_table_first_contact_time_s = 0.16675`
+    - `robot_table_penetration_min_m = -0.000924`
+    - `nonfinger_table_contact_duration_s = 0.0`
+    - `collapse_after_retract_detected = false`
+    - `rope_com_displacement_m = 0.01887`
+    - `blocking_metrics.json -> overall_pass = true`
 - The old overwrite path is definitively non-physical and remains out of scope
   for the stronger claim.
 - The repaired bridge-layer path is now strong enough to prove Stage-0 direct
@@ -285,12 +299,18 @@
 - Current best truthful interpretation:
   - Stage-0 is solved at the bridge layer
   - Stage-1 is no longer blocked by controller-truth ambiguity
-  - Stage-1 is still blocked by early settle contact and gravity sag on the
-    `joint_target_drive` path
+  - Stage-1 default execution is now materially improved:
+    the canonical wrapper no longer starts from the visibly collapsed
+    long-settle/support-box path, and the new default candidate passes the
+    stricter stronger-task validator
+  - the deeper gravity sag issue is still present at the physics level on the
+    `joint_target_drive` path; the current fix is a bridge-layer mitigation, not
+    a full gravity-support solution
   - the old accepted readable-tabletop joint family was not the only Stage-1
     issue; the blocking path itself still needs a gravity-stable pre-pose
-  - no promoted authority has been created yet; there is currently no
-    rope-integrated candidate that passes the stricter settle-onset gate
+  - no promoted authority has been created yet; the new default candidate is a
+    strong local pass surface, but it is not yet a registry-backed stronger
+    promotion
 - Support-box truth audit result:
   - before this step, the visible rear box was only the rendered
     `/demo/robot_pedestal`; it was not present in `model.shape_count`

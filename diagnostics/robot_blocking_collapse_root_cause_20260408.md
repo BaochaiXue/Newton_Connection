@@ -231,3 +231,32 @@ then the bridge likely needs one more ingredient beyond pose cleanup:
 
 Without that, the current SemiImplicit articulation path keeps showing the same
 failure even after controller-structure cleanup.
+
+## Current Practical Fix
+
+The canonical stronger-task wrapper now defaults to the first verified
+bridge-layer mitigation:
+
+- no physical support box by default
+- short visible settle: `tabletop_settle_seconds = 0.05`
+- accepted-hero base offset: `(-0.56, -0.22, 0.10)`
+
+Validated candidate:
+
+- `Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260408_092911_rope_integrated_auto_fix_20260408`
+
+Observed:
+
+- `blocking_metrics.json -> overall_pass = true`
+- `robot_table_first_contact_phase = approach`
+- `frame0_table_overlap_absent = true`
+- `nonfinger_table_contact_duration_s = 0.0`
+- `collapse_after_retract_detected = false`
+- `rope_com_displacement_m = 0.01887`
+
+Interpretation:
+
+- this is a real improvement to the default stronger-demo entrypoint
+- it removes the worst visible “starts collapsed” failure mode
+- it is still a mitigation, not a complete physics-side cure for missing robot
+  gravity support

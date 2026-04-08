@@ -1,30 +1,30 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `meeting_20260408_recall_part`
-> last_reviewed: `2026-04-01`
+> last_reviewed: `2026-04-08`
 > review_interval: `14d`
 > update_rule: `Update when milestones or validation steps for the 2026-04-08 recall bootstrap change.`
-> notes: Active plan for creating the initial 2026-04-08 recall-only meeting bundle.
+> notes: Active plan for maintaining the current 2026-04-08 meeting bundle after recall, performance, self-collision, and robot sections were combined.
 
 # Plan: meeting_20260408_recall_part
 
 ## Goal
 
-Bootstrap a reusable `2026-04-08` meeting bundle with opening + recall slides
-and a matching transcript.
+Maintain a reusable `2026-04-08` meeting bundle with recall, rope performance,
+self-collision, and conservative robot sections plus a matching transcript.
 
 ## Constraints
 
 - no edits under `Newton/newton/`
 - reuse existing validated recall media where possible
-- keep the first pass intentionally narrow
+- keep the main claims conservative and separable
 
 ## Milestones
 
-1. create the task chain and the new meeting bundle directory
-2. build a lightweight `2026-04-08` builder by reusing the `2026-04-01` recall infrastructure
-3. write the initial opening + recall slide content and transcript
-4. generate the first recall-only PPTX and transcript PDF
+1. keep the shared `2026-04-01` helper dependency healthy
+2. keep section order explicit inside the `2026-04-08` bundle
+3. rebuild the meeting-local PPTX and transcript whenever promoted sources or story order change
+4. keep the task/status surfaces truthful about current slide count and scope
 
 ## Validation
 
@@ -32,4 +32,4 @@ and a matching transcript.
 
 ## Notes
 
-- this is the first-pass recall scaffold, not the final full meeting deck
+- current local deck now includes recall + performance + self-collision + robot

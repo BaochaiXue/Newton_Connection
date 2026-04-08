@@ -158,12 +158,12 @@ RECALL_SLIDES: list[dict] = [
         "title": "PhysTwin -> Newton Bridge",
         "subtitle": [
             "April 8 update",
-            "Recall -> Stable self-collision diagnosis -> Conservative robot baseline",
+            "Recall -> Performance profiling -> Stable self-collision diagnosis -> Conservative robot baseline",
             "Goal: one clear claim per slide; no overclaim",
         ],
         "transcript": [
             "这一页是 opening slide。",
-            "我会把这次 meeting 强行压成三段：recall，stable self-collision diagnosis，和 conservative robot baseline。",
+            "我会把这次 meeting 强行压成四段：recall，performance profiling，stable self-collision diagnosis，和 conservative robot baseline。",
             "这样做的目的是避免所有结果混在一起，导致听众既抓不到当前最强结论，也分不清哪些事情仍然没有做到。",
         ],
     },
@@ -172,13 +172,14 @@ RECALL_SLIDES: list[dict] = [
         "title": "Agenda: Keep Four Claims Separate",
         "bullets": [
             "Bridge baseline already exists.",
+            "Rope performance story is still a replay-organization story.",
             "Self-collision issue is now a stable mechanism question.",
             "Robot result is a conservative SemiImplicit one-way baseline.",
             "Out of scope today: physical blocking, full two-way coupling, self-collision parity.",
         ],
         "transcript": [
             "这一页是全场最重要的 scope slide。",
-            "我先把四件事拆开：第一，bridge baseline 已经存在；第二，self-collision 现在是 mechanism question；第三，robot 结果现在只讲 conservative one-way baseline；第四，physical blocking、full two-way coupling 和 self-collision parity 今天都不 claim。",
+            "我先把四件事拆开：第一，bridge baseline 已经存在；第二，rope performance 现在仍然是 replay-organization question；第三，self-collision 现在是 mechanism question；第四，robot 结果现在只讲 conservative one-way baseline。",
             "如果这一页不先说清楚，后面所有 visual 都会被误读得更强。",
         ],
     },
@@ -210,6 +211,123 @@ RECALL_SLIDES: list[dict] = [
             "同样是 rigid support，换成 thick box 以后现象就明显更稳定，所以问题不是 bridge 连 contact baseline 都没有。",
             "这个对比把问题收窄到 geometry-sensitive contact behavior。",
             "所以 recall 的作用已经够了：后面不再需要继续证明 import，而是直接进入本周的 narrowed diagnosis。",
+        ],
+    },
+]
+
+PERFORMANCE_SLIDES: list[dict] = [
+    {
+        "kind": "table",
+        "title": "Performance: The Committed Rope Benchmark Still Sets The Main Gap",
+        "note": "Same `rope_double_hand`, same controller trajectory, same `dt=5e-05`, same `667` substeps, same RTX 4090. E1 is practical context; A0/A1/B0 are the apples-to-apples rows.",
+        "title_size": 24,
+        "note_font_size": 10,
+        "cell_font_size": 13,
+        "columns": ["Row", "Main metric", "RTF", "Reading"],
+        "rows": [
+            [
+                "Newton viewer E1",
+                f"FPS={shared.E1_VIEWER_FPS:.2f}",
+                shared._fmt(shared.E1_ROW, "rtf_mean", ".3f"),
+                "visible render-on viewer now clears realtime",
+            ],
+            [
+                "Newton A0",
+                shared._fmt(shared.A0_ROW, "ms_per_substep_mean", ".6f") + " ms/substep",
+                shared._fmt(shared.A0_ROW, "rtf_mean", ".3f"),
+                "baseline no-render replay path",
+            ],
+            [
+                "Newton A1",
+                shared._fmt(shared.A1_ROW, "ms_per_substep_mean", ".6f") + " ms/substep",
+                shared._fmt(shared.A1_ROW, "rtf_mean", ".3f"),
+                f"precomputed replay path; still {shared.A1_VS_B0:.2f}x slower than PhysTwin",
+            ],
+            [
+                "PhysTwin B0",
+                shared._fmt(shared.B0_ROW, "ms_per_substep_mean", ".6f") + " ms/substep",
+                shared._fmt(shared.B0_ROW, "rtf_mean", ".3f"),
+                "same-case headless reference",
+            ],
+        ],
+        "transcript": [
+            "这一页先把 committed rope benchmark 的主数字重新摆出来，因为 04-08 这次也不能把 profiling 整段丢掉。",
+            "核心 benchmark 还是同一个 `rope_double_hand`、同一条 controller trajectory、同样的 `dt` 和 `667` 个 substeps。",
+            f"先看 practical row：当前 visible viewer E1 大约是 `{shared.E1_VIEWER_FPS:.2f} FPS`，`RTF` 是 `{shared._fmt(shared.E1_ROW, 'rtf_mean', '.3f')}x`，所以 practical viewer 已经能跑。",
+            f"但 apples-to-apples rows 还是同一个结论：Newton A0 是 `{shared._fmt(shared.A0_ROW, 'ms_per_substep_mean', '.6f')} ms/substep`，Newton A1 是 `{shared._fmt(shared.A1_ROW, 'ms_per_substep_mean', '.6f')} ms/substep`，PhysTwin B0 是 `{shared._fmt(shared.B0_ROW, 'ms_per_substep_mean', '.6f')} ms/substep`。",
+            f"所以最重要的人话结论没有变：即使换成更轻的 A1 replay path，Newton 还是比 PhysTwin B0 慢大约 `{shared.A1_VS_B0:.2f}x`。",
+            "也就是说，这一段 profiling 不该被理解成『viewer 已经能跑，所以 performance story 结束了』。viewer 能跑是一回事，same-case rope replay 还差多少 headroom 是另一回事。",
+        ],
+    },
+    {
+        "kind": "table",
+        "title": "Performance: Latest One-To-One Rope Matchup Preserves The Same Story",
+        "note": "Latest exploratory same-case cross-check only. Same `rope_double_hand`, render OFF, same controller trajectory on both sides.",
+        "title_size": 24,
+        "note_font_size": 10,
+        "cell_font_size": 13,
+        "columns": ["Concept", "Newton A0", "Newton A1", "PhysTwin", "Reading"],
+        "rows": [
+            [
+                "throughput anchor",
+                shared._fmt_float(shared.IP_BASELINE_MS, ".6f", suffix=" ms"),
+                shared._fmt_float(shared.IP_PRECOMPUTED_MS, ".6f", suffix=" ms"),
+                shared._fmt_float(shared.IP_PHYSTWIN_MS, ".6f", suffix=" ms"),
+                f"A1 is still {shared._fmt_float(shared.IP_A1_VS_B0, '.2f', suffix='x')} slower; A0 -> A1 saves {shared._fmt_float(shared.IP_A0_TO_A1, '.2f', suffix='x')}.",
+            ],
+            [
+                "controller upload",
+                shared._fmt_float(shared._csv_float(shared.IP_CONTROLLER_UPLOAD, "newton_baseline_amortized_ms_per_substep"), ".6f", suffix=" ms"),
+                shared._fmt_float(shared._csv_float(shared.IP_CONTROLLER_UPLOAD, "newton_precomputed_amortized_ms_per_substep"), ".6f", suffix=" ms"),
+                shared._fmt_float(shared._csv_float(shared.IP_CONTROLLER_UPLOAD, "phystwin_amortized_ms_per_substep"), ".6f", suffix=" ms"),
+                "real Newton baseline tax; mostly removed in A1",
+            ],
+            [
+                "collision candidates",
+                shared._fmt_float(shared._csv_float(shared.IP_COLLISION_CANDIDATES, "newton_baseline_amortized_ms_per_substep"), ".6f", suffix=" ms"),
+                shared._fmt_float(shared._csv_float(shared.IP_COLLISION_CANDIDATES, "newton_precomputed_amortized_ms_per_substep"), ".6f", suffix=" ms"),
+                shared._fmt_float(shared._csv_float(shared.IP_COLLISION_CANDIDATES, "phystwin_amortized_ms_per_substep"), ".6f", suffix=" ms"),
+                "not the rope bottleneck story",
+            ],
+            [
+                "spring forces",
+                shared._fmt_float(shared._csv_float(shared.IP_SPRINGS, "newton_baseline_amortized_ms_per_substep"), ".6f", suffix=" ms"),
+                shared._fmt_float(shared._csv_float(shared.IP_SPRINGS, "newton_precomputed_amortized_ms_per_substep"), ".6f", suffix=" ms"),
+                shared._fmt_float(shared._csv_float(shared.IP_SPRINGS, "phystwin_amortized_ms_per_substep"), ".6f", suffix=" ms"),
+                "direct spring evaluation is not where Newton loses",
+            ],
+            [
+                "integration + drag",
+                shared._fmt_float(shared._csv_float(shared.IP_INTEGRATION, "newton_baseline_amortized_ms_per_substep"), ".6f", suffix=" ms"),
+                shared._fmt_float(shared._csv_float(shared.IP_INTEGRATION, "newton_precomputed_amortized_ms_per_substep"), ".6f", suffix=" ms"),
+                shared._fmt_float(shared._csv_float(shared.IP_INTEGRATION, "phystwin_amortized_ms_per_substep"), ".6f", suffix=" ms"),
+                "persistent Newton-heavy bucket after replay precompute",
+            ],
+        ],
+        "transcript": [
+            "这一页再用最新 one-to-one rope cross-check 把 story 讲具体一点。",
+            "它还是同一个 rope case，只是这次我们把 Newton 和 PhysTwin 的操作按语义重新对齐，方便回答『rope case 还慢在哪些阶段』。",
+            f"throughput anchor 先不变：Newton A0 是 `{shared._fmt_float(shared.IP_BASELINE_MS, '.6f')} ms/substep`，Newton A1 是 `{shared._fmt_float(shared.IP_PRECOMPUTED_MS, '.6f')} ms/substep`，PhysTwin 是 `{shared._fmt_float(shared.IP_PHYSTWIN_MS, '.6f')} ms/substep`。",
+            "controller upload 这一行说明 replay feeding tax 在 rope 上是真实存在的，但 collision candidate generation 这一行三边都是 `n/a`，所以 rope case 不是 cloth 那种 collision-generation 主导的故事。",
+            "反过来，真正持续偏重的是 integration plus drag 这一桶，再加上 Newton 保留的更重 solver/runtime shell。",
+            "所以这页最后只服务一个判断：rope performance 的 remaining gap 更像 replay organization 之外的 broader solver shell，而不是 collision bottleneck。",
+        ],
+    },
+    {
+        "kind": "body",
+        "title": "Performance: Optimize Replay Organization Before Render Tuning",
+        "bullets": [
+            f"A0 -> A1 already saves about `{shared.A0_TO_A1:.2f}x`, so controller replay organization matters.",
+            f"Viewer ON is only about `{shared.A1_TO_E1:.2f}x` slower than the same replay with render OFF on this rope case.",
+            "Rope one-to-one grouped matchup says collision generation is not the rope bottleneck story.",
+            "Next optimization target stays replay organization / solver shell, not render tuning first.",
+        ],
+        "transcript": [
+            "这一页只收 performance 的 actionable takeaway。",
+            f"第一，A0 到 A1 已经省了大约 `{shared.A0_TO_A1:.2f}x`，所以 replay organization 确实重要。",
+            f"第二，viewer ON 相对同 replay 的 render OFF 只慢大约 `{shared.A1_TO_E1:.2f}x`，所以 rope case 上 render tuning 不是第一优先级。",
+            "第三，latest one-to-one grouped matchup 又说明 rope 这里不是 collision-generation bottleneck。",
+            "所以更实际的工程结论还是不变：如果要给 viewer 再争取 headroom，先看 replay organization 和 broader solver shell，而不是先花时间在 render tuning 上。",
         ],
     },
 ]
@@ -379,7 +497,7 @@ ROBOT_SLIDES: list[dict] = [
     },
 ]
 
-MEETING_SLIDES: list[dict] = RECALL_SLIDES + SELF_COLLISION_SLIDES + ROBOT_SLIDES
+MEETING_SLIDES: list[dict] = RECALL_SLIDES + PERFORMANCE_SLIDES + SELF_COLLISION_SLIDES + ROBOT_SLIDES
 
 
 def _ensure_hstack_gif(left_src: Path, right_src: Path, out_gif: Path, *, fps: int = 8, height: int = 360, max_colors: int = 128) -> Path:
@@ -671,9 +789,9 @@ def _build_transcript_md(slides: list[dict] | None = None) -> str:
         "# Meeting Transcript — PhysTwin -> Newton Bridge",
         "",
         "语言：中文主讲 + English terminology  ",
-        "形式：opening + recall + self-collision update + robot baseline  ",
-        "结构：1. opening  2. recall  3. stable self-collision diagnosis  4. conservative robot SemiImplicit baseline  ",
-        "目标：给 `2026-04-08` meeting 保留 recall baseline，并补上本周最稳妥的 robot visual result。  ",
+        "形式：opening + recall + performance profiling + self-collision update + robot baseline  ",
+        "结构：1. opening  2. recall  3. rope performance profiling  4. stable self-collision diagnosis  5. conservative robot SemiImplicit baseline  ",
+        "目标：给 `2026-04-08` meeting 保留 recall baseline，同时把当前 rope performance、stable self-collision 和 conservative robot result 放回同一套可 defend 的 deck。  ",
         "",
         "---",
         "",
