@@ -193,8 +193,15 @@ def _read_video_frame(video_path: Path, frame_idx: int) -> np.ndarray:
     cap = cv2.VideoCapture(str(video_path))
     if not cap.isOpened():
         raise RuntimeError(f"Failed to open video: {video_path}")
-    cap.set(cv2.CAP_PROP_POS_FRAMES, int(frame_idx))
+    frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
+    safe_idx = int(frame_idx)
+    if frame_count > 0:
+        safe_idx = min(max(0, safe_idx), frame_count - 1)
+    cap.set(cv2.CAP_PROP_POS_FRAMES, safe_idx)
     ok, frame = cap.read()
+    if (not ok or frame is None) and safe_idx > 0:
+        cap.set(cv2.CAP_PROP_POS_FRAMES, safe_idx - 1)
+        ok, frame = cap.read()
     cap.release()
     if not ok or frame is None:
         raise RuntimeError(f"Failed to read frame {frame_idx} from {video_path}")
@@ -321,6 +328,18 @@ def main() -> int:
         "table_box": table_box,
         "relevant_robot_boxes": relevant_boxes,
         "all_robot_boxes": robot_boxes,
+        "support_box": {
+            "enabled": bool(meta.get("support_box_enabled", False)),
+            "physical": bool(meta.get("support_box_physical", False)),
+            "shape_index": meta.get("support_box_shape_index"),
+            "shape_label": meta.get("support_box_shape_label"),
+            "center": np.asarray(meta.get("support_box_center", [0.0, 0.0, 0.0]), dtype=np.float32).astype(float).tolist()
+            if meta.get("support_box_center") is not None
+            else None,
+            "scale": np.asarray(meta.get("support_box_scale", [0.0, 0.0, 0.0]), dtype=np.float32).astype(float).tolist()
+            if meta.get("support_box_scale") is not None
+            else None,
+        },
         "left_finger_index": left_idx,
         "right_finger_index": right_idx,
     }
@@ -467,6 +486,69 @@ def main() -> int:
     ee_vel[1:] = (actual_gripper[1:] - actual_gripper[:-1]) / max(frame_dt, 1.0e-12)
     target_vel = np.zeros((frames, 3), dtype=np.float32)
     target_vel[1:] = (ee_target_pos[1:] - ee_target_pos[:-1]) / max(frame_dt, 1.0e-12)
+    particle_history_path = run_dir / "sim" / "history" / "robot_rope_tabletop_hero_particle_q_all.npy"
+    particle_q_all = np.load(particle_history_path).astype(np.float32, copy=False) if particle_history_path.exists() else None
+
+    support_box_shape_index = meta.get("support_box_shape_index")
+    support_box_is_physical = bool(meta.get("support_box_physical", False) and support_box_shape_index is not None)
+    support_target_suffixes = ("/fr3_link5", "/fr3_link6", "/fr3_link7", "/fr3_hand")
+    support_contact_gap = np.full((frames,), np.inf, dtype=np.float32)
+    support_contact_body = np.full((frames,), "", dtype=object)
+    support_contact_links: list[list[str]] = [[] for _ in range(frames)]
+    if support_box_is_physical:
+        state = model.state()
+        if state.body_qd is not None:
+            state.body_qd.zero_()
+        contacts = model.contacts()
+        shape_body_arr = np.asarray(model.shape_body.numpy() if hasattr(model.shape_body, "numpy") else model.shape_body)
+        for frame_idx in range(frames):
+            state.body_q.assign(body_q[frame_idx].astype(np.float32, copy=False))
+            if state.body_qd is not None:
+                state.body_qd.zero_()
+            if state.particle_q is not None and particle_q_all is not None:
+                state.particle_q.assign(particle_q_all[frame_idx].astype(np.float32, copy=False))
+            model.collide(state, contacts)
+            count = int(np.asarray(contacts.rigid_contact_count.numpy()).reshape(-1)[0])
+            if count <= 0:
+                continue
+            shape0 = contacts.rigid_contact_shape0.numpy()[:count].astype(np.int32)
+            shape1 = contacts.rigid_contact_shape1.numpy()[:count].astype(np.int32)
+            point0 = contacts.rigid_contact_point0.numpy()[:count].astype(np.float32)
+            point1 = contacts.rigid_contact_point1.numpy()[:count].astype(np.float32)
+            normal = contacts.rigid_contact_normal.numpy()[:count].astype(np.float32)
+            for ci in range(count):
+                s0 = int(shape0[ci])
+                s1 = int(shape1[ci])
+                if int(s0) != int(support_box_shape_index) and int(s1) != int(support_box_shape_index):
+                    continue
+                other_shape = int(s1) if int(s0) == int(support_box_shape_index) else int(s0)
+                other_body_idx = int(shape_body_arr[other_shape])
+                if other_body_idx < 0:
+                    continue
+                other_label = str(model.body_label[other_body_idx])
+                if not any(other_label.endswith(suffix) for suffix in support_target_suffixes):
+                    continue
+                if other_label not in support_contact_links[frame_idx]:
+                    support_contact_links[frame_idx].append(other_label)
+                gap = float(np.dot(point1[ci] - point0[ci], normal[ci]))
+                if gap < float(support_contact_gap[frame_idx]):
+                    support_contact_gap[frame_idx] = gap
+                    support_contact_body[frame_idx] = other_label
+
+    support_contact_mask = np.asarray(np.isfinite(support_contact_gap), dtype=bool)
+    support_contact_frames = np.flatnonzero(support_contact_mask)
+    first_support_contact_frame = None if support_contact_frames.size == 0 else int(support_contact_frames[0])
+    support_box_contact_duration_s = float(np.count_nonzero(support_contact_mask) * frame_dt)
+    support_box_penetration_min_m = None if not np.any(support_contact_mask) else float(np.min(support_contact_gap[support_contact_mask]))
+    support_box_peak_penetrating_link_name = (
+        None if not np.any(support_contact_mask) else str(support_contact_body[int(np.argmin(support_contact_gap))])
+    )
+    support_box_contact_link_names = sorted({link for links in support_contact_links for link in links})
+    support_box_contact_fraction_after_first_touch = (
+        None
+        if first_support_contact_frame is None
+        else float(np.count_nonzero(support_contact_mask[first_support_contact_frame:]) / max(frames - first_support_contact_frame, 1))
+    )
 
     box_vel_z = np.zeros((frames,), dtype=np.float32)
     for frame_idx in range(1, frames):
@@ -505,6 +587,17 @@ def main() -> int:
         "fr3_link7_table_penetration_min_m": nonfinger_report["fr3_link7_table_penetration_min_m"],
         "fr3_link6_table_penetration_min_m": nonfinger_report["fr3_link6_table_penetration_min_m"],
         "fr3_link5_table_penetration_min_m": nonfinger_report["fr3_link5_table_penetration_min_m"],
+        "support_box_is_physical_collider": support_box_is_physical,
+        "support_box_shape_index": support_box_shape_index,
+        "robot_support_box_first_contact_frame": first_support_contact_frame,
+        "robot_support_box_first_contact_time_s": (
+            None if first_support_contact_frame is None else float(first_support_contact_frame * frame_dt)
+        ),
+        "support_box_contact_duration_s": support_box_contact_duration_s,
+        "support_box_penetration_min_m": support_box_penetration_min_m,
+        "support_box_contact_link_names": support_box_contact_link_names,
+        "support_box_peak_penetrating_link_name": support_box_peak_penetrating_link_name,
+        "support_box_contact_fraction_after_first_touch": support_box_contact_fraction_after_first_touch,
         "ee_target_to_actual_error_during_block_mean_m": (
             None if not np.any(contact_mask) else float(np.mean(ee_error[contact_mask]))
         ),
@@ -527,6 +620,23 @@ def main() -> int:
         "hidden_helper_detected": False,
     }
     _write_json(out_dir / "robot_table_contact_report.json", robot_table_contact_report)
+    _write_json(
+        out_dir / "support_box_contact_report.json",
+        {
+            "run_id": run_dir.name,
+            "support_box_is_physical_collider": support_box_is_physical,
+            "support_box_shape_index": support_box_shape_index,
+            "robot_support_box_first_contact_frame": first_support_contact_frame,
+            "robot_support_box_first_contact_time_s": (
+                None if first_support_contact_frame is None else float(first_support_contact_frame * frame_dt)
+            ),
+            "support_box_contact_duration_s": support_box_contact_duration_s,
+            "support_box_penetration_min_m": support_box_penetration_min_m,
+            "support_box_contact_link_names": support_box_contact_link_names,
+            "support_box_peak_penetrating_link_name": support_box_peak_penetrating_link_name,
+            "support_box_contact_fraction_after_first_touch": support_box_contact_fraction_after_first_touch,
+        },
+    )
 
     with (out_dir / "robot_table_clearance_timeseries.csv").open("w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
@@ -651,6 +761,20 @@ def main() -> int:
     plt.ylabel("distance [m]")
     plt.tight_layout()
     plt.savefig(out_dir / "nonfinger_table_penetration_plot.png", dpi=160)
+    plt.close()
+
+    plt.figure(figsize=(10, 4))
+    if support_box_is_physical:
+        if np.any(support_contact_mask):
+            plt.plot(t, support_contact_gap, label="robot vs support-box signed gap")
+        else:
+            plt.plot(t, np.zeros_like(t), label="robot vs support-box signed gap (no contact)")
+        plt.axhline(0.0, color="r", linestyle="--", linewidth=1.0, label="contact threshold")
+        plt.legend()
+    plt.xlabel("time [s]")
+    plt.ylabel("gap [m]")
+    plt.tight_layout()
+    plt.savefig(out_dir / "support_box_penetration_plot.png", dpi=160)
     plt.close()
 
     plt.figure(figsize=(10, 6))
@@ -783,11 +907,16 @@ def main() -> int:
             f"- non-finger table contact duration: `{nonfinger_report['nonfinger_table_contact_duration_s']}` s",
             f"- non-finger minimum penetration: `{nonfinger_report['nonfinger_penetration_min_m']}` m",
             f"- collapse after retract detected: `{'YES' if collapse_after_retract_detected else 'NO'}`",
+            f"- support box is physical collider: `{'YES' if support_box_is_physical else 'NO'}`",
+            f"- support box contact duration: `{support_box_contact_duration_s}` s",
+            f"- support box penetration min: `{support_box_penetration_min_m}` m",
+            f"- support box contact links: `{support_box_contact_link_names}`",
             "",
             "Interpretation:",
             "",
             "- Direct-finger blocking is only acceptable if the table load stays on the finger boxes rather than migrating to the hand/forearm.",
             "- Non-finger table loading or a retract-time collapse should fail the rope-integrated presentation candidate even if finger-box blocking error exists.",
+            "- If the support box is shown and required for the story, it must appear here as a real physical support contact rather than a render-only prop.",
         ],
     )
 

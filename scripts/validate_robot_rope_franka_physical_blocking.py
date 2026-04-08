@@ -13,9 +13,12 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--contact-report", type=Path, default=None)
     p.add_argument("--max-penetration-m", type=float, default=0.002)
     p.add_argument("--max-nonfinger-penetration-m", type=float, default=0.001)
+    p.add_argument("--max-support-box-penetration-m", type=float, default=0.002)
     p.add_argument("--min-blocking-error-m", type=float, default=0.001)
     p.add_argument("--min-table-contact-duration-s", type=float, default=0.10)
     p.add_argument("--max-nonfinger-table-contact-duration-s", type=float, default=0.25)
+    p.add_argument("--require-support-box", action=argparse.BooleanOptionalAction, default=False)
+    p.add_argument("--min-support-box-contact-duration-s", type=float, default=0.05)
     return p.parse_args()
 
 
@@ -60,6 +63,11 @@ def main() -> int:
     nonfinger_penetration = report.get("nonfinger_penetration_min_m")
     nonfinger_penetration = None if nonfinger_penetration is None else float(nonfinger_penetration)
     collapse_after_retract = bool(report.get("collapse_after_retract_detected"))
+    support_box_duration = report.get("support_box_contact_duration_s")
+    support_box_duration = None if support_box_duration is None else float(support_box_duration)
+    support_box_penetration = report.get("support_box_penetration_min_m")
+    support_box_penetration = None if support_box_penetration is None else float(support_box_penetration)
+    support_box_is_physical = bool(report.get("support_box_is_physical_collider", False))
 
     rope_contact_started = bool(
         summary.get("actual_finger_box_contact_started") or summary.get("actual_tool_contact_started")
@@ -81,6 +89,14 @@ def main() -> int:
             nonfinger_penetration is None or nonfinger_penetration >= -float(args.max_nonfinger_penetration_m)
         )
         gates["collapse_after_retract_absent"] = not collapse_after_retract
+        if bool(args.require_support_box):
+            gates["support_box_is_physical"] = support_box_is_physical
+            gates["support_box_contact_duration_pass"] = (
+                support_box_duration is not None and support_box_duration >= float(args.min_support_box_contact_duration_s)
+            )
+            gates["support_box_penetration_tolerance_pass"] = (
+                support_box_penetration is not None and support_box_penetration >= -float(args.max_support_box_penetration_m)
+            )
 
     overall_pass = all(gates.values())
 
@@ -98,6 +114,9 @@ def main() -> int:
             "nonfinger_table_contact_duration_s": nonfinger_duration,
             "nonfinger_penetration_min_m": nonfinger_penetration,
             "collapse_after_retract_detected": collapse_after_retract,
+            "support_box_contact_duration_s": support_box_duration,
+            "support_box_penetration_min_m": support_box_penetration,
+            "support_box_is_physical_collider": support_box_is_physical,
         },
         "overall_pass": overall_pass,
     }
@@ -118,6 +137,10 @@ def main() -> int:
         md_lines.append(f"- non-finger table-contact duration pass: {'YES' if gates['nonfinger_table_contact_duration_pass'] else 'NO'}")
         md_lines.append(f"- non-finger penetration tolerance pass: {'YES' if gates['nonfinger_penetration_tolerance_pass'] else 'NO'}")
         md_lines.append(f"- collapse after retract absent: {'YES' if gates['collapse_after_retract_absent'] else 'NO'}")
+        if bool(args.require_support_box):
+            md_lines.append(f"- support box is physical: {'YES' if gates['support_box_is_physical'] else 'NO'}")
+            md_lines.append(f"- support box contact duration pass: {'YES' if gates['support_box_contact_duration_pass'] else 'NO'}")
+            md_lines.append(f"- support box penetration tolerance pass: {'YES' if gates['support_box_penetration_tolerance_pass'] else 'NO'}")
     md_lines.extend(
         [
             "",
@@ -128,6 +151,9 @@ def main() -> int:
             f"- nonfinger_table_contact_duration_s: `{nonfinger_duration}`",
             f"- nonfinger_penetration_min_m: `{nonfinger_penetration}`",
             f"- collapse_after_retract_detected: `{collapse_after_retract}`",
+            f"- support_box_is_physical_collider: `{support_box_is_physical}`",
+            f"- support_box_contact_duration_s: `{support_box_duration}`",
+            f"- support_box_penetration_min_m: `{support_box_penetration}`",
             "",
             f"- overall pass: {'YES' if overall_pass else 'NO'}",
         ]

@@ -72,6 +72,24 @@
   - [c14_lowprofile_base06](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260407_194528_rope_integrated_c14_lowprofile_base06)
   - [c15_lowprofile_shortretract](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260407_194810_rope_integrated_c15_lowprofile_shortretract)
   - [c16_lowprofile_hi_clearance](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260407_194847_rope_integrated_c16_lowprofile_hi_clearance)
+- Audited the Stage-1 rear support/backstop box and upgraded it from a
+  render-only prop to a real native Newton static box collider:
+  - new tabletop arg: `--tabletop-support-box-mode`
+  - current blocking wrapper now uses `--tabletop-support-box-mode physical`
+  - same box dimensions/transform now drive both render and physics
+- Added support-box-aware diagnostics and validator surfaces:
+  - `support_box_contact_report.json`
+  - `support_box_penetration_plot.png`
+  - `support_box_contact_duration_s`
+  - `support_box_penetration_min_m`
+  - `support_box_contact_link_names`
+  - `support_box_peak_penetrating_link_name`
+  - `support_box_contact_fraction_after_first_touch`
+  - validator `--require-support-box`
+- Produced three new support-box-aware Stage-1 candidates:
+  - [c17_supportbox_shortretract](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260407_210340_rope_integrated_c17_supportbox_shortretract)
+  - [c18_supportbox_base06](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260407_210403_rope_integrated_c18_supportbox_base06)
+  - [c19_supportbox_hi_clearance](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260407_210403_rope_integrated_c19_supportbox_hi_clearance)
 
 ## Latest Findings
 
@@ -131,16 +149,44 @@
     aligned enough to review as presentation-ready candidates
   - no promoted authority has been created yet; the strongest local candidate
     is currently `c15`
+- Support-box truth audit result:
+  - before this step, the visible rear box was only the rendered
+    `/demo/robot_pedestal`; it was not present in `model.shape_count`
+  - after the bridge-layer patch, the box is now a real world shape:
+    - `support_box_is_physical_collider = true`
+    - shape label/index: `tabletop_support_box / 55`
+- What the new support-box runs proved:
+  - `c17/c18/c19` all show real support-box contact on
+    `fr3_link5` and `fr3_link6`
+  - the box is therefore no longer “just visible story”; it is in the actual
+    physics path
+- What they also revealed:
+  - the current support-box geometry is too aggressive
+  - all three support-box candidates begin support contact at frame `0`
+  - all three fail the new support-box penetration gate with deep overlap:
+    - `c17`: `support_box_penetration_min_m = -0.22690`
+    - `c18`: `support_box_penetration_min_m = -0.22689`
+    - `c19`: `support_box_penetration_min_m = -0.22690`
+  - although finger blocking, rope visibility, and non-finger table loading all
+    remain acceptable, the box is currently acting as an overlapping pillar
+    rather than a clean backstop
+- Current best truthful interpretation at this new boundary:
+  - support box is now a real proof surface candidate
+  - but the present support-box geometry is still too intrusive to support a
+    stronger-task promotion
+  - the next honest move is support-box geometry retuning, not more truth-path
+    work or Newton core changes
 
 ## Next Step
 
 - Keep the repaired `joint_target_drive` bridge path; do not revert to state
   overwrite and do not touch `Newton/newton/`.
-- If `c15` survives final human review, treat it as the lead rope-integrated
-  stronger candidate and only then consider whether a committed authority file
-  is warranted.
-- If not, continue bounded retuning on the new blocking family rather than
-  returning to the old readable-baseline joint waypoints.
+- Continue bounded retuning on the physical support-box geometry itself:
+  - offset
+  - half-extents
+  - only then the Stage-1 reference if needed
+- The first small-box trial is now in progress:
+  - `c20_supportbox_smallbackstop`
 - Preserve the stronger-task docs truthful and keep the old readable tabletop
   baseline as the only accepted robot-rope authority until a rope-integrated
   candidate is visually honest as well as numerically passing.

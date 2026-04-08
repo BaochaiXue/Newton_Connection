@@ -77,9 +77,10 @@ COMMON_ARGS=(
   --default-joint-armature 0.01
   --ignore-urdf-inertial-definitions
   --visible-tool-mode none
+  --tabletop-support-box-mode physical
   --tabletop-joint-reference-family blocking_lowprofile
   --tabletop-initial-pose tabletop_shallow_curve
-  --tabletop-hero-hide-pedestal
+  --no-tabletop-hero-hide-pedestal
   --tabletop-preroll-settle-seconds 3.5
   --tabletop-preroll-damping-scale 2.5
   --tabletop-settle-seconds 0.8
@@ -204,13 +205,42 @@ find "${PRESENT_DIR}" -maxdepth 1 -name '*.npy' -exec cp -f {} "${SIM_DIR}/" \;
 python "${DIAG_SCRIPT}" "${RUN_DIR}" --out-dir "${DIAG_DIR}" >> "${STDOUT_LOG}" 2>> "${STDERR_LOG}"
 cp -f "${DIAG_DIR}/robot_table_contact_report.json" "${RUN_DIR}/robot_table_contact_report.json"
 cp -f "${DIAG_DIR}/nonfinger_table_contact_report.json" "${RUN_DIR}/nonfinger_table_contact_report.json"
+cp -f "${DIAG_DIR}/support_box_contact_report.json" "${RUN_DIR}/support_box_contact_report.json"
 cp -f "${DIAG_DIR}/ee_target_vs_actual_plot.png" "${RUN_DIR}/ee_target_vs_actual_plot.png"
 cp -f "${DIAG_DIR}/robot_table_penetration_plot.png" "${RUN_DIR}/robot_table_penetration_plot.png"
 cp -f "${DIAG_DIR}/robot_table_contact_sheet.png" "${RUN_DIR}/robot_table_contact_sheet.png"
 cp -f "${DIAG_DIR}/nonfinger_table_penetration_plot.png" "${RUN_DIR}/nonfinger_table_penetration_plot.png"
+cp -f "${DIAG_DIR}/support_box_penetration_plot.png" "${RUN_DIR}/support_box_penetration_plot.png"
+
+python - "${RUN_DIR}" <<'PY'
+import json, pathlib, sys
+run_dir = pathlib.Path(sys.argv[1])
+summary_path = run_dir / "summary.json"
+stage_summary = None
+for cand in run_dir.glob("*_summary.json"):
+    if cand.name != "summary.json":
+        stage_summary = cand
+        break
+if not summary_path.exists():
+    raise SystemExit(0)
+summary = json.loads(summary_path.read_text())
+for name in ["robot_table_contact_report.json", "nonfinger_table_contact_report.json", "support_box_contact_report.json"]:
+    path = run_dir / name
+    if not path.exists():
+        continue
+    payload = json.loads(path.read_text())
+    summary.update(payload)
+summary_path.write_text(json.dumps(summary, indent=2))
+if stage_summary is not None:
+    stage_summary.write_text(json.dumps(summary, indent=2))
+PY
 
 BLOCK_RC=0
-python "${BLOCK_VALIDATOR}" "${RUN_DIR}" || BLOCK_RC=$?
+VALIDATOR_ARGS=()
+if [[ "${BLOCKING_STAGE}" == "rope_integrated" ]]; then
+  VALIDATOR_ARGS+=(--require-support-box)
+fi
+python "${BLOCK_VALIDATOR}" "${RUN_DIR}" "${VALIDATOR_ARGS[@]}" || BLOCK_RC=$?
 cp -f "${RUN_DIR}/blocking_metrics.json" "${RUN_DIR}/metrics.json"
 cp -f "${RUN_DIR}/blocking_validation.md" "${RUN_DIR}/validation.md"
 
@@ -253,9 +283,11 @@ cat > "${RUN_DIR}/manifest.json" <<EOF
     "physics_validation_json": "physics_validation.json",
     "robot_table_contact_report_json": "robot_table_contact_report.json",
     "nonfinger_table_contact_report_json": "nonfinger_table_contact_report.json",
+    "support_box_contact_report_json": "support_box_contact_report.json",
     "ee_target_vs_actual_plot_png": "ee_target_vs_actual_plot.png",
     "robot_table_penetration_plot_png": "robot_table_penetration_plot.png",
     "nonfinger_table_penetration_plot_png": "nonfinger_table_penetration_plot.png",
+    "support_box_penetration_plot_png": "support_box_penetration_plot.png",
     "robot_table_contact_sheet_png": "robot_table_contact_sheet.png",
     "diagnostics_dir": "diagnostics/"
   }
@@ -274,6 +306,7 @@ echo "  ${RUN_DIR}/${DEBUG_VIDEO_NAME}"
 echo "  ${RUN_DIR}/${VALIDATION_VIDEO_NAME}"
 echo "  ${RUN_DIR}/robot_table_contact_report.json"
 echo "  ${RUN_DIR}/nonfinger_table_contact_report.json"
+echo "  ${RUN_DIR}/support_box_contact_report.json"
 echo "  ${RUN_DIR}/blocking_metrics.json"
 echo "Validator exit codes:"
 echo "  blocking=${BLOCK_RC}"

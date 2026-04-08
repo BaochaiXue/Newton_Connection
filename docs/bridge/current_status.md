@@ -39,7 +39,7 @@ Detailed result meaning belongs in:
 - `robot_visible_rigid_tool_baseline`
   - preserve the newly promoted tool-mediated tabletop baseline; keep it clearly separate from both the direct-finger tabletop baseline and the blocked physical-blocking task, and keep its canonical rerender path single-history so hero/debug/validation cannot drift apart
 - `robot_rope_franka_physical_blocking`
-  - stronger follow-on task now has fail-closed stage labeling, direct-finger non-finger-loading diagnostics, and a new blocking-specific low-profile joint reference family; the current best local rope-integrated candidate is `c15`, still unpromoted
+  - stronger follow-on task now has fail-closed stage labeling, direct-finger non-finger-loading diagnostics, a new blocking-specific low-profile joint reference family, and a real physical support-box path; the current blocker is support-box geometry overlap, not whether the box is in physics
 - `native_robot_physical_blocking_minimal`
   - keep the Stage-0 rigid-only blocking proof separate from the rope-integrated blocking follow-on
 - `remote_interaction_root_cause`
@@ -52,7 +52,7 @@ Detailed result meaning belongs in:
 - `interactive_playground_profiling`
   - the exploratory profiling page must stay clearly separate from the committed rope benchmark truth under `rope_perf_apples_to_apples`
 - `robot_rope_franka_physical_blocking`
-  - readable tabletop rope-push baseline exists, Stage-0 direct-finger blocking is proven, and the new rope-integrated `blocking_lowprofile` family now removes measured non-finger table loading; the remaining step is authority-level acceptance of the best local candidate rather than another solver-truth rescue
+  - readable tabletop rope-push baseline exists, Stage-0 direct-finger blocking is proven, the new rope-integrated `blocking_lowprofile` family removes measured non-finger table loading, and the rear support box is now a real static collider; the remaining blocker is that current support-box geometry starts in deep overlap
 - `robot_visible_rigid_tool_baseline`
   - no blocker at the current conservative claim boundary; the promoted run is now the tool-mediated meeting-safe intermediary
 - `robot_rope_franka_semiimplicit_oneway`
