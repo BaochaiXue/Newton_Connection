@@ -45,6 +45,10 @@ Detailed result meaning belongs in:
     wrapper; it removes the old overwrite path and uses Cartesian waypoints +
     native IK + `control.joint_target_pos`, but the current bridge-side solver
     route still sags into table contact during `pre`
+- `robot_rope_franka_split_v3`
+  - new split-architecture workstream is now active; v2 is treated as a
+    completed limit-proof rather than the final route, and the next step is a
+    robot-first Stage-0 path followed by rope reintegration
 - `native_robot_physical_blocking_minimal`
   - keep the Stage-0 rigid-only blocking proof separate from the rope-integrated blocking follow-on
 - `remote_interaction_root_cause`
@@ -65,6 +69,9 @@ Detailed result meaning belongs in:
     no v2 candidate is promoted yet because even the seed-based reachable phase
     generator still drops into `pre`-phase table contact before readable
     finger-to-rope interaction starts
+- `robot_rope_franka_split_v3`
+  - no code candidate yet; current blocker is still the unresolved choice and
+    implementation of the robot-first Stage-0 execution path
 - `robot_visible_rigid_tool_baseline`
   - no blocker at the current conservative claim boundary; the promoted run is now the tool-mediated meeting-safe intermediary
 - `robot_rope_franka_semiimplicit_oneway`
@@ -114,6 +121,12 @@ Detailed result meaning belongs in:
   - current meaning: new native-style tabletop rope demo rewrite path; code and
     wrapper exist locally, but no candidate yet satisfies startup stability +
     real table blocking + readable rope push at the same time
+- `robot_rope_franka_split_v3`
+  - task status: `tasks/status/robot_rope_franka_split_v3.md`
+  - committed authority: none yet
+  - current meaning: next architecture workstream after v2; target is a
+    robot-first / deformable split design consistent with official Newton
+    patterns
 - `rope_perf_apples_to_apples`
   - task status: `tasks/status/rope_perf_apples_to_apples.md`
   - committed authority: `results_meta/tasks/rope_perf_apples_to_apples.json`
@@ -135,6 +148,7 @@ Detailed result meaning belongs in:
 - `native_robot_physical_blocking_minimal`
 - `robot_rope_franka_physical_blocking`
 - `robot_rope_franka_native_v2`
+- `robot_rope_franka_split_v3`
 - `remote_interaction_root_cause`
 - `native_robot_rope_drop_release`
 - `interactive_playground_profiling`
