@@ -256,7 +256,51 @@ Observed:
 
 Interpretation:
 
-- this is a real improvement to the default stronger-demo entrypoint
-- it removes the worst visible “starts collapsed” failure mode
-- it is still a mitigation, not a complete physics-side cure for missing robot
-  gravity support
+- this is a real improvement to the default stronger-demo entrypoint at the
+  numeric gate level
+- however stricter visual review of the full clip still shows a visibly
+  collapsed low posture by the middle of the video
+- therefore this is not yet sufficient as the final meeting-grade direct-finger
+  stronger demo
+
+## Latest Negative Results
+
+### Accepted-family retry
+
+Probe:
+
+- `tmp_vis/accepted_family_probe/accepted_family_probe.mp4`
+
+Result:
+
+- rope motion remains real
+- but the robot is still visibly collapsed by the middle of the clip
+
+Conclusion:
+
+- changing back from `blocking_lowprofile` to the accepted joint family alone
+  does not solve the stricter display problem
+
+### First bridge-side gravity-compensation attempt
+
+Implementation:
+
+- `demo_robot_rope_franka.py`
+- new knob: `--joint-gravity-comp-scale`
+
+Tests:
+
+- `tmp_vis/gravcomp_probe/gravcomp_probe.mp4`
+  - `joint_gravity_comp_scale = 1.0`
+- `tmp_vis/gravcomp_pos5/gravcomp_pos5.mp4`
+  - `joint_gravity_comp_scale = 5.0`
+
+Result:
+
+- scale `1.0` still shows visible collapse
+- scale `5.0` suppresses rope contact entirely
+
+Conclusion:
+
+- the first simple `J^T m g` feedforward approximation is not yet a working
+  repair

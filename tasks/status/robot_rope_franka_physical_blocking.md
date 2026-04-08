@@ -7,13 +7,83 @@
   baseline
 - Current state is now: `Stage-0 direct-finger rigid-only blocking passes on
   the repaired bridge-layer joint_target_drive path; Stage-1 rope-integrated
-  runs now preserve body-truth and artifact truth, but the best current
-  candidates still fail visual acceptance because the arm settles into a long
-  table-loaded posture / late-scene collapse rather than a clean,
-  presentation-ready finger-blocking push`
+  runs now preserve body-truth and artifact truth; the new official-style
+  `MuJoCo + gravcomp` source path is integrated and can drive a replayed rope
+  scene, but there is still no meeting-grade clip that simultaneously satisfies
+  all three requirements because the official-style source trajectory remains
+  poorly presented in-camera and the current replayed composite still reads as
+  an unclear folded-hand contact story instead of a clean robot-table-rope
+  interaction`
 
 ## Last Completed Step
 
+- Integrated an official-Newton-style robot source path instead of continuing
+  to rely only on SemiImplicit bridge fixes:
+  - installed local `mujoco` and `mujoco_warp` backends so
+    `SolverMuJoCo` is runnable in this workspace
+  - added `--solver-type {semiimplicit,mujoco}` and `--enable-gravcomp` to:
+    - [demo_native_robot_physical_blocking_minimal.py](../../Newton/phystwin_bridge/demos/demo_native_robot_physical_blocking_minimal.py)
+    - [demo_robot_rope_franka_native_v2.py](../../Newton/phystwin_bridge/demos/demo_robot_rope_franka_native_v2.py)
+  - registered MuJoCo custom attributes and enabled Franka gravity
+    compensation on the arm/link bodies
+- Verified a real official-style source -> replay pipeline:
+  - source history:
+    - `tmp_vis/native_v2_mujoco_rigid_explicit/`
+  - replayed rope composite:
+    - `tmp_vis/rope_replay_mujoco_explicit/robot_push_rope_franka.mp4`
+  - fixed a replay/render misdiagnosis:
+    - the earlier one-frame replay video was not a render bug
+    - it came from running replay with the wrong `substeps`
+    - after re-running with `--substeps 667`, the replayed composite renders
+      the full `119` output frames correctly
+- Added a direct offline geometric audit for the official-style source path:
+  - built the same native-v2 model offline and checked finger-box/table-box
+    clearance against saved `body_q` histories
+  - result:
+    - `native_v2_mujoco_rigid_explicit` does reach real finger-vs-table
+      contact (`min_clear ≈ -7.6 mm`, first contact around `0.4336 s`)
+    - a lower-clearance variant reaches essentially the same table-contact
+      onset, so the remaining problem is not “no contact,” but presentation and
+      trajectory readability
+- Performed strict visual review on both the official-style source render and
+  the replayed rope composite at `start / 1/2 / 3/4`:
+  - source review:
+    - `tmp_vis/native_v2_mujoco_rigid_explicit_render/robot_push_rope_franka.mp4`
+    - `tmp_vis/native_v2_mujoco_rigid_explicit_render_camB/robot_push_rope_franka.mp4`
+  - replay review:
+    - `tmp_vis/rope_replay_mujoco_explicit/robot_push_rope_franka.mp4`
+    - `tmp_vis/rope_replay_mujoco_explicit_camA/robot_push_rope_franka.mp4`
+  - verdict:
+    - the robot no longer shows the old visible “flop onto the table” failure
+      from the pure SemiImplicit direct-drive path
+    - however, the official-style source trajectory still folds the arm into a
+      compact posture that reads badly on camera, and the replayed composite
+      therefore still does not communicate requirement `1/2/3` clearly enough
+- Performed stricter visual review on the strongest current rope-integrated
+  candidates by checking the opening plus the `1/2` and `3/4` video positions:
+  - `auto_fix_20260408`
+  - `settle005_heroBase`
+  - `settle005_heroBase_curve`
+  - `c13_stage1_higherhold`
+  - result:
+    - all still fail the stricter visual standard because the robot becomes a
+      visibly collapsed low posture by mid-clip
+- Tested the accepted-tabletop reference family on the same stronger
+  `joint_target_drive` path with short settle and hero-base geometry:
+  - `tmp_vis/accepted_family_probe/accepted_family_probe.mp4`
+  - result:
+    - rope motion remains real (`rope_com_displacement_m ≈ 0.0184`)
+    - but the robot still collapses visibly by mid-clip
+- Tested approximate bridge-side gravity compensation via `control.joint_f`:
+  - new knob in
+    [demo_robot_rope_franka.py](../../Newton/phystwin_bridge/demos/demo_robot_rope_franka.py):
+    `--joint-gravity-comp-scale`
+  - `joint_gravity_comp_scale = 1.0`:
+    - `tmp_vis/gravcomp_probe/gravcomp_probe.mp4`
+    - still early contact and weaker rope motion
+  - `joint_gravity_comp_scale = 5.0`:
+    - `tmp_vis/gravcomp_pos5/gravcomp_pos5.mp4`
+    - removes rope contact entirely and is therefore not a valid repair
 - Wrote a direct root-cause diagnosis for why the stronger robot path sags
   while the accepted tabletop demo does not:
   - [robot_blocking_collapse_root_cause_20260408.md](../../diagnostics/robot_blocking_collapse_root_cause_20260408.md)
@@ -33,6 +103,8 @@
   - the repaired `joint_target_drive` truth path remains unchanged
   - reproducing candidate:
     - [lowprofile_nobox_settle005](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260408_070714_rope_integrated_lowprofile_nobox_settle005)
+  - canonical wrapper re-run on the new defaults now also passes:
+    - [auto_fix_20260408](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260408_092911_rope_integrated_auto_fix_20260408)
 - Ran an isolating check with the accepted hero base offset but
   `joint_target_drive` control:
   - `tmp_vis/robot_drive_vs_hero_base_test/drive_hero_base_test_summary.json`
@@ -250,6 +322,18 @@
     - `collapse_after_retract_detected = false`
     - `rope_com_displacement_m = 0.01887`
     - `blocking_metrics.json -> overall_pass = true`
+  - stricter visual verdict:
+    - despite the numeric pass, this candidate still looks visibly collapsed by
+      the middle of the clip and is therefore not yet meeting-grade
+- Accepted-family probe verdict:
+  - [tmp_vis/accepted_family_probe/accepted_family_probe.mp4](../../tmp_vis/accepted_family_probe/accepted_family_probe.mp4)
+  - same story:
+    - better rope motion than the `joint_f` probe
+    - still visibly collapsed by mid-clip
+- Approximate `joint_f` gravity-compensation verdict:
+  - current J^T m g bridge-side approximation is not yet a working fix
+  - scale `1.0` still leaves visible collapse
+  - scale `5.0` destroys rope contact
 - The old overwrite path is definitively non-physical and remains out of scope
   for the stronger claim.
 - The repaired bridge-layer path is now strong enough to prove Stage-0 direct
@@ -299,18 +383,17 @@
 - Current best truthful interpretation:
   - Stage-0 is solved at the bridge layer
   - Stage-1 is no longer blocked by controller-truth ambiguity
-  - Stage-1 default execution is now materially improved:
-    the canonical wrapper no longer starts from the visibly collapsed
-    long-settle/support-box path, and the new default candidate passes the
-    stricter stronger-task validator
+  - Stage-1 default execution is numerically improved but still not visually
+    acceptable under the stricter display standard
   - the deeper gravity sag issue is still present at the physics level on the
-    `joint_target_drive` path; the current fix is a bridge-layer mitigation, not
-    a full gravity-support solution
+    `joint_target_drive` path
+  - the first bridge-side `joint_f` gravity-compensation attempt has been
+    tested and is currently not sufficient
   - the old accepted readable-tabletop joint family was not the only Stage-1
     issue; the blocking path itself still needs a gravity-stable pre-pose
-  - no promoted authority has been created yet; the new default candidate is a
-    strong local pass surface, but it is not yet a registry-backed stronger
-    promotion
+  - no promoted authority has been created yet; there is still no current
+    direct-finger stronger candidate that passes both numeric blocking checks
+    and the stricter start / 1/2 / 3/4 visual review
 - Support-box truth audit result:
   - before this step, the visible rear box was only the rendered
     `/demo/robot_pedestal`; it was not present in `model.shape_count`

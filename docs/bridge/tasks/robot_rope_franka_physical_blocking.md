@@ -62,13 +62,25 @@ Current diagnostic lean:
   overwrite
 - Stage-0 rigid-only direct-finger blocking has already passed locally on that
   repaired bridge-layer path
-- the remaining blocker is now rope-integrated presentation quality:
-  - same controller truth and same direct-finger proof surface work
-    numerically
-  - the old readable-baseline joint family still let too much of the hand/arm
-    settle onto the table
-  - the new local `blocking_lowprofile` family plus non-finger table-loading
-    diagnostics is the current honest path forward
+- the current canonical stronger-task wrapper now defaults to the first verified
+  no-support-box / short-settle mitigation:
+  - `tabletop_support_box_mode = none`
+  - `tabletop_settle_seconds = 0.05`
+  - `tabletop_robot_base_offset = (-0.56, -0.22, 0.10)`
+  - local pass surface:
+    `Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260408_092911_rope_integrated_auto_fix_20260408`
+- this is a real bridge-layer improvement, but not the final physics-side cure:
+  - the default stronger demo no longer starts from the obviously collapsed
+    long-settle/support-box path
+  - however the deeper robot-side gravity-support problem on the current
+    `SolverSemiImplicit` articulation path is still not fully removed
+- the new official-style source path is now also integrated locally:
+  - `demo_robot_rope_franka_native_v2.py` can run with `SolverMuJoCo` and
+    Franka gravcomp enabled
+  - a replayed rope composite from that source is now reproducible
+  - but there is still no meeting-grade clip that honestly and clearly shows
+    all three requirements at once; the remaining problem is trajectory /
+    presentation readability, not merely “make the old bridge path less bad”
 - a Newton core change is still not justified at this boundary
 
 ## Expected Artifacts
