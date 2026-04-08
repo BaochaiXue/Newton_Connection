@@ -65,8 +65,10 @@ Current diagnostic lean:
 - the remaining blocker is now rope-integrated presentation quality:
   - same controller truth and same direct-finger proof surface work
     numerically
-  - but current rope-integrated candidates still let too much of the hand/arm
-    settle onto the table, so the stronger visual claim is not yet honest
+  - the old readable-baseline joint family still let too much of the hand/arm
+    settle onto the table
+  - the new local `blocking_lowprofile` family plus non-finger table-loading
+    diagnostics is the current honest path forward
 - a Newton core change is still not justified at this boundary
 
 ## Expected Artifacts

@@ -178,15 +178,15 @@ def _line_no_containing(source: str, needle: str) -> int | None:
 
 
 def _discover_video(run_dir: Path, name: str) -> Path:
-    mapping = {
-        "validation_camera": run_dir / "validation_camera.mp4",
-        "hero_presentation": run_dir / "hero_presentation.mp4",
-        "hero_debug": run_dir / "hero_debug.mp4",
-    }
-    path = mapping[name]
-    if not path.exists():
-        raise FileNotFoundError(f"Missing video for contact sheet: {path}")
-    return path
+    exact = run_dir / f"{name}.mp4"
+    if exact.exists():
+        return exact
+    matches = sorted(run_dir.glob(f"*_{name}.mp4"))
+    if len(matches) == 1:
+        return matches[0]
+    if len(matches) > 1:
+        return matches[0]
+    raise FileNotFoundError(f"Missing video for contact sheet matching: {name}")
 
 
 def _read_video_frame(video_path: Path, frame_idx: int) -> np.ndarray:
@@ -259,12 +259,16 @@ def main() -> int:
     source = DEMO_PATH.read_text(encoding="utf-8")
     control_sites = {
         "tabletop_joint_mode": _line_no_containing(source, 'tabletop_joint_mode = tabletop_task and str(args.tabletop_control_mode) == "joint_trajectory"'),
+        "tabletop_joint_drive_mode": _line_no_containing(source, 'tabletop_joint_drive_mode = tabletop_task and str(meta.get("tabletop_control_mode")) == "joint_target_drive"'),
         "pre_state_in_q": _line_no_containing(source, "state_in.joint_q.assign(joint_target_np)"),
         "pre_state_in_qd": _line_no_containing(source, "state_in.joint_qd.assign(joint_target_qd)"),
+        "drive_target_pos": _line_no_containing(source, "control_joint_target_pos.assign(joint_target_np)"),
+        "drive_target_vel": _line_no_containing(source, "control_joint_target_vel.zero_()"),
         "solver_step": _line_no_containing(source, "solver.step(state_in, state_out, None, contacts, sim_dt)"),
         "post_state_out_q": _line_no_containing(source, "state_out.joint_q.assign(joint_target_np)"),
         "post_state_out_qd": _line_no_containing(source, "state_out.joint_qd.assign(joint_target_qd)"),
         "post_eval_fk": _line_no_containing(source, "newton.eval_fk(model, state_out.joint_q, state_out.joint_qd, state_out)"),
+        "post_eval_ik": _line_no_containing(source, "newton.eval_ik(model, state_out, state_out.joint_q, state_out.joint_qd)"),
         "builder_joint_target_pos": _line_no_containing(source, "builder.joint_target_pos[:9] = robot_joint_init.tolist()"),
         "builder_joint_target_ke": _line_no_containing(source, "builder.joint_target_ke[:7] = [float(args.joint_target_ke)] * 7"),
         "builder_joint_target_kd": _line_no_containing(source, "builder.joint_target_kd[:7] = [float(args.joint_target_kd)] * 7"),
@@ -282,6 +286,7 @@ def main() -> int:
 
     relevant_body_ids = {left_idx, right_idx}
     relevant_boxes: list[dict[str, Any]] = []
+    robot_boxes: list[dict[str, Any]] = []
     world_boxes: list[dict[str, Any]] = []
     for shape_idx in range(int(model.shape_count)):
         body_idx = int(shape_body[shape_idx])
@@ -296,6 +301,8 @@ def main() -> int:
         }
         if body_idx in relevant_body_ids:
             relevant_boxes.append(entry)
+        if body_idx >= 0 and "fr3_" in str(entry["body_label"]):
+            robot_boxes.append(entry)
         if body_idx < 0:
             world_boxes.append(entry)
 
@@ -313,6 +320,7 @@ def main() -> int:
         "run_id": run_dir.name,
         "table_box": table_box,
         "relevant_robot_boxes": relevant_boxes,
+        "all_robot_boxes": robot_boxes,
         "left_finger_index": left_idx,
         "right_finger_index": right_idx,
     }
@@ -348,7 +356,7 @@ def main() -> int:
             return f"left_box_{entry['shape_index']}"
         if label.endswith("/fr3_rightfinger"):
             return f"right_box_{entry['shape_index']}"
-        return f"box_{entry['shape_index']}"
+        return f"{label.split('/')[-1]}_box_{entry['shape_index']}"
 
     center_series: dict[str, np.ndarray] = {}
     quat_series: dict[str, np.ndarray] = {}
@@ -356,7 +364,7 @@ def main() -> int:
     global_min = np.full((frames,), np.inf, dtype=np.float32)
     global_name = np.full((frames,), "", dtype=object)
 
-    for entry in relevant_boxes:
+    for entry in robot_boxes:
         name = box_name(entry)
         center_arr = np.zeros((frames, 3), dtype=np.float32)
         quat_arr = np.zeros((frames, 4), dtype=np.float32)
@@ -377,6 +385,11 @@ def main() -> int:
         center_series[name] = center_arr
         quat_series[name] = quat_arr
         min_dist_series[name] = min_arr
+        if int(entry["body_index"]) in relevant_body_ids:
+            for frame_idx in range(frames):
+                if float(min_arr[frame_idx]) < float(global_min[frame_idx]):
+                    global_min[frame_idx] = float(min_arr[frame_idx])
+                    global_name[frame_idx] = name
 
     contact_mask = np.asarray(global_min <= float(args.contact_threshold_m), dtype=bool)
     contact_frames = np.flatnonzero(contact_mask)
@@ -389,6 +402,64 @@ def main() -> int:
     right_names = [name for name in center_series if name.startswith("right_box")]
     left_min = float(np.min(np.stack([min_dist_series[name] for name in left_names], axis=0))) if left_names else None
     right_min = float(np.min(np.stack([min_dist_series[name] for name in right_names], axis=0))) if right_names else None
+
+    nonfinger_boxes = [entry for entry in robot_boxes if int(entry["body_index"]) not in relevant_body_ids]
+    nonfinger_body_series: dict[str, np.ndarray] = {}
+    for entry in nonfinger_boxes:
+        body_label = str(entry["body_label"])
+        name = box_name(entry)
+        if body_label not in nonfinger_body_series:
+            nonfinger_body_series[body_label] = min_dist_series[name].copy()
+        else:
+            nonfinger_body_series[body_label] = np.minimum(nonfinger_body_series[body_label], min_dist_series[name])
+    nonfinger_global_min = np.full((frames,), np.inf, dtype=np.float32)
+    nonfinger_global_body = np.full((frames,), "", dtype=object)
+    for body_label, series in nonfinger_body_series.items():
+        for frame_idx in range(frames):
+            if float(series[frame_idx]) < float(nonfinger_global_min[frame_idx]):
+                nonfinger_global_min[frame_idx] = float(series[frame_idx])
+                nonfinger_global_body[frame_idx] = body_label
+    nonfinger_contact_mask = np.asarray(nonfinger_global_min <= float(args.contact_threshold_m), dtype=bool)
+    nonfinger_contact_frames = np.flatnonzero(nonfinger_contact_mask)
+    first_nonfinger_contact_frame = None if nonfinger_contact_frames.size == 0 else int(nonfinger_contact_frames[0])
+    nonfinger_worst_frame = int(np.argmin(nonfinger_global_min)) if nonfinger_body_series else None
+    nonfinger_penetration_min = None if not nonfinger_body_series else float(np.min(nonfinger_global_min))
+    nonfinger_worst_body = None if nonfinger_worst_frame is None else str(nonfinger_global_body[nonfinger_worst_frame])
+
+    phase_names = [str(module._task_phase_state(float(i) * frame_dt, meta)[0]) for i in range(frames)]
+    retract_mask = np.asarray([name == "retract" for name in phase_names], dtype=bool)
+    collapse_frame_idx = None
+    if np.any(nonfinger_contact_mask & retract_mask):
+        collapse_frame_idx = int(np.flatnonzero(nonfinger_contact_mask & retract_mask)[0])
+    collapse_after_retract_detected = collapse_frame_idx is not None
+
+    def _body_min_by_suffix(suffix: str) -> float | None:
+        for body_label, series in nonfinger_body_series.items():
+            if str(body_label).endswith(suffix):
+                return float(np.min(series))
+        return None
+
+    nonfinger_report = {
+        "run_id": run_dir.name,
+        "first_nonfinger_table_contact_frame": first_nonfinger_contact_frame,
+        "first_nonfinger_table_contact_time_s": (
+            None if first_nonfinger_contact_frame is None else float(first_nonfinger_contact_frame * frame_dt)
+        ),
+        "nonfinger_table_contact_duration_s": float(np.count_nonzero(nonfinger_contact_mask) * frame_dt),
+        "nonfinger_penetration_min_m": nonfinger_penetration_min,
+        "nonfinger_worst_contact_frame": nonfinger_worst_frame,
+        "nonfinger_worst_contact_time_s": (
+            None if nonfinger_worst_frame is None else float(nonfinger_worst_frame * frame_dt)
+        ),
+        "nonfinger_worst_contact_body": nonfinger_worst_body,
+        "collapse_after_retract_detected": bool(collapse_after_retract_detected),
+        "collapse_frame_idx": collapse_frame_idx,
+        "fr3_hand_table_penetration_min_m": _body_min_by_suffix("/fr3_hand"),
+        "fr3_link7_table_penetration_min_m": _body_min_by_suffix("/fr3_link7"),
+        "fr3_link6_table_penetration_min_m": _body_min_by_suffix("/fr3_link6"),
+        "fr3_link5_table_penetration_min_m": _body_min_by_suffix("/fr3_link5"),
+    }
+    _write_json(out_dir / "nonfinger_table_contact_report.json", nonfinger_report)
 
     actual_gripper = 0.5 * (body_q[:, left_idx, :3] + body_q[:, right_idx, :3])
     ee_error = np.linalg.norm(actual_gripper - ee_target_pos, axis=1)
@@ -423,6 +494,17 @@ def main() -> int:
         "left_finger_table_penetration_min_m": left_min,
         "right_finger_table_penetration_min_m": right_min,
         "proof_surface": "actual_multi_box_finger_colliders",
+        "first_nonfinger_table_contact_frame": first_nonfinger_contact_frame,
+        "first_nonfinger_table_contact_time_s": nonfinger_report["first_nonfinger_table_contact_time_s"],
+        "nonfinger_table_contact_duration_s": nonfinger_report["nonfinger_table_contact_duration_s"],
+        "nonfinger_penetration_min_m": nonfinger_penetration_min,
+        "nonfinger_worst_contact_body": nonfinger_worst_body,
+        "collapse_after_retract_detected": bool(collapse_after_retract_detected),
+        "collapse_frame_idx": collapse_frame_idx,
+        "fr3_hand_table_penetration_min_m": nonfinger_report["fr3_hand_table_penetration_min_m"],
+        "fr3_link7_table_penetration_min_m": nonfinger_report["fr3_link7_table_penetration_min_m"],
+        "fr3_link6_table_penetration_min_m": nonfinger_report["fr3_link6_table_penetration_min_m"],
+        "fr3_link5_table_penetration_min_m": nonfinger_report["fr3_link5_table_penetration_min_m"],
         "ee_target_to_actual_error_during_block_mean_m": (
             None if not np.any(contact_mask) else float(np.mean(ee_error[contact_mask]))
         ),
@@ -453,6 +535,8 @@ def main() -> int:
             "time_s",
             "global_min_signed_distance_m",
             "contact_box_name",
+            "nonfinger_min_signed_distance_m",
+            "nonfinger_contact_body_name",
             "ee_target_to_actual_error_m",
             "actual_gripper_z_m",
             "target_gripper_z_m",
@@ -468,6 +552,8 @@ def main() -> int:
                 float(frame_idx * frame_dt),
                 float(global_min[frame_idx]),
                 str(global_name[frame_idx]),
+                float(nonfinger_global_min[frame_idx]) if nonfinger_body_series else float("nan"),
+                str(nonfinger_global_body[frame_idx]),
                 float(ee_error[frame_idx]),
                 float(actual_gripper[frame_idx, 2]),
                 float(ee_target_pos[frame_idx, 2]),
@@ -476,6 +562,28 @@ def main() -> int:
                 float(normal_speed_into_table[frame_idx]),
             ]
             row.extend(float(min_dist_series[name][frame_idx]) for name in sorted(min_dist_series))
+            writer.writerow(row)
+
+    with (out_dir / "nonfinger_table_clearance_timeseries.csv").open("w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        header = [
+            "frame",
+            "time_s",
+            "nonfinger_min_signed_distance_m",
+            "nonfinger_contact_body_name",
+            "phase_name",
+        ]
+        header.extend(sorted(nonfinger_body_series))
+        writer.writerow(header)
+        for frame_idx in range(frames):
+            row = [
+                frame_idx,
+                float(frame_idx * frame_dt),
+                float(nonfinger_global_min[frame_idx]) if nonfinger_body_series else float("nan"),
+                str(nonfinger_global_body[frame_idx]),
+                str(phase_names[frame_idx]),
+            ]
+            row.extend(float(nonfinger_body_series[name][frame_idx]) for name in sorted(nonfinger_body_series))
             writer.writerow(row)
 
     with (out_dir / "ee_target_vs_actual_timeseries.csv").open("w", newline="", encoding="utf-8") as f:
@@ -531,6 +639,20 @@ def main() -> int:
     plt.savefig(out_dir / "robot_table_penetration_plot.png", dpi=160)
     plt.close()
 
+    plt.figure(figsize=(10, 4))
+    if nonfinger_body_series:
+        plt.plot(t, nonfinger_global_min, label="non-finger robot vs table signed distance")
+        plt.axhline(0.0, color="r", linestyle="--", linewidth=1.0, label="contact threshold")
+        if np.any(retract_mask):
+            retract_start = float(t[np.flatnonzero(retract_mask)[0]])
+            plt.axvline(retract_start, color="k", linestyle=":", linewidth=1.0, label="retract start")
+        plt.legend()
+    plt.xlabel("time [s]")
+    plt.ylabel("distance [m]")
+    plt.tight_layout()
+    plt.savefig(out_dir / "nonfinger_table_penetration_plot.png", dpi=160)
+    plt.close()
+
     plt.figure(figsize=(10, 6))
     plt.subplot(2, 1, 1)
     plt.plot(t, ee_target_pos[:, 2], label="target gripper z")
@@ -569,9 +691,19 @@ def main() -> int:
     ]
     _make_contact_sheet(contact_sheet_frames, contact_sheet_labels, out_dir / "robot_table_contact_sheet.png")
 
-    _write_md(
-        out_dir / "control_update_order_report.md",
-        [
+    if str(summary.get("tabletop_control_mode")) == "joint_target_drive":
+        control_update_lines = [
+            "# Control Update Order Report",
+            "",
+            f"- Tabletop `joint_target_drive` mode is active at [demo_robot_rope_franka.py:{control_sites['tabletop_joint_drive_mode']}](/home/xinjie/Newton_Connection/Newton/phystwin_bridge/demos/demo_robot_rope_franka.py:{control_sites['tabletop_joint_drive_mode']})",
+            f"- Desired joint targets are written into Newton control buffers at [demo_robot_rope_franka.py:{control_sites['drive_target_pos']}](/home/xinjie/Newton_Connection/Newton/phystwin_bridge/demos/demo_robot_rope_franka.py:{control_sites['drive_target_pos']}) and [demo_robot_rope_franka.py:{control_sites['drive_target_vel']}](/home/xinjie/Newton_Connection/Newton/phystwin_bridge/demos/demo_robot_rope_franka.py:{control_sites['drive_target_vel']})",
+            f"- The semi-implicit solver advances the articulation at [demo_robot_rope_franka.py:{control_sites['solver_step']}](/home/xinjie/Newton_Connection/Newton/phystwin_bridge/demos/demo_robot_rope_franka.py:{control_sites['solver_step']})",
+            f"- After the solver, reduced coordinates are resynced from solved body truth via `eval_ik(...)` at [demo_robot_rope_franka.py:{control_sites['post_eval_ik']}](/home/xinjie/Newton_Connection/Newton/phystwin_bridge/demos/demo_robot_rope_franka.py:{control_sites['post_eval_ik']})",
+            "",
+            "This path preserves solver-integrated body truth and allows table contact to create persistent target-vs-actual lag.",
+        ]
+    else:
+        control_update_lines = [
             "# Control Update Order Report",
             "",
             f"- Tabletop `joint_trajectory` mode is selected at [demo_robot_rope_franka.py:{control_sites['tabletop_joint_mode']}](/home/xinjie/Newton_Connection/Newton/phystwin_bridge/demos/demo_robot_rope_franka.py:{control_sites['tabletop_joint_mode']})",
@@ -583,8 +715,8 @@ def main() -> int:
             f"- Forward kinematics is recomputed from that overwritten state at [demo_robot_rope_franka.py:{control_sites['post_eval_fk']}](/home/xinjie/Newton_Connection/Newton/phystwin_bridge/demos/demo_robot_rope_franka.py:{control_sites['post_eval_fk']})",
             "",
             "This update order means table contact has no durable path to create tracking error in the saved articulation state.",
-        ],
-    )
+        ]
+    _write_md(out_dir / "control_update_order_report.md", control_update_lines)
 
     _write_md(
         out_dir / "control_timeline.md",
@@ -604,23 +736,36 @@ def main() -> int:
         ],
     )
 
-    _write_md(
-        out_dir / "suspected_kinematic_override.md",
-        [
-            "# Suspected Kinematic Override",
-            "",
-            f"- During table-contact frames, `ee_target_to_actual_error_during_block_mean_m = {robot_table_contact_report['ee_target_to_actual_error_during_block_mean_m']}`",
-            f"- During table-contact frames, `ee_target_to_actual_error_during_block_max_m = {robot_table_contact_report['ee_target_to_actual_error_during_block_max_m']}`",
-            f"- Worst sampled finger-box penetration is `robot_table_penetration_min_m = {worst_penetration_m}`",
-            "",
-            "These two facts together are the key kinematic-override signature:",
-            "",
-            "- the hand penetrates the table materially",
-            "- but actual end-effector motion remains almost identical to the target",
-            "",
-            "A physically blocked controller would allow target-vs-actual error to grow under table contact instead.",
-        ],
-    )
+    suspected_lines = [
+        "# Suspected Kinematic Override",
+        "",
+        f"- During table-contact frames, `ee_target_to_actual_error_during_block_mean_m = {robot_table_contact_report['ee_target_to_actual_error_during_block_mean_m']}`",
+        f"- During table-contact frames, `ee_target_to_actual_error_during_block_max_m = {robot_table_contact_report['ee_target_to_actual_error_during_block_max_m']}`",
+        f"- Worst sampled finger-box penetration is `robot_table_penetration_min_m = {worst_penetration_m}`",
+        "",
+    ]
+    if str(summary.get("tabletop_control_mode")) == "joint_target_drive":
+        suspected_lines.extend(
+            [
+                "Current interpretation for this run:",
+                "",
+                "- the solver-controlled body path is active",
+                "- table contact does create persistent target-vs-actual lag",
+                "- any remaining failure is therefore geometric / presentation related, not the old stale-FK overwrite mechanism",
+            ]
+        )
+    else:
+        suspected_lines.extend(
+            [
+                "These two facts together are the key kinematic-override signature:",
+                "",
+                "- the hand penetrates the table materially",
+                "- but actual end-effector motion remains almost identical to the target",
+                "",
+                "A physically blocked controller would allow target-vs-actual error to grow under table contact instead.",
+            ]
+        )
+    _write_md(out_dir / "suspected_kinematic_override.md", suspected_lines)
 
     _write_md(
         out_dir / "blocking_event_report.md",
@@ -634,12 +779,15 @@ def main() -> int:
             f"- mean target-vs-actual EE error during contact: `{robot_table_contact_report['ee_target_to_actual_error_during_block_mean_m']}` m",
             f"- max target-vs-actual EE error during contact: `{robot_table_contact_report['ee_target_to_actual_error_during_block_max_m']}` m",
             f"- mean actual normal speed into table during contact: `{robot_table_contact_report['normal_speed_into_table_after_contact_mean_m_s']}` m/s",
+            f"- first non-finger table contact time: `{nonfinger_report['first_nonfinger_table_contact_time_s']}` s",
+            f"- non-finger table contact duration: `{nonfinger_report['nonfinger_table_contact_duration_s']}` s",
+            f"- non-finger minimum penetration: `{nonfinger_report['nonfinger_penetration_min_m']}` m",
+            f"- collapse after retract detected: `{'YES' if collapse_after_retract_detected else 'NO'}`",
             "",
             "Interpretation:",
             "",
-            "- A blocked physical controller should show a growing target-vs-actual error once table contact occurs.",
-            "- The current run instead shows deep penetration with nearly zero target-vs-actual error.",
-            "- That is consistent with effective kinematic overwrite, not contact-limited actuation.",
+            "- Direct-finger blocking is only acceptable if the table load stays on the finger boxes rather than migrating to the hand/forearm.",
+            "- Non-finger table loading or a retract-time collapse should fail the rope-integrated presentation candidate even if finger-box blocking error exists.",
         ],
     )
 

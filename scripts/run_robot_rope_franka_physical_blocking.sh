@@ -9,7 +9,7 @@ ARTIFACT_VALIDATOR="${ROOT}/scripts/validate_experiment_artifacts.py"
 DIAG_SCRIPT="${ROOT}/scripts/diagnose_robot_rope_physical_blocking.py"
 RESULT_ROOT="${NEWTON_ROOT}/phystwin_bridge/results/robot_rope_franka_physical_blocking"
 
-BLOCKING_STAGE="rigid_only"
+BLOCKING_STAGE=""
 SHORT_TAG="${SHORT_TAG:-default}"
 EXTRA_ARGS=()
 
@@ -29,6 +29,11 @@ while [[ $# -gt 0 ]]; do
       ;;
   esac
 done
+
+if [[ -z "${BLOCKING_STAGE}" ]]; then
+  echo "[run_robot_rope_franka_physical_blocking] ERROR: --blocking-stage rigid_only|rope_integrated is required" >&2
+  exit 2
+fi
 
 STAMP="$(date +%Y%m%d_%H%M%S)"
 RUN_ID="${STAMP}_${BLOCKING_STAGE}_${SHORT_TAG}"
@@ -72,6 +77,7 @@ COMMON_ARGS=(
   --default-joint-armature 0.01
   --ignore-urdf-inertial-definitions
   --visible-tool-mode none
+  --tabletop-joint-reference-family blocking_lowprofile
   --tabletop-initial-pose tabletop_shallow_curve
   --tabletop-hero-hide-pedestal
   --tabletop-preroll-settle-seconds 3.5
@@ -174,13 +180,17 @@ EOF
 "${DEBUG_CMD[@]}" >> "${STDOUT_LOG}" 2>> "${STDERR_LOG}"
 "${VALIDATION_CMD[@]}" >> "${STDOUT_LOG}" 2>> "${STDERR_LOG}"
 
-cp -f "${PRESENT_DIR}/robot_rope_tabletop_hero.mp4" "${RUN_DIR}/hero_presentation.mp4"
-cp -f "${DEBUG_DIR}/robot_rope_tabletop_hero_debug.mp4" "${RUN_DIR}/hero_debug.mp4"
-cp -f "${VALIDATION_DIR}/robot_rope_tabletop_hero_validation.mp4" "${RUN_DIR}/validation_camera.mp4"
+PRESENT_VIDEO_NAME="${BLOCKING_STAGE}_hero_presentation.mp4"
+DEBUG_VIDEO_NAME="${BLOCKING_STAGE}_hero_debug.mp4"
+VALIDATION_VIDEO_NAME="${BLOCKING_STAGE}_validation_camera.mp4"
+cp -f "${PRESENT_DIR}/robot_rope_tabletop_hero.mp4" "${RUN_DIR}/${PRESENT_VIDEO_NAME}"
+cp -f "${DEBUG_DIR}/robot_rope_tabletop_hero_debug.mp4" "${RUN_DIR}/${DEBUG_VIDEO_NAME}"
+cp -f "${VALIDATION_DIR}/robot_rope_tabletop_hero_validation.mp4" "${RUN_DIR}/${VALIDATION_VIDEO_NAME}"
 
 SUMMARY_SRC="$(find "${PRESENT_DIR}" -maxdepth 1 -name '*_summary.json' | head -n 1)"
 if [[ -n "${SUMMARY_SRC}" ]]; then
   cp -f "${SUMMARY_SRC}" "${RUN_DIR}/summary.json"
+  cp -f "${SUMMARY_SRC}" "${RUN_DIR}/${BLOCKING_STAGE}_summary.json"
 fi
 
 if [[ -f "${RUN_DIR}/presentation/work/physics_validation.json" ]]; then
@@ -193,9 +203,11 @@ find "${PRESENT_DIR}" -maxdepth 1 -name '*.npy' -exec cp -f {} "${SIM_DIR}/" \;
 
 python "${DIAG_SCRIPT}" "${RUN_DIR}" --out-dir "${DIAG_DIR}" >> "${STDOUT_LOG}" 2>> "${STDERR_LOG}"
 cp -f "${DIAG_DIR}/robot_table_contact_report.json" "${RUN_DIR}/robot_table_contact_report.json"
+cp -f "${DIAG_DIR}/nonfinger_table_contact_report.json" "${RUN_DIR}/nonfinger_table_contact_report.json"
 cp -f "${DIAG_DIR}/ee_target_vs_actual_plot.png" "${RUN_DIR}/ee_target_vs_actual_plot.png"
 cp -f "${DIAG_DIR}/robot_table_penetration_plot.png" "${RUN_DIR}/robot_table_penetration_plot.png"
 cp -f "${DIAG_DIR}/robot_table_contact_sheet.png" "${RUN_DIR}/robot_table_contact_sheet.png"
+cp -f "${DIAG_DIR}/nonfinger_table_penetration_plot.png" "${RUN_DIR}/nonfinger_table_penetration_plot.png"
 
 BLOCK_RC=0
 python "${BLOCK_VALIDATOR}" "${RUN_DIR}" || BLOCK_RC=$?
@@ -211,6 +223,16 @@ This candidate uses the native Franka direct-finger path with \`joint_target_dri
 as the controller truth surface. hero/debug/validation are rendered from one
 saved rollout history. The final proof surface is the actual imported Franka
 finger-box collider set against the native tabletop box.
+
+Primary top-level videos:
+
+- \`${PRESENT_VIDEO_NAME}\`
+- \`${DEBUG_VIDEO_NAME}\`
+- \`${VALIDATION_VIDEO_NAME}\`
+
+Stage note:
+
+- $( [[ "${BLOCKING_STAGE}" == "rigid_only" ]] && printf '%s' 'RIGID ONLY — NO ROPE BY DESIGN' || printf '%s' 'ROPE INTEGRATED' )
 EOF
 
 cat > "${RUN_DIR}/manifest.json" <<EOF
@@ -221,16 +243,19 @@ cat > "${RUN_DIR}/manifest.json" <<EOF
   "status": "candidate",
   "run_command_txt": "run_command.txt",
   "videos": {
-    "hero_presentation": "hero_presentation.mp4",
-    "hero_debug": "hero_debug.mp4",
-    "validation_camera": "validation_camera.mp4"
+    "hero_presentation": "${PRESENT_VIDEO_NAME}",
+    "hero_debug": "${DEBUG_VIDEO_NAME}",
+    "validation_camera": "${VALIDATION_VIDEO_NAME}"
   },
   "artifacts": {
     "summary_json": "summary.json",
+    "stage_summary_json": "${BLOCKING_STAGE}_summary.json",
     "physics_validation_json": "physics_validation.json",
     "robot_table_contact_report_json": "robot_table_contact_report.json",
+    "nonfinger_table_contact_report_json": "nonfinger_table_contact_report.json",
     "ee_target_vs_actual_plot_png": "ee_target_vs_actual_plot.png",
     "robot_table_penetration_plot_png": "robot_table_penetration_plot.png",
+    "nonfinger_table_penetration_plot_png": "nonfinger_table_penetration_plot.png",
     "robot_table_contact_sheet_png": "robot_table_contact_sheet.png",
     "diagnostics_dir": "diagnostics/"
   }
@@ -244,10 +269,11 @@ echo
 echo "Candidate run directory:"
 echo "  ${RUN_DIR}"
 echo "Key outputs:"
-echo "  ${RUN_DIR}/hero_presentation.mp4"
-echo "  ${RUN_DIR}/hero_debug.mp4"
-echo "  ${RUN_DIR}/validation_camera.mp4"
+echo "  ${RUN_DIR}/${PRESENT_VIDEO_NAME}"
+echo "  ${RUN_DIR}/${DEBUG_VIDEO_NAME}"
+echo "  ${RUN_DIR}/${VALIDATION_VIDEO_NAME}"
 echo "  ${RUN_DIR}/robot_table_contact_report.json"
+echo "  ${RUN_DIR}/nonfinger_table_contact_report.json"
 echo "  ${RUN_DIR}/blocking_metrics.json"
 echo "Validator exit codes:"
 echo "  blocking=${BLOCK_RC}"

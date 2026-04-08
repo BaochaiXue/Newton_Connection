@@ -39,7 +39,7 @@ Detailed result meaning belongs in:
 - `robot_visible_rigid_tool_baseline`
   - preserve the newly promoted tool-mediated tabletop baseline; keep it clearly separate from both the direct-finger tabletop baseline and the blocked physical-blocking task, and keep its canonical rerender path single-history so hero/debug/validation cannot drift apart
 - `robot_rope_franka_physical_blocking`
-  - stronger follow-on task has been re-opened: the old bridge-layer limit proof is no longer sufficient after identifying stale post-step FK overwrite plus destabilizing default articulation attachment gains in the `joint_target_drive` path
+  - stronger follow-on task now has fail-closed stage labeling, direct-finger non-finger-loading diagnostics, and a new blocking-specific low-profile joint reference family; the current best local rope-integrated candidate is `c15`, still unpromoted
 - `native_robot_physical_blocking_minimal`
   - keep the Stage-0 rigid-only blocking proof separate from the rope-integrated blocking follow-on
 - `remote_interaction_root_cause`
@@ -52,7 +52,7 @@ Detailed result meaning belongs in:
 - `interactive_playground_profiling`
   - the exploratory profiling page must stay clearly separate from the committed rope benchmark truth under `rope_perf_apples_to_apples`
 - `robot_rope_franka_physical_blocking`
-  - readable tabletop rope-push baseline exists, and the stronger bridge-layer path now has a truthful Stage-0 rigid-only proof; the remaining blocker is the rope-integrated direct-finger presentation quality, not the old stale-FK overwrite claim
+  - readable tabletop rope-push baseline exists, Stage-0 direct-finger blocking is proven, and the new rope-integrated `blocking_lowprofile` family now removes measured non-finger table loading; the remaining step is authority-level acceptance of the best local candidate rather than another solver-truth rescue
 - `robot_visible_rigid_tool_baseline`
   - no blocker at the current conservative claim boundary; the promoted run is now the tool-mediated meeting-safe intermediary
 - `robot_rope_franka_semiimplicit_oneway`
@@ -95,7 +95,7 @@ Detailed result meaning belongs in:
 - `robot_rope_franka_physical_blocking`
   - task status: `tasks/status/robot_rope_franka_physical_blocking.md`
   - committed authority: none yet
-  - current meaning: stronger follow-on task where the old overwrite path is still proven non-physical, but the previous bridge-layer impossibility claim is under reassessment after fixing stale FK overwrite and lowering destabilizing articulation attachment gains
+  - current meaning: stronger follow-on task where the repaired bridge-layer `joint_target_drive` path now supports Stage-0 direct-finger blocking and local rope-integrated candidates under a new blocking-specific joint family, with no measured non-finger table loading on the latest `c14/c15/c16` runs
 - `rope_perf_apples_to_apples`
   - task status: `tasks/status/rope_perf_apples_to_apples.md`
   - committed authority: `results_meta/tasks/rope_perf_apples_to_apples.json`
