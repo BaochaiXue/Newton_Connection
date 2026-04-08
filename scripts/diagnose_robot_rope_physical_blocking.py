@@ -254,8 +254,103 @@ def _support_axis_name(axis_idx: int) -> str:
     return ("x", "y", "z")[int(axis_idx)]
 
 
-def _fit_support_box_candidates(
+def _support_contact_stats_for_model(
+    model: Any,
     body_q: np.ndarray,
+    particle_q_all: np.ndarray | None,
+    support_box_shape_index: int | None,
+    phase_names: list[str],
+    frame_dt: float,
+) -> dict[str, Any]:
+    support_box_is_physical = support_box_shape_index is not None
+    support_target_suffixes = ("/fr3_link5", "/fr3_link6", "/fr3_link7", "/fr3_hand")
+    frames = int(body_q.shape[0])
+    if not support_box_is_physical:
+        return {
+            "frame0_overlap_detected": False,
+            "first_contact_frame": None,
+            "first_contact_time_s": None,
+            "first_contact_phase": None,
+            "contact_duration_s": 0.0,
+            "penetration_min_m": None,
+            "contact_link_names": [],
+            "peak_penetrating_link_name": None,
+            "contact_fraction_after_first_touch": None,
+        }
+    state = model.state()
+    if state.body_qd is not None:
+        state.body_qd.zero_()
+    contacts = model.contacts()
+    shape_body_arr = np.asarray(model.shape_body.numpy() if hasattr(model.shape_body, "numpy") else model.shape_body)
+    support_contact_gap = np.full((frames,), np.inf, dtype=np.float32)
+    support_contact_body = np.full((frames,), "", dtype=object)
+    support_contact_links: list[list[str]] = [[] for _ in range(frames)]
+    for frame_idx in range(frames):
+        state.body_q.assign(body_q[frame_idx].astype(np.float32, copy=False))
+        if state.body_qd is not None:
+            state.body_qd.zero_()
+        if state.particle_q is not None and particle_q_all is not None:
+            state.particle_q.assign(particle_q_all[frame_idx].astype(np.float32, copy=False))
+        model.collide(state, contacts)
+        count = int(np.asarray(contacts.rigid_contact_count.numpy()).reshape(-1)[0])
+        if count <= 0:
+            continue
+        shape0 = contacts.rigid_contact_shape0.numpy()[:count].astype(np.int32)
+        shape1 = contacts.rigid_contact_shape1.numpy()[:count].astype(np.int32)
+        point0 = contacts.rigid_contact_point0.numpy()[:count].astype(np.float32)
+        point1 = contacts.rigid_contact_point1.numpy()[:count].astype(np.float32)
+        normal = contacts.rigid_contact_normal.numpy()[:count].astype(np.float32)
+        for ci in range(count):
+            s0 = int(shape0[ci])
+            s1 = int(shape1[ci])
+            if int(s0) != int(support_box_shape_index) and int(s1) != int(support_box_shape_index):
+                continue
+            other_shape = int(s1) if int(s0) == int(support_box_shape_index) else int(s0)
+            other_body_idx = int(shape_body_arr[other_shape])
+            if other_body_idx < 0:
+                continue
+            other_label = str(model.body_label[other_body_idx])
+            if not any(other_label.endswith(suffix) for suffix in support_target_suffixes):
+                continue
+            if other_label not in support_contact_links[frame_idx]:
+                support_contact_links[frame_idx].append(other_label)
+            gap = float(np.dot(point1[ci] - point0[ci], normal[ci]))
+            if gap < float(support_contact_gap[frame_idx]):
+                support_contact_gap[frame_idx] = gap
+                support_contact_body[frame_idx] = other_label
+    support_contact_mask = np.asarray(np.isfinite(support_contact_gap), dtype=bool)
+    support_contact_frames = np.flatnonzero(support_contact_mask)
+    first_support_contact_frame = None if support_contact_frames.size == 0 else int(support_contact_frames[0])
+    support_box_contact_duration_s = float(np.count_nonzero(support_contact_mask) * frame_dt)
+    support_box_penetration_min_m = None if not np.any(support_contact_mask) else float(np.min(support_contact_gap[support_contact_mask]))
+    support_box_peak_penetrating_link_name = (
+        None if not np.any(support_contact_mask) else str(support_contact_body[int(np.argmin(support_contact_gap))])
+    )
+    support_box_contact_link_names = sorted({link for links in support_contact_links for link in links})
+    support_box_contact_fraction_after_first_touch = (
+        None
+        if first_support_contact_frame is None
+        else float(np.count_nonzero(support_contact_mask[first_support_contact_frame:]) / max(frames - first_support_contact_frame, 1))
+    )
+    return {
+        "frame0_overlap_detected": bool(support_contact_mask[0]) if support_contact_mask.size else False,
+        "first_contact_frame": first_support_contact_frame,
+        "first_contact_time_s": (None if first_support_contact_frame is None else float(first_support_contact_frame * frame_dt)),
+        "first_contact_phase": (None if first_support_contact_frame is None else str(phase_names[first_support_contact_frame])),
+        "contact_duration_s": support_box_contact_duration_s,
+        "penetration_min_m": support_box_penetration_min_m,
+        "contact_link_names": support_box_contact_link_names,
+        "peak_penetrating_link_name": support_box_peak_penetrating_link_name,
+        "contact_fraction_after_first_touch": support_box_contact_fraction_after_first_touch,
+    }
+
+
+def _fit_support_box_candidates(
+    module: Any,
+    demo_args: argparse.Namespace,
+    body_q: np.ndarray,
+    particle_q_all: np.ndarray | None,
+    frame_dt: float,
     model: Any,
     meta: dict[str, Any],
     phase_names: list[str],
@@ -284,20 +379,12 @@ def _fit_support_box_candidates(
     default_scale = np.asarray(meta.get("support_box_default_scale", robot_base_scale), dtype=np.float32)
 
     support_positions = positions[support_mask].reshape(-1, 3)
-    centroid = np.mean(support_positions, axis=0)
-    direction = centroid - robot_base_center
+    direction = np.asarray(meta.get("stage_center", robot_base_center), dtype=np.float32) - robot_base_center
     axis_idx = int(np.argmax(np.abs(direction)))
     axis_sign = 1.0 if float(direction[axis_idx]) >= 0.0 else -1.0
 
     center = default_center.astype(np.float32, copy=True)
     scale = default_scale.astype(np.float32, copy=True)
-    for dim in range(3):
-        if dim == axis_idx:
-            continue
-        q05, q95 = np.quantile(support_positions[:, dim], [0.05, 0.95])
-        margin = 0.015 if dim != 2 else 0.020
-        center[dim] = float(0.5 * (q05 + q95))
-        scale[dim] = float(max(0.04 if dim != 2 else 0.08, 0.5 * (q95 - q05) + margin))
 
     candidate_splits = {
         "A": (0.14, 0.10),
@@ -314,6 +401,20 @@ def _fit_support_box_candidates(
         face_coord = float(axis_sign * cand_center[axis_idx] + cand_scale[axis_idx])
         init_gap = (axis_sign * init_support[:, axis_idx]) - face_coord
         support_gap = (axis_sign * support_positions[:, axis_idx]) - face_coord
+        eval_args = argparse.Namespace(**vars(demo_args))
+        eval_args.tabletop_support_box_mode = "physical"
+        eval_args.tabletop_support_box_offset = tuple((cand_center - default_center).astype(float).tolist())
+        eval_args.tabletop_support_box_scale = tuple(cand_scale.astype(float).tolist())
+        eval_args.mass_spring_scale = None
+        eval_model, _, eval_meta, _ = module.build_model(eval_args, eval_args.device)
+        actual_eval = _support_contact_stats_for_model(
+            eval_model,
+            body_q,
+            particle_q_all,
+            int(eval_meta.get("support_box_shape_index")) if eval_meta.get("support_box_shape_index") is not None else None,
+            phase_names,
+            frame_dt,
+        )
         candidates[name] = {
             "center_retreat_m": float(center_retreat),
             "normal_half_extent_shrink_m": float(normal_shrink),
@@ -323,6 +424,7 @@ def _fit_support_box_candidates(
             "predicted_init_gap_min_m": float(np.min(init_gap)),
             "predicted_support_gap_q05_m": float(np.quantile(support_gap, 0.05)),
             "predicted_support_gap_q50_m": float(np.quantile(support_gap, 0.50)),
+            "actual_eval": actual_eval,
         }
 
     return {
@@ -337,7 +439,6 @@ def _fit_support_box_candidates(
         "robot_base_scale": robot_base_scale.astype(float).tolist(),
         "default_support_box_center": default_center.astype(float).tolist(),
         "default_support_box_scale": default_scale.astype(float).tolist(),
-        "support_centroid_support_window": centroid.astype(float).tolist(),
         "candidate_geometry": candidates,
     }
 
@@ -742,7 +843,16 @@ def main() -> int:
         },
     )
 
-    support_box_fit_report = _fit_support_box_candidates(body_q, model, meta, phase_names)
+    support_box_fit_report = _fit_support_box_candidates(
+        module,
+        demo_args,
+        body_q,
+        particle_q_all,
+        frame_dt,
+        model,
+        meta,
+        phase_names,
+    )
     _write_json(out_dir / "support_box_fit_report.json", support_box_fit_report)
 
     with (out_dir / "robot_table_clearance_timeseries.csv").open("w", newline="", encoding="utf-8") as f:

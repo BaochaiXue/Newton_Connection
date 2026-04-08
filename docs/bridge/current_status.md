@@ -39,7 +39,7 @@ Detailed result meaning belongs in:
 - `robot_visible_rigid_tool_baseline`
   - preserve the newly promoted tool-mediated tabletop baseline; keep it clearly separate from both the direct-finger tabletop baseline and the blocked physical-blocking task, and keep its canonical rerender path single-history so hero/debug/validation cannot drift apart
 - `robot_rope_franka_physical_blocking`
-  - stronger follow-on task now has fail-closed stage labeling, direct-finger non-finger-loading diagnostics, a new blocking-specific low-profile joint reference family, a real physical support-box path, and a new thin-slab scout-fit workflow; the current blocker is no longer deep overlap but support-box miss after the first thin-slab A/B/C family
+  - stronger follow-on task now has fail-closed stage labeling, direct-finger non-finger-loading diagnostics, a new blocking-specific low-profile joint reference family, a real physical support-box path, a thin-slab scout-fit workflow, and the first real later-support Stage-1 candidate; the current blocker is no longer “box misses completely” but “later support event lasts too long for the current presentation gate”
 - `native_robot_physical_blocking_minimal`
   - keep the Stage-0 rigid-only blocking proof separate from the rope-integrated blocking follow-on
 - `remote_interaction_root_cause`
@@ -52,7 +52,7 @@ Detailed result meaning belongs in:
 - `interactive_playground_profiling`
   - the exploratory profiling page must stay clearly separate from the committed rope benchmark truth under `rope_perf_apples_to_apples`
 - `robot_rope_franka_physical_blocking`
-  - readable tabletop rope-push baseline exists, Stage-0 direct-finger blocking is proven, the new rope-integrated `blocking_lowprofile` family removes measured non-finger table loading, and the rear support box is now a real static collider; the old deep-overlap pedestal geometry has been replaced by a thin-slab scout-fit workflow, but the first Stage-1 `support_scout_no_box + A/B/C + one normal-only refinement` set still misses the actual non-finger support sweep entirely
+  - readable tabletop rope-push baseline exists, Stage-0 direct-finger blocking is proven, the new rope-integrated `blocking_lowprofile` family removes measured non-finger table loading, and the rear support box is now a real static collider; after moving beyond the old pedestal overlap and the first miss-only slab family, the task now has a first truthful later-support candidate on `fr3_link5`, but the support interval is still too long to satisfy the stricter support-box event gate
 - `robot_visible_rigid_tool_baseline`
   - no blocker at the current conservative claim boundary; the promoted run is now the tool-mediated meeting-safe intermediary
 - `robot_rope_franka_semiimplicit_oneway`

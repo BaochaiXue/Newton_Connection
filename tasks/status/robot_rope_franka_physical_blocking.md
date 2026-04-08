@@ -121,12 +121,20 @@
 - Produced the clean-start no-box scout run:
   - [support_scout_no_box](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260408_043258_rope_integrated_support_scout_no_box)
   - its `support_box_fit_report.json` now drives the first A/B/C slab family
+- Produced the rebuilt no-box scout with actual-collision candidate eval:
+  - [support_scout_no_box_v2b](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260408_060437_rope_integrated_support_scout_no_box_v2b)
+  - `support_box_fit_report.json` now includes per-candidate `actual_eval` from
+    rebuilt Newton models rather than only center-gap heuristics
 - Produced the first thin-slab A/B/C Stage-1 runs and one bounded
   support-normal refinement:
   - [support_box_A](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260408_043554_rope_integrated_support_box_A)
   - [support_box_B](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260408_043832_rope_integrated_support_box_B)
   - [support_box_C](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260408_044121_rope_integrated_support_box_C)
   - [support_box_B_refine_front06](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260408_044557_rope_integrated_support_box_B_refine_front06)
+- Produced the first Stage-1 candidates with real later support contact on a
+  physical support box:
+  - [support_box_shortsettle_probe](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260408_062738_rope_integrated_support_box_shortsettle_probe)
+  - [support_box_shortsettle_midtrim](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260408_063326_rope_integrated_support_box_shortsettle_midtrim)
 
 ## Latest Findings
 
@@ -242,6 +250,36 @@
     - the next honest move is to fit support geometry from the actual
       support-capable link geometry / contact sweep rather than from body-center
       trajectories alone
+- New support-box milestone after the rebuilt actual-collision search:
+  - `support_scout_no_box_v2b` confirmed that the first x-only slab family was
+    still too far away even when evaluated through rebuilt Newton models
+  - a bounded actual-collision search around the real support-capable geometry
+    produced the first Stage-1 candidate with honest later support contact:
+    - `support_box_shortsettle_probe`
+    - metrics:
+      - `frame0_support_box_overlap_detected = false`
+      - `first_support_box_contact_phase = push`
+      - `robot_support_box_first_contact_time_s = 3.30165`
+      - `support_box_contact_duration_s = 1.4674`
+      - `support_box_contact_link_names = ['fr3/fr3_link5']`
+      - `nonfinger_table_contact_duration_s = 0.0`
+      - `collapse_after_retract_detected = false`
+  - this is the first run where the box is not merely physical and not merely
+    non-overlapping, but is actually used as a later backstop in the real
+    Stage-1 rollout
+  - however it still fails the stricter support-box duration gate:
+    - current max allowed: `0.50 s`
+    - current measured: `1.4674 s`
+  - bounded trimming confirms the current tradeoff:
+    - shrinking to `0.12 / 0.06 / 0.10` removes support contact entirely
+    - midpoint `0.13 / 0.07 / 0.10` keeps support, but contact starts earlier
+      (`approach`) and still lasts too long (`1.1339 s`)
+  - current strongest truthful interpretation:
+    - support-box geometry alone is no longer the only blocker
+    - we now have proof that later support is possible on the repaired
+      controller truth path
+    - the remaining blocker is shaping that support into a shorter, cleaner,
+      presentation-ready backstop event rather than a long support interval
 
 ## Next Step
 
@@ -249,14 +287,15 @@
   overwrite and do not touch `Newton/newton/`.
 - Keep the thin-slab default and the support-box-aware validator gates.
 - Next bounded move:
-  - fit the support slab from actual `fr3_link5/fr3_link6/fr3_link7`
-    geometry/contact sweep rather than body centers alone
-  - preserve the same Stage-1 controller truth and direct-finger proof surface
-  - continue requiring:
-    - no frame-0 overlap
-    - first support contact in `approach/push`
-    - no non-finger table loading
-    - no late collapse
+  - keep the real later-support geometry from `support_box_shortsettle_probe`
+    as the new local starting point
+  - retune the Stage-1 reference timing / support-box duration together so the
+    support interval stays later and shorter:
+    - target `support_box_contact_duration_s <= 0.50`
+    - keep `frame0_support_box_overlap_detected = false`
+    - keep `first_support_box_contact_phase in {approach, push}`
+    - keep `nonfinger_table_contact_duration_s = 0.0`
+    - keep `collapse_after_retract_detected = false`
 - Preserve the stronger-task docs truthful and keep the old readable tabletop
   baseline as the only accepted robot-rope authority until a rope-integrated
   candidate is visually honest as well as numerically passing.
