@@ -76,6 +76,8 @@ def main() -> int:
     support_box_penetration = None if support_box_penetration is None else float(support_box_penetration)
     support_box_is_physical = bool(report.get("support_box_is_physical_collider", False))
     frame0_support_overlap = bool(report.get("frame0_support_box_overlap_detected", False))
+    frame0_table_overlap = bool(report.get("frame0_table_overlap_detected", False))
+    first_table_phase = report.get("robot_table_first_contact_phase")
     first_support_phase = report.get("first_support_box_contact_phase")
     first_support_time = report.get("robot_support_box_first_contact_time_s")
     first_support_time = None if first_support_time is None else float(first_support_time)
@@ -99,12 +101,16 @@ def main() -> int:
     }
     if stage == "rope_integrated":
         gates["rope_contact_still_present"] = rope_contact_started
-        gates["first_contact_not_during_settle"] = bool(args.allow_first_contact_during_settle) or first_contact_phase in {"approach", "push", "hold", "retract"}
+        gates["frame0_table_overlap_absent"] = not frame0_table_overlap
+        table_phase_for_gate = first_table_phase or first_contact_phase
+        table_time_for_gate = report.get("robot_table_first_contact_time_s")
+        table_time_for_gate = first_contact_time if table_time_for_gate is None else float(table_time_for_gate)
+        gates["first_contact_not_during_settle"] = bool(args.allow_first_contact_during_settle) or table_phase_for_gate in {"approach", "push", "hold", "retract"}
         gates["first_contact_after_settle"] = (
             bool(args.allow_first_contact_during_settle)
-            or first_contact_time is None
+            or table_time_for_gate is None
             or settle_seconds is None
-            or first_contact_time > settle_seconds
+            or table_time_for_gate > settle_seconds
         )
         gates["nonfinger_table_contact_duration_pass"] = (
             nonfinger_duration is None or nonfinger_duration <= float(args.max_nonfinger_table_contact_duration_s)
@@ -154,6 +160,8 @@ def main() -> int:
             "support_box_penetration_min_m": support_box_penetration,
             "support_box_is_physical_collider": support_box_is_physical,
             "frame0_support_box_overlap_detected": frame0_support_overlap,
+            "frame0_table_overlap_detected": frame0_table_overlap,
+            "robot_table_first_contact_phase": first_table_phase,
             "first_contact_phase": first_contact_phase,
             "first_contact_time_s": first_contact_time,
             "first_support_box_contact_phase": first_support_phase,
@@ -176,6 +184,7 @@ def main() -> int:
     ]
     if stage == "rope_integrated":
         md_lines.append(f"- rope contact still present: {'YES' if gates['rope_contact_still_present'] else 'NO'}")
+        md_lines.append(f"- frame-0 table overlap absent: {'YES' if gates['frame0_table_overlap_absent'] else 'NO'}")
         md_lines.append(f"- first contact not during settle: {'YES' if gates['first_contact_not_during_settle'] else 'NO'}")
         md_lines.append(f"- first contact after settle: {'YES' if gates['first_contact_after_settle'] else 'NO'}")
         md_lines.append(f"- non-finger table-contact duration pass: {'YES' if gates['nonfinger_table_contact_duration_pass'] else 'NO'}")
@@ -199,6 +208,8 @@ def main() -> int:
             f"- nonfinger_table_contact_duration_s: `{nonfinger_duration}`",
             f"- nonfinger_penetration_min_m: `{nonfinger_penetration}`",
             f"- collapse_after_retract_detected: `{collapse_after_retract}`",
+            f"- frame0_table_overlap_detected: `{frame0_table_overlap}`",
+            f"- robot_table_first_contact_phase: `{first_table_phase}`",
             f"- first_contact_phase: `{first_contact_phase}`",
             f"- first_contact_time_s: `{first_contact_time}`",
             f"- support_box_is_physical_collider: `{support_box_is_physical}`",

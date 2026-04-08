@@ -1,14 +1,14 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `bridge_control_plane`
-> last_reviewed: `2026-04-05`
+> last_reviewed: `2026-04-08`
 > review_interval: `7d`
 > update_rule: `Update when active workstreams, blockers, or promoted result meaning changes. Keep detailed run notes in task status pages and results_meta.`
 > notes: Short operational dashboard only. Do not turn this page into a run ledger or changelog dump.
 
 # Current Status
 
-Last updated: 2026-04-05
+Last updated: 2026-04-08
 
 This page is the shortest operational dashboard for the bridge project.
 
@@ -40,6 +40,11 @@ Detailed result meaning belongs in:
   - preserve the newly promoted tool-mediated tabletop baseline; keep it clearly separate from both the direct-finger tabletop baseline and the blocked physical-blocking task, and keep its canonical rerender path single-history so hero/debug/validation cannot drift apart
 - `robot_rope_franka_physical_blocking`
   - stronger follow-on task now has fail-closed stage labeling, direct-finger non-finger-loading diagnostics, a real physical support-box path, a thin-slab scout-fit workflow, and a practical visible-settle mitigation in the canonical wrapper; the deeper blocker remains gravity-stable robot actuation under `joint_target_drive`, not support-box truth
+- `robot_rope_franka_native_v2`
+  - new native-style rewrite path now exists as a separate bridge demo and
+    wrapper; it removes the old overwrite path and uses Cartesian waypoints +
+    native IK + `control.joint_target_pos`, but the current bridge-side solver
+    route still sags into table contact during `pre`
 - `native_robot_physical_blocking_minimal`
   - keep the Stage-0 rigid-only blocking proof separate from the rope-integrated blocking follow-on
 - `remote_interaction_root_cause`
@@ -51,8 +56,15 @@ Detailed result meaning belongs in:
   - operator exactness is strong and the fair `2 x 2` matrix ranking is now reproducible after a bridge-side determinism fix; a new bridge-side ground-law isolation fix removes the old hidden gravity/drag timing difference from the explicit matrix surface, shrinking the old large `case_3 > case_4` gap to a small residual and moving the blocker back to the broader controller-spring / strict-parity mismatch
 - `interactive_playground_profiling`
   - the exploratory profiling page must stay clearly separate from the committed rope benchmark truth under `rope_perf_apples_to_apples`
+  - latest same-case exploratory bundle now exists for `rope_double_hand`
+    controller replay on both Newton and PhysTwin
 - `robot_rope_franka_physical_blocking`
   - readable tabletop rope-push baseline exists, Stage-0 direct-finger blocking is proven, the new rope-integrated path now fails closed on settle-onset collapse, and the canonical Stage-1 wrapper currently mitigates the visible static-collapse failure with `settle=0.05`, `support_box=none`, and the safer hero-style base offset `(-0.56, -0.22, 0.10)`; no rope-integrated candidate is promoted yet because the deeper gravity-stability issue is still open even though the current local candidate now preserves some rope motion again
+- `robot_rope_franka_native_v2`
+  - the native-style rewrite has removed the old monolithic overwrite path, but
+    no v2 candidate is promoted yet because even the seed-based reachable phase
+    generator still drops into `pre`-phase table contact before readable
+    finger-to-rope interaction starts
 - `robot_visible_rigid_tool_baseline`
   - no blocker at the current conservative claim boundary; the promoted run is now the tool-mediated meeting-safe intermediary
 - `robot_rope_franka_semiimplicit_oneway`
@@ -96,6 +108,12 @@ Detailed result meaning belongs in:
   - task status: `tasks/status/robot_rope_franka_physical_blocking.md`
   - committed authority: none yet
   - current meaning: stronger follow-on task where the repaired bridge-layer `joint_target_drive` path now supports Stage-0 direct-finger blocking and local rope-integrated candidates under a new blocking-specific joint family, with no measured non-finger table loading on the latest `c14/c15/c16` runs
+- `robot_rope_franka_native_v2`
+  - task status: `tasks/status/robot_rope_franka_native_v2.md`
+  - committed authority: none yet
+  - current meaning: new native-style tabletop rope demo rewrite path; code and
+    wrapper exist locally, but no candidate yet satisfies startup stability +
+    real table blocking + readable rope push at the same time
 - `rope_perf_apples_to_apples`
   - task status: `tasks/status/rope_perf_apples_to_apples.md`
   - committed authority: `results_meta/tasks/rope_perf_apples_to_apples.json`
@@ -116,9 +134,21 @@ Detailed result meaning belongs in:
 - `robot_visible_rigid_tool_baseline`
 - `native_robot_physical_blocking_minimal`
 - `robot_rope_franka_physical_blocking`
+- `robot_rope_franka_native_v2`
 - `remote_interaction_root_cause`
 - `native_robot_rope_drop_release`
 - `interactive_playground_profiling`
+  - latest exploratory bundle:
+    - `results/interactive_playground_profiling/runs/20260408_090500_rope_interactive_one_to_one_v1`
+  - current exploratory meaning:
+    - rope same-case no-render baseline:
+      - Newton baseline is about `6.66x` slower than PhysTwin
+      - Newton precomputed replay is still about `3.54x` slower
+      - controller upload is real on rope (`~1.88x` baseline -> precomputed speedup), but it is not the whole story
+      - rope does not show the cloth-case collision-generation bottleneck; on rope the remaining gap is better explained by broader solver/runtime structure around the same controller-driven spring-mass path
+    - older cloth counterexample remains useful because it shows a different regime:
+      - `results/interactive_playground_profiling/runs/20260408_075949_blue_cloth_interactive_one_to_one_v1`
+      - there, collision candidate generation dominates the cross-system gap
 - `rope_perf_apples_to_apples`
 - `self_collision_transfer`
 - `data_collection_protocol`

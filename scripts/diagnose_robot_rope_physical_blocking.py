@@ -75,12 +75,29 @@ def _write_md(path: Path, lines: list[str]) -> None:
     path.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
 
 
-def _load_demo_module() -> Any:
-    if str(DEMO_DIR) not in sys.path:
-        sys.path.insert(0, str(DEMO_DIR))
-    spec = importlib.util.spec_from_file_location("demo_robot_rope_franka_blocking_diag", DEMO_PATH)
+def _discover_demo_path(run_dir: Path) -> Path:
+    run_command_path = run_dir / "run_command.txt"
+    if not run_command_path.exists():
+        return DEMO_PATH
+    try:
+        first_line = run_command_path.read_text(encoding="utf-8").splitlines()[0]
+        argv = shlex.split(first_line)
+        if len(argv) >= 2:
+            candidate = Path(argv[1]).expanduser().resolve()
+            if candidate.exists():
+                return candidate
+    except Exception:
+        pass
+    return DEMO_PATH
+
+
+def _load_demo_module(demo_path: Path) -> Any:
+    demo_dir = demo_path.parent
+    if str(demo_dir) not in sys.path:
+        sys.path.insert(0, str(demo_dir))
+    spec = importlib.util.spec_from_file_location("demo_robot_rope_blocking_diag", demo_path)
     if spec is None or spec.loader is None:
-        raise RuntimeError(f"Failed to import demo module from {DEMO_PATH}")
+        raise RuntimeError(f"Failed to import demo module from {demo_path}")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
@@ -449,7 +466,8 @@ def main() -> int:
     out_dir = (args.out_dir.expanduser().resolve() if args.out_dir is not None else (run_dir / "diagnostics"))
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    module = _load_demo_module()
+    demo_path = _discover_demo_path(run_dir)
+    module = _load_demo_module(demo_path)
     demo_args = _parse_run_args(module, run_dir)
     model, ir_obj, meta, n_obj = module.build_model(demo_args, demo_args.device)
     summary = json.loads((run_dir / "summary.json").read_text(encoding="utf-8"))
@@ -462,7 +480,7 @@ def main() -> int:
     left_idx = int(meta["left_finger_index"])
     right_idx = int(meta["right_finger_index"])
 
-    source = DEMO_PATH.read_text(encoding="utf-8")
+    source = demo_path.read_text(encoding="utf-8")
     control_sites = {
         "tabletop_joint_mode": _line_no_containing(source, 'tabletop_joint_mode = tabletop_task and str(args.tabletop_control_mode) == "joint_trajectory"'),
         "tabletop_joint_drive_mode": _line_no_containing(source, 'tabletop_joint_drive_mode = tabletop_task and str(meta.get("tabletop_control_mode")) == "joint_target_drive"'),
@@ -765,9 +783,13 @@ def main() -> int:
         "run_id": run_dir.name,
         "table_box_shape_index": int(table_box["shape_index"]),
         "table_top_z_m": table_top_z,
+        "frame0_table_overlap_detected": bool(contact_mask[0]) if contact_mask.size else False,
         "robot_table_first_contact_frame": first_contact_frame,
         "robot_table_first_contact_time_s": (
             None if first_contact_frame is None else float(first_contact_frame * frame_dt)
+        ),
+        "robot_table_first_contact_phase": (
+            None if first_contact_frame is None else str(phase_names[first_contact_frame])
         ),
         "robot_table_contact_duration_s": float(np.count_nonzero(contact_mask) * frame_dt),
         "robot_table_penetration_min_m": worst_penetration_m,
@@ -1036,10 +1058,10 @@ def main() -> int:
         control_update_lines = [
             "# Control Update Order Report",
             "",
-            f"- Tabletop `joint_target_drive` mode is active at [demo_robot_rope_franka.py:{control_sites['tabletop_joint_drive_mode']}](/home/xinjie/Newton_Connection/Newton/phystwin_bridge/demos/demo_robot_rope_franka.py:{control_sites['tabletop_joint_drive_mode']})",
-            f"- Desired joint targets are written into Newton control buffers at [demo_robot_rope_franka.py:{control_sites['drive_target_pos']}](/home/xinjie/Newton_Connection/Newton/phystwin_bridge/demos/demo_robot_rope_franka.py:{control_sites['drive_target_pos']}) and [demo_robot_rope_franka.py:{control_sites['drive_target_vel']}](/home/xinjie/Newton_Connection/Newton/phystwin_bridge/demos/demo_robot_rope_franka.py:{control_sites['drive_target_vel']})",
-            f"- The semi-implicit solver advances the articulation at [demo_robot_rope_franka.py:{control_sites['solver_step']}](/home/xinjie/Newton_Connection/Newton/phystwin_bridge/demos/demo_robot_rope_franka.py:{control_sites['solver_step']})",
-            f"- After the solver, reduced coordinates are resynced from solved body truth via `eval_ik(...)` at [demo_robot_rope_franka.py:{control_sites['post_eval_ik']}](/home/xinjie/Newton_Connection/Newton/phystwin_bridge/demos/demo_robot_rope_franka.py:{control_sites['post_eval_ik']})",
+            f"- Tabletop `joint_target_drive` mode is active at [demo]({str(demo_path)}:{control_sites['tabletop_joint_drive_mode']})",
+            f"- Desired joint targets are written into Newton control buffers at [demo]({str(demo_path)}:{control_sites['drive_target_pos']}) and [demo]({str(demo_path)}:{control_sites['drive_target_vel']})",
+            f"- The semi-implicit solver advances the articulation at [demo]({str(demo_path)}:{control_sites['solver_step']})",
+            f"- After the solver, reduced coordinates are resynced from solved body truth via `eval_ik(...)` at [demo]({str(demo_path)}:{control_sites['post_eval_ik']})",
             "",
             "This path preserves solver-integrated body truth and allows table contact to create persistent target-vs-actual lag.",
         ]
@@ -1047,13 +1069,13 @@ def main() -> int:
         control_update_lines = [
             "# Control Update Order Report",
             "",
-            f"- Tabletop `joint_trajectory` mode is selected at [demo_robot_rope_franka.py:{control_sites['tabletop_joint_mode']}](/home/xinjie/Newton_Connection/Newton/phystwin_bridge/demos/demo_robot_rope_franka.py:{control_sites['tabletop_joint_mode']})",
-            f"- The desired joint target is written directly into `state_in.joint_q` at [demo_robot_rope_franka.py:{control_sites['pre_state_in_q']}](/home/xinjie/Newton_Connection/Newton/phystwin_bridge/demos/demo_robot_rope_franka.py:{control_sites['pre_state_in_q']})",
-            f"- The desired joint velocity is written directly into `state_in.joint_qd` at [demo_robot_rope_franka.py:{control_sites['pre_state_in_qd']}](/home/xinjie/Newton_Connection/Newton/phystwin_bridge/demos/demo_robot_rope_franka.py:{control_sites['pre_state_in_qd']})",
-            f"- The semi-implicit solver is then stepped with `control=None` at [demo_robot_rope_franka.py:{control_sites['solver_step']}](/home/xinjie/Newton_Connection/Newton/phystwin_bridge/demos/demo_robot_rope_franka.py:{control_sites['solver_step']})",
-            f"- Immediately after the solver, the code writes `state_out.joint_q` back to the desired target at [demo_robot_rope_franka.py:{control_sites['post_state_out_q']}](/home/xinjie/Newton_Connection/Newton/phystwin_bridge/demos/demo_robot_rope_franka.py:{control_sites['post_state_out_q']})",
-            f"- It also writes `state_out.joint_qd` back to the desired target velocity at [demo_robot_rope_franka.py:{control_sites['post_state_out_qd']}](/home/xinjie/Newton_Connection/Newton/phystwin_bridge/demos/demo_robot_rope_franka.py:{control_sites['post_state_out_qd']})",
-            f"- Forward kinematics is recomputed from that overwritten state at [demo_robot_rope_franka.py:{control_sites['post_eval_fk']}](/home/xinjie/Newton_Connection/Newton/phystwin_bridge/demos/demo_robot_rope_franka.py:{control_sites['post_eval_fk']})",
+            f"- Tabletop `joint_trajectory` mode is selected at [demo]({str(demo_path)}:{control_sites['tabletop_joint_mode']})",
+            f"- The desired joint target is written directly into `state_in.joint_q` at [demo]({str(demo_path)}:{control_sites['pre_state_in_q']})",
+            f"- The desired joint velocity is written directly into `state_in.joint_qd` at [demo]({str(demo_path)}:{control_sites['pre_state_in_qd']})",
+            f"- The semi-implicit solver is then stepped with `control=None` at [demo]({str(demo_path)}:{control_sites['solver_step']})",
+            f"- Immediately after the solver, the code writes `state_out.joint_q` back to the desired target at [demo]({str(demo_path)}:{control_sites['post_state_out_q']})",
+            f"- It also writes `state_out.joint_qd` back to the desired target velocity at [demo]({str(demo_path)}:{control_sites['post_state_out_qd']})",
+            f"- Forward kinematics is recomputed from that overwritten state at [demo]({str(demo_path)}:{control_sites['post_eval_fk']})",
             "",
             "This update order means table contact has no durable path to create tracking error in the saved articulation state.",
         ]
