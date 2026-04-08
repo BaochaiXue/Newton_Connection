@@ -14,6 +14,21 @@
 
 ## Last Completed Step
 
+- Wrote a direct root-cause diagnosis for why the stronger robot path sags
+  while the accepted tabletop demo does not:
+  - [robot_blocking_collapse_root_cause_20260408.md](../../diagnostics/robot_blocking_collapse_root_cause_20260408.md)
+- Ran an isolating check with the accepted hero base offset but
+  `joint_target_drive` control:
+  - `tmp_vis/robot_drive_vs_hero_base_test/drive_hero_base_test_summary.json`
+  - result:
+    - `first_contact_phase = settle`
+    - `first_contact_time_s = 0.1334`
+    - `gripper_center_tracking_error_during_contact_mean_m = 0.0976`
+  - this shows the early sag is already present without the physical support
+    box
+- Hardened the blocking validator so rope-integrated runs fail if first
+  finger-table contact begins in `settle` instead of `approach/push`:
+  - [validate_robot_rope_franka_physical_blocking.py](../../scripts/validate_robot_rope_franka_physical_blocking.py)
 - Repaired the bridge-layer `joint_target_drive` truth path so the solver owns
   `state_out.body_q`:
   - no pre/post hard overwrite in the blocking path
@@ -139,6 +154,32 @@
 ## Latest Findings
 
 - The current promoted tabletop hero remains a readable baseline only
+- The accepted tabletop hero and the stronger blocking task do not share the
+  same robot semantics:
+  - accepted demo = `joint_trajectory` state overwrite
+  - stronger task = `joint_target_drive` articulation tracking
+- The accepted demo stays readable largely because it suppresses tracking
+  error:
+  - accepted c12:
+    - `first_contact_phase = approach`
+    - `first_contact_time_s = 1.6675`
+    - `gripper_center_tracking_error_during_contact_mean_m ≈ 2.5e-6`
+- The stronger path exposes the real blocking-side failure much earlier:
+  - `c15` and `support_box_shortsettle_probe` both start finger-table contact
+    in `settle`
+  - both begin table contact at about `0.1334 s`
+  - both keep about `5.5 s` of finger-table loading
+  - both carry mean target-vs-actual error around `6.6e-2` to `7.1e-2 m`
+- The new hero-base isolating run confirms support-box geometry is not the
+  first cause:
+  - even with accepted hero base offset and `render_only` support geometry,
+    `joint_target_drive` still sags into immediate settle contact
+- Current strongest diagnosis:
+  - the stronger path is physically honest enough to expose articulation sag
+  - at the current pre-pose and gains, `joint_target_drive` does not hold the
+    robot up against gravity/table loading during `settle`
+  - `blocking_lowprofile` and later support-box contact are secondary
+    aggravators, not the first cause
 - The old overwrite path is definitively non-physical and remains out of scope
   for the stronger claim.
 - The repaired bridge-layer path is now strong enough to prove Stage-0 direct
@@ -160,10 +201,12 @@
   - Stage-0 and Stage-1 top-level video filenames now encode the stage
 - Stage-1 can now be evaluated against the actual failure mode rather than only
   finger-vs-table blocking:
-  - `c14/c15/c16` all pass the new non-finger loading gates
+  - `c14/c15/c16` all passed the older non-finger-only gate set
   - for all three, `nonfinger_table_contact_duration_s = 0.0`
   - for all three, `collapse_after_retract_detected = false`
   - all three keep `proof_surface = actual_multi_box_finger_colliders`
+  - under the new settle-onset gate, none of them is presentation-ready,
+    because first finger-table contact already begins during `settle`
 - New family comparison:
   - `c14`:
     - passes new Stage-1 gates
@@ -172,12 +215,11 @@
     - visually the cleanest first proof that finger-only blocking can coexist
       with visible rope
   - `c15`:
-    - passes new Stage-1 gates
+    - passes the older non-finger-only gate set
     - `robot_table_penetration_min_m = -0.001877`
     - `rope_com_displacement_m = 0.03266`
-    - best current local presentation candidate because rope motion is more
-      visible than `c14` while still avoiding any measured non-finger table
-      loading or late collapse
+    - strongest old rope-motion candidate, but no longer acceptable after the
+      settle-onset diagnosis because it starts finger-table contact too early
   - `c16`:
     - passes new Stage-1 gates
     - `robot_table_penetration_min_m = -0.001912`
@@ -186,14 +228,13 @@
       story is not stronger than `c15`
 - Current best truthful interpretation:
   - Stage-0 is solved at the bridge layer
-  - Stage-1 is no longer blocked by controller truth
-  - the old accepted readable-tabletop joint family was the main Stage-1 visual
-    blocker
-  - the new `blocking_lowprofile` family plus non-finger gating produces the
-    first local rope-integrated candidates that are numerically and visually
-    aligned enough to review as presentation-ready candidates
-  - no promoted authority has been created yet; the strongest local candidate
-    is currently `c15`
+  - Stage-1 is no longer blocked by controller-truth ambiguity
+  - Stage-1 is still blocked by early settle contact and gravity sag on the
+    `joint_target_drive` path
+  - the old accepted readable-tabletop joint family was not the only Stage-1
+    issue; the blocking path itself still needs a gravity-stable pre-pose
+  - no promoted authority has been created yet; there is currently no
+    rope-integrated candidate that passes the stricter settle-onset gate
 - Support-box truth audit result:
   - before this step, the visible rear box was only the rendered
     `/demo/robot_pedestal`; it was not present in `model.shape_count`
@@ -283,6 +324,16 @@
 
 ## Next Step
 
+- Do not treat any rope-integrated candidate with `first_contact_phase =
+  settle` as presentation-ready, even if an older validator would have passed
+  it.
+- Build a new `joint_target_drive` reference family whose settle pose is
+  gravity-stable and table-clear:
+  - late finger-table onset must start in `approach` or `push`
+  - only after that should support-box geometry be reintroduced as a later
+    bounded backstop
+- After the new pose family exists, test nonzero `joint_target_vel`
+  feedforward as a secondary tracking improvement.
 - Keep the repaired `joint_target_drive` bridge path; do not revert to state
   overwrite and do not touch `Newton/newton/`.
 - Keep the thin-slab default and the support-box-aware validator gates.

@@ -7,8 +7,9 @@ It is meant to function as a maintenance queue, not a permanent wall of red temp
 
 | Path | Classification | Review | Age (d) | Interval (d) | Enforced | Overgrown | Compressed | Action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `docs/bridge/current_status.md` | `CANONICAL` | `ok` | `0` | `7` | `True` | `False` | `True` | `REFORMAT` |
-| `docs/bridge/tasks/bunny_penetration_force_diagnostic.md` | `CANONICAL` | `ok` | `4` | `21` | `True` | `True` | `False` | `REFORMAT` |
-| `docs/bridge/tasks/self_collision_transfer.md` | `CANONICAL` | `ok` | `1` | `21` | `True` | `True` | `False` | `REFORMAT` |
+| `docs/bridge/current_status.md` | `CANONICAL` | `ok` | `3` | `7` | `True` | `False` | `True` | `REFORMAT` |
+| `docs/bridge/tasks/bunny_penetration_force_diagnostic.md` | `CANONICAL` | `ok` | `7` | `21` | `True` | `True` | `False` | `REFORMAT` |
+| `docs/bridge/tasks/self_collision_transfer.md` | `CANONICAL` | `ok` | `4` | `21` | `True` | `True` | `False` | `REFORMAT` |
 | `tasks/implement/slide_deck_overhaul.md` | `ACTIVE_SUPPORTING` | `out_of_scope` | `None` | `None` | `False` | `False` | `True` | `REFORMAT` |
+| `tasks/status/robot_rope_franka_physical_blocking.md` | `ACTIVE_SUPPORTING` | `out_of_scope` | `None` | `None` | `False` | `True` | `False` | `REFORMAT` |
 | `tasks/status/self_collision_transfer.md` | `ACTIVE_SUPPORTING` | `out_of_scope` | `None` | `None` | `False` | `True` | `True` | `REFORMAT` |

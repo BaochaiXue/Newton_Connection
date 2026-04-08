@@ -27,6 +27,7 @@ blocker.
 4. keep cloth+box `phystwin` explicitly unsupported while preserving `off/native/custom`
 5. explain the stable `case_3 > case_4` ordering on the reproducible matrix surface
 6. translate that explanation into an explicit A/B/C recommendation or a precise blocker
+7. keep any restart-from-frame continuation diagnostics bridge-side and local-only unless they change the authoritative comparison surface
 
 ## Validation
 
@@ -44,3 +45,6 @@ blocker.
 - Current diagnostic question after the repro fix: why the now-stable matrix
   still makes case 3 beat case 4, and whether that stable gap changes the final
   A/B/C self-collision recommendation.
+- A frame-137 continuation matrix can be used as a bounded follow-up to test
+  whether the late gap is mostly pre-137 history or post-137 branch semantics,
+  but it does not replace the authoritative full-rollout surface.

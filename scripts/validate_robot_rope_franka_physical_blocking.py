@@ -20,6 +20,12 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--require-support-box", action=argparse.BooleanOptionalAction, default=False)
     p.add_argument("--min-support-box-contact-duration-s", type=float, default=0.05)
     p.add_argument("--max-support-box-contact-duration-s", type=float, default=0.50)
+    p.add_argument(
+        "--allow-first-contact-during-settle",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="If false, rope-integrated runs fail when first finger-table contact already happens in the settle phase.",
+    )
     return p.parse_args()
 
 
@@ -76,6 +82,9 @@ def main() -> int:
     support_links = [str(v) for v in report.get("support_box_contact_link_names", [])]
     settle_seconds = summary.get("tabletop_settle_seconds")
     settle_seconds = None if settle_seconds is None else float(settle_seconds)
+    first_contact_phase = summary.get("first_contact_phase")
+    first_contact_time = summary.get("first_contact_time_s")
+    first_contact_time = None if first_contact_time is None else float(first_contact_time)
 
     rope_contact_started = bool(
         summary.get("actual_finger_box_contact_started") or summary.get("actual_tool_contact_started")
@@ -90,6 +99,13 @@ def main() -> int:
     }
     if stage == "rope_integrated":
         gates["rope_contact_still_present"] = rope_contact_started
+        gates["first_contact_not_during_settle"] = bool(args.allow_first_contact_during_settle) or first_contact_phase in {"approach", "push", "hold", "retract"}
+        gates["first_contact_after_settle"] = (
+            bool(args.allow_first_contact_during_settle)
+            or first_contact_time is None
+            or settle_seconds is None
+            or first_contact_time > settle_seconds
+        )
         gates["nonfinger_table_contact_duration_pass"] = (
             nonfinger_duration is None or nonfinger_duration <= float(args.max_nonfinger_table_contact_duration_s)
         )
@@ -138,6 +154,8 @@ def main() -> int:
             "support_box_penetration_min_m": support_box_penetration,
             "support_box_is_physical_collider": support_box_is_physical,
             "frame0_support_box_overlap_detected": frame0_support_overlap,
+            "first_contact_phase": first_contact_phase,
+            "first_contact_time_s": first_contact_time,
             "first_support_box_contact_phase": first_support_phase,
             "robot_support_box_first_contact_time_s": first_support_time,
             "support_box_contact_link_names": support_links,
@@ -158,6 +176,8 @@ def main() -> int:
     ]
     if stage == "rope_integrated":
         md_lines.append(f"- rope contact still present: {'YES' if gates['rope_contact_still_present'] else 'NO'}")
+        md_lines.append(f"- first contact not during settle: {'YES' if gates['first_contact_not_during_settle'] else 'NO'}")
+        md_lines.append(f"- first contact after settle: {'YES' if gates['first_contact_after_settle'] else 'NO'}")
         md_lines.append(f"- non-finger table-contact duration pass: {'YES' if gates['nonfinger_table_contact_duration_pass'] else 'NO'}")
         md_lines.append(f"- non-finger penetration tolerance pass: {'YES' if gates['nonfinger_penetration_tolerance_pass'] else 'NO'}")
         md_lines.append(f"- collapse after retract absent: {'YES' if gates['collapse_after_retract_absent'] else 'NO'}")
@@ -179,6 +199,8 @@ def main() -> int:
             f"- nonfinger_table_contact_duration_s: `{nonfinger_duration}`",
             f"- nonfinger_penetration_min_m: `{nonfinger_penetration}`",
             f"- collapse_after_retract_detected: `{collapse_after_retract}`",
+            f"- first_contact_phase: `{first_contact_phase}`",
+            f"- first_contact_time_s: `{first_contact_time}`",
             f"- support_box_is_physical_collider: `{support_box_is_physical}`",
             f"- frame0_support_box_overlap_detected: `{frame0_support_overlap}`",
             f"- first_support_box_contact_phase: `{first_support_phase}`",

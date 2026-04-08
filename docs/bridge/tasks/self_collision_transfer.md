@@ -93,6 +93,13 @@ The repo already contains the right scaffolding for a decision:
 - `Newton/phystwin_bridge/tools/other/run_ground_contact_self_collision_visual_bundle.py`
   - renders the stable `2 x 2` matrix cases into labeled `2x3` comparison videos
   - also writes a `3x4` labeled reference board for the four cases
+- `Newton/phystwin_bridge/tools/other/run_ground_contact_self_collision_restart_matrix.py`
+  - builds a derived strict IR whose frame-0 state comes from the PhysTwin
+    reference at a chosen restart frame
+  - reruns the same fair `2 x 2` law matrix from that restart state to the
+    original rollout end
+  - writes a continuation RMSE matrix plus labeled `2x3` case videos and a
+    `3x4` labeled board video
 
 That means the next step is not “add more framework”, but “turn the current framework into decision evidence”.
 

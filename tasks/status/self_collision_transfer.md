@@ -180,6 +180,32 @@ Local scratch validation notes:
     - one `3x4` labeled reference board for the four cases
   - intended usage:
     - slide / presentation support for the stable cloth + implicit-ground `2x2` matrix
+- frame-137 continuation restart matrix now exists as local diagnostic evidence:
+  - root:
+    - `Newton/phystwin_bridge/results/ground_contact_self_collision_restart137_matrix_20260408_063329_5548588`
+  - reusable runner:
+    - `Newton/phystwin_bridge/tools/other/run_ground_contact_self_collision_restart_matrix.py`
+  - restart contract:
+    - object `x0` is copied from PhysTwin reference frame `137`
+    - object `v0` is estimated by central difference on the PhysTwin reference rollout
+    - controller `x0` is copied from `controller_traj[137]`
+    - controller `v0` is reset to zero, matching the bridge's kinematic write path
+    - `controller_traj` and `inference.pkl` are both sliced from frame `137` to the original end
+  - continuation `rmse_mean` results over the remaining `165` frames:
+    - case 1: `0.010995208285748959`
+    - case 2: `0.010985376313328743`
+    - case 3: `0.00716436980292201`
+    - case 4: `0.012485035695135593`
+  - continuation reading:
+    - `case_3_self_phystwin_ground_native` remains the best case even when all four runs are restarted from the same PhysTwin reference state at frame `137`
+    - this weakens the idea that the stable case-3 advantage is only a pre-137 history artifact
+    - it instead suggests that post-137 branch semantics still matter, with native ground continuing to act as a stabilizing compensator
+  - visualization outputs:
+    - four labeled `2x3` continuation comparison videos
+    - one labeled `3x4` continuation board video
+    - one continuation RMSE curve plot
+  - caution:
+    - this is a restart diagnostic, not a new authoritative parity surface, because object velocity at frame `137` is reconstructed from position-only reference data rather than exported exact PhysTwin velocity
 - controlled `2 x 2` full 302-frame cloth+ground RMSE matrix now exists:
   - root:
     - `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260404_140154_e11491a`
@@ -247,6 +273,7 @@ evidence:
 Now that the fair `2 x 2` matrix ranking is reproducible, resume mechanism diagnosis on the stable surface:
 
 - keep the stable follow-up diagnosis visible as the current mechanism explanation surface
+- use the frame-137 continuation root only as bounded supporting evidence for late-gap interpretation
 - if a future bridge-side fix targets the remaining blocker, compare it against:
   - the reproducible matrix root
   - the stable case-3-vs-case-4 follow-up root
