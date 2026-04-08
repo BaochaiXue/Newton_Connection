@@ -11,6 +11,8 @@ RESULT_ROOT="${NEWTON_ROOT}/phystwin_bridge/results/robot_rope_franka_physical_b
 
 BLOCKING_STAGE=""
 SHORT_TAG="${SHORT_TAG:-default}"
+SUPPORT_BOX_FIT_REPORT=""
+SUPPORT_BOX_FIT_PROFILE="${SUPPORT_BOX_FIT_PROFILE:-B}"
 EXTRA_ARGS=()
 
 while [[ $# -gt 0 ]]; do
@@ -21,6 +23,14 @@ while [[ $# -gt 0 ]]; do
       ;;
     --blocking-stage)
       BLOCKING_STAGE="${2:?missing blocking stage}"
+      shift 2
+      ;;
+    --support-box-fit-report)
+      SUPPORT_BOX_FIT_REPORT="${2:?missing fit report path}"
+      shift 2
+      ;;
+    --support-box-fit-profile)
+      SUPPORT_BOX_FIT_PROFILE="${2:?missing fit profile}"
       shift 2
       ;;
     *)
@@ -51,8 +61,11 @@ STDERR_LOG="${RUN_DIR}/stderr.log"
 GIT_REV_TXT="${RUN_DIR}/git_rev.txt"
 ENV_TXT="${RUN_DIR}/env.txt"
 MANUAL_REVIEW_JSON="${RUN_DIR}/manual_review.json"
+SELECTED_SUPPORT_BOX_JSON="${RUN_DIR}/selected_support_box_geometry.json"
 
-COMMON_ARGS=(
+printf '{\n  "selected": false\n}\n' > "${SELECTED_SUPPORT_BOX_JSON}"
+
+COMMON_ARGS_BASE=(
   --task tabletop_push_hero
   --blocking-stage "${BLOCKING_STAGE}"
   --tabletop-control-mode joint_target_drive
@@ -105,8 +118,52 @@ COMMON_ARGS=(
   --tabletop-ee-offset-z 0.22
   --particle-radius-scale 0.1
   --rope-line-width 0.024
-  "${EXTRA_ARGS[@]}"
 )
+
+COMMON_ARGS=("${COMMON_ARGS_BASE[@]}" "${EXTRA_ARGS[@]}")
+SUPPORT_BOX_MODE_EFFECTIVE="physical"
+for ((i=0; i<${#EXTRA_ARGS[@]}; i++)); do
+  if [[ "${EXTRA_ARGS[$i]}" == "--tabletop-support-box-mode" ]] && [[ $((i + 1)) -lt ${#EXTRA_ARGS[@]} ]]; then
+    SUPPORT_BOX_MODE_EFFECTIVE="${EXTRA_ARGS[$((i + 1))]}"
+  fi
+done
+
+if [[ -n "${SUPPORT_BOX_FIT_REPORT}" ]]; then
+  mapfile -t FIT_GEOM < <(python - "${SUPPORT_BOX_FIT_REPORT}" "${SUPPORT_BOX_FIT_PROFILE}" "${SELECTED_SUPPORT_BOX_JSON}" <<'PY'
+import json, pathlib, sys
+report = json.loads(pathlib.Path(sys.argv[1]).read_text())
+profile = str(sys.argv[2]).upper()
+candidate = report["candidate_geometry"][profile]
+selected = {
+    "fit_profile": profile,
+    "support_normal_axis": report["support_normal_axis"],
+    "support_normal_sign": report["support_normal_sign"],
+    "center": candidate["center"],
+    "scale": candidate["scale"],
+    "offset_from_default_center": candidate["offset_from_default_center"],
+    "center_retreat_m": candidate["center_retreat_m"],
+    "normal_half_extent_shrink_m": candidate["normal_half_extent_shrink_m"],
+    "predicted_init_gap_min_m": candidate["predicted_init_gap_min_m"],
+    "predicted_support_gap_q05_m": candidate["predicted_support_gap_q05_m"],
+}
+pathlib.Path(sys.argv[3]).write_text(json.dumps(selected, indent=2), encoding="utf-8")
+print(*candidate["offset_from_default_center"])
+print(*candidate["scale"])
+PY
+  )
+  if [[ ${#FIT_GEOM[@]} -ne 2 ]]; then
+    echo "[run_robot_rope_franka_physical_blocking] ERROR: failed to parse support-box fit geometry from ${SUPPORT_BOX_FIT_REPORT}" >&2
+    exit 3
+  fi
+  read -r -a SUPPORT_BOX_OFFSET_VALUES <<< "${FIT_GEOM[0]}"
+  read -r -a SUPPORT_BOX_SCALE_VALUES <<< "${FIT_GEOM[1]}"
+  COMMON_ARGS+=(
+    --tabletop-support-box-mode physical
+    --tabletop-support-box-offset "${SUPPORT_BOX_OFFSET_VALUES[0]}" "${SUPPORT_BOX_OFFSET_VALUES[1]}" "${SUPPORT_BOX_OFFSET_VALUES[2]}"
+    --tabletop-support-box-scale "${SUPPORT_BOX_SCALE_VALUES[0]}" "${SUPPORT_BOX_SCALE_VALUES[1]}" "${SUPPORT_BOX_SCALE_VALUES[2]}"
+  )
+  SUPPORT_BOX_MODE_EFFECTIVE="physical"
+fi
 
 PRESENT_CMD=(
   python "${SCRIPT}"
@@ -172,6 +229,7 @@ EOF
 {
   echo "[run_robot_rope_franka_physical_blocking] run_dir=${RUN_DIR}"
   echo "[run_robot_rope_franka_physical_blocking] stage=${BLOCKING_STAGE}"
+  echo "[run_robot_rope_franka_physical_blocking] support_box_mode=${SUPPORT_BOX_MODE_EFFECTIVE}"
   echo "[run_robot_rope_franka_physical_blocking] presentation=${PRESENT_CMD[*]}"
   echo "[run_robot_rope_franka_physical_blocking] debug=${DEBUG_CMD[*]}"
   echo "[run_robot_rope_franka_physical_blocking] validation=${VALIDATION_CMD[*]}"
@@ -206,6 +264,7 @@ python "${DIAG_SCRIPT}" "${RUN_DIR}" --out-dir "${DIAG_DIR}" >> "${STDOUT_LOG}" 
 cp -f "${DIAG_DIR}/robot_table_contact_report.json" "${RUN_DIR}/robot_table_contact_report.json"
 cp -f "${DIAG_DIR}/nonfinger_table_contact_report.json" "${RUN_DIR}/nonfinger_table_contact_report.json"
 cp -f "${DIAG_DIR}/support_box_contact_report.json" "${RUN_DIR}/support_box_contact_report.json"
+cp -f "${DIAG_DIR}/support_box_fit_report.json" "${RUN_DIR}/support_box_fit_report.json"
 cp -f "${DIAG_DIR}/ee_target_vs_actual_plot.png" "${RUN_DIR}/ee_target_vs_actual_plot.png"
 cp -f "${DIAG_DIR}/robot_table_penetration_plot.png" "${RUN_DIR}/robot_table_penetration_plot.png"
 cp -f "${DIAG_DIR}/robot_table_contact_sheet.png" "${RUN_DIR}/robot_table_contact_sheet.png"
@@ -230,6 +289,10 @@ for name in ["robot_table_contact_report.json", "nonfinger_table_contact_report.
         continue
     payload = json.loads(path.read_text())
     summary.update(payload)
+if (run_dir / "selected_support_box_geometry.json").exists():
+    summary["selected_support_box_geometry"] = json.loads((run_dir / "selected_support_box_geometry.json").read_text())
+if (run_dir / "support_box_fit_report.json").exists():
+    summary["support_box_fit_report_json"] = "support_box_fit_report.json"
 summary_path.write_text(json.dumps(summary, indent=2))
 if stage_summary is not None:
     stage_summary.write_text(json.dumps(summary, indent=2))
@@ -237,7 +300,7 @@ PY
 
 BLOCK_RC=0
 VALIDATOR_ARGS=()
-if [[ "${BLOCKING_STAGE}" == "rope_integrated" ]]; then
+if [[ "${BLOCKING_STAGE}" == "rope_integrated" && "${SUPPORT_BOX_MODE_EFFECTIVE}" == "physical" ]]; then
   VALIDATOR_ARGS+=(--require-support-box)
 fi
 python "${BLOCK_VALIDATOR}" "${RUN_DIR}" "${VALIDATOR_ARGS[@]}" || BLOCK_RC=$?
@@ -253,6 +316,9 @@ This candidate uses the native Franka direct-finger path with \`joint_target_dri
 as the controller truth surface. hero/debug/validation are rendered from one
 saved rollout history. The final proof surface is the actual imported Franka
 finger-box collider set against the native tabletop box.
+
+Support box mode: \`${SUPPORT_BOX_MODE_EFFECTIVE}\`
+$( [[ -f "${SELECTED_SUPPORT_BOX_JSON}" ]] && printf '%s\n' "" "Selected support-box geometry: \`selected_support_box_geometry.json\`" || true )
 
 Primary top-level videos:
 
@@ -284,6 +350,8 @@ cat > "${RUN_DIR}/manifest.json" <<EOF
     "robot_table_contact_report_json": "robot_table_contact_report.json",
     "nonfinger_table_contact_report_json": "nonfinger_table_contact_report.json",
     "support_box_contact_report_json": "support_box_contact_report.json",
+    "support_box_fit_report_json": "support_box_fit_report.json",
+    "selected_support_box_geometry_json": "selected_support_box_geometry.json",
     "ee_target_vs_actual_plot_png": "ee_target_vs_actual_plot.png",
     "robot_table_penetration_plot_png": "robot_table_penetration_plot.png",
     "nonfinger_table_penetration_plot_png": "nonfinger_table_penetration_plot.png",

@@ -90,6 +90,43 @@
   - [c17_supportbox_shortretract](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260407_210340_rope_integrated_c17_supportbox_shortretract)
   - [c18_supportbox_base06](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260407_210403_rope_integrated_c18_supportbox_base06)
   - [c19_supportbox_hi_clearance](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260407_210403_rope_integrated_c19_supportbox_hi_clearance)
+- Replaced the old inherited support-box default in
+  [demo_robot_rope_franka.py](../../Newton/phystwin_bridge/demos/demo_robot_rope_franka.py)
+  with a blocking-task-specific thin backstop slab for
+  `joint_target_drive` Stage-1 runs:
+  - default support box no longer reuses `robot_base_scale/center` verbatim
+  - metadata now records:
+    - `support_box_default_center`
+    - `support_box_default_scale`
+    - `support_box_geometry_source`
+    - `support_box_normal_axis`
+    - `support_box_normal_sign`
+- Extended support-box diagnostics and validator surfaces:
+  - `support_box_fit_report.json`
+  - `support_box_fit_report.md`
+  - `frame0_support_box_overlap_detected`
+  - `first_support_box_contact_phase`
+  - `robot_support_box_first_contact_time_s`
+  - validator gates for:
+    - frame-0 overlap absent
+    - first support contact in `approach/push`
+    - first support contact after settle
+    - support contact links restricted to `fr3_link5/6/7/hand`
+- Extended the canonical wrapper with scout-fit support-box workflow:
+  - wrapper now accepts:
+    - `--support-box-fit-report`
+    - `--support-box-fit-profile A|B|C`
+  - selected geometry is written to `selected_support_box_geometry.json`
+  - summary/README now record the chosen support-box geometry surface
+- Produced the clean-start no-box scout run:
+  - [support_scout_no_box](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260408_043258_rope_integrated_support_scout_no_box)
+  - its `support_box_fit_report.json` now drives the first A/B/C slab family
+- Produced the first thin-slab A/B/C Stage-1 runs and one bounded
+  support-normal refinement:
+  - [support_box_A](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260408_043554_rope_integrated_support_box_A)
+  - [support_box_B](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260408_043832_rope_integrated_support_box_B)
+  - [support_box_C](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260408_044121_rope_integrated_support_box_C)
+  - [support_box_B_refine_front06](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260408_044557_rope_integrated_support_box_B_refine_front06)
 
 ## Latest Findings
 
@@ -176,17 +213,50 @@
     stronger-task promotion
   - the next honest move is support-box geometry retuning, not more truth-path
     work or Newton core changes
+- New thin-backstop result after the slab refit:
+  - the box is no longer a giant pedestal by default on `joint_target_drive`
+    Stage-1 runs
+  - the clean-start scout run now records a physical-support fitting surface at
+    [support_box_fit_report.json](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260408_043258_rope_integrated_support_scout_no_box/support_box_fit_report.json)
+  - the first A/B/C slab family eliminates the old frame-0 overlap entirely:
+    - for `support_box_A/B/C`:
+      - `frame0_support_box_overlap_detected = false`
+      - `support_box_is_physical_collider = true`
+  - but all three thin-slab runs still miss the robot completely:
+    - `support_box_contact_duration_s = 0.0`
+    - `support_box_contact_link_names = []`
+    - no candidate reaches the new `approach/push` support-contact gate
+  - bounded support-normal refinement `support_box_B_refine_front06` also
+    remains a miss:
+    - `frame0_support_box_overlap_detected = false`
+    - `support_box_contact_duration_s = 0.0`
+    - `support_box_contact_link_names = []`
+  - current strongest interpretation:
+    - support box truth is now fixed in both directions:
+      - old large geometry: real contact but dishonest initial overlap
+      - new thin slab: no overlap, but also no real support contact
+    - the remaining blocker is therefore not “is the box physical?” and not
+      “is the box too large?” alone; it is that the current fitted slab still
+      does not intersect the actual non-finger support sweep of the robot links
+      under this Stage-1 trajectory
+    - the next honest move is to fit support geometry from the actual
+      support-capable link geometry / contact sweep rather than from body-center
+      trajectories alone
 
 ## Next Step
 
 - Keep the repaired `joint_target_drive` bridge path; do not revert to state
   overwrite and do not touch `Newton/newton/`.
-- Continue bounded retuning on the physical support-box geometry itself:
-  - offset
-  - half-extents
-  - only then the Stage-1 reference if needed
-- The first small-box trial is now in progress:
-  - `c20_supportbox_smallbackstop`
+- Keep the thin-slab default and the support-box-aware validator gates.
+- Next bounded move:
+  - fit the support slab from actual `fr3_link5/fr3_link6/fr3_link7`
+    geometry/contact sweep rather than body centers alone
+  - preserve the same Stage-1 controller truth and direct-finger proof surface
+  - continue requiring:
+    - no frame-0 overlap
+    - first support contact in `approach/push`
+    - no non-finger table loading
+    - no late collapse
 - Preserve the stronger-task docs truthful and keep the old readable tabletop
   baseline as the only accepted robot-rope authority until a rope-integrated
   candidate is visually honest as well as numerically passing.

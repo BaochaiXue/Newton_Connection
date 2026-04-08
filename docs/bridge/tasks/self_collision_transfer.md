@@ -90,6 +90,9 @@ The repo already contains the right scaffolding for a decision:
   - fixes the environment surface (`PYTHONHASHSEED`, single-thread BLAS/OpenMP)
   - repeats the full matrix multiple times and reports ranking stability,
     per-case drift, and rollout-hash equality
+- `Newton/phystwin_bridge/tools/other/run_ground_contact_self_collision_visual_bundle.py`
+  - renders the stable `2 x 2` matrix cases into labeled `2x3` comparison videos
+  - also writes a `3x4` labeled reference board for the four cases
 
 That means the next step is not “add more framework”, but “turn the current framework into decision evidence”.
 

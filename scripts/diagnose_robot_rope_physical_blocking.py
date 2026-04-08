@@ -244,6 +244,104 @@ def _make_contact_sheet(frames: list[np.ndarray], labels: list[str], out_path: P
     return out_path
 
 
+def _phase_names_for_run(module: Any, meta: dict[str, Any], summary: dict[str, Any], frames: int, frame_dt: float) -> list[str]:
+    if str(summary.get("tabletop_control_mode")) == "joint_target_drive":
+        return [str(module._joint_phase_state(float(i) * frame_dt, meta)[0]) for i in range(frames)]
+    return [str(module._task_phase_state(float(i) * frame_dt, meta)[0]) for i in range(frames)]
+
+
+def _support_axis_name(axis_idx: int) -> str:
+    return ("x", "y", "z")[int(axis_idx)]
+
+
+def _fit_support_box_candidates(
+    body_q: np.ndarray,
+    model: Any,
+    meta: dict[str, Any],
+    phase_names: list[str],
+) -> dict[str, Any]:
+    target_suffixes = ("/fr3_link5", "/fr3_link6", "/fr3_link7", "/fr3_hand")
+    target_body_ids = [
+        i for i, label in enumerate(model.body_label) if any(str(label).endswith(suffix) for suffix in target_suffixes)
+    ]
+    if not target_body_ids:
+        return {
+            "fit_available": False,
+            "reason": "support target bodies not found",
+        }
+
+    positions = body_q[:, target_body_ids, :3].astype(np.float32, copy=False)
+    init_mask = np.asarray([name == "settle" for name in phase_names], dtype=bool)
+    support_mask = np.asarray([name in {"approach", "push"} for name in phase_names], dtype=bool)
+    if not np.any(init_mask):
+        init_mask[: max(1, min(8, body_q.shape[0]))] = True
+    if not np.any(support_mask):
+        support_mask = np.asarray([not flag for flag in init_mask], dtype=bool)
+
+    robot_base_center = np.asarray(meta.get("robot_base_center", [0.0, 0.0, 0.0]), dtype=np.float32)
+    robot_base_scale = np.asarray(meta.get("robot_base_scale", [0.17, 0.17, 0.18]), dtype=np.float32)
+    default_center = np.asarray(meta.get("support_box_default_center", robot_base_center), dtype=np.float32)
+    default_scale = np.asarray(meta.get("support_box_default_scale", robot_base_scale), dtype=np.float32)
+
+    support_positions = positions[support_mask].reshape(-1, 3)
+    centroid = np.mean(support_positions, axis=0)
+    direction = centroid - robot_base_center
+    axis_idx = int(np.argmax(np.abs(direction)))
+    axis_sign = 1.0 if float(direction[axis_idx]) >= 0.0 else -1.0
+
+    center = default_center.astype(np.float32, copy=True)
+    scale = default_scale.astype(np.float32, copy=True)
+    for dim in range(3):
+        if dim == axis_idx:
+            continue
+        q05, q95 = np.quantile(support_positions[:, dim], [0.05, 0.95])
+        margin = 0.015 if dim != 2 else 0.020
+        center[dim] = float(0.5 * (q05 + q95))
+        scale[dim] = float(max(0.04 if dim != 2 else 0.08, 0.5 * (q95 - q05) + margin))
+
+    candidate_splits = {
+        "A": (0.14, 0.10),
+        "B": (0.16, 0.08),
+        "C": (0.18, 0.06),
+    }
+    init_support = positions[init_mask].reshape(-1, 3)
+    candidates: dict[str, Any] = {}
+    for name, (center_retreat, normal_shrink) in candidate_splits.items():
+        cand_center = center.astype(np.float32, copy=True)
+        cand_scale = scale.astype(np.float32, copy=True)
+        cand_center[axis_idx] = float(robot_base_center[axis_idx] - axis_sign * center_retreat)
+        cand_scale[axis_idx] = float(max(0.03, float(robot_base_scale[axis_idx]) - normal_shrink))
+        face_coord = float(axis_sign * cand_center[axis_idx] + cand_scale[axis_idx])
+        init_gap = (axis_sign * init_support[:, axis_idx]) - face_coord
+        support_gap = (axis_sign * support_positions[:, axis_idx]) - face_coord
+        candidates[name] = {
+            "center_retreat_m": float(center_retreat),
+            "normal_half_extent_shrink_m": float(normal_shrink),
+            "center": cand_center.astype(float).tolist(),
+            "scale": cand_scale.astype(float).tolist(),
+            "offset_from_default_center": (cand_center - default_center).astype(float).tolist(),
+            "predicted_init_gap_min_m": float(np.min(init_gap)),
+            "predicted_support_gap_q05_m": float(np.quantile(support_gap, 0.05)),
+            "predicted_support_gap_q50_m": float(np.quantile(support_gap, 0.50)),
+        }
+
+    return {
+        "fit_available": True,
+        "support_target_body_labels": [str(model.body_label[i]) for i in target_body_ids],
+        "support_window_phase_names": ["approach", "push"],
+        "init_window_phase_names": ["settle"],
+        "support_normal_axis_index": int(axis_idx),
+        "support_normal_axis": _support_axis_name(axis_idx),
+        "support_normal_sign": float(axis_sign),
+        "robot_base_center": robot_base_center.astype(float).tolist(),
+        "robot_base_scale": robot_base_scale.astype(float).tolist(),
+        "default_support_box_center": default_center.astype(float).tolist(),
+        "default_support_box_scale": default_scale.astype(float).tolist(),
+        "support_centroid_support_window": centroid.astype(float).tolist(),
+        "candidate_geometry": candidates,
+    }
+
+
 def main() -> int:
     args = parse_args()
     run_dir = args.run_dir.expanduser().resolve()
@@ -445,7 +543,7 @@ def main() -> int:
     nonfinger_penetration_min = None if not nonfinger_body_series else float(np.min(nonfinger_global_min))
     nonfinger_worst_body = None if nonfinger_worst_frame is None else str(nonfinger_global_body[nonfinger_worst_frame])
 
-    phase_names = [str(module._task_phase_state(float(i) * frame_dt, meta)[0]) for i in range(frames)]
+    phase_names = _phase_names_for_run(module, meta, summary, frames, frame_dt)
     retract_mask = np.asarray([name == "retract" for name in phase_names], dtype=bool)
     collapse_frame_idx = None
     if np.any(nonfinger_contact_mask & retract_mask):
@@ -538,6 +636,8 @@ def main() -> int:
     support_contact_mask = np.asarray(np.isfinite(support_contact_gap), dtype=bool)
     support_contact_frames = np.flatnonzero(support_contact_mask)
     first_support_contact_frame = None if support_contact_frames.size == 0 else int(support_contact_frames[0])
+    first_support_contact_phase = None if first_support_contact_frame is None else str(phase_names[first_support_contact_frame])
+    frame0_support_box_overlap_detected = bool(support_contact_mask[0]) if support_contact_mask.size else False
     support_box_contact_duration_s = float(np.count_nonzero(support_contact_mask) * frame_dt)
     support_box_penetration_min_m = None if not np.any(support_contact_mask) else float(np.min(support_contact_gap[support_contact_mask]))
     support_box_peak_penetrating_link_name = (
@@ -589,10 +689,12 @@ def main() -> int:
         "fr3_link5_table_penetration_min_m": nonfinger_report["fr3_link5_table_penetration_min_m"],
         "support_box_is_physical_collider": support_box_is_physical,
         "support_box_shape_index": support_box_shape_index,
+        "frame0_support_box_overlap_detected": frame0_support_box_overlap_detected,
         "robot_support_box_first_contact_frame": first_support_contact_frame,
         "robot_support_box_first_contact_time_s": (
             None if first_support_contact_frame is None else float(first_support_contact_frame * frame_dt)
         ),
+        "first_support_box_contact_phase": first_support_contact_phase,
         "support_box_contact_duration_s": support_box_contact_duration_s,
         "support_box_penetration_min_m": support_box_penetration_min_m,
         "support_box_contact_link_names": support_box_contact_link_names,
@@ -626,10 +728,12 @@ def main() -> int:
             "run_id": run_dir.name,
             "support_box_is_physical_collider": support_box_is_physical,
             "support_box_shape_index": support_box_shape_index,
+            "frame0_support_box_overlap_detected": frame0_support_box_overlap_detected,
             "robot_support_box_first_contact_frame": first_support_contact_frame,
             "robot_support_box_first_contact_time_s": (
                 None if first_support_contact_frame is None else float(first_support_contact_frame * frame_dt)
             ),
+            "first_support_box_contact_phase": first_support_contact_phase,
             "support_box_contact_duration_s": support_box_contact_duration_s,
             "support_box_penetration_min_m": support_box_penetration_min_m,
             "support_box_contact_link_names": support_box_contact_link_names,
@@ -637,6 +741,9 @@ def main() -> int:
             "support_box_contact_fraction_after_first_touch": support_box_contact_fraction_after_first_touch,
         },
     )
+
+    support_box_fit_report = _fit_support_box_candidates(body_q, model, meta, phase_names)
+    _write_json(out_dir / "support_box_fit_report.json", support_box_fit_report)
 
     with (out_dir / "robot_table_clearance_timeseries.csv").open("w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
@@ -908,6 +1015,8 @@ def main() -> int:
             f"- non-finger minimum penetration: `{nonfinger_report['nonfinger_penetration_min_m']}` m",
             f"- collapse after retract detected: `{'YES' if collapse_after_retract_detected else 'NO'}`",
             f"- support box is physical collider: `{'YES' if support_box_is_physical else 'NO'}`",
+            f"- frame-0 support-box overlap detected: `{'YES' if frame0_support_box_overlap_detected else 'NO'}`",
+            f"- first support-box contact phase: `{first_support_contact_phase}`",
             f"- support box contact duration: `{support_box_contact_duration_s}` s",
             f"- support box penetration min: `{support_box_penetration_min_m}` m",
             f"- support box contact links: `{support_box_contact_link_names}`",
@@ -919,6 +1028,34 @@ def main() -> int:
             "- If the support box is shown and required for the story, it must appear here as a real physical support contact rather than a render-only prop.",
         ],
     )
+
+    if bool(support_box_fit_report.get("fit_available", False)):
+        fit_lines = [
+            "# Support Box Fit Report",
+            "",
+            f"- support normal axis: `{support_box_fit_report['support_normal_axis']}`",
+            f"- support normal sign: `{support_box_fit_report['support_normal_sign']}`",
+            f"- default support box center: `{support_box_fit_report['default_support_box_center']}`",
+            f"- default support box scale: `{support_box_fit_report['default_support_box_scale']}`",
+            f"- fitted support target bodies: `{support_box_fit_report['support_target_body_labels']}`",
+            "",
+        ]
+        for candidate_name, candidate_payload in support_box_fit_report["candidate_geometry"].items():
+            fit_lines.extend(
+                [
+                    f"## Candidate {candidate_name}",
+                    "",
+                    f"- center retreat: `{candidate_payload['center_retreat_m']}` m",
+                    f"- normal half-extent shrink: `{candidate_payload['normal_half_extent_shrink_m']}` m",
+                    f"- center: `{candidate_payload['center']}`",
+                    f"- scale: `{candidate_payload['scale']}`",
+                    f"- offset from default center: `{candidate_payload['offset_from_default_center']}`",
+                    f"- predicted init gap min: `{candidate_payload['predicted_init_gap_min_m']}` m",
+                    f"- predicted support gap q05: `{candidate_payload['predicted_support_gap_q05_m']}` m",
+                    "",
+                ]
+            )
+        _write_md(out_dir / "support_box_fit_report.md", fit_lines)
 
     _write_md(
         out_dir / "root_cause_ranked_report.md",

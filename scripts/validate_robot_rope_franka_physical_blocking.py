@@ -19,6 +19,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--max-nonfinger-table-contact-duration-s", type=float, default=0.25)
     p.add_argument("--require-support-box", action=argparse.BooleanOptionalAction, default=False)
     p.add_argument("--min-support-box-contact-duration-s", type=float, default=0.05)
+    p.add_argument("--max-support-box-contact-duration-s", type=float, default=0.50)
     return p.parse_args()
 
 
@@ -68,6 +69,13 @@ def main() -> int:
     support_box_penetration = report.get("support_box_penetration_min_m")
     support_box_penetration = None if support_box_penetration is None else float(support_box_penetration)
     support_box_is_physical = bool(report.get("support_box_is_physical_collider", False))
+    frame0_support_overlap = bool(report.get("frame0_support_box_overlap_detected", False))
+    first_support_phase = report.get("first_support_box_contact_phase")
+    first_support_time = report.get("robot_support_box_first_contact_time_s")
+    first_support_time = None if first_support_time is None else float(first_support_time)
+    support_links = [str(v) for v in report.get("support_box_contact_link_names", [])]
+    settle_seconds = summary.get("tabletop_settle_seconds")
+    settle_seconds = None if settle_seconds is None else float(settle_seconds)
 
     rope_contact_started = bool(
         summary.get("actual_finger_box_contact_started") or summary.get("actual_tool_contact_started")
@@ -91,11 +99,23 @@ def main() -> int:
         gates["collapse_after_retract_absent"] = not collapse_after_retract
         if bool(args.require_support_box):
             gates["support_box_is_physical"] = support_box_is_physical
+            gates["frame0_support_box_overlap_absent"] = not frame0_support_overlap
+            gates["support_box_contact_phase_pass"] = first_support_phase in {"approach", "push"}
+            gates["support_box_first_contact_after_settle"] = (
+                first_support_time is not None
+                and settle_seconds is not None
+                and first_support_time > settle_seconds
+            )
             gates["support_box_contact_duration_pass"] = (
-                support_box_duration is not None and support_box_duration >= float(args.min_support_box_contact_duration_s)
+                support_box_duration is not None
+                and support_box_duration >= float(args.min_support_box_contact_duration_s)
+                and support_box_duration <= float(args.max_support_box_contact_duration_s)
             )
             gates["support_box_penetration_tolerance_pass"] = (
                 support_box_penetration is not None and support_box_penetration >= -float(args.max_support_box_penetration_m)
+            )
+            gates["support_box_contact_links_pass"] = all(
+                link.endswith(("/fr3_link5", "/fr3_link6", "/fr3_link7", "/fr3_hand")) for link in support_links
             )
 
     overall_pass = all(gates.values())
@@ -117,6 +137,10 @@ def main() -> int:
             "support_box_contact_duration_s": support_box_duration,
             "support_box_penetration_min_m": support_box_penetration,
             "support_box_is_physical_collider": support_box_is_physical,
+            "frame0_support_box_overlap_detected": frame0_support_overlap,
+            "first_support_box_contact_phase": first_support_phase,
+            "robot_support_box_first_contact_time_s": first_support_time,
+            "support_box_contact_link_names": support_links,
         },
         "overall_pass": overall_pass,
     }
@@ -139,8 +163,12 @@ def main() -> int:
         md_lines.append(f"- collapse after retract absent: {'YES' if gates['collapse_after_retract_absent'] else 'NO'}")
         if bool(args.require_support_box):
             md_lines.append(f"- support box is physical: {'YES' if gates['support_box_is_physical'] else 'NO'}")
+            md_lines.append(f"- frame-0 support-box overlap absent: {'YES' if gates['frame0_support_box_overlap_absent'] else 'NO'}")
+            md_lines.append(f"- support box first-contact phase pass: {'YES' if gates['support_box_contact_phase_pass'] else 'NO'}")
+            md_lines.append(f"- support box first-contact after settle: {'YES' if gates['support_box_first_contact_after_settle'] else 'NO'}")
             md_lines.append(f"- support box contact duration pass: {'YES' if gates['support_box_contact_duration_pass'] else 'NO'}")
             md_lines.append(f"- support box penetration tolerance pass: {'YES' if gates['support_box_penetration_tolerance_pass'] else 'NO'}")
+            md_lines.append(f"- support box contact links pass: {'YES' if gates['support_box_contact_links_pass'] else 'NO'}")
     md_lines.extend(
         [
             "",
@@ -152,8 +180,12 @@ def main() -> int:
             f"- nonfinger_penetration_min_m: `{nonfinger_penetration}`",
             f"- collapse_after_retract_detected: `{collapse_after_retract}`",
             f"- support_box_is_physical_collider: `{support_box_is_physical}`",
+            f"- frame0_support_box_overlap_detected: `{frame0_support_overlap}`",
+            f"- first_support_box_contact_phase: `{first_support_phase}`",
+            f"- robot_support_box_first_contact_time_s: `{first_support_time}`",
             f"- support_box_contact_duration_s: `{support_box_duration}`",
             f"- support_box_penetration_min_m: `{support_box_penetration}`",
+            f"- support_box_contact_link_names: `{support_links}`",
             "",
             f"- overall pass: {'YES' if overall_pass else 'NO'}",
         ]

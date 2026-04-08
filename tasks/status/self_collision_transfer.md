@@ -169,6 +169,17 @@ Local scratch validation notes:
     - recommendation remains `C. Bridge-side PhysTwin-style self-collision is necessary`
     - the stable `case_3 > case_4` result does **not** overturn that recommendation
     - it instead says the remaining blocker sits outside the isolated self-collision operator itself
+- stable 4-case visual bundle now exists:
+  - root:
+    - `Newton/phystwin_bridge/results/ground_contact_self_collision_visual_bundle_20260408_042645_00feebe`
+  - reusable runner:
+    - `Newton/phystwin_bridge/tools/other/run_ground_contact_self_collision_visual_bundle.py`
+  - outputs:
+    - four labeled `2x3` comparison videos, one per case
+    - four deck-safe GIFs, one per case
+    - one `3x4` labeled reference board for the four cases
+  - intended usage:
+    - slide / presentation support for the stable cloth + implicit-ground `2x2` matrix
 - controlled `2 x 2` full 302-frame cloth+ground RMSE matrix now exists:
   - root:
     - `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260404_140154_e11491a`
