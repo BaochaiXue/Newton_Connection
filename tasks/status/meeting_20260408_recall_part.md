@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `meeting_20260408_recall_part`
-> last_reviewed: `2026-04-05`
+> last_reviewed: `2026-04-08`
 > review_interval: `7d`
 > update_rule: `Update after each meaningful bootstrap/build milestone for the 2026-04-08 meeting bundle.`
 > notes: Live status log for the 2026-04-08 meeting bundle, which started as recall-only and now includes appended weekly sections.
@@ -16,11 +16,27 @@
   - stable self-collision mechanism section
   - conservative robot SemiImplicit section
 - current story shape:
-  - `12` slides
+  - `13` slides
   - tightened for `~30 min`
   - lower text density with detailed analysis moved to transcript
 
 ## Last Completed Step
+
+- Rebuilt the full `2026-04-08` meeting bundle against the current promoted
+  robot authorities:
+  - `formal_slide/meeting_2026_04_08/bridge_meeting_20260408_recall_initial.pptx`
+  - `formal_slide/meeting_2026_04_08/transcript.md`
+  - `formal_slide/meeting_2026_04_08/transcript.pdf`
+- Confirmed the current bundle still holds:
+  - `13` slides
+  - `48 MB` PPTX
+  - direct-finger baseline remains the main robot slide
+  - visible-tool baseline remains backup-only
+- Revalidated the deck-local robot export bundles:
+  - `formal_slide/meeting_2026_04_08/robot_visible_tool_three_views/`
+  - `formal_slide/meeting_2026_04_08/robot_direct_finger_three_views/`
+
+## Previous Completed Step
 
 - Reworked the deck story to be clearer and shorter:
   - explicit agenda / claim-boundary slide
@@ -66,9 +82,10 @@
 
 ## Next Step
 
-- Decide whether additional weekly sections beyond self-collision + robot should be appended.
-- If the Wednesday narrative is shortened further, keep the visible-tool robot slide as the primary visual and the direct-finger slide as the authority backup.
-- Current Wednesday robot order:
+- Decide whether additional weekly sections beyond self-collision + robot should
+  be appended.
+- If the Wednesday narrative is shortened further, preserve the current robot
+  order unless a new claim boundary is explicitly chosen:
   - main: direct-finger baseline
   - backup: visible-tool baseline
 

@@ -103,6 +103,58 @@ Conclusion:
 - the accepted demo hides this because it is not using physically actuated
   robot tracking at all
 
+### 5. Rewriting the controller surface alone is not enough
+
+The repo already contains a more native-style rewrite:
+
+- `Newton/phystwin_bridge/demos/demo_robot_rope_franka_native_v2.py`
+
+That path already does the structurally correct things:
+
+- Cartesian phase targets
+- native Newton IK every step
+- writes both `control.joint_target_pos` and `control.joint_target_vel`
+- keeps `state_out.body_q` as truth and resyncs reduced coordinates with
+  `eval_ik(...)`
+
+But a short probe still sags immediately:
+
+- `tmp_vis/native_v2_probe/native_v2_probe_body_q.npy`
+- `tmp_vis/native_v2_probe/native_v2_probe_ee_target_pos.npy`
+
+Observed:
+
+- target gripper `z` stays at about `0.5079 m`
+- actual gripper `z` drops to about `0.2549 m` within the first 8 frames
+- target error grows to about `0.254 m`
+
+Conclusion:
+
+- the problem is deeper than “our old controller shape was wrong”
+- on the current bridge-side `SolverSemiImplicit` robot path, articulation
+  target tracking is still too weak against gravity/contact even under the
+  cleaner native-style command structure
+
+### 6. Why official Newton robot demos do not show the same collapse
+
+Official Newton Franka examples are not using the same rigid-body control path.
+
+For example:
+
+- `Newton/newton/newton/examples/contacts/example_brick_stacking.py`
+- `Newton/newton/newton/examples/ik/example_ik_cube_stacking.py`
+
+Those examples:
+
+- use `SolverMuJoCo`, not `SolverSemiImplicit`
+- enable explicit gravity compensation through
+  `mujoco:jnt_actgravcomp` and `mujoco:gravcomp`
+- use much larger joint target gains than the current bridge defaults
+
+Therefore the official demos are not a proof that the current bridge-side
+SemiImplicit Franka path should remain upright automatically under the same
+conditions.
+
 ## Final Root-Cause Statement
 
 The robot “collapses” in the stronger demo because that demo is the first path
@@ -116,7 +168,9 @@ Within the stronger path, the immediate sag is caused primarily by:
 1. `joint_target_drive` preserving real tracking error instead of overwriting it
 2. a pre-pose / approach family that is not gravity-stable under the current
    articulation tracking gains
-3. later support-box contact only as a secondary contributor
+3. lack of MuJoCo-style gravity compensation on the current bridge-side
+   SemiImplicit articulation path
+4. later support-box contact only as a secondary contributor
 
 ## Fix Plan
 
@@ -144,7 +198,8 @@ Instead:
 ### Recommended next implementation step
 
 Create a new blocking reference family derived from the accepted hero waypoints
-rather than from the current lowprofile joint arrays alone:
+rather than from the current lowprofile joint arrays alone, but do not expect
+that change alone to solve the whole issue:
 
 - keep `joint_target_drive`
 - keep bridge-layer truth (no post-solve overwrite)
@@ -160,3 +215,19 @@ After the pose family is fixed, test velocity feedforward on the drive path:
 
 This may improve tracking during motion, but it is not the first fix because it
 does not explain the sag that already appears while the target pose is static.
+
+### Likely Real Repair
+
+If the goal is to satisfy all three simultaneously:
+
+1. robot stays upright
+2. table can physically block it
+3. finger still pushes the rope
+
+then the bridge likely needs one more ingredient beyond pose cleanup:
+
+- bridge-side gravity-compensation or equivalent feedforward through
+  `control.joint_f`
+
+Without that, the current SemiImplicit articulation path keeps showing the same
+failure even after controller-structure cleanup.

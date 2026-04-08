@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `meeting_20260408_recall_part`
-> last_reviewed: `2026-04-05`
+> last_reviewed: `2026-04-08`
 > review_interval: `14d`
 > update_rule: `Update when the 2026-04-08 meeting scope, source slides, or generated artifacts change.`
 > notes: Meeting-specific task for the 2026-04-08 bundle; started as recall-only, then expanded with later weekly sections.
@@ -32,6 +32,9 @@ carry the current weekly result sections once their claim boundaries are ready.
   - readable within `15-20 s`
   - English on-slide, Chinese in transcript
   - detailed mechanism reasoning pushed into transcript
+- current generated bundle state:
+  - `13` slides
+  - rebuilt against the current promoted robot authorities on `2026-04-08`
 
 ## Code Entry Points
 

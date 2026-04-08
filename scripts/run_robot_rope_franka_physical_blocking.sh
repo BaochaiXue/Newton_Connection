@@ -121,7 +121,7 @@ COMMON_ARGS_BASE=(
 )
 
 COMMON_ARGS=("${COMMON_ARGS_BASE[@]}" "${EXTRA_ARGS[@]}")
-SUPPORT_BOX_MODE_EFFECTIVE="physical"
+SUPPORT_BOX_MODE_EFFECTIVE="none"
 for ((i=0; i<${#EXTRA_ARGS[@]}; i++)); do
   if [[ "${EXTRA_ARGS[$i]}" == "--tabletop-support-box-mode" ]] && [[ $((i + 1)) -lt ${#EXTRA_ARGS[@]} ]]; then
     SUPPORT_BOX_MODE_EFFECTIVE="${EXTRA_ARGS[$((i + 1))]}"

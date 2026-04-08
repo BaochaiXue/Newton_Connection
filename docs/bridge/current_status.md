@@ -25,7 +25,7 @@ Detailed result meaning belongs in:
 - `slide_deck_overhaul`
   - keep the 2026-04-01 meeting deck hypothesis-driven and evidence-first
 - `meeting_20260408_recall_part`
-  - keep the new 2026-04-08 meeting bundle visible in the active task map; it now includes recall, stable self-collision, and conservative robot slides
+  - keep the new 2026-04-08 meeting bundle visible in the active task map; it now includes recall, stable self-collision, and conservative robot slides, and the local deck was refreshed again on `2026-04-08` against the current promoted robot authorities
 - `rope_perf_apples_to_apples`
   - maintain the same-case rope replay benchmark as the committed performance reference, now with an explicit real-viewer E1 row
 - `self_collision_transfer`
