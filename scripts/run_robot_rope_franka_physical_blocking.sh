@@ -90,13 +90,13 @@ COMMON_ARGS_BASE=(
   --default-joint-armature 0.01
   --ignore-urdf-inertial-definitions
   --visible-tool-mode none
-  --tabletop-support-box-mode physical
+  --tabletop-support-box-mode none
   --tabletop-joint-reference-family blocking_lowprofile
   --tabletop-initial-pose tabletop_shallow_curve
   --no-tabletop-hero-hide-pedestal
   --tabletop-preroll-settle-seconds 3.5
   --tabletop-preroll-damping-scale 2.5
-  --tabletop-settle-seconds 0.8
+  --tabletop-settle-seconds 0.05
   --tabletop-approach-seconds 1.4
   --tabletop-push-seconds 2.4
   --tabletop-hold-seconds 0.4
@@ -106,7 +106,7 @@ COMMON_ARGS_BASE=(
   --tabletop-table-hx 0.42
   --tabletop-table-hy 0.24
   --tabletop-table-hz 0.020
-  --tabletop-robot-base-offset -0.54 -0.20 0.06
+  --tabletop-robot-base-offset -0.56 -0.22 0.10
   --tabletop-push-start-offset -0.09 -0.01 0.0
   --tabletop-push-contact-offset -0.04 -0.03 0.0
   --tabletop-push-end-offset 0.03 -0.04 0.0

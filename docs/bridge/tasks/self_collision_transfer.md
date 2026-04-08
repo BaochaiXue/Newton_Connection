@@ -66,6 +66,9 @@ The repo already contains the right scaffolding for a decision:
     PhysTwin-native cloth case
   - strict `phystwin` now defaults to a frame-frozen explicit collision table
     with object-only candidate semantics
+  - explicit `ground_contact_law` experiments now also use a bridge-side
+    ground-law isolation mode so native vs PhysTwin-style ground can be swapped
+    without also changing pre-self gravity/drag timing
 - `Newton/phystwin_bridge/demos/demo_cloth_bunny_drop_without_self_contact.py`
   - force-diagnostic path for external rigid-contact sanity checks
 - `Newton/phystwin_bridge/demos/demo_cloth_bunny_realtime_viewer.py`

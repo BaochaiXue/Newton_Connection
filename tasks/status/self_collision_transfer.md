@@ -206,6 +206,47 @@ Local scratch validation notes:
     - one continuation RMSE curve plot
   - caution:
     - this is a restart diagnostic, not a new authoritative parity surface, because object velocity at frame `137` is reconstructed from position-only reference data rather than exported exact PhysTwin velocity
+- explicit ground-law isolation fix now exists for the controlled matrix surface:
+  - changed bridge-side files:
+    - `Newton/phystwin_bridge/demos/self_contact_bridge_kernels.py`
+    - `Newton/phystwin_bridge/tools/core/phystwin_contact_stack.py`
+    - `Newton/phystwin_bridge/tools/core/newton_import_ir.py`
+  - new semantics:
+    - when `ground_contact_law` is explicitly set for the controlled `2 x 2` matrix,
+      both ground branches now share the same pre-self velocity semantics
+    - both branches now use:
+      - internal-force velocity update before self-collision
+      - gravity application after self-collision at the ground/integration stage
+      - the same post-step drag correction
+    - therefore the explicit matrix is much closer to a pure ground-law swap and
+      no longer silently changes gravity/drag timing together with the ground law
+- post-isolation-fix full 302-frame matrix rerun now exists as local diagnostic evidence:
+  - root:
+    - `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260408_070232_eb0d80b`
+  - `rmse_mean` results:
+    - case 1: `0.009801863692700863`
+    - case 2: `0.00962120946496725`
+    - case 3: `0.009368138387799263`
+    - case 4: `0.009410285390913486`
+  - reading:
+    - the old large `case_3 > case_4` gap collapses from roughly `1.64e-3` to about `4.21e-5`
+    - this strongly supports the earlier diagnosis that the old gap was largely
+      created by hidden whole-step timing differences rather than by the isolated
+      PhysTwin-style ground law itself
+- post-isolation-fix frame-137 continuation restart matrix now exists as local diagnostic evidence:
+  - root:
+    - `Newton/phystwin_bridge/results/ground_contact_self_collision_restart137_matrix_20260408_070609_eb0d80b`
+  - continuation `rmse_mean` results over the remaining `165` frames:
+    - case 1: `0.010995208285748959`
+    - case 2: `0.010995208285748959`
+    - case 3: `0.00716436980292201`
+    - case 4: `0.00716436980292201`
+  - reading:
+    - after the isolation fix, restarting from the same PhysTwin reference state
+      at frame `137` makes native-ground and PhysTwin-style-ground numerically
+      indistinguishable for both the self-off pair and the self-phystwin pair
+    - this is strong direct evidence that the old post-137 gap was being created
+      by branch-level timing semantics, not by a residual live ground event
 - controlled `2 x 2` full 302-frame cloth+ground RMSE matrix now exists:
   - root:
     - `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260404_140154_e11491a`
@@ -270,13 +311,17 @@ evidence:
 
 ## Next Step
 
-Now that the fair `2 x 2` matrix ranking is reproducible, resume mechanism diagnosis on the stable surface:
+Now that the fair `2 x 2` matrix ranking is reproducible and the explicit
+ground-law isolation fix is in place:
 
 - keep the stable follow-up diagnosis visible as the current mechanism explanation surface
-- use the frame-137 continuation root only as bounded supporting evidence for late-gap interpretation
+- treat the new post-fix full matrix and post-fix restart@137 continuation root
+  as the current local evidence that the old hidden timing variable has been removed
 - if a future bridge-side fix targets the remaining blocker, compare it against:
   - the reproducible matrix root
   - the stable case-3-vs-case-4 follow-up root
+- if the remaining `case_3 > case_4` delta stays small, shift the diagnosis focus
+  away from ground-law isolation and toward the still-open controller-spring / rollout parity gap
 - only promote a new root into `results_meta` if it actually changes the stable comparison surface or closes the remaining blocker
 
 ## Blocking Issues
@@ -287,6 +332,9 @@ Now that the fair `2 x 2` matrix ranking is reproducible, resume mechanism diagn
 - the current mechanism evidence now localizes the stable case-4 disadvantage to
   rollout-level interaction mismatch plus controller-spring semantics mismatch,
   not a remaining isolated self-collision-law mismatch
+- after the explicit ground-law isolation fix, the old large `case_3 > case_4`
+  gap is no longer the primary blocker; the remaining blocker is the broader
+  strict-parity / controller-spring gap
 - strict `phystwin` scope is intentionally narrow and does not yet cover box or
   other Newton-only rigid-support contacts
 
@@ -297,6 +345,10 @@ Now that the fair `2 x 2` matrix ranking is reproducible, resume mechanism diagn
 - `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260404_140154_e11491a/fairness_check.md`
 - `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260404_140154_e11491a/rmse_matrix.csv`
 - `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260404_140154_e11491a/rmse_matrix_summary.json`
+- `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260408_070232_eb0d80b/README.md`
+- `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260408_070232_eb0d80b/fairness_check.md`
+- `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260408_070232_eb0d80b/rmse_matrix.csv`
+- `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260408_070232_eb0d80b/rmse_matrix_summary.json`
 - `Newton/phystwin_bridge/results/self_collision_case3_vs_case4_diagnosis_20260404_162159_6cb033a/README.md`
 - `Newton/phystwin_bridge/results/self_collision_case3_vs_case4_diagnosis_20260404_162159_6cb033a/reproducibility_check.md`
 - `Newton/phystwin_bridge/results/self_collision_case3_vs_case4_diagnosis_20260404_162159_6cb033a/first_divergence_report.md`
@@ -311,6 +363,10 @@ Now that the fair `2 x 2` matrix ranking is reproducible, resume mechanism diagn
 - `Newton/phystwin_bridge/results/self_collision_transfer_case3_vs_case4_followup_20260404_210334_ac9ec33/diagnostics_summary.json`
 - `Newton/phystwin_bridge/results/self_collision_transfer_case3_vs_case4_followup_20260404_210334_ac9ec33/before_after_compare.md`
 - `Newton/phystwin_bridge/results/self_collision_transfer_case3_vs_case4_followup_20260404_210334_ac9ec33/final_recommendation.md`
+- `Newton/phystwin_bridge/results/ground_contact_self_collision_restart137_matrix_20260408_070609_eb0d80b/README.md`
+- `Newton/phystwin_bridge/results/ground_contact_self_collision_restart137_matrix_20260408_070609_eb0d80b/fairness_check.md`
+- `Newton/phystwin_bridge/results/ground_contact_self_collision_restart137_matrix_20260408_070609_eb0d80b/rmse_matrix.csv`
+- `Newton/phystwin_bridge/results/ground_contact_self_collision_restart137_matrix_20260408_070609_eb0d80b/rmse_matrix_summary.json`
 - `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/FINAL_STATUS.md`
 - `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/matrix/self_collision_decision.md`
 - `Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/parity/strict_self_collision_parity_summary.json`

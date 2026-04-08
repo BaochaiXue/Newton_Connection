@@ -39,7 +39,7 @@ Detailed result meaning belongs in:
 - `robot_visible_rigid_tool_baseline`
   - preserve the newly promoted tool-mediated tabletop baseline; keep it clearly separate from both the direct-finger tabletop baseline and the blocked physical-blocking task, and keep its canonical rerender path single-history so hero/debug/validation cannot drift apart
 - `robot_rope_franka_physical_blocking`
-  - stronger follow-on task now has fail-closed stage labeling, direct-finger non-finger-loading diagnostics, a new blocking-specific low-profile joint reference family, a real physical support-box path, a thin-slab scout-fit workflow, and the first real later-support Stage-1 candidate; the current blocker is no longer “box misses completely” but “later support event lasts too long for the current presentation gate”
+  - stronger follow-on task now has fail-closed stage labeling, direct-finger non-finger-loading diagnostics, a real physical support-box path, a thin-slab scout-fit workflow, and a practical visible-settle mitigation in the canonical wrapper; the deeper blocker remains gravity-stable robot actuation under `joint_target_drive`, not support-box truth
 - `native_robot_physical_blocking_minimal`
   - keep the Stage-0 rigid-only blocking proof separate from the rope-integrated blocking follow-on
 - `remote_interaction_root_cause`
@@ -48,11 +48,11 @@ Detailed result meaning belongs in:
 ## Current Blockers
 
 - `self_collision_transfer`
-  - operator exactness is strong and the fair `2 x 2` matrix ranking is now reproducible after a bridge-side determinism fix; the stable `case_3 > case_4` gap is now localized as rollout-level interaction mismatch plus controller-spring semantics mismatch, not as an isolated self-collision-law issue
+  - operator exactness is strong and the fair `2 x 2` matrix ranking is now reproducible after a bridge-side determinism fix; a new bridge-side ground-law isolation fix removes the old hidden gravity/drag timing difference from the explicit matrix surface, shrinking the old large `case_3 > case_4` gap to a small residual and moving the blocker back to the broader controller-spring / strict-parity mismatch
 - `interactive_playground_profiling`
   - the exploratory profiling page must stay clearly separate from the committed rope benchmark truth under `rope_perf_apples_to_apples`
 - `robot_rope_franka_physical_blocking`
-  - readable tabletop rope-push baseline exists, Stage-0 direct-finger blocking is proven, the new rope-integrated `blocking_lowprofile` family removes measured non-finger table loading, and the rear support box is now a real static collider; after moving beyond the old pedestal overlap and the first miss-only slab family, the task now has a first truthful later-support candidate on `fr3_link5`, but the support interval is still too long to satisfy the stricter support-box event gate
+  - readable tabletop rope-push baseline exists, Stage-0 direct-finger blocking is proven, the new rope-integrated path now fails closed on settle-onset collapse, and the canonical Stage-1 wrapper currently mitigates the visible static-collapse failure with `settle=0.05`, `support_box=none`, and the safer hero-style base offset `(-0.56, -0.22, 0.10)`; no rope-integrated candidate is promoted yet because the deeper gravity-stability issue is still open even though the current local candidate now preserves some rope motion again
 - `robot_visible_rigid_tool_baseline`
   - no blocker at the current conservative claim boundary; the promoted run is now the tool-mediated meeting-safe intermediary
 - `robot_rope_franka_semiimplicit_oneway`

@@ -43,10 +43,10 @@ This page records unresolved bridge questions that still matter technically.
   - native enough
   - custom filtered penalty enough
   - bridge-side PhysTwin-style needed
-- After localizing the stable `case_3 > case_4` ordering to whole-step
-  interaction plus controller-spring semantics mismatch, what is the smallest
-  bridge-side fix that actually lets the fully PhysTwin-style pair overtake the
-  native-ground compensating path?
+- After the new explicit ground-law isolation fix removed the old hidden
+  gravity/drag timing difference from the controlled matrix surface, what is
+  the remaining smallest bridge-side fix that closes the residual strict-parity
+  gap without changing Newton core?
 - Can the remaining controller-spring mismatch be reduced without changing
   Newton core, or has the task reached a genuine bridge-layer limit?
 - Can we add peak-over-time overlap metrics so the self-collision decision is

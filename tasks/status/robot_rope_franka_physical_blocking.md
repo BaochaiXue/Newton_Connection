@@ -17,6 +17,22 @@
 - Wrote a direct root-cause diagnosis for why the stronger robot path sags
   while the accepted tabletop demo does not:
   - [robot_blocking_collapse_root_cause_20260408.md](../../diagnostics/robot_blocking_collapse_root_cause_20260408.md)
+- Fixed a bridge-layer initialization bug that had been undermining all new
+  `tabletop-joint-reference-family` experiments:
+  - `robot_joint_init` is no longer always hard-coded to
+    `TABLETOP_FRANKA_Q_PRE`
+  - it now follows the selected joint-space family
+  - this makes new `blocking_highclearance` / `blocking_upright` families
+    actually start from their intended pre-pose
+- Applied the first practical visible-settle mitigation to the canonical
+  rope-integrated wrapper:
+  - default Stage-1 wrapper now uses:
+    - `--tabletop-support-box-mode none`
+    - `--tabletop-settle-seconds 0.05`
+    - `--tabletop-robot-base-offset -0.56 -0.22 0.10`
+  - the repaired `joint_target_drive` truth path remains unchanged
+  - reproducing candidate:
+    - [lowprofile_nobox_settle005](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260408_070714_rope_integrated_lowprofile_nobox_settle005)
 - Ran an isolating check with the accepted hero base offset but
   `joint_target_drive` control:
   - `tmp_vis/robot_drive_vs_hero_base_test/drive_hero_base_test_summary.json`
@@ -180,6 +196,46 @@
     robot up against gravity/table loading during `settle`
   - `blocking_lowprofile` and later support-box contact are secondary
     aggravators, not the first cause
+- The earlier family experiments had one hidden implementation bug:
+  - before the latest patch, `blocking_highclearance` / `blocking_upright`
+    were not actually changing the initial robot pose because
+    `robot_joint_init` still used `TABLETOP_FRANKA_Q_PRE`
+  - that bug is now fixed
+- Post-fix family verdict:
+  - `blocking_highclearance_nobox_v2`:
+    - no rope contact
+    - `robot_table_first_contact_time_s = 0.23345`
+    - still not usable because the robot misses the rope entirely
+  - `blocking_upright_nobox_v2`:
+    - no rope contact
+    - `robot_table_first_contact_time_s = 0.2668`
+    - penetration worsens to `-0.00275`
+  - conclusion:
+    - changing the pre-pose family alone is not enough to recover a clean
+      stronger rope interaction
+    - the best local bridge-layer mitigation is still to remove the long visible
+      settle segment from the Stage-1 presentation path
+- Current best practical Stage-1 mitigation:
+  - [settle005_heroBase](../../Newton/phystwin_bridge/results/robot_rope_franka_physical_blocking/candidates/20260408_072636_rope_integrated_settle005_heroBase)
+  - key metrics:
+    - `tabletop_settle_seconds = 0.05`
+    - `tabletop_robot_base_offset = (-0.56, -0.22, 0.10)`
+    - `first_contact_phase = approach`
+    - `first_contact_time_s = 0.2001`
+    - `robot_table_first_contact_time_s = 0.16675`
+    - `robot_table_penetration_min_m = -0.000870`
+    - `nonfinger_table_contact_duration_s = 0.0`
+    - `collapse_after_retract_detected = false`
+    - `rope_com_displacement_m = 0.01005`
+    - blocking validator: PASS
+  - interpretation:
+    - this does not mean the deeper gravity-stability issue is solved
+    - it does mean the visible settle-collapse failure mode is now mitigated in
+      the canonical Stage-1 wrapper while keeping the stronger physics truth
+      path intact
+    - compared with the earlier `lowprofile_nobox_settle005`, the accepted-hero
+      base offset materially improves rope motion while keeping the same
+      no-collapse / no-nonfinger-loading pass surface
 - The old overwrite path is definitively non-physical and remains out of scope
   for the stronger claim.
 - The repaired bridge-layer path is now strong enough to prove Stage-0 direct
@@ -327,26 +383,23 @@
 - Do not treat any rope-integrated candidate with `first_contact_phase =
   settle` as presentation-ready, even if an older validator would have passed
   it.
-- Build a new `joint_target_drive` reference family whose settle pose is
-  gravity-stable and table-clear:
-  - late finger-table onset must start in `approach` or `push`
-  - only after that should support-box geometry be reintroduced as a later
-    bounded backstop
-- After the new pose family exists, test nonzero `joint_target_vel`
-  feedforward as a secondary tracking improvement.
+- Keep `lowprofile_nobox_settle005` as the current wrapper-level mitigation
+  baseline while the deeper drive-side gravity-stability problem remains open.
+- Recover rope readability from that mitigation baseline:
+  - raise rope motion back above the current `0.005 m` local result without
+    reintroducing visible settle collapse
+  - keep:
+    - `first_contact_phase != settle`
+    - `nonfinger_table_contact_duration_s = 0.0`
+    - `collapse_after_retract_detected = false`
+- After rope readability is recovered, revisit:
+  - support-box reintroduction as a later bounded backstop
+  - nonzero `joint_target_vel` feedforward as a secondary tracking improvement
 - Keep the repaired `joint_target_drive` bridge path; do not revert to state
   overwrite and do not touch `Newton/newton/`.
-- Keep the thin-slab default and the support-box-aware validator gates.
-- Next bounded move:
-  - keep the real later-support geometry from `support_box_shortsettle_probe`
-    as the new local starting point
-  - retune the Stage-1 reference timing / support-box duration together so the
-    support interval stays later and shorter:
-    - target `support_box_contact_duration_s <= 0.50`
-    - keep `frame0_support_box_overlap_detected = false`
-    - keep `first_support_box_contact_phase in {approach, push}`
-    - keep `nonfinger_table_contact_duration_s = 0.0`
-    - keep `collapse_after_retract_detected = false`
+- Keep the thin-slab default and the support-box-aware validator gates for the
+  later backstop branch, but do not make support-box contact part of the
+  current root-cause-fix path.
 - Preserve the stronger-task docs truthful and keep the old readable tabletop
   baseline as the only accepted robot-rope authority until a rope-integrated
   candidate is visually honest as well as numerically passing.
