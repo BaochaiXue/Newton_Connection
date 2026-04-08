@@ -60,6 +60,13 @@ Latest exploratory same-case interactive-playground bundle:
 
 - `results/interactive_playground_profiling/runs/20260408_090500_rope_interactive_one_to_one_v1`
 
+Meeting-facing summary surface for that latest rope cross-check:
+
+- `formal_slide/meeting_2026_04_01/bridge_meeting_20260401.pptx`
+  - slide `9`
+  - title:
+    `Result P2: Latest One-To-One Rope Matchup Preserves The Same Story`
+
 This run uses:
 
 - same case on both sides:

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import re
 import subprocess
@@ -127,6 +128,8 @@ PERF_ROPE_CASE_GIF = DECK_GIF_DIR / "rope_perf_case_anchor.gif"
 ROPE_PERF_ROOT = ROOT / "results" / "rope_perf_apples_to_apples"
 ROPE_PERF_SUMMARY_JSON = ROPE_PERF_ROOT / "summary.json"
 ROPE_PERF_E0_VIEWER_SUMMARY_JSON = ROPE_PERF_ROOT / "newton" / "E0_viewer_baseline_end_to_end" / "summary.json"
+INTERACTIVE_PROFILING_ROOT = ROOT / "results" / "interactive_playground_profiling"
+INTERACTIVE_PROFILING_LATEST_TXT = INTERACTIVE_PROFILING_ROOT / "LATEST_ATTEMPT.txt"
 
 
 def _load_results_meta(task_slug: str) -> dict:
@@ -332,9 +335,54 @@ def _load_optional_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _load_optional_csv_rows(path: Path) -> list[dict[str, str]]:
+    if not path.exists():
+        return []
+    with path.open("r", encoding="utf-8", newline="") as handle:
+        return list(csv.DictReader(handle))
+
+
+def _resolve_latest_interactive_profiling_run() -> Path:
+    if INTERACTIVE_PROFILING_LATEST_TXT.exists():
+        run_id = INTERACTIVE_PROFILING_LATEST_TXT.read_text(encoding="utf-8").strip()
+        if run_id:
+            candidate = INTERACTIVE_PROFILING_ROOT / "runs" / run_id
+            if candidate.exists():
+                return candidate.resolve()
+    fallback = INTERACTIVE_PROFILING_ROOT / "runs" / "20260408_090500_rope_interactive_one_to_one_v1"
+    return fallback.resolve()
+
+
+def _csv_float(row: dict[str, str] | None, key: str) -> float | None:
+    if not row:
+        return None
+    value = str(row.get(key, "")).strip()
+    if not value:
+        return None
+    return float(value)
+
+
+def _fmt_float(value: float | None, fmt: str = ".6f", *, suffix: str = "") -> str:
+    if value is None:
+        return "n/a"
+    return f"{format(value, fmt)}{suffix}"
+
+
 ROPE_PERF_SUMMARY = _load_rope_perf_summary()
 E0_VIEWER_SUMMARY = _load_optional_json(ROPE_PERF_E0_VIEWER_SUMMARY_JSON)
 ROPE_PERF_ROWS = {row["stage"]: row for row in ROPE_PERF_SUMMARY.get("rows", [])}
+INTERACTIVE_PROFILING_RUN = _resolve_latest_interactive_profiling_run()
+INTERACTIVE_PROFILING_COMPARISON_DIR = INTERACTIVE_PROFILING_RUN / "comparison"
+INTERACTIVE_PROFILING_THROUGHPUT_ROWS = {
+    row["label"]: row
+    for row in _load_optional_csv_rows(INTERACTIVE_PROFILING_COMPARISON_DIR / "throughput_summary.csv")
+    if row.get("label")
+}
+INTERACTIVE_PROFILING_GROUPED_ROWS = {
+    row["concept"]: row
+    for row in _load_optional_csv_rows(INTERACTIVE_PROFILING_COMPARISON_DIR / "operation_matchup_grouped.csv")
+    if row.get("concept")
+}
 
 
 def _rope_row(stage: str) -> dict:
@@ -412,6 +460,21 @@ A0_TO_A1 = float(A0_ROW.get("ms_per_substep_mean", 0.0)) / max(float(A1_ROW.get(
 A1_TO_E1 = float(E1_ROW.get("wall_ms_mean", 0.0)) / max(float(A1_ROW.get("wall_ms_mean", 1.0e-12)), 1.0e-12)
 E0_TO_E1 = E0_VIEWER_WALL_MS / max(float(E1_ROW.get("wall_ms_mean", 1.0e-12)), 1.0e-12)
 A3_POST_BRIDGE_MS = A3_INTERNAL_MS + A3_INTEGRATION_MS + A3_UNEXPLAINED_MS
+
+IP_NEWTON_BASELINE_ROW = INTERACTIVE_PROFILING_THROUGHPUT_ROWS.get("newton_baseline", {})
+IP_NEWTON_PRECOMPUTED_ROW = INTERACTIVE_PROFILING_THROUGHPUT_ROWS.get("newton_precomputed", {})
+IP_PHYSTWIN_ROW = INTERACTIVE_PROFILING_THROUGHPUT_ROWS.get("phystwin_graph_headless", {})
+IP_CONTROLLER_UPLOAD = INTERACTIVE_PROFILING_GROUPED_ROWS.get("controller_target_upload", {})
+IP_CONTROLLER_SUBSTEP = INTERACTIVE_PROFILING_GROUPED_ROWS.get("controller_substep_application", {})
+IP_COLLISION_CANDIDATES = INTERACTIVE_PROFILING_GROUPED_ROWS.get("collision_candidate_generation", {})
+IP_SPRINGS = INTERACTIVE_PROFILING_GROUPED_ROWS.get("spring_force_evaluation", {})
+IP_INTEGRATION = INTERACTIVE_PROFILING_GROUPED_ROWS.get("integration_and_drag", {})
+IP_NEWTON_EXTRA = INTERACTIVE_PROFILING_GROUPED_ROWS.get("newton_only_extra_internal_or_contact", {})
+IP_BASELINE_MS = _csv_float(IP_NEWTON_BASELINE_ROW, "ms_per_substep_mean")
+IP_PRECOMPUTED_MS = _csv_float(IP_NEWTON_PRECOMPUTED_ROW, "ms_per_substep_mean")
+IP_PHYSTWIN_MS = _csv_float(IP_PHYSTWIN_ROW, "ms_per_substep_mean")
+IP_A1_VS_B0 = _csv_float(IP_NEWTON_PRECOMPUTED_ROW, "slowdown_vs_phystwin")
+IP_A0_TO_A1 = _csv_float(IP_NEWTON_PRECOMPUTED_ROW, "speedup_vs_newton_baseline")
 
 RECALL_SLIDES: list[dict] = [
     {
@@ -565,6 +628,64 @@ RECALL_SLIDES: list[dict] = [
             f"结果是 A0 到 A1 有 `{A0_TO_A1:.2f}x` 的 speedup，所以 controller replay overhead 的确存在。这里所谓的方法，不是换 physics，而是把 controller target 和 velocity 先按 substep 预计算好，避免每一步都重复做 interpolation 和写状态。同步 attribution 里，这部分大约是 `{A3_BRIDGE_MS:.3f} ms/substep`。",
             f"但这不是全部答案，因为把这部分降下来以后，Newton A1 相对 PhysTwin B0 还是慢 `{A1_VS_B0:.2f}x`。而且 viewer ON 相对 A1 render OFF 只慢 `{A1_TO_E1:.2f}x`，这说明 replay overhead 和 runtime organization 的问题，量级上比单纯 render cost 更值得先看。",
             "这页对 real viewer 的价值很直接：如果只优化 controller feeding，viewer 会变好一些，但不会把同 case 的 Newton-vs-PhysTwin headroom gap 自动消掉。它的边界是，这个结论只针对 clean rope replay，不是对所有 scene 的一刀切判断。",
+        ],
+    },
+    {
+        "kind": "table",
+        "title": "Result P2: Latest One-To-One Rope Matchup Preserves The Same Story",
+        "note": "Exploratory same-case cross-check only. `rope_double_hand`, render OFF, same controller trajectory on both sides.",
+        "title_size": 26,
+        "note_font_size": 10,
+        "cell_font_size": 13,
+        "columns": ["Concept", "Newton A0", "Newton A1", "PhysTwin", "Reading"],
+        "rows": [
+            [
+                "throughput anchor",
+                _fmt_float(IP_BASELINE_MS, ".6f", suffix=" ms"),
+                _fmt_float(IP_PRECOMPUTED_MS, ".6f", suffix=" ms"),
+                _fmt_float(IP_PHYSTWIN_MS, ".6f", suffix=" ms"),
+                (
+                    f"A1 is still {_fmt_float(IP_A1_VS_B0, '.2f', suffix='x')} slower; "
+                    f"A0 -> A1 saves {_fmt_float(IP_A0_TO_A1, '.2f', suffix='x')}."
+                ),
+            ],
+            [
+                "controller upload",
+                _fmt_float(_csv_float(IP_CONTROLLER_UPLOAD, "newton_baseline_amortized_ms_per_substep"), ".6f", suffix=" ms"),
+                _fmt_float(_csv_float(IP_CONTROLLER_UPLOAD, "newton_precomputed_amortized_ms_per_substep"), ".6f", suffix=" ms"),
+                _fmt_float(_csv_float(IP_CONTROLLER_UPLOAD, "phystwin_amortized_ms_per_substep"), ".6f", suffix=" ms"),
+                "real Newton baseline tax; mostly removed in A1.",
+            ],
+            [
+                "collision candidates",
+                _fmt_float(_csv_float(IP_COLLISION_CANDIDATES, "newton_baseline_amortized_ms_per_substep"), ".6f", suffix=" ms"),
+                _fmt_float(_csv_float(IP_COLLISION_CANDIDATES, "newton_precomputed_amortized_ms_per_substep"), ".6f", suffix=" ms"),
+                _fmt_float(_csv_float(IP_COLLISION_CANDIDATES, "phystwin_amortized_ms_per_substep"), ".6f", suffix=" ms"),
+                "rope does not show the cloth-style collision-generation bottleneck.",
+            ],
+            [
+                "spring forces",
+                _fmt_float(_csv_float(IP_SPRINGS, "newton_baseline_amortized_ms_per_substep"), ".6f", suffix=" ms"),
+                _fmt_float(_csv_float(IP_SPRINGS, "newton_precomputed_amortized_ms_per_substep"), ".6f", suffix=" ms"),
+                _fmt_float(_csv_float(IP_SPRINGS, "phystwin_amortized_ms_per_substep"), ".6f", suffix=" ms"),
+                "direct spring evaluation is not where Newton loses on rope.",
+            ],
+            [
+                "integration + drag",
+                _fmt_float(_csv_float(IP_INTEGRATION, "newton_baseline_amortized_ms_per_substep"), ".6f", suffix=" ms"),
+                _fmt_float(_csv_float(IP_INTEGRATION, "newton_precomputed_amortized_ms_per_substep"), ".6f", suffix=" ms"),
+                _fmt_float(_csv_float(IP_INTEGRATION, "phystwin_amortized_ms_per_substep"), ".6f", suffix=" ms"),
+                "persistent Newton-heavy bucket after replay precompute.",
+            ],
+        ],
+        "transcript": [
+            "这一页把最新 same-case one-to-one rope cross-check 压成一页人能讲清楚的 summary。",
+            f"它还是同一个 `rope_double_hand`、同一条 controller trajectory、render 也还是 OFF。只是这次我们把 Newton 和 PhysTwin 的操作按语义重新对齐，所以这页更适合回答『rope case 到底慢在哪些阶段』。",
+            f"先看 throughput anchor：最新 cross-check 里，Newton A0 是 `{_fmt_float(IP_BASELINE_MS, '.6f')} ms/substep`，Newton A1 是 `{_fmt_float(IP_PRECOMPUTED_MS, '.6f')} ms/substep`，PhysTwin 是 `{_fmt_float(IP_PHYSTWIN_MS, '.6f')} ms/substep`。所以它保留了和前面 benchmark 一样的主结论：A0 到 A1 确实能省掉大约 `{_fmt_float(IP_A0_TO_A1, '.2f')}x` 的 replay tax，但 A1 相对 PhysTwin 还是慢大约 `{_fmt_float(IP_A1_VS_B0, '.2f')}x`。",
+            "更关键的是 grouped matchup 本身。controller upload 这一行说明 replay feeding tax 在 rope 上是真实存在的，但它不是全部；collision candidate generation 这一行三边都是 `n/a`，所以 rope case 不是 cloth 那种 collision-generation 主导的故事。",
+            "反过来，spring-force 这行甚至不是 Newton 更重；真正持续偏重的是 integration plus drag，再加上 Newton 这边额外保留的一层 semi-implicit/contact shell。",
+            "所以这页最后的人话结论是：rope case 的 remaining gap 不是 collision story，甚至也不主要是 spring kernel story。它更像是 replay organization 之外，Newton 这条 solver/runtime shell 仍然更重。",
+            "这一页也要明确边界：它是 latest exploratory same-case cross-check，不替代 committed rope benchmark truth；它的作用是把『为什么 rope 还慢』讲得更具体，而不是推翻前面那套 benchmark framing。",
         ],
     },
     {

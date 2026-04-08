@@ -140,6 +140,9 @@ Detailed result meaning belongs in:
 - `interactive_playground_profiling`
   - latest exploratory bundle:
     - `results/interactive_playground_profiling/runs/20260408_090500_rope_interactive_one_to_one_v1`
+  - meeting-facing summary surface:
+    - `formal_slide/meeting_2026_04_01/bridge_meeting_20260401.pptx`
+      slide `9`
   - current exploratory meaning:
     - rope same-case no-render baseline:
       - Newton baseline is about `6.66x` slower than PhysTwin

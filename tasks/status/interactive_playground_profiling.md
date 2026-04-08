@@ -19,6 +19,15 @@ Rebuilt the 2026-04-01 TODO 2 profiling slides so the meeting-facing rope
 story now treats this task as methodology context only; the authoritative gap
 evidence itself remains under `rope_perf_apples_to_apples`.
 
+Added a new meeting-ready summary page for the latest same-case rope
+cross-check:
+
+- `formal_slide/meeting_2026_04_01/bridge_meeting_20260401.pptx`
+  - slide `9`
+  - `Result P2: Latest One-To-One Rope Matchup Preserves The Same Story`
+  - driven directly from:
+    `results/interactive_playground_profiling/runs/20260408_090500_rope_interactive_one_to_one_v1/comparison/`
+
 ## 2026-04-08 Same-Case One-To-One Run
 
 - Earlier cloth same-case exploratory bundle retained:
@@ -108,9 +117,9 @@ Keep the scope split explicit:
 - clean replay truth remains under `rope_perf_apples_to_apples`
 - this task should only hold new exploratory profiling work until a new result
   is promoted into `results_meta/`
-- next exploratory step should test whether the same collision-generation gap
-  still dominates on a weaker-contact or viewer-on playground scene, instead of
-  assuming the clean rope replay conclusion transfers automatically
+- the next profiling step should move back to a genuinely different scene
+  regime, for example a weaker-contact or viewer-on playground case, instead of
+  repeating another clean rope replay cross-check
 
 ## Blocking Issues
 

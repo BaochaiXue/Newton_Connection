@@ -58,7 +58,16 @@ A0 和 A1 不是两个随便取的配置名。它们测的是同一条 rope repl
 但这不是全部答案，因为把这部分降下来以后，Newton A1 相对 PhysTwin B0 还是慢 `3.30x`。而且 viewer ON 相对 A1 render OFF 只慢 `1.11x`，这说明 replay overhead 和 runtime organization 的问题，量级上比单纯 render cost 更值得先看。
 这页对 real viewer 的价值很直接：如果只优化 controller feeding，viewer 会变好一些，但不会把同 case 的 Newton-vs-PhysTwin headroom gap 自动消掉。它的边界是，这个结论只针对 clean rope replay，不是对所有 scene 的一刀切判断。
 
-## Slide 9 — H5: Residual Gap Points To Execution Structure
+## Slide 9 — Result P2: Latest One-To-One Rope Matchup Preserves The Same Story
+这一页把最新 same-case one-to-one rope cross-check 压成一页人能讲清楚的 summary。
+它还是同一个 `rope_double_hand`、同一条 controller trajectory、render 也还是 OFF。只是这次我们把 Newton 和 PhysTwin 的操作按语义重新对齐，所以这页更适合回答『rope case 到底慢在哪些阶段』。
+先看 throughput anchor：最新 cross-check 里，Newton A0 是 `0.067757 ms/substep`，Newton A1 是 `0.036062 ms/substep`，PhysTwin 是 `0.010175 ms/substep`。所以它保留了和前面 benchmark 一样的主结论：A0 到 A1 确实能省掉大约 `1.88x` 的 replay tax，但 A1 相对 PhysTwin 还是慢大约 `3.54x`。
+更关键的是 grouped matchup 本身。controller upload 这一行说明 replay feeding tax 在 rope 上是真实存在的，但它不是全部；collision candidate generation 这一行三边都是 `n/a`，所以 rope case 不是 cloth 那种 collision-generation 主导的故事。
+反过来，spring-force 这行甚至不是 Newton 更重；真正持续偏重的是 integration plus drag，再加上 Newton 这边额外保留的一层 semi-implicit/contact shell。
+所以这页最后的人话结论是：rope case 的 remaining gap 不是 collision story，甚至也不主要是 spring kernel story。它更像是 replay organization 之外，Newton 这条 solver/runtime shell 仍然更重。
+这一页也要明确边界：它是 latest exploratory same-case cross-check，不替代 committed rope benchmark truth；它的作用是把『为什么 rope 还慢』讲得更具体，而不是推翻前面那套 benchmark framing。
+
+## Slide 10 — H5: Residual Gap Points To Execution Structure
 这一页回答最后一个最容易被说过头的问题：残余差距到底说明了什么，又不说明什么。
 
 [Newton/newton/newton/_src/solvers/semi_implicit/solver_semi_implicit.py : 141-145, 160-165, 172-177]
@@ -83,7 +92,7 @@ L800-L802 又单独保留了 `forward_graph`，说明它不只是一次性 captu
 所以这页最后的人话结论是：在 clean rope replay 里，残余 gap 更像 Newton 这边还保留了 many separated launches，而 PhysTwin 这边已经有 graph-based replay path。
 但这页也必须明确说不证明什么：它不证明 full physics parity；它不消除 self-collision 或 bunny-contact mismatch 这些别的层次的问题；它也不意味着 collision 在所有场景里都不重要。它只说明在这个 controlled rope replay benchmark 里，controller replay overhead 不是全部答案。
 
-## Slide 10 — H6: Optimize Replay Organization Before Render Tuning
+## Slide 11 — H6: Optimize Replay Organization Before Render Tuning
 最后一页只讲这整段 profiling 对 real viewer 到底有什么实际价值。
 第一，A0 到 A1 已经告诉我们：如果目标是 viewer diagnosis，就不应该继续拿更重的 baseline feed path 当默认基线，因为光这一项就已经差了大约 `1.87x`。
 第二，E1 对 A1 的比较又告诉我们：在这个 rope case 上，render ON 相对同 replay 的 render OFF 只多了大约 `1.11x` wall time，所以如果我们要争取更多 viewer headroom，优先级不应该只放在 rendering。
@@ -92,64 +101,64 @@ L800-L802 又单独保留了 `forward_graph`，说明它不只是一次性 captu
 所以 profiling 这一段最后服务的不是一个抽象 benchmark，而是一个很实际的判断：如果 real viewer 还想要更多余量，我们下一步应该把工程时间先花在 replay path organization 上。
 它的边界仍然不变：这里说的是 controlled rope replay benchmark，不是 robot，不是 self-collision，也不是 bunny penetration。
 
-## Slide 11 — F1: Force Video Must Show Global Motion And Local Mechanism
+## Slide 12 — F1: Force Video Must Show Global Motion And Local Mechanism
 这里开始进入第三段 penetration analysis。
 这一页先把新的 hypothesis 说清楚。
 教授要的不是一个只剩局部 probe 的 force patch，也不是一个 static trigger snapshot。
 真正需要的是两件事同时成立：第一，看到整块 cloth 相对于 bunny 的整体 penetration 过程；第二，在 local patch 里看到 outward normal、external force、internal force 和 acceleration 的机制解释。
 所以这次我把输出正式拆成 phenomenon video 和 force mechanism video，但 force mechanism 本身仍然保留 global panel 加 local zoom panel，而不是只放局部 close-up。
 
-## Slide 12 — F2: Four Phenomenon Videos Show The Full Penetration Process
+## Slide 13 — F2: Four Phenomenon Videos Show The Full Penetration Process
 这一页只讲 phenomenon，不讲 force。
 现在四个 case 都有 accepted 的 global process video，而且都过了 black-screen、motion 和 temporal-density 的 QA。
 从这里可以清楚看到四种情况里，pre-contact、first contact、penetration growth 和后续 settle 的整体行为。
 也就是说，我们现在已经不再依赖单帧截图来讲 penetration，而是真正有了 meeting-ready 的过程视频。
 
-## Slide 13 — F3: Split Panels Match The Current 2x2 Board
+## Slide 14 — F3: Split Panels Match The Current 2x2 Board
 这一页现在不再放旧的四个历史 force mechanism 视频了。
 这里也把实验设定说清楚：cloth total mass 是 0.1 kg，rigid target mass 是 0.5 kg。
 现在 F2 里的四个单视频，都是直接从当前 canonical `2 x 2` board 裁出来的单面板。
 也就是说，这一页只负责把四个 panel 单独放大给老师看：box penalty、box total、bunny penalty、bunny total。
 这样 F2 和下一页 F3 就不会再出现“这一页还是旧结果、下一页才是新结果”的割裂了。
 
-## Slide 14 — F4: The New 2x2 Board Makes Box-vs-Bunny Immediate
+## Slide 15 — F4: The New 2x2 Board Makes Box-vs-Bunny Immediate
 这一页就是新的 `2 x 2` board video，我把它直接放进 PPT 里了。
 这里必须把实验设定写明：self-collision 是 OFF，cloth total mass 是 0.1 kg，rigid target mass 是 0.5 kg。
 它的结构非常直接：左上是 box penalty，右上是 box total，左下是 bunny penalty，右下是 bunny total。
 所以这一页的价值不是再讲一个局部 mechanism patch，而是把 box versus bunny、penalty versus total 这两个对比同时压进一个 meeting-readable clip。
 如果现场只想停一页讲 penetration，我现在会优先停这一页，因为它最接近老师要的最终 visual comparison。
 
-## Slide 15 — F5: 4x Slow Motion Makes Contact Development Easier To Read
+## Slide 16 — F5: 4x Slow Motion Makes Contact Development Easier To Read
 这一页是 F3 的补充版本，不改实验设定，只改播放节奏。
 也就是说，self-collision 还是 OFF，cloth total mass 还是 0.1 kg，rigid target mass 还是 0.5 kg。
 这里放的是同一套 `2 x 2` board，但是视频整体放慢四倍，而且每个 panel 里都显式写了 `4x slow motion`。
 这页的作用不是替代正常速度版本，而是让老师在会议里更容易看清 pre-contact、first contact 和 penetration growth 的过渡。
 
-## Slide 16 — S1: Separate Self-Collision Law From Ground-Contact Law
+## Slide 17 — S1: Separate Self-Collision Law From Ground-Contact Law
 这里开始我先统一术语，不再说 `phystwin mode` 或者 `Newton way` 这种容易混淆的词。
 从现在开始只讲四个术语：native Newton self-collision，PhysTwin-style self-collision，native Newton ground-contact，PhysTwin-style ground-contact。
 这样做的目的，是把 self-collision law 和 ground-contact law 明确分开。因为这次真正的问题不是某个 mode 名字，而是这两条 law 分别会怎样影响同一个 cloth reference case 的 RMSE。
 
-## Slide 17 — S2: A 2x2 Matrix Isolates The Two Laws
+## Slide 18 — S2: A 2x2 Matrix Isolates The Two Laws
 这一页是这次 self-collision 段最重要的结构页。
 现在我们不再把问题讲成一个整体 mode，而是做 controlled `2 x 2` matrix：一条轴是 self-collision law，另一条轴是 ground-contact law。
 这样同一个 cloth scene、同一个 IR、同一个 dt 和 substeps 下，我们就能回答到底是哪一条 law 改变了 RMSE，以及两条 law 之间有没有 interaction effect。
 
-## Slide 18 — S3: Operator Exactness Passes; Rollout Parity Is Still Blocked
+## Slide 19 — S3: Operator Exactness Passes; Rollout Parity Is Still Blocked
 最后这一页只讲当前能够 defend 的结论，不讲过多过程。
 第一，operator-level exactness 已经很强，所以我们不能再把问题简单说成 self-collision kernel 还没有对齐。
 第二，公平 `2 x 2` full-rollout matrix 已经说明，当前最好的组合不是 fully PhysTwin-style pair，而是 PhysTwin-style self-collision 加 native Newton ground-contact。
 第三，四个 case 全部仍然没有过 strict `1e-5` gate。所以当前最准确的表述是：local operator evidence is strong, but rollout-level parity is still blocked。
 也就是说，剩余问题更像 whole-step interaction mismatch，而不是 isolated self-collision law mismatch。
 
-## Slide 19 — R0: Native Robot Release/Drop Is A Sanity Baseline
+## Slide 20 — R0: Native Robot Release/Drop Is A Sanity Baseline
 在进入 tabletop push 之前，我先把更窄的 robot stage-0 baseline 单独点出来。
 这页不是 final manipulation claim，而是 `drop_release_baseline` 的 sanity baseline：native Newton Franka 在场，rope 先被 support，再 release，然后在 semi-implicit pipeline 里自由下落并撞到 real ground。
 当前 authoritative OFF run 的关键数字是：release time 大约 `0.40 s`，first ground contact 大约 `0.7168 s`，impact speed 大约 `3.11 m/s`，early-fall acceleration 拟合约 `-9.80 m/s^2`。
 右侧的 drag ON 是 matched A/B。当前 repo 里的结论是 drag 影响是 minor，不是这个 baseline 的主问题来源。
 所以这页的作用很窄：它证明 native robot integration、semi-implicit rope free fall、real ground contact 和 1:1 readable video 这四件事已经成立，但不把它说成 full two-way coupling。
 
-## Slide 20 — R1: Tabletop Push Is A Contact Baseline, Not Full 2-Way Coupling
+## Slide 21 — R1: Tabletop Push Is A Contact Baseline, Not Full 2-Way Coupling
 最后一段是 robotic with deformable objects。
 这一章今天的可 defend 结论不再是 release/drop baseline，而是 native tabletop push baseline 已经成立，所以 robot-deformable chapter 至少有了一个更直接的 contact story。
 更具体地说，它用 `demo_robot_rope_franka.py` 里的 `tabletop_push_hero` 证明了：native Franka、native tabletop、PhysTwin rope 同时可见，rope 在 visible clip 开始前已经 settle，然后 robot 的 own finger / claw 在桌面高度接近、接触、再推动 rope lateral motion。

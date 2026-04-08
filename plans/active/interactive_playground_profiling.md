@@ -31,3 +31,6 @@ Keep interactive-playground profiling as a clean no-render attribution task.
     `results/interactive_playground_profiling/runs/20260408_075949_blue_cloth_interactive_one_to_one_v1`
   - render OFF on both sides
   - Newton baseline/precomputed throughput plus Newton/PhysTwin op attribution
+  - meeting-facing summary now lives in:
+    `formal_slide/meeting_2026_04_01/bridge_meeting_20260401.pptx`
+    slide `9`

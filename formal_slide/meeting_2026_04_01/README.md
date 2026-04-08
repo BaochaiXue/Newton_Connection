@@ -59,5 +59,5 @@ and the repo root.
   - `python formal_slide/meeting_2026_04_01/build_meeting_20260401.py --max-pptx-mb 100`
 - Review PDF with one slide per matching transcript page:
   - `python scripts/build_slide_transcript_review_pdf.py --pptx formal_slide/meeting_2026_04_01/bridge_meeting_20260401.pptx --transcript-md formal_slide/meeting_2026_04_01/transcript.md --out-pdf formal_slide/meeting_2026_04_01/bridge_meeting_20260401_review.pdf --work-dir tmp_vis/review_pdf_20260401 --deck-title "PhysTwin -> Newton Bridge 2026-04-01 Review"`
-- Performance-only slice (`slides 8-12`) for external review:
-  - `python formal_slide/meeting_2026_04_01/build_meeting_20260401.py --out-dir tmp_vis/performance_analysis_20260401 --out-pptx tmp_vis/performance_analysis_20260401/bridge_meeting_20260401_performance_only_slides_8_12.pptx --slide-range 8-12`
+- Performance-only slice (`slides 4-11`) for external review:
+  - `python formal_slide/meeting_2026_04_01/build_meeting_20260401.py --out-dir tmp_vis/performance_analysis_20260401 --out-pptx tmp_vis/performance_analysis_20260401/bridge_meeting_20260401_performance_only_slides_4_11.pptx --slide-range 4-11`
