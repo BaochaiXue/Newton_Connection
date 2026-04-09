@@ -46,9 +46,9 @@ Detailed result meaning belongs in:
     native IK + `control.joint_target_pos`, but the current bridge-side solver
     route still sags into table contact during `pre`
 - `robot_rope_franka_split_v3`
-  - new split-architecture workstream is now active; v2 is treated as a
-    completed limit-proof rather than the final route, and the next step is a
-    robot-first Stage-0 path followed by rope reintegration
+  - new split-architecture workstream is now active; Stage-0 robot-first direct
+    finger table-blocking now passes locally, so the next step is Stage-1 rope
+    reintegration on the same truth surface
 - `native_robot_physical_blocking_minimal`
   - keep the Stage-0 rigid-only blocking proof separate from the rope-integrated blocking follow-on
 - `remote_interaction_root_cause`
@@ -70,8 +70,9 @@ Detailed result meaning belongs in:
     generator still drops into `pre`-phase table contact before readable
     finger-to-rope interaction starts
 - `robot_rope_franka_split_v3`
-  - no code candidate yet; current blocker is still the unresolved choice and
-    implementation of the robot-first Stage-0 execution path
+  - Stage-0 itself is no longer blocked; the remaining blocker is Stage-1
+    reintegration of the rope without regressing the startup-stable robot-first
+    table-blocking path
 - `robot_visible_rigid_tool_baseline`
   - no blocker at the current conservative claim boundary; the promoted run is now the tool-mediated meeting-safe intermediary
 - `robot_rope_franka_semiimplicit_oneway`
@@ -124,9 +125,9 @@ Detailed result meaning belongs in:
 - `robot_rope_franka_split_v3`
   - task status: `tasks/status/robot_rope_franka_split_v3.md`
   - committed authority: none yet
-  - current meaning: next architecture workstream after v2; target is a
-    robot-first / deformable split design consistent with official Newton
-    patterns
+  - current meaning: next architecture workstream after v2; Stage-0 robot-first
+    direct-finger table blocking now passes locally and Stage-1 rope
+    reintegration is next
 - `rope_perf_apples_to_apples`
   - task status: `tasks/status/rope_perf_apples_to_apples.md`
   - committed authority: `results_meta/tasks/rope_perf_apples_to_apples.json`
