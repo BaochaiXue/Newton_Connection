@@ -1,3 +1,11 @@
+> status: historical
+> canonical_replacement: `../../bridge/tasks/robot_rope_franka_physical_blocking.md`
+> owner_surface: `robot_rope_franka_split_v3`
+> last_reviewed: `2026-04-09`
+> review_interval: `90d`
+> update_rule: `Historical predecessor only. Do not record new active state under this slug.`
+> notes: Archived exploratory split-architecture branch preserved for audit context, not as a live task surface.
+
 # Task: robot_rope_franka_split_v3
 
 ## Question
@@ -19,8 +27,8 @@ the first explicit split-architecture workstream.
 
 ## Current Status
 
-- In progress
-- v2 is now treated as a completed limit-proof path, not the final answer
+- Historical on `2026-04-09`
+- Preserved only as an exploratory architecture branch that no longer drives the live task map
 
 ## Code Entry Points
 
@@ -63,5 +71,5 @@ the first explicit split-architecture workstream.
 
 ## Related Pages
 
-- `docs/bridge/tasks/robot_rope_franka_native_v2.md`
+- `docs/archive/tasks/robot_rope_franka_native_v2.md`
 - `docs/bridge/tasks/robot_rope_franka_physical_blocking.md`

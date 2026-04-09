@@ -32,7 +32,6 @@ Each task page should answer:
 - [robot_rope_franka_physical_blocking.md](./robot_rope_franka_physical_blocking.md)
 - [native_robot_physical_blocking_minimal.md](./native_robot_physical_blocking_minimal.md)
 - [robot_visible_rigid_tool_baseline.md](./robot_visible_rigid_tool_baseline.md)
-- [remote_interaction_root_cause.md](./remote_interaction_root_cause.md)
 - [native_robot_rope_drop_release.md](./native_robot_rope_drop_release.md)
 - [interactive_playground_profiling.md](./interactive_playground_profiling.md)
 - [rope_perf_apples_to_apples.md](./rope_perf_apples_to_apples.md)
@@ -48,6 +47,9 @@ Each task page should answer:
 - [delivery_and_profiling_review_20260401.md](../../archive/tasks/delivery_and_profiling_review_20260401.md)
 - [harness_markdown_cleanup_20260401.md](../../archive/tasks/harness_markdown_cleanup_20260401.md)
 - [meeting_20260401_rope_profiling_rebuild.md](../../archive/tasks/meeting_20260401_rope_profiling_rebuild.md)
+- [remote_interaction_root_cause.md](../../archive/tasks/remote_interaction_root_cause.md)
+- [robot_rope_franka_native_v2.md](../../archive/tasks/robot_rope_franka_native_v2.md)
+- [robot_rope_franka_split_v3.md](../../archive/tasks/robot_rope_franka_split_v3.md)
 - [robot_sphere_inflation_root_cause.md](../../archive/tasks/robot_sphere_inflation_root_cause.md)
 
 Task template:

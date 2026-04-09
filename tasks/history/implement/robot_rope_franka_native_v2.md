@@ -1,3 +1,9 @@
+> status: historical
+> canonical_replacement: `../../../docs/bridge/tasks/robot_rope_franka_physical_blocking.md`
+> owner_surface: `robot_rope_franka_native_v2`
+> last_reviewed: `2026-04-09`
+> notes: Historical exploratory runbook archived out of `tasks/implement/`.
+
 # Implement: robot_rope_franka_native_v2
 
 ## Canonical Commands

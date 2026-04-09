@@ -85,4 +85,4 @@ It does **not** claim:
 
 - [robot_rope_franka_tabletop_push_hero.md](./robot_rope_franka_tabletop_push_hero.md)
 - [robot_rope_franka_physical_blocking.md](./robot_rope_franka_physical_blocking.md)
-- [remote_interaction_root_cause.md](./remote_interaction_root_cause.md)
+- [remote_interaction_root_cause.md](../../archive/tasks/remote_interaction_root_cause.md)

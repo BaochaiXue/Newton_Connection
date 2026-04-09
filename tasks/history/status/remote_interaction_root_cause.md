@@ -1,7 +1,14 @@
+> status: historical
+> canonical_replacement: `../../../docs/bridge/tasks/robot_rope_franka_tabletop_push_hero.md`
+> owner_surface: `remote_interaction_root_cause`
+> last_reviewed: `2026-04-09`
+> notes: Historical completed status log archived out of `tasks/status/`.
+
 # Status: remote_interaction_root_cause
 
 ## Current State
 
+- Historical
 - Completed
 - Initial repo re-read completed on `2026-04-01`
 - Root-cause investigation concluded with a promoted replacement run:

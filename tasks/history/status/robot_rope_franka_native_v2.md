@@ -1,8 +1,14 @@
+> status: historical
+> canonical_replacement: `../../../docs/bridge/tasks/robot_rope_franka_physical_blocking.md`
+> owner_surface: `robot_rope_franka_native_v2`
+> last_reviewed: `2026-04-09`
+> notes: Historical exploratory status log archived out of `tasks/status/`.
+
 # Status: robot_rope_franka_native_v2
 
 ## Current State
 
-- Active
+- Historical
 - New native-style v2 rewrite approved
 - Old stronger-task path remains intact and non-authoritative
 - v2 code path now exists and produces full same-history candidate bundles, but

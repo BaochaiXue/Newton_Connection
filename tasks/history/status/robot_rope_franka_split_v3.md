@@ -1,8 +1,14 @@
+> status: historical
+> canonical_replacement: `../../../docs/bridge/tasks/robot_rope_franka_physical_blocking.md`
+> owner_surface: `robot_rope_franka_split_v3`
+> last_reviewed: `2026-04-09`
+> notes: Historical exploratory status log archived out of `tasks/status/`.
+
 # Status: robot_rope_franka_split_v3
 
 ## Current State
 
-- Active
+- Historical
 - New architecture workstream
 - v2 is now treated as a completed limit-proof, not the final path
 - split_v3 Stage-0 now has a passing robot-first candidate bundle

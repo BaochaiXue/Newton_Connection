@@ -1,10 +1,10 @@
-> status: active
-> canonical_replacement: none
+> status: historical
+> canonical_replacement: `../../bridge/tasks/robot_rope_franka_tabletop_push_hero.md`
 > owner_surface: `remote_interaction_root_cause`
-> last_reviewed: `2026-04-01`
-> review_interval: `7d`
-> update_rule: `Update when the root-cause ranking, fix direction, or accepted evidence bundle changes.`
-> notes: This task is a focused fail-closed investigation on the tabletop hero's apparent stand-off contact / remote-interaction problem.
+> last_reviewed: `2026-04-09`
+> review_interval: `90d`
+> update_rule: `Historical evidence only. Do not record new operating state here.`
+> notes: Archived root-cause record for the c12 tabletop-hero truth fix.
 
 # Task: Remote-Interaction Root Cause In The Tabletop Hero
 
@@ -22,6 +22,7 @@ defensible even if automatic validation passes.
 
 ## Current Status
 
+- Historical on `2026-04-09`.
 - Completed on `2026-04-01`.
 - Winning replacement run:
   - `Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_203416_remotefix_truthcam_c12`
@@ -83,5 +84,5 @@ defensible even if automatic validation passes.
 
 ## Related Pages
 
-- [robot_rope_franka_tabletop_push_hero.md](./robot_rope_franka_tabletop_push_hero.md)
-- [video_presentation_quality.md](./video_presentation_quality.md)
+- [robot_rope_franka_tabletop_push_hero.md](../../bridge/tasks/robot_rope_franka_tabletop_push_hero.md)
+- [video_presentation_quality.md](../../bridge/tasks/video_presentation_quality.md)

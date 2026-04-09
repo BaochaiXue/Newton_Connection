@@ -1,3 +1,9 @@
+> status: historical
+> canonical_replacement: `../../../docs/bridge/tasks/robot_rope_franka_physical_blocking.md`
+> owner_surface: `robot_rope_franka_split_v3`
+> last_reviewed: `2026-04-09`
+> notes: Historical exploratory spec archived out of `tasks/spec/`.
+
 # Spec: robot_rope_franka_split_v3
 
 ## Goal

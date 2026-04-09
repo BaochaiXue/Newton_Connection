@@ -20,7 +20,6 @@ Template files alone do not count as workflow usage.
 | `robot_rope_franka_physical_blocking` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `False` | `` | `` |
 | `native_robot_physical_blocking_minimal` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `False` | `` | `` |
 | `robot_visible_rigid_tool_baseline` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `True` | `promoted` | `20260404_145031_c08_samehistory` |
-| `remote_interaction_root_cause` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `False` | `` | `` |
 | `native_robot_rope_drop_release` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `True` | `promoted` | `20260331_232106_native_franka_recoilfix_drag_off_w5` |
 | `interactive_playground_profiling` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `False` | `` | `` |
 | `rope_perf_apples_to_apples` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `True` | `promoted` | `20260401_rope_perf_meeting_bundle` |

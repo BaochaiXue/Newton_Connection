@@ -1,3 +1,11 @@
+> status: historical
+> canonical_replacement: `../../bridge/tasks/robot_rope_franka_physical_blocking.md`
+> owner_surface: `robot_rope_franka_native_v2`
+> last_reviewed: `2026-04-09`
+> review_interval: `90d`
+> update_rule: `Historical predecessor only. Do not record new active state under this slug.`
+> notes: Archived exploratory rewrite branch that fed later robot/table/rope work but is no longer an active control-plane task.
+
 # Task: robot_rope_franka_native_v2
 
 ## Question
@@ -20,9 +28,8 @@ the user asked for:
 
 ## Current Status
 
-- In progress
-- Old stronger-task path remains intact and non-authoritative
-- V2 must land as a new bridge-layer demo and wrapper before any stronger claim
+- Historical on `2026-04-09`
+- Kept only as an archived exploratory branch feeding the broader `robot_rope_franka_physical_blocking` line
 
 ## Code Entry Points
 

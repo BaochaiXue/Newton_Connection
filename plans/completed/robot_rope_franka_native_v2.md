@@ -1,3 +1,9 @@
+> status: historical
+> canonical_replacement: `../../docs/bridge/tasks/robot_rope_franka_physical_blocking.md`
+> owner_surface: `robot_rope_franka_native_v2`
+> last_reviewed: `2026-04-09`
+> notes: Historical exploratory plan archived out of `plans/active/`.
+
 # Plan: robot_rope_franka_native_v2
 
 ## Goal

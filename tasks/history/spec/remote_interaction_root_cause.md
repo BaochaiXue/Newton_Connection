@@ -1,3 +1,9 @@
+> status: historical
+> canonical_replacement: `../../../docs/bridge/tasks/robot_rope_franka_tabletop_push_hero.md`
+> owner_surface: `remote_interaction_root_cause`
+> last_reviewed: `2026-04-09`
+> notes: Historical completed spec archived out of `tasks/spec/`.
+
 # Spec: remote_interaction_root_cause
 
 ## Goal

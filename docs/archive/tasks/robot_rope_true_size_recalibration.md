@@ -50,5 +50,5 @@ Which coupled term is dominant in the current regression:
 ## Related Pages
 
 - [robot_rope_franka_tabletop_push_hero.md](./robot_rope_franka_tabletop_push_hero.md)
-- [remote_interaction_root_cause.md](./remote_interaction_root_cause.md)
+- [remote_interaction_root_cause.md](../../archive/tasks/remote_interaction_root_cause.md)
 - [robot_rope_franka_physical_blocking.md](./robot_rope_franka_physical_blocking.md)
