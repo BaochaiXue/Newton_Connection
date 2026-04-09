@@ -1,10 +1,10 @@
-> status: active
-> canonical_replacement: none
+> status: historical
+> canonical_replacement: `../../decisions/2026-04-09_robot_ps_interaction_retirement.md`
 > owner_surface: `robot_rope_franka_semiimplicit_oneway`
-> last_reviewed: `2026-04-04`
-> review_interval: `14d`
-> update_rule: `Update when the conservative claim boundary, promoted result meaning, or chosen Path A vs Path B decision changes.`
-> notes: Refocused conservative task for a Newton-native SemiImplicit deformable rope interaction baseline.
+> last_reviewed: `2026-04-09`
+> review_interval: `90d`
+> update_rule: `Historical evidence only. Do not record new active state here.`
+> notes: Archived one-way SemiImplicit baseline after the 2026-04-09 retirement decision.
 
 # Task: Native Franka + Native Table + Bridged Rope Under SemiImplicit (One-Way Baseline)
 

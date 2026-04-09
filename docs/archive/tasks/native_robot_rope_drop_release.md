@@ -1,10 +1,10 @@
-> status: active
-> canonical_replacement: none
+> status: historical
+> canonical_replacement: `../../decisions/2026-04-09_robot_ps_interaction_retirement.md`
 > owner_surface: `native_robot_rope_drop_release`
-> last_reviewed: `2026-04-01`
-> review_interval: `21d`
-> update_rule: `Update when the baseline claim boundary, promoted run meaning, or validation contract changes.`
-> notes: Active canonical task page for the native Franka support/release/free-fall baseline.
+> last_reviewed: `2026-04-09`
+> review_interval: `90d`
+> update_rule: `Historical evidence only. Do not record new active state here.`
+> notes: Archived Stage-0 drop/release baseline after the 2026-04-09 retirement decision.
 
 # Task: Native Robot Rope Drop/Release Sanity Baseline
 

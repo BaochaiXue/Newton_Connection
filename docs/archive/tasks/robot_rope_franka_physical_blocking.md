@@ -1,10 +1,10 @@
-> status: active
-> canonical_replacement: none
+> status: historical
+> canonical_replacement: `../../decisions/2026-04-09_robot_ps_interaction_retirement.md`
 > owner_surface: `robot_rope_franka_physical_blocking`
-> last_reviewed: `2026-04-03`
-> review_interval: `14d`
-> update_rule: `Update when the stronger physical-blocking claim boundary, diagnostics, or authoritative result meaning changes.`
-> notes: New stronger task that must not silently overwrite the existing tabletop-push baseline claim.
+> last_reviewed: `2026-04-09`
+> review_interval: `90d`
+> update_rule: `Historical evidence only. Do not record new active state here.`
+> notes: Archived stronger direct-finger blocking branch after the 2026-04-09 retirement decision.
 
 # Task: Native Newton Franka Table-Blocking + Rope Push
 

@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `task_index`
-> last_reviewed: `2026-04-01`
+> last_reviewed: `2026-04-09`
 > review_interval: `30d`
 > update_rule: `Update when the meeting-level TODO list or its task-page routing changes.`
 > notes: User-provided replacement TODO list for the current meeting cycle. Keep this page short and route detail into the linked task pages.
@@ -12,6 +12,10 @@ Detailed task truth lives under `docs/bridge/tasks/` and the execution chain.
 
 Primary task index:
 - [docs/bridge/tasks/README.md](./docs/bridge/tasks/README.md)
+
+Retired this cycle:
+- robot + deformable PS-object demo line
+  - retrospective: [2026-04-09_robot_ps_interaction_retirement.md](./docs/decisions/2026-04-09_robot_ps_interaction_retirement.md)
 
 ## 1. Continue Newton Interactive Playground — Performance Profiling
 
@@ -31,16 +35,7 @@ Primary task index:
   - explore whether PhysTwin's collision kernel can be ported directly into Newton
   - run the ground-contact experiment
 
-## 3. Continue Robot + Deformable Demo
-
-- Task page:
-  - [robot_deformable_demo.md](./docs/bridge/tasks/robot_deformable_demo.md)
-- Current focus:
-  - show a robot interacting with a deformable object and rigid objects inside Newton
-  - iterate a new demo set with better hand motion
-  - reuse previous objects and cover sloth, rope, and cloth
-
-## 4. Fast-FoundationStereo Testing
+## 3. Fast-FoundationStereo Testing
 
 - Task page:
   - [fast_foundation_stereo.md](./docs/bridge/tasks/fast_foundation_stereo.md)

@@ -1,10 +1,10 @@
-> status: active
-> canonical_replacement: none
+> status: historical
+> canonical_replacement: `../../decisions/2026-04-09_robot_ps_interaction_retirement.md`
 > owner_surface: `robot_rope_franka_tabletop_push_hero`
-> last_reviewed: `2026-04-01`
-> review_interval: `21d`
-> update_rule: `Update when the task boundary, promoted run meaning, or local-only result-tree policy changes.`
-> notes: Active task page for the tabletop-push hero baseline. Committed promoted-run authority lives in `results_meta/`.
+> last_reviewed: `2026-04-09`
+> review_interval: `90d`
+> update_rule: `Historical evidence only. Do not record new active state here.`
+> notes: Archived tabletop-push hero baseline after the 2026-04-09 retirement decision.
 
 # Task: Native Newton Franka + Native Table + PhysTwin Rope Hero Demo
 

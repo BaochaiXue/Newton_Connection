@@ -1,7 +1,7 @@
 > status: canonical
 > canonical_replacement: none
 > owner_surface: `task_index`
-> last_reviewed: `2026-04-05`
+> last_reviewed: `2026-04-09`
 > review_interval: `14d`
 > update_rule: `Update when the active task set, historical task section, or task-index policy changes.`
 > notes: Canonical bridge-task index. Keep active tasks separate from predecessor or one-off historical records.
@@ -25,14 +25,6 @@ Each task page should answer:
 - [meeting_20260408_recall_part.md](./meeting_20260408_recall_part.md)
 - [bunny_penetration_force_diagnostic.md](./bunny_penetration_force_diagnostic.md)
 - [video_presentation_quality.md](./video_presentation_quality.md)
-- [robot_deformable_demo.md](./robot_deformable_demo.md)
-- [robot_rope_franka_tabletop_push_hero.md](./robot_rope_franka_tabletop_push_hero.md)
-- [robot_rope_true_size_recalibration.md](./robot_rope_true_size_recalibration.md)
-- [robot_rope_franka_semiimplicit_oneway.md](./robot_rope_franka_semiimplicit_oneway.md)
-- [robot_rope_franka_physical_blocking.md](./robot_rope_franka_physical_blocking.md)
-- [native_robot_physical_blocking_minimal.md](./native_robot_physical_blocking_minimal.md)
-- [robot_visible_rigid_tool_baseline.md](./robot_visible_rigid_tool_baseline.md)
-- [native_robot_rope_drop_release.md](./native_robot_rope_drop_release.md)
 - [interactive_playground_profiling.md](./interactive_playground_profiling.md)
 - [rope_perf_apples_to_apples.md](./rope_perf_apples_to_apples.md)
 - [self_collision_transfer.md](./self_collision_transfer.md)
@@ -47,6 +39,15 @@ Each task page should answer:
 - [delivery_and_profiling_review_20260401.md](../../archive/tasks/delivery_and_profiling_review_20260401.md)
 - [harness_markdown_cleanup_20260401.md](../../archive/tasks/harness_markdown_cleanup_20260401.md)
 - [meeting_20260401_rope_profiling_rebuild.md](../../archive/tasks/meeting_20260401_rope_profiling_rebuild.md)
+- [2026-04-09_robot_ps_interaction_retirement.md](../../decisions/2026-04-09_robot_ps_interaction_retirement.md)
+- [robot_deformable_demo.md](../../archive/tasks/robot_deformable_demo.md)
+- [robot_rope_franka_tabletop_push_hero.md](../../archive/tasks/robot_rope_franka_tabletop_push_hero.md)
+- [robot_rope_true_size_recalibration.md](../../archive/tasks/robot_rope_true_size_recalibration.md)
+- [robot_rope_franka_semiimplicit_oneway.md](../../archive/tasks/robot_rope_franka_semiimplicit_oneway.md)
+- [robot_rope_franka_physical_blocking.md](../../archive/tasks/robot_rope_franka_physical_blocking.md)
+- [native_robot_physical_blocking_minimal.md](../../archive/tasks/native_robot_physical_blocking_minimal.md)
+- [robot_visible_rigid_tool_baseline.md](../../archive/tasks/robot_visible_rigid_tool_baseline.md)
+- [native_robot_rope_drop_release.md](../../archive/tasks/native_robot_rope_drop_release.md)
 - [remote_interaction_root_cause.md](../../archive/tasks/remote_interaction_root_cause.md)
 - [robot_rope_franka_native_v2.md](../../archive/tasks/robot_rope_franka_native_v2.md)
 - [robot_rope_franka_split_v3.md](../../archive/tasks/robot_rope_franka_split_v3.md)

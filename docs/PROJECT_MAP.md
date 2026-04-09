@@ -1,3 +1,11 @@
+> status: canonical
+> canonical_replacement: none
+> owner_surface: `project_map`
+> last_reviewed: `2026-04-09`
+> review_interval: `30d`
+> update_rule: `Update when top-level code roots, main demo families, or edit boundaries change.`
+> notes: Short repository map only. Keep detailed design explanation in topical docs.
+
 # Project Map
 
 This page is the shortest possible map of the repository.
@@ -90,13 +98,15 @@ Retired root singleton docs:
   - `demo_cloth_bunny_drop_without_self_contact.py`
   - `demo_cloth_box_drop_with_self_contact.py`
   - `demo_cloth_bunny_realtime_viewer.py`
-- Rope vs bunny / rope / sloth / robot
+- Rope vs bunny / rope / sloth
   - `demo_rope_bunny_drop.py`
   - `demo_two_ropes_ground_contact.py`
   - `demo_two_ropes_ground_contact_box.py`
   - `demo_rope_sloth_ground_contact.py`
-  - `demo_robot_rope_franka.py`
   - `demo_rope_control_realtime_viewer.py`
+- Historical robot + deformable line
+  - retired on `2026-04-09`
+  - see `docs/decisions/2026-04-09_robot_ps_interaction_retirement.md`
 - MPM / sand
   - `demo_sloth_sand_one_way_mpm.py`
   - `demo_sloth_sand_two_way_mpm.py`

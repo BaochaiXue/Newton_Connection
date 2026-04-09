@@ -30,15 +30,10 @@ Detailed result meaning belongs in:
   - keep the rope replay benchmark story clean: fair no-render baseline first, optimization implications second
 - `self_collision_transfer`
   - preserve the fair `2 x 2` cloth+ground matrix while strict parity remains blocked
-- robot demo cluster
-  - preserve the accepted readable baselines
-  - keep stronger direct-blocking work fail-closed until robot stability, real table blocking, and rope push all hold together
 - supporting workflow tasks
   - `video_presentation_quality`
   - `data_collection_protocol`
   - `fast_foundation_stereo`
-- `rope_perf_apples_to_apples`
-  - keep the same-case rope replay benchmark as the committed performance reference
 
 ## Current Blockers
 
@@ -46,32 +41,23 @@ Detailed result meaning belongs in:
   - the fair matrix is reproducible, but strict parity is still blocked by the broader controller-spring / strict-parity mismatch
 - `interactive_playground_profiling`
   - keep exploratory profiling separate from the committed rope benchmark truth under `rope_perf_apples_to_apples`
-- `robot_rope_true_size_recalibration`
-  - true-size repair is still exploratory and must not override the accepted `c12` baseline without a new honest pass
-- `robot_rope_franka_physical_blocking`
-  - accepted readable baselines exist, but no stronger direct-finger rope-integrated clip is promoted yet because robot stability, real table blocking, and rope push still do not hold together in one meeting-grade presentation
-- `native_robot_physical_blocking_minimal`
-  - Stage-0 rigid-only blocking proof is complete locally; rope-integrated follow-on remains open
 
 ## Promoted Surfaces At A Glance
 
 - `bunny_penetration_force_diagnostic`
   - meeting-facing bunny penetration board under the reopened `2 x 2` contract
-- `native_robot_rope_drop_release`
-  - stage-0 native Franka support/release/free-fall baseline
-- `robot_deformable_demo`
-  - native Franka lift/release interaction baseline
-- `robot_rope_franka_tabletop_push_hero`
-  - readable tabletop-push hero baseline with the visible finger-contact claim re-certified
-- `robot_visible_rigid_tool_baseline`
-  - tool-mediated tabletop baseline where a visible rigid robot-mounted crossbar is the real physical contactor for the bridged rope
-- `robot_rope_franka_semiimplicit_oneway`
-  - conservative direct-finger tabletop baseline with an explicit one-way robot-to-rope claim only
 - `rope_perf_apples_to_apples`
   - same-case no-render rope replay benchmark; viewer `E1` remains supporting context only
 - full committed meaning:
   - `results_meta/INDEX.md`
   - `results_meta/LATEST.md`
+
+## Recent Retirements
+
+- robot + deformable PS-object demo line
+  - retired on `2026-04-09`
+  - strongest partial robot baselines remain archived as historical evidence only
+  - canonical explanation lives in `docs/decisions/2026-04-09_robot_ps_interaction_retirement.md`
 
 ## Active Workstreams
 

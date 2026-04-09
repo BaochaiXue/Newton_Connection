@@ -1,7 +1,7 @@
 > status: canonical
 > canonical_replacement: none
 > owner_surface: `task_execution`
-> last_reviewed: `2026-04-01`
+> last_reviewed: `2026-04-09`
 > review_interval: `14d`
 > update_rule: `Update when execution-directory structure or active-vs-historical task policy changes.`
 > notes: Execution-layer map for task artifacts. Active and historical task chains must not share the same neighborhood silently.

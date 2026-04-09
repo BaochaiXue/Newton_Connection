@@ -412,6 +412,7 @@ def _issues_from_registry_json(registry_entries: dict[str, dict[str, Any]]) -> l
     issues: list[str] = []
     robot_entry = registry_entries.get("robot_rope_franka_tabletop_push_hero")
     if robot_entry:
+        task_state = str((robot_entry.get("authoritative_run") or {}).get("task_state") or "")
         local_only = set(robot_entry.get("local_only_surfaces", []))
         required = {
             "Newton/phystwin_bridge/results/robot_rope_franka/README.md",
@@ -425,11 +426,12 @@ def _issues_from_registry_json(registry_entries: dict[str, dict[str, Any]]) -> l
                 "robot_rope_franka_tabletop_push_hero registry entry is missing local-only surfaces: "
                 + ", ".join(missing)
             )
-    manifest = ROOT / "Newton/phystwin_bridge/results/robot_rope_franka/manifest.json"
-    if manifest.exists():
-        obj = json.loads(manifest.read_text(encoding="utf-8"))
-        if obj.get("status") == "planned":
-            issues.append("robot_rope_franka root manifest still says planned after promotion")
+        if task_state != "historical":
+            manifest = ROOT / "Newton/phystwin_bridge/results/robot_rope_franka/manifest.json"
+            if manifest.exists():
+                obj = json.loads(manifest.read_text(encoding="utf-8"))
+                if obj.get("status") == "planned":
+                    issues.append("robot_rope_franka root manifest still says planned after promotion")
     return issues
 
 

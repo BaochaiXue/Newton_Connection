@@ -2,18 +2,18 @@
   "registry_version": 1,
   "task_slug": "robot_rope_franka_semiimplicit_oneway",
   "task_chain": {
-    "task_page": "docs/bridge/tasks/robot_rope_franka_semiimplicit_oneway.md",
-    "spec": "tasks/spec/robot_rope_franka_semiimplicit_oneway.md",
-    "plan": "plans/active/robot_rope_franka_semiimplicit_oneway.md",
-    "implement": "tasks/implement/robot_rope_franka_semiimplicit_oneway.md",
-    "status": "tasks/status/robot_rope_franka_semiimplicit_oneway.md"
+    "task_page": "docs/archive/tasks/robot_rope_franka_semiimplicit_oneway.md",
+    "spec": "tasks/history/spec/robot_rope_franka_semiimplicit_oneway.md",
+    "plan": "plans/completed/robot_rope_franka_semiimplicit_oneway.md",
+    "implement": "tasks/history/implement/robot_rope_franka_semiimplicit_oneway.md",
+    "status": "tasks/history/status/robot_rope_franka_semiimplicit_oneway.md"
   },
   "bundle_root": "Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway",
   "authoritative_run": {
     "run_id": "20260404_215523_c12_samehistory_oneway",
-    "authoritative": true,
-    "task_state": "promoted",
-    "claim_boundary": "Conservative Newton-native tabletop rope baseline: native Newton Franka + native Newton tabletop + bridged PhysTwin rope, with deformable interaction handled under SolverSemiImplicit and a truthful one-way robot->rope claim only. This does not claim articulated physical blocking, full two-way coupling, or self-collision parity.",
+    "authoritative": false,
+    "task_state": "historical",
+    "claim_boundary": "Historical conservative Newton-native tabletop rope baseline preserved only as partial evidence after the robot + deformable PS-object line was retired on 2026-04-09. It remains a one-way robot->rope baseline, not a current success claim.",
     "local_artifact_root": "Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway/candidates/20260404_215523_c12_samehistory_oneway",
     "command_pointer": "Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway/candidates/20260404_215523_c12_samehistory_oneway/run_command.txt",
     "expected_artifacts": [
@@ -39,8 +39,8 @@
     ],
     "repo_friendly_evidence": {
       "summary": [
-        "The chosen bundle re-certifies the accepted c12 direct-finger tabletop rollout under a weaker, truthful claim: deformable rope interaction is under SolverSemiImplicit and one-way robot->rope is sufficient.",
-        "Hero/debug/validation are all rerendered from the same saved presentation history.",
+        "Historical c12 direct-finger tabletop rollout preserved under a weaker one-way robot->rope claim only.",
+        "Hero/debug/validation remain rerendered from one saved presentation history for auditability.",
         "Geometry truth remains explicit: actual finger-box contact is the proof surface, rope render thickness matches physical thickness, and no hidden helper is present."
       ],
       "key_metrics": {
@@ -52,9 +52,9 @@
       }
     },
     "why_passed": [
-      "The bundle makes SolverSemiImplicit usage explicit without reviving physical-blocking or full two-way-coupling claims.",
-      "The direct-finger geometry-truth fix remains intact: actual finger-box contact is the proof surface and ee-contact-radius stays diagnostic only.",
-      "The new same-history rerender keeps hero/debug/validation on one saved rollout history while the conservative full-video review remains PASS."
+      "Preserved because the bundle made SolverSemiImplicit usage explicit without reviving physical-blocking or full two-way-coupling claims.",
+      "Preserved because the direct-finger geometry-truth fix remained intact: actual finger-box contact is the proof surface and ee-contact-radius stays diagnostic only.",
+      "Preserved because the same-history rerender kept hero/debug/validation on one saved rollout history."
     ],
     "predecessor": "20260401_203416_remotefix_truthcam_c12",
     "superseded_by": null
@@ -65,5 +65,5 @@
     "Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway/BEST_RUN/README.md",
     "Newton/phystwin_bridge/results/robot_rope_franka_semiimplicit_oneway/BEST_RUN/manifest.json"
   ],
-  "updated_at": "2026-04-04"
+  "updated_at": "2026-04-09"
 }

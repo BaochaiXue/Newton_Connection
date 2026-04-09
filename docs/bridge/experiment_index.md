@@ -1,14 +1,14 @@
 > status: canonical
 > canonical_replacement: none
 > owner_surface: `bridge_control_plane`
-> last_reviewed: `2026-04-01`
+> last_reviewed: `2026-04-09`
 > review_interval: `30d`
 > update_rule: `Update when the experiment directory contract, index policy, or canonical validation path changes.`
 > notes: Canonical experiment-contract surface for bridge work; keep this as the durable index rather than a run ledger.
 
 # Experiment Index
 
-Last updated: 2026-04-01
+Last updated: 2026-04-09
 
 This page explains how experiment outputs should be organized and indexed.
 
@@ -104,7 +104,7 @@ dedicated folder under `results/<bundle_name>/` with:
   convenience pointers when the bundle promotes runs by pointer
 - a `runs/<run_id>/` subtree for the actual artifacts
 
-Current bundles intentionally vary slightly:
+Current and preserved bundles intentionally vary slightly:
 
 - `results/bunny_force_visualization/` uses `INDEX.md` plus local-only pointer files
 - `results/robot_deformable_demo/` uses `index.csv` plus local-only `BEST_RUN.md`
@@ -133,12 +133,14 @@ Examples:
 
 ### Robot + Deformable
 
-Examples:
+Status:
 
-- Franka + rope
-- control/replay viewers
+- retired on `2026-04-09`
+- canonical retrospective:
+  - `docs/decisions/2026-04-09_robot_ps_interaction_retirement.md`
+- keep the preserved robot bundles as historical evidence only, not as current promoted work
 
-Canonical local result root:
+Historical local result roots:
 
 - `results/robot_deformable_demo/`
   - local-only `BEST_RUN.md`
@@ -146,11 +148,11 @@ Canonical local result root:
   - `runs/<run_id>/`
 - `rejected/<run_id>/`
 
-Current committed authoritative robot + deformable run:
+Historical preserved robot + deformable run:
 
 - `results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation`
 
-Committed authority for that run lives in:
+Historical registry record for that run lives in:
 
 - `results_meta/tasks/robot_deformable_demo.json`
 
@@ -164,7 +166,7 @@ Its required review artifacts are:
 - `qa/validation.json`
 - `qa/verdict.md`
 
-Separate stage-0 sanity baseline bundle:
+Separate historical stage-0 sanity baseline bundle:
 
 - `results/native_robot_rope_drop_release/`
   - local-only `BEST_RUN.md`
@@ -178,7 +180,7 @@ This bundle is reserved for the simpler native robot + semi-implicit
 rope release/drop sanity baseline and should not be mixed into the older
 lift-release evidence chain.
 
-Current promoted stage-0 run:
+Historical preserved stage-0 run:
 
 - `results/native_robot_rope_drop_release/runs/20260331_232106_native_franka_recoilfix_drag_off_w5`
   - `final_presentation.mp4`
@@ -196,15 +198,15 @@ Matched drag-ON comparison:
   - `summary.json`
   - `physics_validation.json`
 
-The promoted robot bundle also keeps local bundle helpers so future runs can
-be promoted without rediscovering the layout:
+The historical robot bundle still keeps local helpers so archived runs remain
+auditable without rediscovering the layout:
 
 - `results/robot_deformable_demo/README.template.md`
 - `results/robot_deformable_demo/manifest.template.json`
 - `results/robot_deformable_demo/SLIDE_READY.md`
 - a run-local `README.md` in each promoted `runs/<run_id>/` directory
 
-Committed authority for the stage-0 baseline lives in:
+Historical registry record for the stage-0 baseline lives in:
 
 - `results_meta/tasks/native_robot_rope_drop_release.json`
 

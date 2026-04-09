@@ -8,8 +8,6 @@ import sys
 WATCH_TERMS = (
     "run_bunny_force_diag.sh",
     "run_realtime_profile.sh",
-    "run_robot_rope_franka.sh",
-    "run_native_robot_rope_drop_release.sh",
     "render_answer_pdf.py",
     "render_gif.sh",
     "prepare_video_review_bundle.py",
@@ -28,8 +26,6 @@ WATCH_TERMS = (
     "validate_experiment_artifacts.py",
     "validate_bridge_video_qc.py",
     "validate_bunny_force_visualization.py",
-    "validate_robot_deformable_demo.py",
-    "validate_native_robot_rope_drop_release_video.py",
     "formal_slide",
     "result_for_slides",
     "git mv ",

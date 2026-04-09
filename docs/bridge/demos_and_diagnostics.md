@@ -1,3 +1,11 @@
+> status: active
+> canonical_replacement: none
+> owner_surface: `bridge_demo_map`
+> last_reviewed: `2026-04-09`
+> review_interval: `30d`
+> update_rule: `Update when a bridge demo family or diagnostic family becomes active, historical, or renamed.`
+> notes: Short map of current demo families and shared diagnostics. Retired demo lines should be marked historical instead of described as active.
+
 # Bridge Demos And Diagnostics
 
 ## Purpose
@@ -38,18 +46,12 @@ Main questions:
 - pair filtering
 - shared rigid support
 
-### Robot + Deformable
+### Historical Robot + Deformable Line
 
-Main scripts:
-
-- `demo_robot_rope_franka.py`
-- `demo_rope_control_realtime_viewer.py`
-
-Main questions:
-
-- controlled rigid-body actuation
-- two-way robot/deformable interaction
-- realtime viewer behavior
+- retired on `2026-04-09`
+- canonical retrospective:
+  - `docs/decisions/2026-04-09_robot_ps_interaction_retirement.md`
+- preserved only as historical evidence, not as a current demo family
 
 ### MPM / Sand
 
@@ -84,7 +86,7 @@ Current purpose:
 
 Current main script:
 
-- `demo_cloth_bunny_realtime_viewer.py`
+- `demo_rope_control_realtime_viewer.py`
 
 Current purpose:
 

@@ -2,18 +2,18 @@
   "registry_version": 1,
   "task_slug": "robot_rope_franka_tabletop_push_hero",
   "task_chain": {
-    "task_page": "docs/bridge/tasks/robot_rope_franka_tabletop_push_hero.md",
-    "spec": "tasks/spec/robot_rope_franka_tabletop_push_hero.md",
-    "plan": "plans/active/robot_rope_franka_tabletop_push_hero.md",
-    "implement": "tasks/implement/robot_rope_franka_tabletop_push_hero.md",
-    "status": "tasks/status/robot_rope_franka_tabletop_push_hero.md"
+    "task_page": "docs/archive/tasks/robot_rope_franka_tabletop_push_hero.md",
+    "spec": "tasks/history/spec/robot_rope_franka_tabletop_push_hero.md",
+    "plan": "plans/completed/robot_rope_franka_tabletop_push_hero.md",
+    "implement": "tasks/history/implement/robot_rope_franka_tabletop_push_hero.md",
+    "status": "tasks/history/status/robot_rope_franka_tabletop_push_hero.md"
   },
   "bundle_root": "Newton/phystwin_bridge/results/robot_rope_franka",
   "authoritative_run": {
     "run_id": "20260401_203416_remotefix_truthcam_c12",
-    "authoritative": true,
-    "task_state": "promoted",
-    "claim_boundary": "Meeting-ready native Newton Franka + native Newton tabletop + PhysTwin rope tabletop-push hero demo under fixed sim_dt = 5e-5 and substeps = 667. This claims a readable, defensible tabletop finger-push baseline whose visual rope thickness now matches the physical contact thickness. It does not claim full two-way coupling or final manipulation.",
+    "authoritative": false,
+    "task_state": "historical",
+    "claim_boundary": "Historical readable tabletop finger-push baseline preserved only as partial evidence after the robot + deformable PS-object line was retired on 2026-04-09. It is no longer the committed current robot claim.",
     "local_artifact_root": "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_203416_remotefix_truthcam_c12",
     "command_pointer": "Newton/phystwin_bridge/results/robot_rope_franka/candidates/20260401_203416_remotefix_truthcam_c12/run_command.txt",
     "expected_artifacts": [
@@ -37,9 +37,9 @@
     ],
     "repo_friendly_evidence": {
       "summary": [
-        "Native Newton Franka visibly approaches, contacts, and laterally pushes a PhysTwin rope across a native Newton tabletop.",
-        "The promoted truth-fix update renders the rope at a thickness consistent with the physical rope collision radius, removing the earlier stand-off contact impression.",
-        "Strict validator, truthful manual review, and fail-closed full-video review all pass on the promoted run."
+        "Historical readable tabletop finger-push baseline preserved as archived partial evidence only.",
+        "The truth-fix update rendered the rope at a thickness consistent with the physical rope collision radius, removing the earlier stand-off contact impression.",
+        "Strict validator, truthful manual review, and fail-closed full-video review all passed on the preserved run."
       ],
       "key_metrics": {
         "duration_s": 6.2,
@@ -55,9 +55,9 @@
       ]
     },
     "why_passed": [
-      "Robot, table, rope, and contact patch are all readable in the hero camera without the earlier stand-off impression.",
-      "Validation camera preserves the honest full geometry while still showing real finger contact and rope response.",
-      "The fixed-timestep run passes strict validator objective gates, truthful manual review, and a fail-closed full-video review."
+      "Preserved because robot, table, rope, and contact patch were all readable in the hero camera without the earlier stand-off impression.",
+      "Preserved because the validation camera kept the honest full geometry while still showing real finger contact and rope response.",
+      "Preserved because the fixed-timestep run passed strict validator objective gates, truthful manual review, and a fail-closed full-video review."
     ],
     "predecessor": "20260401_093102_fixeddt_c10_contactfix_cam",
     "superseded_by": null
@@ -91,5 +91,5 @@
     "Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/README.md",
     "Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/manifest.json"
   ],
-  "updated_at": "2026-04-01"
+  "updated_at": "2026-04-09"
 }

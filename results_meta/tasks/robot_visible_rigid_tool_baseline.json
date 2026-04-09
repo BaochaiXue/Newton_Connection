@@ -2,18 +2,18 @@
   "registry_version": 1,
   "task_slug": "robot_visible_rigid_tool_baseline",
   "task_chain": {
-    "task_page": "docs/bridge/tasks/robot_visible_rigid_tool_baseline.md",
-    "spec": "tasks/spec/robot_visible_rigid_tool_baseline.md",
-    "plan": "plans/active/robot_visible_rigid_tool_baseline.md",
-    "implement": "tasks/implement/robot_visible_rigid_tool_baseline.md",
-    "status": "tasks/status/robot_visible_rigid_tool_baseline.md"
+    "task_page": "docs/archive/tasks/robot_visible_rigid_tool_baseline.md",
+    "spec": "tasks/history/spec/robot_visible_rigid_tool_baseline.md",
+    "plan": "plans/completed/robot_visible_rigid_tool_baseline.md",
+    "implement": "tasks/history/implement/robot_visible_rigid_tool_baseline.md",
+    "status": "tasks/history/status/robot_visible_rigid_tool_baseline.md"
   },
   "bundle_root": "Newton/phystwin_bridge/results/robot_visible_rigid_tool_baseline",
   "authoritative_run": {
     "run_id": "20260404_145031_c08_samehistory",
-    "authoritative": true,
-    "task_state": "promoted",
-    "claim_boundary": "Meeting-safe intermediary baseline: a native Newton Franka carries a visible rigid tool, and that same visible rigid tool is the real physical contactor that pushes the bridged PhysTwin rope across the native Newton tabletop. This does not claim direct finger contact, robot-table physical blocking, or full two-way coupling.",
+    "authoritative": false,
+    "task_state": "historical",
+    "claim_boundary": "Historical visible-tool intermediary baseline preserved only as partial evidence after the robot + deformable PS-object line was retired on 2026-04-09. It is not a current direct-finger or full robot-table-rope success claim.",
     "local_artifact_root": "Newton/phystwin_bridge/results/robot_visible_rigid_tool_baseline/candidates/20260404_145031_c08_samehistory",
     "command_pointer": "Newton/phystwin_bridge/results/robot_visible_rigid_tool_baseline/candidates/20260404_145031_c08_samehistory/run_command.txt",
     "expected_artifacts": [
@@ -43,8 +43,8 @@
     ],
     "repo_friendly_evidence": {
       "summary": [
-        "The visible rigid tool is a link7-mounted red crossbar capsule that is explicitly visible in hero, debug, and validation views.",
-        "Tool contact begins before visible rope lateral motion and deformation in the promoted run.",
+        "Historical visible-tool intermediary baseline preserved as archived partial evidence only.",
+        "Tool contact begins before visible rope lateral motion and deformation in the preserved run.",
         "The rope render thickness equals the physical particle/contact thickness, and the tool render uses the same finalized collider geometry."
       ],
       "key_metrics": {
@@ -56,9 +56,9 @@
       }
     },
     "why_passed": [
-      "The visible tool itself is the believable contactor in the hero view rather than a hidden or proxy shape.",
-      "Tool-to-rope contact timing is conservative: contact begins before visible rope motion and deformation, with no multi-frame stand-off gap flagged by diagnostics.",
-      "The authoritative c08 rerender keeps hero/debug/validation on one saved rollout history, so all three views now agree on tool-first contact ordering under the conservative tool-mediated claim."
+      "Preserved because the visible tool itself was the believable contactor in the hero view rather than a hidden or proxy shape.",
+      "Preserved because tool-to-rope contact timing stayed conservative: contact began before visible rope motion and deformation, with no multi-frame stand-off gap flagged by diagnostics.",
+      "Preserved because the c08 rerender kept hero/debug/validation on one saved rollout history, so all three views agreed on tool-first contact ordering under the conservative tool-mediated claim."
     ],
     "predecessor": "20260404_141534_c07_link7_bar",
     "superseded_by": null
@@ -77,5 +77,5 @@
     "Newton/phystwin_bridge/results/robot_visible_rigid_tool_baseline/BEST_RUN/README.md",
     "Newton/phystwin_bridge/results/robot_visible_rigid_tool_baseline/BEST_RUN/manifest.json"
   ],
-  "updated_at": "2026-04-04"
+  "updated_at": "2026-04-09"
 }

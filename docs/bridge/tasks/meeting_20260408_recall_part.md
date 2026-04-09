@@ -27,7 +27,7 @@ carry the current weekly result sections once their claim boundaries are ready.
   - recall block
   - rope performance profiling update
   - stable self-collision update
-  - conservative robot section
+  - historical robot recall section
 - current presentation policy for this bundle:
   - one claim per slide
   - readable within `15-20 s`
@@ -35,7 +35,7 @@ carry the current weekly result sections once their claim boundaries are ready.
   - detailed mechanism reasoning pushed into transcript
 - current generated bundle state:
   - `16` slides
-  - rebuilt against the current promoted robot authorities on `2026-04-08`
+  - rebuilt against the preserved historical robot artifacts on `2026-04-08`
 
 ## Code Entry Points
 
@@ -54,7 +54,7 @@ python formal_slide/meeting_2026_04_08/build_meeting_20260408.py
 - `formal_slide/meeting_2026_04_08/bridge_meeting_20260408_recall_initial.pptx`
 - `formal_slide/meeting_2026_04_08/transcript.md`
 - `formal_slide/meeting_2026_04_08/transcript.pdf`
-- deck-local media derived from current promoted robot authorities:
+- deck-local media derived from preserved historical robot artifacts:
   - `formal_slide/meeting_2026_04_08/gif/robot_visible_rigid_tool_baseline_hero_validation_deck.gif`
   - `formal_slide/meeting_2026_04_08/gif/robot_rope_franka_semiimplicit_oneway_hero_validation_deck.gif`
 - slide-ready three-view robot exports:
@@ -68,9 +68,9 @@ python formal_slide/meeting_2026_04_08/build_meeting_20260408.py
 - the recall part is in English on-slide and Chinese in transcript
 - later weekly sections can be appended without rebuilding the harness from scratch
 - the current deck remains understandable on first pass, not only after reading the transcript
-- the robot section stays conservative:
-  - direct-finger slide as the main deck robot visual
-  - visible-tool slide demoted to backup-only explanation
+- any retained robot section stays explicitly historical:
+  - use the archived partial baselines only as recall context
+  - do not present the robot line as a current successful workstream
 
 ## Open Questions
 

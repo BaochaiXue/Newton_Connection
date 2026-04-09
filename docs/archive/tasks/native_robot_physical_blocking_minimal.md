@@ -1,10 +1,10 @@
-> status: active
-> canonical_replacement: none
+> status: historical
+> canonical_replacement: `../../decisions/2026-04-09_robot_ps_interaction_retirement.md`
 > owner_surface: `native_robot_physical_blocking_minimal`
-> last_reviewed: `2026-04-04`
-> review_interval: `14d`
-> update_rule: `Update when the minimal native scope, geometry-truth rule, or authoritative result meaning changes.`
-> notes: New minimal native-blocking task that isolates robot-table physical blocking before any rope reintegration.
+> last_reviewed: `2026-04-09`
+> review_interval: `90d`
+> update_rule: `Historical evidence only. Do not record new active state here.`
+> notes: Archived Stage-0 native blocking study after the 2026-04-09 retirement decision.
 
 # Task: Native Robot Physical Blocking Minimal
 

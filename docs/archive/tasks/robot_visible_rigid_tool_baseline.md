@@ -1,10 +1,10 @@
-> status: active
-> canonical_replacement: none
+> status: historical
+> canonical_replacement: `../../decisions/2026-04-09_robot_ps_interaction_retirement.md`
 > owner_surface: `robot_visible_rigid_tool_baseline`
-> last_reviewed: `2026-04-04`
-> review_interval: `14d`
-> update_rule: `Update when the visible-tool claim boundary, tool geometry, or promoted result meaning changes.`
-> notes: New intermediary baseline between the readable tabletop finger-push hero and the blocked physical-contact task.
+> last_reviewed: `2026-04-09`
+> review_interval: `90d`
+> update_rule: `Historical evidence only. Do not record new active state here.`
+> notes: Archived visible-tool intermediary baseline after the 2026-04-09 retirement decision.
 
 # Task: Visible Rigid Tool Tabletop Rope Baseline
 

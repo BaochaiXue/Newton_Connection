@@ -13,14 +13,6 @@ Template files alone do not count as workflow usage.
 | `meeting_20260408_recall_part` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `False` | `` | `` |
 | `bunny_penetration_force_diagnostic` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `True` | `promoted` | `20260401_013500_realtime_allcolliding_2x2_v5` |
 | `video_presentation_quality` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `False` | `` | `` |
-| `robot_deformable_demo` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `True` | `promoted` | `20260331_030148_native_franka_lift_release_presentation` |
-| `robot_rope_franka_tabletop_push_hero` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `True` | `promoted` | `20260401_203416_remotefix_truthcam_c12` |
-| `robot_rope_true_size_recalibration` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `False` | `` | `` |
-| `robot_rope_franka_semiimplicit_oneway` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `True` | `promoted` | `20260404_215523_c12_samehistory_oneway` |
-| `robot_rope_franka_physical_blocking` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `False` | `` | `` |
-| `native_robot_physical_blocking_minimal` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `False` | `` | `` |
-| `robot_visible_rigid_tool_baseline` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `True` | `promoted` | `20260404_145031_c08_samehistory` |
-| `native_robot_rope_drop_release` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `True` | `promoted` | `20260331_232106_native_franka_recoilfix_drag_off_w5` |
 | `interactive_playground_profiling` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `False` | `` | `` |
 | `rope_perf_apples_to_apples` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `True` | `promoted` | `20260401_rope_perf_meeting_bundle` |
 | `self_collision_transfer` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `True` | `blocked` | `ground_contact_self_collision_repro_fix_20260404_200830_aa5e607` |

@@ -2,18 +2,18 @@
   "registry_version": 1,
   "task_slug": "robot_deformable_demo",
   "task_chain": {
-    "task_page": "docs/bridge/tasks/robot_deformable_demo.md",
-    "spec": "tasks/spec/robot_deformable_demo.md",
-    "plan": "plans/active/robot_deformable_demo.md",
-    "implement": "tasks/implement/robot_deformable_demo.md",
-    "status": "tasks/status/robot_deformable_demo.md"
+    "task_page": "docs/archive/tasks/robot_deformable_demo.md",
+    "spec": "tasks/history/spec/robot_deformable_demo.md",
+    "plan": "plans/completed/robot_deformable_demo.md",
+    "implement": "tasks/history/implement/robot_deformable_demo.md",
+    "status": "tasks/history/status/robot_deformable_demo.md"
   },
   "bundle_root": "results/robot_deformable_demo",
   "authoritative_run": {
     "run_id": "20260331_030148_native_franka_lift_release_presentation",
-    "authoritative": true,
-    "task_state": "promoted",
-    "claim_boundary": "Native Newton Franka manipulates a PhysTwin-loaded rope through a visibly and measurably two-way lift-release interaction baseline. This does not yet claim strong deformable-resistance sensing.",
+    "authoritative": false,
+    "task_state": "historical",
+    "claim_boundary": "Historical native Newton Franka lift-release baseline preserved only as partial evidence after the robot + deformable PS-object line was retired on 2026-04-09. This is not a current two-way robot/deformable success claim.",
     "local_artifact_root": "results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation",
     "command_pointer": "results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation/command.txt",
     "expected_artifacts": [
@@ -34,8 +34,8 @@
     ],
     "repo_friendly_evidence": {
       "summary": [
-        "Canonical native Newton robot + deformable baseline under the lift_release task.",
-        "Validated media and QA bundle exist in the promoted run directory."
+        "Historical native Newton robot + deformable lift-release baseline preserved as archived partial evidence only.",
+        "Validated media and QA bundle remain useful for audit context, not as a current robot success claim."
       ],
       "key_metrics": {
         "first_contact_time_s": 0.0880,
@@ -50,9 +50,9 @@
       ]
     },
     "why_passed": [
-      "Native Franka path replaced the old proxy-robot path.",
-      "Finger-span contact proxy aligned metrics with the visible interaction.",
-      "Promoted run passes the video-validation bundle and remains easy to defend as a meeting baseline."
+      "Preserved because the native Franka path replaced the older proxy-robot path.",
+      "Preserved because the finger-span contact proxy aligned metrics with the visible interaction better than earlier runs.",
+      "Preserved because the run passed its historical video-validation bundle and remains useful as an archived baseline."
     ],
     "predecessor": "20260330_213045_native_franka_lift_release_presentation",
     "superseded_by": null
@@ -77,5 +77,5 @@
     "results/robot_deformable_demo/BEST_RUN.md",
     "results/robot_deformable_demo/index.csv"
   ],
-  "updated_at": "2026-04-01"
+  "updated_at": "2026-04-09"
 }

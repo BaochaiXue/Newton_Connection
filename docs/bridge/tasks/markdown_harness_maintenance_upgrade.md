@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `markdown_harness_maintenance_upgrade`
-> last_reviewed: `2026-04-05`
+> last_reviewed: `2026-04-09`
 > review_interval: `14d`
 > update_rule: `Update when markdown authority, task taxonomy, inventory generation, or lint policy changes.`
 > notes: Current canonical harness-maintenance task for markdown truthfulness, active-vs-historical separation, registry-backed result authority, and outcome-first agent reporting.
@@ -68,4 +68,4 @@ structure; it is semantic drift:
 
 - [interactive_playground_profiling.md](./interactive_playground_profiling.md)
 - [rope_perf_apples_to_apples.md](./rope_perf_apples_to_apples.md)
-- [robot_rope_franka_tabletop_push_hero.md](./robot_rope_franka_tabletop_push_hero.md)
+- [2026-04-09_robot_ps_interaction_retirement.md](../../decisions/2026-04-09_robot_ps_interaction_retirement.md)
