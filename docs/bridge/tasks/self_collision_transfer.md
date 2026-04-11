@@ -1,296 +1,133 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `self_collision_transfer`
-> last_reviewed: `2026-04-04`
+> last_reviewed: `2026-04-11`
 > review_interval: `21d`
-> update_rule: `Update when strict-scope interpretation, current blocker, or decision evidence changes.`
-> notes: Active canonical task page for the self-collision decision and strict parity blocker analysis.
+> update_rule: `Update when the strict-scope interpretation, committed blocked surface, or decision boundary changes.`
+> notes: Active canonical task page for the self-collision decision and strict parity blocker analysis. Keep this page decision-oriented rather than turning it into a long experiment diary.
 
 # Task: Self-Collision Transfer Decision
 
 ## Primary Question
 
-This is now a **decision task**, not an open-ended “keep experimenting” task.
+Without breaking the current Newton bridge mainline, which self-collision path
+is the smallest, most stable, and most sufficient to support meeting-quality
+demos?
 
-The final question is:
-
-**Without breaking the current Newton bridge mainline, which self-collision path is the smallest, most stable, and most sufficient to support meeting-quality demos?**
-
-This task must end with one explicit decision:
+This task must still end with one explicit decision:
 
 - **A. Native Newton is enough**
 - **B. Bridge-side custom filtered penalty is enough**
 - **C. Bridge-side PhysTwin-style self-collision is necessary**
 
-It is **not** acceptable to finish this task with only “more experiments are needed”.
-
-## Non-Goals
-
-This task is **not** trying to:
-
-- fully replicate PhysTwin self-collision behavior inside Newton
-- prove Newton native self-collision is universally correct
-- rewrite the entire collision stack for one bunny/thin-geometry failure
-- keep doing broad black-box parameter sweeps
-- silently mix Newton-only rigid/shape contacts into a mode called `phystwin`
-
 ## Why This Matters
 
-The advisor has already clarified two constraints:
+The advisor constraint is unchanged:
 
 - exact collision parity is not the main project goal
-- but we still need to understand the mechanism before deciding whether to override anything
+- but the mechanism still has to be understood before deciding what to override
 
-So the real deliverable is a **defendable engineering decision**:
+So the real deliverable is a defendable engineering decision, not an endless
+parameter sweep.
 
-- do nothing
-- keep only pair filtering
-- or add a minimal bridge-side PhysTwin-style collision path
+## Current State
 
-## Existing Experimental Base
+Committed blocked surface:
 
-The repo already contains the right scaffolding for a decision:
+- `results_meta/tasks/self_collision_transfer.json`
+
+Current supported reading:
+
+- the fair cloth+implicit-ground `2 x 2` matrix ranking is reproducible
+- the old large `case_3 > case_4` gap was largely driven by hidden whole-step timing differences
+- after the explicit ground-law isolation fix, the remaining blocker is the broader controller-spring / rollout parity gap
+- strict `phystwin` remains a narrow law swap:
+  - pairwise self-collision
+  - implicit `z=0` ground
+  - not generic box-support contact
+
+## Main Code Paths
 
 - `Newton/phystwin_bridge/demos/demo_cloth_box_drop_with_self_contact.py`
   - box-support decision demo for `off/native/custom`
-  - `phystwin` is intentionally unsupported there because strict PhysTwin contact
-    semantics do not define generic box-support contact
+  - strict `phystwin` remains intentionally unsupported there
 - `Newton/phystwin_bridge/demos/self_contact_bridge_kernels.py`
-  - graph-hop exclusion
-  - filtered bridge-side penalty pairs
-  - bridge-side PhysTwin-style velocity correction
-  - PhysTwin-order force update and implicit ground-plane integration
+  - bridge-side PhysTwin-style self-collision / ground-law kernels
 - `Newton/phystwin_bridge/tools/core/phystwin_contact_stack.py`
   - shared strict bridge-side `phystwin` contact stack
-  - reusable validation, context construction, and substep hook for the
-    PhysTwin-native cloth case
-  - strict `phystwin` now defaults to a frame-frozen explicit collision table
-    with object-only candidate semantics
-  - explicit `ground_contact_law` experiments now also use a bridge-side
-    ground-law isolation mode so native vs PhysTwin-style ground can be swapped
-    without also changing pre-self gravity/drag timing
-- `Newton/phystwin_bridge/demos/demo_cloth_bunny_drop_without_self_contact.py`
-  - force-diagnostic path for external rigid-contact sanity checks
-- `Newton/phystwin_bridge/demos/demo_cloth_bunny_realtime_viewer.py`
-  - profiling breakdown infrastructure for `internal_force`, `collision_contact`, and `integration`
 - `Newton/phystwin_bridge/tools/core/validate_parity.py`
   - OFF-baseline regression thresholds and parity checks
-- `Newton/phystwin_bridge/tools/other/diagnose_phystwin_collision_table.py`
-  - compares frozen explicit tables against the dynamic-query debug path
-- `Newton/phystwin_bridge/tools/other/diagnose_controller_spring_semantics.py`
-  - checks whether controller-connected spring forces still differ from
-    PhysTwin `control_x/control_v` semantics
 - `Newton/phystwin_bridge/tools/other/run_ground_contact_self_collision_rmse_matrix.py`
-  - canonical controlled `2 x 2` RMSE runner on the PhysTwin-native cloth +
-    implicit-ground reference scene
-  - varies only:
-    - self-collision law: `off | phystwin`
-    - ground-contact law: `native | phystwin`
-  - writes one comparable report per case plus a combined fairness check and
-    RMSE matrix summary
+  - canonical fair `2 x 2` matrix runner
 - `Newton/phystwin_bridge/tools/other/run_ground_contact_self_collision_repro_audit.py`
-  - repeated reproducibility runner for the same canonical `2 x 2` matrix
-  - fixes the environment surface (`PYTHONHASHSEED`, single-thread BLAS/OpenMP)
-  - repeats the full matrix multiple times and reports ranking stability,
-    per-case drift, and rollout-hash equality
+  - ranking reproducibility runner
 - `Newton/phystwin_bridge/tools/other/run_ground_contact_self_collision_visual_bundle.py`
-  - renders the stable `2 x 2` matrix cases into labeled `2x3` comparison videos
-  - also writes a `3x4` labeled reference board for the four cases
+  - stable labeled video bundle
 - `Newton/phystwin_bridge/tools/other/run_ground_contact_self_collision_restart_matrix.py`
-  - builds a derived strict IR whose frame-0 state comes from the PhysTwin
-    reference at a chosen restart frame
-  - reruns the same fair `2 x 2` law matrix from that restart state to the
-    original rollout end
-  - writes a continuation RMSE matrix plus labeled `2x3` case videos and a
-    `3x4` labeled board video
+  - restart-state continuation runner
+- `Newton/phystwin_bridge/tools/other/diagnose_controller_spring_semantics.py`
+  - controller-spring mismatch evidence
 
-That means the next step is not “add more framework”, but “turn the current framework into decision evidence”.
+## Controlled Decision Surfaces
 
-## Controlled Decision Matrix
-
-## Fixed Conditions
-
-For the main decision matrix, keep the following fixed:
-
-- same PhysTwin strict IR
-- same `mass-spring-scale`
-- same `sim_dt`
-- same `substeps`
-- same `drop-height`
-- same `contact-dist-scale`
-- fixed box support
-- fixed camera/viewer settings
-
-Do **not** use bunny for the main self-collision decision. Bunny mixes in thin-geometry rigid-contact effects.
-
-## Main Modes To Compare
-
-Run the box self-contact task under:
+Main box-support matrix:
 
 - `--self-contact-mode off`
 - `--self-contact-mode native`
 - `--self-contact-mode custom --custom-self-contact-hops 1`
 - `--self-contact-mode custom --custom-self-contact-hops 2`
 
-This is the core cloth+box decision matrix. Strict `phystwin` parity is tracked
-separately on the PhysTwin-native cloth case because the PhysTwin source only
-defines:
-
-- pairwise `object_collision`
-- implicit `z=0` `integrate_ground_collision`
-
-It does **not** define generic box / rigid-shape contact for this spring-mass
-path.
-
-For that strict cloth parity path, `phystwin` should now mean:
-
-- frame-frozen explicit collision table by default
-- object-only candidate build / consumption semantics
-- dynamic-query candidate generation only as a debug override
-
-## Controlled Cloth + Ground Matrix
-
-To isolate the remaining parity gap cleanly, the bridge now also tracks a
-controlled cloth + implicit-ground `2 x 2` matrix under the same strict IR:
+Strict parity matrix on the PhysTwin-native cloth + implicit-ground scene:
 
 - `case_1_self_off_ground_native`
 - `case_2_self_off_ground_phystwin`
 - `case_3_self_phystwin_ground_native`
 - `case_4_self_phystwin_ground_phystwin`
 
-This matrix is the right surface for answering:
+The strict matrix must stay on the PhysTwin-native cloth + implicit-ground
+scene. Do not substitute cloth+box, bunny, rope, or robot scenes.
 
-- how much RMSE changes when only the ground law changes
-- how much RMSE changes when only the self-collision law changes
-- whether the two laws show an interaction effect on the same scene
+## Acceptance Boundary
 
-The matrix must stay on the PhysTwin-native cloth + implicit-ground scene. Do
-not substitute cloth+box, bunny, rope, or robot scenes for this comparison.
+Meeting-ready minimum:
 
-## Follow-Up Sanity Check
+1. no visible self-explosion or numerical collapse
+2. controlled overlap and penetration metrics stay within the particle-radius bounds
+3. wall-time overhead vs `off` stays within `2.0x`
+4. one clean `8-15 s` MP4 exists for slides
 
-After selecting the leading candidate from the box matrix:
+Promote-to-mainline only if:
 
-- run a bunny external-contact sanity check
-- keep the selected self-contact mode fixed
-- use the existing `--force-diagnostic` path to confirm the selected self-contact mode does not destabilize the rigid-contact analysis
-
-This is a **sanity check**, not the primary decision experiment.
-
-## Regression Check
-
-After the preferred mode is chosen:
-
-- rerun the existing OFF-baseline parity validator
-- confirm that bridge-side self-collision work did not silently damage the OFF baseline path
-
-The self-collision task must not be allowed to break the current no-self-contact mainline.
-
-## Required Metrics
-
-## Metrics Already Available
-
-The current box self-contact script already exposes useful summary fields:
-
-- `all_particle_positions_finite`
-- `final_nonexcluded_self_contact_pair_count`
-- `final_nonexcluded_self_contact_max_overlap_m`
-- `final_nonexcluded_self_contact_p95_overlap_m`
-- `max_penetration_depth_box_m`
-- `final_penetration_p99_box_m`
-- `wall_time_sec`
-- `self_contact_mode`
-- `custom_self_contact_hops`
-- `excluded_pair_count`
-
-These are necessary, but not sufficient.
-
-## Metrics That Must Be Added
-
-The current overlap statistics are still too weak because they focus on the **final frame**.
-That can miss transient explosions that settle down later.
-
-Before this task can be closed, add:
-
-- `particle_radius_median_m`
-- `particle_radius_p95_m`
-- `peak_nonexcluded_self_contact_pair_count_over_time`
-- `peak_nonexcluded_self_contact_max_overlap_m_over_time`
-- `peak_nonexcluded_self_contact_p95_overlap_m_over_time`
-- `max_particle_speed_mps`
-- `max_spring_stretch_ratio`
-- `profile_collision_contact_share`
-- `profile_internal_force_share`
-
-The peak-over-time overlap metrics are the most important gap to close first.
-
-## Acceptance Thresholds
-
-## Minimum “Meeting-Ready” Pass Line
-
-The selected mode must satisfy all of these:
-
-1. `all_particle_positions_finite == true`
-2. no visible self-explosion / cloth clumping / obvious numerical collapse
-3. `peak_nonexcluded_self_contact_p95_overlap_m_over_time <= 0.5 * particle_radius_median_m`
-4. `peak_nonexcluded_self_contact_max_overlap_m_over_time <= 1.0 * particle_radius_median_m`
-5. `final_penetration_p99_box_m <= 0.5 * particle_radius_median_m`
-6. `max_penetration_depth_box_m <= 1.0 * particle_radius_median_m`
-7. `wall_time_sec(selected_mode) / wall_time_sec(off) <= 2.0`
-8. produce one clean 8–15 second MP4 that is usable in slides
-
-## Stronger “Promote To Mainline” Pass Line
-
-If the selected mode is going to become the preferred longer-term path, it should also satisfy:
-
-9. bunny sanity-check does not clearly worsen rigid-contact behavior
-10. OFF baseline parity still passes the existing validator thresholds
+5. bunny sanity check does not worsen rigid-contact behavior
+6. OFF-baseline parity still passes
 
 ## Decision Logic
 
-The task must end with this logic:
+- if native passes: stop there
+- if native fails but custom passes: pair filtering is enough
+- only if native fails, custom fails, and strict `phystwin` passes: choose bridge-side PhysTwin-style self-collision
 
-- **If native passes**: stop there; do **not** copy PhysTwin
-- **If native fails but custom passes**: conclusion is “pair filtering is enough”
-- **Only if native fails, custom fails, and phystwin passes**: allow “bridge-side PhysTwin-style self-collision is needed”
+## Current Evidence Roots
 
-This rule prevents overfitting the project onto the most invasive option.
+- committed blocked surface:
+  - `Newton/phystwin_bridge/results/ground_contact_self_collision_repro_fix_20260404_200830_aa5e607`
+- post-isolation-fix full matrix:
+  - `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260408_070232_eb0d80b`
+- post-isolation-fix restart@137 continuation matrix:
+  - `Newton/phystwin_bridge/results/ground_contact_self_collision_restart137_matrix_20260408_070609_eb0d80b`
+- stable case-3-vs-case-4 follow-up:
+  - `Newton/phystwin_bridge/results/self_collision_transfer_case3_vs_case4_followup_20260404_210334_ac9ec33`
+- stable visual bundle:
+  - `Newton/phystwin_bridge/results/ground_contact_self_collision_visual_bundle_20260408_042645_00feebe`
 
-## Risks To Track
+Detailed historical scratch notes now live in:
 
-- final-frame overlap statistics can hide transient failure
-- graph-hop exclusion is not the same as true geometric-neighbor exclusion
-- if `phystwin` wins, that is a bridge-side result, not a Newton-native claim
-- strict `phystwin` parity currently applies only to the PhysTwin-native cloth
-  contact set (self-collision + implicit ground plane)
-- bunny should not be the primary decision scene because it mixes self-contact with thin rigid geometry
-- inflating particle radius is not a valid replacement for a self-collision decision
-
-## Required Outputs
-
-The task is not complete until it produces all of the following:
-
-1. `self_collision_decision_table.csv`
-2. `self_collision_decision.md`
-3. one 4-panel comparison figure across modes
-4. one clean MP4 for the selected mode
-5. one slide-ready summary page with the final recommendation
-
-## Success Criteria
-
-This task is complete only when:
-
-- the box decision matrix has been run
-- peak-over-time overlap metrics have been added
-- a bunny rigid-contact sanity check has been performed on the selected mode
-- parity regression has been rechecked for the OFF baseline
-- profiling has been attached to the selected mode
-- the result can be stated as one of A / B / C above
+- `tasks/history/status/self_collision_transfer_diagnostic_log_20260401_20260408.md`
 
 ## Current Recommendation For Execution Order
 
-1. run the box decision matrix
-2. add peak-over-time overlap metrics
-3. run the bunny force-diagnostic sanity check
-4. run profiler on the selected candidate
-5. write the decision table and slide-ready conclusion
+1. Keep the cloth+box `off/native/custom` matrix as the main decision surface.
+2. Keep the controlled cloth+ground `2 x 2` matrix as the strict parity / interaction diagnostic surface.
+3. Treat the reproducible matrix root as the committed blocked surface and newer post-isolation roots as local mechanism evidence.
+4. Use the bunny force-diagnostic only as a post-selection sanity check.
+5. Rerun the OFF-baseline parity validator before any final recommendation is declared.

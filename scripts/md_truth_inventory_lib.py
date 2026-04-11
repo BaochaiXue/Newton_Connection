@@ -731,7 +731,7 @@ def staleness_rows(inventory: list[dict]) -> list[dict]:
         if (
             row["review_enforced"] and row["review_status"] in {"missing", "due", "parse_error"}
         )
-        or row["overgrown_for_role"]
+        or (row["overgrown_for_role"] and row["classification"] != "HISTORICAL_ARCHIVE")
         or (
             row["line_compressed"]
             and row["classification"] in {"CANONICAL", "ACTIVE_SUPPORTING", "LOCAL_ONLY_SECONDARY"}

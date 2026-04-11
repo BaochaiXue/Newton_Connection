@@ -1,205 +1,68 @@
+> status: active
+> canonical_replacement: none
+> owner_surface: `bunny_penetration_force_diagnostic`
+> last_reviewed: `2026-04-11`
+> review_interval: `21d`
+> update_rule: `Update when the promoted board package, accepted force semantics, or slide-facing artifact set changes. Move long rollout history into historical logs instead of expanding this page indefinitely.`
+> notes: Active operational status for the bunny penetration task. Keep this file short and point detailed rollout chronology elsewhere.
+
 # Status: Bunny Penetration Force Diagnostic
 
-## 2026-04-01
+## Current State
 
-- Reopened the task under a stricter meeting spec.
-- Explicitly marked the old accepted full-process synchronized package as
-  historical rather than final for meeting visualization.
-- Re-scoped the main deliverable to:
+Committed current meaning lives in:
+
+- `results_meta/tasks/bunny_penetration_force_diagnostic.json`
+
+Current promoted board package:
+
+- `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5`
+
+Current high-confidence state:
+
+- the promoted `v5` run remains the canonical meeting-facing board
+- the board uses:
   - self-collision OFF
   - `box_control`
   - `bunny_baseline`
-  - real-time `2 x 2`
-  - all currently colliding cloth mass nodes
-- Updated the repo-native task page, spec, plan, and implement runbook so the
-  new deliverable is the source of truth rather than an add-on note.
+  - all-colliding-node display
+  - target-only penalty-force re-evaluation with `add_ground_plane=False`
+- board-aware QA and artifact-contract validation both passed
 
-## Current Technical State
+Historical rollout / slide-refresh chronology moved out of the active page:
 
-- Historical trigger/full-process force diagnostics already exist.
-- Historical committed results metadata now records the sync-safe 4-case
-  mechanism package under:
-  - `results_meta/tasks/bunny_penetration_force_diagnostic.json`
-- The reopened all-colliding-node board path is now implemented bridge-side and
-  promoted under:
-  - `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5`
-- The promoted `v5` run now includes:
-  - per-frame detector bundles for `box_control` and `bunny_baseline`
-  - target-only penalty force from explicit re-evaluation with
-    `add_ground_plane=False`
-  - a board-aware QA PASS
-  - artifact-contract PASS
-  - bundle pointers updated under `results/bunny_force_visualization/`
+- `tasks/history/status/bunny_penetration_force_diagnostic_log_20260401.md`
+
+## Last Completed Step
+
+The last meaningful milestone was the stricter all-colliding-node board
+promotion:
+
+- detector semantics were tightened to the `rigid_force_contact_mask`
+- the target-only penalty-force path was re-evaluated without ground-plane mixing
+- the canonical board, panel GIFs, and slow-motion supplement were regenerated
+- the `2026-04-01` meeting deck was rewired to use the current board assets
 
 ## Next Step
 
-- optional slide refresh if the meeting deck should swap the older historical
-  mechanism GIFs for the new `2 x 2` board
-- otherwise keep `v5` as the canonical reopened-board result
+- keep `v5` as the canonical reopened-board result
+- only refresh slide-local media if a future meeting bundle needs different crop,
+  speed, or layout treatment
+- only promote a new run if it materially changes the board semantics or closes
+  a real mechanism gap
 
-## 2026-04-01 Attempt: `20260401_011336_realtime_allcolliding_2x2_v1`
+## Blocking Issues
 
-- A fresh run now exists under:
-  - `results/bunny_force_visualization/runs/20260401_011336_realtime_allcolliding_2x2_v1`
-- That run successfully produced:
-  - per-case OFF rollout artifacts for:
-    - `box_control`
-    - `bunny_baseline`
-  - per-frame detector bundles
-  - final board video:
-    - `artifacts/collision_force_board/collision_force_board_2x2.mp4`
-  - validator outputs under:
-    - `qa/report.json`
-    - `qa/verdict.md`
-- The board-aware visual QA now passes on that run.
-- However the task is still NOT closed, because one strict semantic blocker
-  remains:
-  - the current detector / board path uses `f_external_total` as penalty force
-    without a per-target shape decomposition
-  - in the current scene this can still mix the target rigid shape with other
-    shape-contact contributors such as ground-support contact
-  - evidence:
-    - both cases currently report `first_force_contact_frame_index = 1`
-    - both cases also report near-global active-node counts immediately after
-      start, which is inconsistent with the intended “first target collision”
-      semantics
-- Therefore the current run is a useful visual attempt, but it cannot yet be
-  promoted as the final strict-spec success.
-- once promoted, update:
-  - `results_meta/tasks/bunny_penetration_force_diagnostic.json`
-  - `results_meta/LATEST.md`
+- no blocker on the current promoted board surface
+- only future blocker would be a new meeting requirement that changes the board
+  contract or force semantics
 
-## 2026-04-01 Promoted Run: `20260401_013500_realtime_allcolliding_2x2_v5`
+## Artifact Paths
 
-- Promoted run root:
-  - `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5`
-- Final board artifact:
-  - `artifacts/collision_force_board/collision_force_board_2x2.mp4`
-- Detector semantics:
-  - main node set:
-    `rigid_force_contact_mask = geom_contact_mask AND target_force_contact_mask`
-  - target-only penalty force:
-    `f_external_total` from explicit re-evaluation with
-    `add_ground_plane=False`
-  - total force:
-    `f_internal_total + f_external_total + mass * gravity_vec`
-- First-collision indices:
-  - `box_control = 4`
-  - `bunny_baseline = 4`
-- Validators:
-  - `qa/report.json` -> `PASS`
-  - `qa/verdict.md`
-  - `scripts/validate_experiment_artifacts.py` -> `PASS`
-- Secondary local-only pointer surfaces updated:
-  - `results/bunny_force_visualization/LATEST_SUCCESS.txt`
-  - `results/bunny_force_visualization/LATEST_ATTEMPT.txt`
-  - `results/bunny_force_visualization/INDEX.md`
-
-## 2026-04-01 Slide Update
-
-- Updated the `2026-04-01` meeting deck source so the bunny force-analysis
-  section now explicitly states the experiment setting on-slide:
-  - cloth total mass = `0.1 kg`
-  - rigid target mass = `0.5 kg`
-- Applied this to the visible slide text for:
-  - `Result F2`
-  - `Result F3`
-- Regenerated:
-  - `formal_slide/meeting_2026_04_01/bridge_meeting_20260401.pptx`
-  - `formal_slide/meeting_2026_04_01/transcript.md`
-  - `formal_slide/meeting_2026_04_01/transcript.pdf`
-- Further slide refresh:
-  - exported four single-panel mp4s from the current canonical board under:
-    - `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/artifacts/collision_force_board/panels/`
-  - rewired `Result F2` so it now uses those current single-panel videos rather
-    than the older historical force-mechanism gifs
-  - kept `Result F3` on the full canonical `2 x 2` board
-
-## 2026-04-01 GIF Quality Refresh
-
-- Raised bunny-board GIF generation from the previous low-deck defaults
-  (`640/960` width, `8 fps`, `96/128` colors) to a high-quality, size-capped
-  policy:
-  - board preferred profile:
-    `1600 px`, `15 fps`, `224 colors`
-  - panel preferred profile:
-    `960 px`, `15 fps`, `224 colors`
-  - hard per-GIF budget:
-    `< 40 MB`
-- Updated:
-  - `scripts/render_bunny_penetration_collision_board.py`
-  - `scripts/export_bunny_collision_board_panels.py`
-  - `formal_slide/meeting_2026_04_01/build_meeting_20260401.py`
-- Regenerated the canonical board GIF:
-  - `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/artifacts/collision_force_board/collision_force_board_2x2.gif`
-- Regenerated four single-panel GIFs both for the result bundle and the meeting
-  deck:
-  - `.../panels/box_penalty.gif`
-  - `.../panels/box_total.gif`
-  - `.../panels/bunny_penalty.gif`
-  - `.../panels/bunny_total.gif`
-  - `formal_slide/meeting_2026_04_01/gif/box_penalty.gif`
-  - `formal_slide/meeting_2026_04_01/gif/box_total.gif`
-  - `formal_slide/meeting_2026_04_01/gif/bunny_penalty.gif`
-  - `formal_slide/meeting_2026_04_01/gif/bunny_total.gif`
-- Rebuilt:
-  - `formal_slide/meeting_2026_04_01/bridge_meeting_20260401.pptx`
-  - `formal_slide/meeting_2026_04_01/transcript.md`
-  - `formal_slide/meeting_2026_04_01/transcript.pdf`
-
-## 2026-04-01 GIF Delivery Split
-
-- Clarified the delivery rule:
-  - single `pptx` must stay `< 100 MB`
-  - single `gif` must stay `< 40 MB`
-- Split bunny GIF handling into two tiers:
-  - publish GIFs live in the promoted result bundle and keep the higher-quality
-    profiles for release/sharing
-  - deck GIFs live under `formal_slide/meeting_2026_04_01/gif/` and may use a
-    smaller profile so the meeting `pptx` stays within budget
-- `build_meeting_20260401.py` now explicitly:
-  - ensures publish-quality board/panel GIFs exist under the canonical result
-    directory
-  - separately transcodes slide-local deck GIFs from the same mp4 sources
-  - avoids using deck compression as the only surviving GIF copy
-
-## 2026-04-01 Slow-Motion Supplement
-
-- Added a supplemental `4x` slow-motion bunny `2 x 2` board under the current
-  canonical run:
-  - `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/artifacts/collision_force_board_slow4x/`
-- Artifact paths:
-  - publish mp4:
-    `.../collision_force_board_2x2_slow4x.mp4`
-  - publish gif:
-    `.../collision_force_board_2x2_slow4x.gif`
-  - summary:
-    `.../summary.json`
-  - local replay helpers:
-    - `.../README.md`
-    - `.../command.sh`
-- Slow-motion semantics:
-  - same `box penalty / box total / bunny penalty / bunny total` board as the
-    canonical real-time version
-  - same detector bundles and force definitions
-  - playback slowed by frame repetition with:
-    - `slowdown_factor = 4`
-    - `playback_label = 4x slow motion`
-  - source duration:
-    `2.9 s`
-  - displayed duration:
-    `11.6 s`
-- Slide deck update:
-  - added a new supplemental bunny slide using the slow-motion board gif:
-    - `Result F4: A 4x Slow-Motion Board Makes Contact Development Easier To Read`
-  - regenerated:
-    - `formal_slide/meeting_2026_04_01/bridge_meeting_20260401.pptx`
-    - `formal_slide/meeting_2026_04_01/transcript.md`
-    - `formal_slide/meeting_2026_04_01/transcript.pdf`
-- Size checks:
-  - publish slow gif:
-    `8.19 MB`
-  - deck slow gif:
-    `4.39 MB`
-  - updated pptx:
-    `55.7 MB`
+- `results_meta/tasks/bunny_penetration_force_diagnostic.json`
+- `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/summary.json`
+- `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/artifacts/collision_force_board/collision_force_board_2x2.mp4`
+- `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/artifacts/collision_force_board/collision_force_board_2x2.gif`
+- `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/artifacts/collision_force_board_slow4x/collision_force_board_2x2_slow4x.mp4`
+- `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/qa/report.json`
+- `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/qa/verdict.md`

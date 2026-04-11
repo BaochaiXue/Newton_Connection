@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `markdown_harness_maintenance_upgrade`
-> last_reviewed: `2026-04-09`
+> last_reviewed: `2026-04-11`
 > review_interval: `7d`
 > update_rule: `Update after each meaningful cleanup milestone and after final validation. Keep the page outcome-first rather than process-first.`
 > notes: Live status log for the current markdown/control-plane maintenance pass.
@@ -11,9 +11,9 @@
 ## Current State
 
 Current follow-up completed for this pass: the robot + deformable PS-object
-line is now retired as a historical decision, its active control-plane surfaces
-are gone, the bridge-side robot demo entrypoints are deleted, and the latest
-harness lint passes on the cleaned repo state.
+line remains retired, the active self-collision / bunny / slide-maintenance
+surfaces are now shorter and easier to review, and the latest harness lint
+passes on a quieter maintenance queue.
 
 ## What Changed This Pass
 
@@ -61,6 +61,18 @@ harness lint passes on the cleaned repo state.
   - `.codex/hooks/stop_continue.py`
 - expanded the active maintenance task/spec/plan/implement pages so reporting
   discipline is part of the harness scope
+- moved the detailed self-collision scratch chronology out of the active status
+  page into:
+  - `tasks/history/status/self_collision_transfer_diagnostic_log_20260401_20260408.md`
+- rewrote the active self-collision and bunny task surfaces so they no longer
+  duplicate long experiment diaries:
+  - `docs/bridge/tasks/self_collision_transfer.md`
+  - `tasks/status/self_collision_transfer.md`
+  - `docs/bridge/tasks/bunny_penetration_force_diagnostic.md`
+- added metadata and readable wrapped commands to:
+  - `tasks/implement/slide_deck_overhaul.md`
+- narrowed `md_staleness_report` so overgrown historical archives no longer
+  keep the report permanently noisy
 - cleared the remaining lint blockers exposed during this follow-up:
 - preserved the earlier semantic-hardening wins:
   - hidden active chains are no longer left in active neighborhoods
@@ -78,6 +90,8 @@ harness lint passes on the cleaned repo state.
 - dead bridge-side robot demos and dedicated wrappers are gone from the active
   code surface, so future agents are less likely to restart the failed line by
   accident
+- the remaining active task pages no longer masquerade as scratch notebooks,
+  and the staleness queue is now quiet instead of permanently red
 
 ## Findings / Conclusions
 
@@ -90,6 +104,8 @@ harness lint passes on the cleaned repo state.
 - the robot + deformable line produced useful mechanism studies and historical
   partial baselines, but it never reached a meeting-grade combined success and
   should not remain promoted or runnable by default
+- active task/status surfaces need an explicit size discipline; otherwise
+  experiment logs naturally expand until the maintenance reports become noise
 
 ## GIF / Artifact Paths To Review
 
@@ -113,8 +129,7 @@ harness lint passes on the cleaned repo state.
 ## Blocking Issues
 
 - no blocker for this cleanup pass
-- remaining maintenance debt is the smaller review-age / reformat queue still
-  listed in `docs/generated/md_staleness_report.md`
+- `docs/generated/md_staleness_report.md` is currently clean
 
 ## Validation
 
