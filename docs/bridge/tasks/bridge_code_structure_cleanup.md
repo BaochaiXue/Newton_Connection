@@ -2,70 +2,65 @@
 > canonical_replacement: none
 > owner_surface: `bridge_code_structure_cleanup`
 > last_reviewed: `2026-04-11`
-> review_interval: `14d`
-> update_rule: `Update when the bounded refactor scope, target modules, or next structural extraction milestone changes.`
-> notes: Active code-structure cleanup task. Keep scope bounded to bridge-layer structure improvement rather than broad behavior rewrites.
+> review_interval: `7d`
+> update_rule: `Update when the cloth+bunny canonical package boundary or validation story changes.`
+> notes: Canonical task page for the cloth+bunny family package reorg and shim transition.
 
-# Task: Bridge Code Structure Cleanup
+# Bridge Code Structure Cleanup
 
-## Question
+## Goal
 
-How do we make the bridge-layer codebase easier to navigate and extend without
-rewriting Newton core or destabilizing active experiment logic?
+Replace the old flat cloth+bunny demo/helper layout with a canonical
+family-specific package that is easier to navigate and closer to Newton's
+official example organization.
 
-## Why It Matters
+## Current Focus
 
-The repo's biggest code-quality risk is not only buggy logic; it is oversized,
-mixed-responsibility bridge files that force future Codex runs to re-derive
-module boundaries from scratch.
+- cloth+bunny only
+- package-first canonical path under `Newton/phystwin_bridge/demos/cloth_bunny/`
+- keep legacy top-level demo/helper files as one-pass transition shims
+- keep wrapper scripts functional while moving them to public package APIs
 
-## Current Status
+## Current State
 
-- In progress
-- Scope for this pass is intentionally narrow:
-  - start with the cloth+bunny force-visualization path
-  - separate orchestration from pure visualization helpers
-  - leave physics semantics unchanged
+The canonical cloth+bunny implementation now lives under:
 
-## Code Entry Points
+- `Newton/phystwin_bridge/demos/cloth_bunny/offline.py`
+- `Newton/phystwin_bridge/demos/cloth_bunny/example.py`
+- `Newton/phystwin_bridge/demos/cloth_bunny/scene.py`
+- `Newton/phystwin_bridge/demos/cloth_bunny/render.py`
+- `Newton/phystwin_bridge/demos/cloth_bunny/outputs.py`
+- `Newton/phystwin_bridge/demos/cloth_bunny/config.py`
+- `Newton/phystwin_bridge/demos/cloth_bunny/runtime.py`
+- `Newton/phystwin_bridge/demos/cloth_bunny/diagnostics.py`
 
-- Main script:
-  - `Newton/phystwin_bridge/demos/demo_cloth_bunny_drop_without_self_contact.py`
-- Shared helpers:
-  - `Newton/phystwin_bridge/demos/cloth_bunny_common.py`
-  - `Newton/phystwin_bridge/demos/bridge_shared.py`
-  - `Newton/phystwin_bridge/demos/bridge_deformable_common.py`
-- Supporting docs:
-  - `docs/bridge/tasks/bridge_code_structure_cleanup.md`
+The old paths are still present, but only as compatibility wrappers.
 
-## Canonical Commands
+## Why This Matters
 
-```bash
-python -m py_compile \
-  Newton/phystwin_bridge/demos/demo_cloth_bunny_drop_without_self_contact.py \
-  Newton/phystwin_bridge/demos/cloth_bunny_force_viz.py
-```
+- a new reader can finally find the cloth+bunny family in one place
+- the package structure is much closer to Newton's family/example layout
+- scripts no longer need to couple themselves to private helper names inside
+  the old demo monolith
 
-## Required Artifacts
+## Validation Snapshot
 
-- clearer helper-module boundaries in `Newton/phystwin_bridge/demos/`
-- unchanged runtime behavior for the refactored path
-- updated task status documenting the extraction boundary and next step
+- canonical `--help`:
+  - `python Newton/phystwin_bridge/demos/cloth_bunny/offline.py --help`
+  - `python Newton/phystwin_bridge/demos/cloth_bunny/example.py --help`
+- legacy `--help`:
+  - `python Newton/phystwin_bridge/demos/demo_cloth_bunny_drop_without_self_contact.py --help`
+  - `python Newton/phystwin_bridge/demos/demo_cloth_bunny_realtime_viewer.py --help`
+- runtime smokes:
+  - `python Newton/phystwin_bridge/demos/cloth_bunny/example.py --viewer null --num-frames 2 --mode off --out-dir tmp/cloth_bunny_example_smoke`
+  - `python Newton/phystwin_bridge/demos/cloth_bunny/offline.py --out-dir tmp/cloth_bunny_offline_smoke --frames 2 --skip-render`
+  - `python scripts/run_bunny_force_case.py --out-dir tmp/cloth_bunny_script_smoke --frames 2 --substeps 1 --skip-render`
+- force-diagnostic wrapper coverage:
+  - `python scripts/render_bunny_force_artifacts.py --bundle tmp/cloth_bunny_force_bundle_build_case/force_diagnostic/force_render_bundle.pkl --force-dump-dir tmp/cloth_bunny_force_artifacts_smoke`
+  - `python scripts/build_bunny_collision_force_bundle.py --bundle tmp/cloth_bunny_force_bundle_build_case/force_diagnostic/force_render_bundle.pkl --out-dir tmp/cloth_bunny_collision_bundle_smoke`
 
-## Success Criteria
+## Next Step
 
-- the targeted monolithic bridge file shrinks materially
-- pure helper logic moves into a named module with a coherent responsibility
-- imports/readability improve without changing experiment semantics
-- targeted validation passes
-
-## Open Questions
-
-- which large bridge file should be the second extraction target after the
-  cloth+bunny demo?
-- when should helper modules be promoted from demo-local to tool/core-level?
-
-## Related Pages
-
-- [bunny_penetration_force_diagnostic.md](./bunny_penetration_force_diagnostic.md)
-- [slide_deck_overhaul.md](./slide_deck_overhaul.md)
+Reduce how much force-diagnostic machinery still lives in
+`cloth_bunny/offline.py`, so `runtime.py` and `diagnostics.py` become real
+owners instead of public wrapper surfaces.

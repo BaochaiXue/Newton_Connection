@@ -30,36 +30,39 @@ def main() -> int:
     demos_dir = repo_root / "Newton" / "phystwin_bridge" / "demos"
     sys.path.insert(0, str(demos_dir))
 
-    import demo_cloth_bunny_drop_without_self_contact as demo  # noqa: PLC0415
+    import cloth_bunny.diagnostics as diagnostics  # noqa: PLC0415
+    import cloth_bunny.offline as offline  # noqa: PLC0415
+    import cloth_bunny.outputs as outputs  # noqa: PLC0415
+    import cloth_bunny.runtime as runtime  # noqa: PLC0415
+    import cloth_bunny.scene as scene  # noqa: PLC0415
 
-    argv_backup = sys.argv
-    try:
-        sys.argv = ["run_bunny_force_case.py", *demo_argv]
-        args = demo.parse_args()
-    finally:
-        sys.argv = argv_backup
+    args = offline.parse_legacy_args(demo_argv)
 
-    demo._validate_scaling_args(args)
+    scene.validate_scaling_args(args)
     args.out_dir = args.out_dir.resolve()
     args.out_dir.mkdir(parents=True, exist_ok=True)
     if bool(args.force_diagnostic) and not bool(args.skip_render):
         args.keep_render_frames = True
 
     wp.init()
-    device = demo.newton_import_ir.resolve_device(args.device)
-    raw_ir = demo.load_ir(args.ir)
+    device = offline.newton_import_ir.resolve_device(args.device)
+    raw_ir = scene.load_ir(args.ir)
     if args.auto_set_weight is not None:
-        demo._maybe_autoset_mass_spring_scale(args, raw_ir, target_total_mass=float(args.auto_set_weight))
+        scene.maybe_autoset_mass_spring_scale(
+            args,
+            raw_ir,
+            target_total_mass=float(args.auto_set_weight),
+        )
 
-    ir_obj = demo._copy_object_only_ir(raw_ir, args)
+    ir_obj = scene.copy_object_only_ir(raw_ir, args)
     if "contact_collision_dist" in ir_obj:
         scaled_dist = float(np.asarray(ir_obj["contact_collision_dist"]).ravel()[0]) * float(args.contact_dist_scale)
         ir_obj["contact_collision_dist"] = np.asarray(scaled_dist, dtype=np.float32)
     if not str(args.prefix).endswith("_off"):
         args.prefix = f"{args.prefix}_off"
 
-    model, meta, n_obj = demo.build_model(ir_obj, args, device)
-    sim_data = demo.simulate(model, ir_obj, meta, args, n_obj, device)
+    model, meta, n_obj = scene.build_model(ir_obj, args, device)
+    sim_data = runtime.simulate_rollout(model, ir_obj, meta, args, n_obj, device)
 
     render_sim_data = sim_data
     model_for_io = model
@@ -70,22 +73,29 @@ def main() -> int:
         render_args.force_diagnostic = False
         render_args.stop_after_diagnostic = False
         render_args.parity_check = False
-        model_render, meta_render, n_obj_render = demo.build_model(ir_obj, render_args, device)
-        render_sim_data = demo.simulate(model_render, ir_obj, meta_render, render_args, n_obj_render, device)
+        model_render, meta_render, n_obj_render = scene.build_model(ir_obj, render_args, device)
+        render_sim_data = runtime.simulate_rollout(
+            model_render,
+            ir_obj,
+            meta_render,
+            render_args,
+            n_obj_render,
+            device,
+        )
         render_sim_data["force_diagnostic"] = sim_data.get("force_diagnostic")
         model_for_io = model_render
         meta_for_io = meta_render
         n_obj_for_io = n_obj_render
 
-    scene_npz = demo.save_scene_npz(args, render_sim_data, meta_for_io, n_obj_for_io)
-    detector_npz, detector_summary = demo.save_collision_force_rollout(args, render_sim_data, scene_npz)
+    scene_npz = outputs.save_scene_npz(args, render_sim_data, meta_for_io, n_obj_for_io)
+    detector_npz, detector_summary = outputs.save_collision_force_rollout(args, render_sim_data, scene_npz)
     out_mp4: Path | None = None
     if not bool(args.skip_render):
-        out_mp4 = args.out_dir / f"{args.prefix}_{demo._mass_tag(args.rigid_mass)}.mp4"
+        out_mp4 = args.out_dir / f"{args.prefix}_{scene.mass_tag(args.rigid_mass)}.mp4"
         out_mp4.parent.mkdir(parents=True, exist_ok=True)
-        demo.render_video(model_for_io, render_sim_data, meta_for_io, args, device, out_mp4)
+        offline.render_video(model_for_io, render_sim_data, meta_for_io, args, device, out_mp4)
 
-    summary = demo.build_summary(
+    summary = outputs.build_summary(
         model_for_io,
         args,
         ir_obj,
@@ -96,14 +106,14 @@ def main() -> int:
         particle_contacts_enabled=False,
         disable_particle_contact_kernel=True,
     )
-    summary_path = demo.save_summary_json(args, summary)
+    summary_path = outputs.save_summary_json(args, summary)
 
     force_diagnostic = sim_data.get("force_diagnostic")
     if isinstance(force_diagnostic, dict) and bool(force_diagnostic.get("enabled", False)):
         bundle_path = (
             script_args.bundle_out.expanduser().resolve()
             if script_args.bundle_out is not None
-            else demo._resolve_force_dump_dir(args) / "force_render_bundle.pkl"
+            else diagnostics.resolve_force_dump_dir(args) / "force_render_bundle.pkl"
         )
         bundle_path.parent.mkdir(parents=True, exist_ok=True)
         diag_snapshot = force_diagnostic.get("render_snapshot")

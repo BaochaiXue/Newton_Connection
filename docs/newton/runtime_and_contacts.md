@@ -37,6 +37,19 @@ This matters for:
 - cross-object filtering experiments
 - comparisons against PhysTwin contact behavior
 
+### Native Robot / Deformable Example Caveat
+
+The upstream examples most relevant to this project do not all make the same
+claim.
+
+- `robot_panda_hydro` is the closest robot-side manipulation template
+- `cloth_franka` and `softbody_franka` are most useful for split scheduling and
+  coupling order
+
+That distinction matters because the bridge should not over-claim a staged
+robot/deformable example as if it already proved strict local direct-finger
+robot-table-deformable truth. See `docs/newton/robot_example_patterns.md`.
+
 ### MPM Contact / Coupling
 
 This matters for:

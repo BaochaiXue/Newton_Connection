@@ -16,6 +16,11 @@
 - Committed claim boundary remains:
   - same-case, no-render, apples-to-apples rope replay benchmark
 - The visible-viewer `E1` row is supporting practical context only; it is not the registry-backed promoted scope by itself
+- Latest local refresh candidate:
+  - `results/rope_perf_apples_to_apples_refresh/20260411_221904/`
+- Promotion decision for the 2026-04-11 refresh:
+  - not promoted to `results_meta/`
+  - refreshed numbers reproduced the same conclusion but stayed within the same qualitative band as the 2026-04-01 promoted bundle
 
 ## Last Completed Step
 
@@ -31,7 +36,44 @@
   - `results/rope_perf_apples_to_apples/report/todo2_rope_perf_report.pdf`
 - Release decision:
   - user explicitly requested email send
-  - sending target uses the repo-configured default recipient in `send_pdf_via_yahoo.py`
+  - sending target uses the repo-configured default recipient in `scripts/send_pdf_via_yahoo.py`
+
+## 2026-04-11 Local Refresh Candidate
+
+- Refreshed the same `rope_double_hand` benchmark matrix into:
+  - `results/rope_perf_apples_to_apples_refresh/20260411_221904/`
+- Fixed the rope benchmark harness so PhysTwin stages now run under the expected conda environment:
+  - `scripts/run_rope_perf_apples_to_apples.sh`
+  - `scripts/run_rope_perf_nsight.sh`
+  - new behavior: `PHYSTWIN_ENV` defaults to `phystwin`
+- Refreshed practical local realtime result on `cuda:0`:
+  - Newton `E1` visible viewer remained realtime:
+    - `viewer FPS ≈ 32.02`
+    - `RTF ≈ 1.068x`
+- Refreshed no-render comparison:
+  - Newton `A1` precomputed throughput:
+    - `0.041002 ms/substep`
+    - `RTF ≈ 1.219x`
+  - PhysTwin `B0` headless throughput:
+    - `0.010986 ms/substep`
+    - `RTF ≈ 4.551x`
+  - Newton `A1` remained `3.732x` slower than PhysTwin `B0`
+- Refreshed explanation remained aligned with the promoted 2026-04-01 story:
+  - controller replay overhead is still real:
+    - Newton `A0 -> A1` speedup `≈ 1.732x`
+  - render is still secondary on this rope case:
+    - `E1 / A1 ≈ 1.142x`
+  - collision is still small on the clean rope baseline:
+    - Newton `A3` collision bucket `≈ 0.004787 ms/substep`
+    - PhysTwin `object_collision_flag = False`
+  - the residual gap still points mainly to runtime organization / launch structure after controller precompute
+- Artifact validation result:
+  - ran `python scripts/validate_experiment_artifacts.py results/rope_perf_apples_to_apples_refresh/20260411_221904`
+  - validator failed on `scene_or_rollout`
+  - reason: this benchmark bundle is a multi-stage profiling tree with summaries/logs and no single `scene.npz` or `sim/history/` payload at the root
+- Promotion judgment:
+  - do not replace `results_meta/tasks/rope_perf_apples_to_apples.json`
+  - the refreshed candidate is slower than the 2026-04-01 promoted snapshot, but it does not change the decision-level conclusion
 
 ## 2026-04-01 Profiling Section Rebuild
 
@@ -82,17 +124,24 @@
   - precomputed controller writes as the default replay baseline
   - more batched or more graph-like Newton replay investigation
   - weak-contact profiling as a separate workstream
+- If this refresh needs to become a promoted bundle later:
+  - either extend the artifact contract for multi-stage benchmark bundles
+  - or add an explicit root-level rollout/history pointer that satisfies `validate_experiment_artifacts.py`
 
 ## Blocking Issues
 
 - None for the current benchmark-closeout milestone
 - Remaining work is no longer measurement setup; it is optimization and
   follow-up interpretation
+- The generic artifact validator does not currently pass on this refresh bundle
+  shape because it expects a root `scene.npz` or `sim/history/`
 
 ## Artifact Paths
 
 - Canonical benchmark tree:
   - `results/rope_perf_apples_to_apples/`
+- Local refresh candidate:
+  - `results/rope_perf_apples_to_apples_refresh/20260411_221904/`
 - Committed results metadata:
   - `results_meta/tasks/rope_perf_apples_to_apples.json`
 - Key outputs:
@@ -102,3 +151,7 @@
   - `results/rope_perf_apples_to_apples/notes/conclusions.md`
   - `results/rope_perf_apples_to_apples/notes/nsight.md`
   - `results/rope_perf_apples_to_apples/report/todo2_rope_perf_report.pdf`
+- Local refresh outputs:
+  - `results/rope_perf_apples_to_apples_refresh/20260411_221904/BEST_EVIDENCE.md`
+  - `results/rope_perf_apples_to_apples_refresh/20260411_221904/index.csv`
+  - `results/rope_perf_apples_to_apples_refresh/20260411_221904/notes/conclusions.md`

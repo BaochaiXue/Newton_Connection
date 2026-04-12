@@ -4,8 +4,11 @@ tmp_vis/
 __pycache__/
 *.pyc
 *.npy
+imgui.ini
 send_pdf_via_yahoo.py
 send_pdf_via_yahoo.local.json
+scripts/send_pdf_via_yahoo.py
+scripts/send_pdf_via_yahoo.local.json
  result_for_slides/
 results/
 formal_slide/**/gif/

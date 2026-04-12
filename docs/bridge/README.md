@@ -40,7 +40,9 @@ bridge is where the actual project logic lives.
 - `Newton/phystwin_bridge/demos/bridge_bootstrap.py`
 - `Newton/phystwin_bridge/demos/bridge_shared.py`
 - `Newton/phystwin_bridge/demos/bridge_deformable_common.py`
-- `Newton/phystwin_bridge/demos/cloth_bunny_common.py`
+- `Newton/phystwin_bridge/demos/cloth_bunny/`
+  - canonical cloth+bunny family package
+  - top-level `demo_cloth_bunny_*` and `cloth_bunny_*` files are transition shims
 - `Newton/phystwin_bridge/demos/rope_demo_common.py`
 - `Newton/phystwin_bridge/demos/rollout_storage.py`
 

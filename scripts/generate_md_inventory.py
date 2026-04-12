@@ -10,9 +10,11 @@ from md_truth_inventory_lib import (
     build_inventory,
     deprecation_rows,
     find_orphans,
+    root_allowlist_violations,
     staleness_rows,
     summary_counts,
     task_surface_rows,
+    tracked_root_components,
 )
 
 
@@ -44,13 +46,13 @@ def _render_inventory_md(inventory: list[dict]) -> str:
     lines = _generated_header("# Markdown Inventory")
     lines.extend(
         [
-            "| Path | Classification | Owner | Replacement | Action | Actionable | Indexed | Review | Enforced | Auth Lang | Run IDs | `/home` |",
-            "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+            "| Path | Classification | Owner | Replacement | Action | Actionable | Indexed | Bundle Entry | Review | Enforced | Auth Lang | Run IDs | `/home` |",
+            "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
         ]
     )
     for row in inventory:
         lines.append(
-            "| `{path}` | `{classification}` | `{owner_surface}` | `{canonical_replacement}` | `{action}` | `{actionable_status}` | `{indexed_from_canonical_entrypoint}` | `{review_status}` | `{review_enforced}` | `{contains_authoritative_language}` | `{contains_run_ids}` | `{contains_machine_local_paths}` |".format(
+            "| `{path}` | `{classification}` | `{owner_surface}` | `{canonical_replacement}` | `{action}` | `{actionable_status}` | `{indexed_from_canonical_entrypoint}` | `{approved_bundle_entry}` | `{review_status}` | `{review_enforced}` | `{contains_authoritative_language}` | `{contains_run_ids}` | `{contains_machine_local_paths}` |".format(
                 **row
             )
         )
@@ -90,6 +92,9 @@ def _render_deprecation_md(rows: list[dict]) -> str:
 
 def _render_cleanup_md(inventory: list[dict], orphans: list[dict], deprecations: list[dict]) -> str:
     counts = summary_counts(inventory)
+    root_components = tracked_root_components()
+    root_violations = root_allowlist_violations()
+    bundle_entry_count = sum(1 for row in inventory if row["approved_bundle_entry"])
     lines = _generated_header("# Markdown Cleanup Report")
     lines.extend(["## Classification Counts", ""])
     for key in sorted(counts):
@@ -102,6 +107,8 @@ def _render_cleanup_md(inventory: list[dict], orphans: list[dict], deprecations:
             "- `results_meta/` remains the canonical committed authority for current/promoted result meaning.",
             "- `docs/bridge/current_status.md` is expected to stay a dashboard, not a result ledger.",
             "- `tasks/spec/`, `tasks/implement/`, `tasks/status/`, and `plans/active/` are active-only neighborhoods; historical execution artifacts belong under `tasks/history/` and `plans/completed/`.",
+            "- Root-level tracked files are expected to stay on a small allowlist; reusable scripts/config examples belong under `scripts/`.",
+            "- Deep bundle Markdown under `results/` and `Newton/phystwin_bridge/results/` is indexed only when it is an approved entry surface.",
             "- `python scripts/generate_md_inventory.py` is the only public inventory-regeneration command.",
             "",
             "## Surfaces Requiring Action",
@@ -121,6 +128,25 @@ def _render_cleanup_md(inventory: list[dict], orphans: list[dict], deprecations:
             "",
             f"- deprecated/historical/local-only surfaces tracked: `{len(deprecations)}`.",
             f"- orphan surfaces tracked: `{len(orphans)}`.",
+            "",
+            "## Root Allowlist Audit",
+            "",
+            f"- tracked root components seen: `{len(root_components)}`.",
+            "",
+        ]
+    )
+    if root_violations:
+        for component in root_violations:
+            lines.append(f"- root allowlist violation: `{component}`")
+    else:
+        lines.append("- no tracked root components currently violate the allowlist.")
+    lines.extend(
+        [
+            "",
+            "## Bundle Entry Policy",
+            "",
+            f"- approved bundle entry surfaces currently indexed: `{bundle_entry_count}`.",
+            "- deeper run-local Markdown remains outside the harness unless it is explicitly approved as an entry surface.",
             "",
             "## Workflow Usage Status",
             "",
@@ -165,25 +191,26 @@ def _render_task_surface_md(rows: list[dict]) -> str:
     lines.extend(
         [
             "This matrix shows whether each active task has a full chain, registry backing, and real contract/handoff artifacts.",
+            "Workflow Class marks the repo's explicit required-workflow tasks; `Contract Req` and `Handoff Req` show where missing artifacts should be treated as a harness error.",
             "Template files alone do not count as workflow usage.",
             "",
         ]
     )
     lines.extend(
         [
-            "| Task | Task Page | Spec | Plan | Implement | Status | Contract | Handoff | Registry | Registry State | Current Run |",
-            "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+            "| Task | Workflow Class | Task Page | Spec | Plan | Implement | Status | Contract Req | Contract | Handoff Req | Handoff | Registry | Registry State | Current Run |",
+            "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
         ]
     )
     for row in rows:
         lines.append(
-            "| `{task_slug}` | `{task_page}` | `{spec}` | `{plan}` | `{implement}` | `{status}` | `{contract}` | `{handoff}` | `{registry_backed}` | `{registry_state}` | `{registry_run_id}` |".format(
+            "| `{task_slug}` | `{workflow_class}` | `{task_page}` | `{spec}` | `{plan}` | `{implement}` | `{status}` | `{contract_required}` | `{contract}` | `{handoff_required}` | `{handoff}` | `{registry_backed}` | `{registry_state}` | `{registry_run_id}` |".format(
                 **row
             )
         )
         if row["contract_paths"] or row["handoff_paths"]:
             lines.append(
-                f"|  |  |  |  |  |  | `{row['contract_paths'] or '-'}` | `{row['handoff_paths'] or '-'}` |  |  |  |"
+                f"|  |  |  |  |  |  |  | `{row['contract_paths'] or '-'}` |  | `{row['handoff_paths'] or '-'}` |  |  |  |  |"
             )
     return "\n".join(lines)
 

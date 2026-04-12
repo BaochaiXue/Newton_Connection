@@ -1,10 +1,10 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `task_index`
-> last_reviewed: `2026-04-09`
+> last_reviewed: `2026-04-11`
 > review_interval: `30d`
-> update_rule: `Update when the meeting-level TODO list or its task-page routing changes.`
-> notes: User-provided replacement TODO list for the current meeting cycle. Keep this page short and route detail into the linked task pages.
+> update_rule: `Update when the meeting-level TODO list, active task routing, or archive-routing rule changes.`
+> notes: Short meeting map only. Route active detail into the task pages and route history through the archive hub instead of inline historical lists.
 
 # TODO List (Meeting 2026-04-01)
 
@@ -12,6 +12,9 @@ Detailed task truth lives under `docs/bridge/tasks/` and the execution chain.
 
 Primary task index:
 - [docs/bridge/tasks/README.md](./docs/bridge/tasks/README.md)
+
+Archive hub for historical task pages:
+- [docs/archive/tasks/README.md](./docs/archive/tasks/README.md)
 
 Retired this cycle:
 - robot + deformable PS-object demo line

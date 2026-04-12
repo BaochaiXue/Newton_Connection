@@ -3,8 +3,8 @@
 > owner_surface: `bridge_control_plane`
 > last_reviewed: `2026-04-11`
 > review_interval: `7d`
-> update_rule: `Update when active workstreams, blockers, or promoted result meaning changes. Keep detailed run notes in task status pages and results_meta.`
-> notes: Short operational dashboard only. Do not turn this page into a run ledger or changelog dump.
+> update_rule: `Update when active workstreams, blockers, promoted result meaning, or control-plane routing rules change. Keep detailed run notes in task status pages and results_meta.`
+> notes: Short operational dashboard only. Keep this page map-like: current work, blockers, promoted surfaces, and where to go next.
 
 # Current Status
 
@@ -22,8 +22,10 @@ Detailed result meaning belongs in:
 
 - `bridge_code_structure_cleanup`
   - keep the bridge layer easier to navigate by extracting bounded helper modules without changing current experiment semantics
+- `newton_robot_examples_kb_update`
+  - move official Newton robot-example lessons into `docs/newton/` so future agents do not have to recover them from retired robot diagnostics
 - `markdown_harness_maintenance_upgrade`
-  - keep the markdown/control-plane harness fail-closed: active-vs-historical separation, dashboard scope, local-only result wording, and lint enforcement
+  - keep the harness fail-closed: progressive disclosure, archive-hub routing, root hygiene, local-only result wording, and write-strict/read-loose hook behavior
 - `slide_deck_overhaul`
   - keep the 2026-04-01 meeting deck short, evidence-first, and source-grounded
 - `meeting_20260408_recall_part`
@@ -32,7 +34,7 @@ Detailed result meaning belongs in:
   - keep the rope replay benchmark story clean: fair no-render baseline first, optimization implications second
 - `self_collision_transfer`
   - preserve the fair `2 x 2` cloth+ground matrix while strict parity remains blocked
-- supporting workflow tasks
+- supporting tasks
   - `video_presentation_quality`
   - `data_collection_protocol`
   - `fast_foundation_stereo`
@@ -70,6 +72,16 @@ The full active task map lives in:
 
 Use those indexes for the complete active set. Keep this page as the short
 dashboard, not a duplicate task ledger.
+
+## History Routing
+
+When historical context is needed, start from:
+
+- `docs/archive/tasks/README.md`
+- `docs/decisions/2026-04-09_robot_ps_interaction_retirement.md`
+
+Do not use deep local bundle README files or dated status notes as the first
+entrypoint for current work.
 
 ## Authority Rule
 

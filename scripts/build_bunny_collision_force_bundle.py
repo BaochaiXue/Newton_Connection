@@ -92,7 +92,8 @@ def main() -> int:
     repo_root = Path(__file__).resolve().parents[1]
     demos_dir = repo_root / "Newton" / "phystwin_bridge" / "demos"
     sys.path.insert(0, str(demos_dir))
-    import demo_cloth_bunny_drop_without_self_contact as demo  # noqa: PLC0415
+    import cloth_bunny.diagnostics as diagnostics  # noqa: PLC0415
+    import cloth_bunny.scene as scene  # noqa: PLC0415
 
     with bundle_path.open("rb") as handle:
         bundle = pickle.load(handle)
@@ -100,13 +101,13 @@ def main() -> int:
     run_args = bundle["args"]
     ir_obj = bundle["ir_obj"]
     sim_data = bundle["render_sim_data"]
-    device = demo.newton_import_ir.resolve_device(str(bundle["device"]))
+    device = scene.newton_import_ir.resolve_device(str(bundle["device"]))
     render_frames_dir_raw = str(bundle.get("render_frames_dir", "") or "").strip()
     render_frames_dir = Path(render_frames_dir_raw).expanduser().resolve() if render_frames_dir_raw else None
 
     wp.init()
-    model, meta, n_obj = demo.build_model(ir_obj, run_args, device)
-    explicit_context = demo._make_explicit_force_snapshot_context(
+    model, meta, n_obj = scene.build_model(ir_obj, run_args, device)
+    explicit_context = diagnostics.make_explicit_force_snapshot_context(
         model=model,
         ir_obj=ir_obj,
         args=run_args,
@@ -115,12 +116,12 @@ def main() -> int:
     )
     target_only_args = copy.deepcopy(run_args)
     target_only_args.add_ground_plane = False
-    target_model, target_meta, target_n_obj = demo.build_model(ir_obj, target_only_args, device)
+    target_model, target_meta, target_n_obj = scene.build_model(ir_obj, target_only_args, device)
     if int(target_n_obj) != int(n_obj):
         raise RuntimeError(
             f"target-only model particle count mismatch: target={target_n_obj} full={n_obj}"
         )
-    target_only_context = demo._make_explicit_force_snapshot_context(
+    target_only_context = diagnostics.make_explicit_force_snapshot_context(
         model=target_model,
         ir_obj=ir_obj,
         args=target_only_args,
@@ -134,13 +135,17 @@ def main() -> int:
     body_qd_all = np.asarray(sim_data["body_qd"], dtype=np.float32)
     sim_frame_dt = float(sim_data["sim_dt"]) * float(sim_data["substeps"])
     n_frames = int(particle_q_all.shape[0])
-    render_indices = np.asarray(sim_data.get("render_output_frame_indices"), dtype=np.int32).reshape(-1)
-    if render_indices.size == 0:
-        raise RuntimeError(f"{bundle_path} is missing render_output_frame_indices")
+    render_indices_raw = sim_data.get("render_output_frame_indices")
+    if render_indices_raw is None:
+        render_indices = np.arange(n_frames, dtype=np.int32)
+    else:
+        render_indices = np.asarray(render_indices_raw, dtype=np.int32).reshape(-1)
+        if render_indices.size == 0:
+            render_indices = np.arange(n_frames, dtype=np.int32)
 
     snapshots: list[dict[str, Any]] = []
     for frame_idx in range(n_frames):
-        snapshot = demo._capture_force_snapshot_from_explicit_state(
+        snapshot = diagnostics.capture_force_snapshot_from_explicit_state(
             model=model,
             meta=meta,
             ir_obj=ir_obj,
@@ -157,7 +162,7 @@ def main() -> int:
             body_qd=body_qd_all[frame_idx],
             explicit_context=explicit_context,
         )
-        target_only_snapshot = demo._capture_force_snapshot_from_explicit_state(
+        target_only_snapshot = diagnostics.capture_force_snapshot_from_explicit_state(
             model=target_model,
             meta=target_meta,
             ir_obj=ir_obj,

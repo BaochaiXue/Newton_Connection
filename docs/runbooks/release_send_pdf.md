@@ -6,7 +6,11 @@ External sending is a release step, not a build step.
 
 ## Sensitive Script
 
-- `send_pdf_via_yahoo.py`
+- `scripts/send_pdf_via_yahoo.py`
+
+Tracked example config:
+
+- `scripts/send_pdf_via_yahoo.local.example.json`
 
 ## Rule
 

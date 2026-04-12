@@ -44,6 +44,9 @@ Assembles a specific scene and research question:
 Main files:
 
 - `Newton/phystwin_bridge/demos/*.py`
+- `Newton/phystwin_bridge/demos/cloth_bunny/`
+  - canonical cloth+bunny package
+  - top-level cloth+bunny files are retained only as compatibility wrappers
 
 ### Diagnostics Layer
 
@@ -58,6 +61,8 @@ Main files:
 
 - `Newton/phystwin_bridge/demos/demo_cloth_bunny_drop_without_self_contact.py`
 - `Newton/phystwin_bridge/demos/demo_cloth_bunny_realtime_viewer.py`
+- `Newton/phystwin_bridge/demos/cloth_bunny/offline.py`
+- `Newton/phystwin_bridge/demos/cloth_bunny/example.py`
 - `Newton/phystwin_bridge/demos/rollout_storage.py`
 
 ## Core Bridge Design Choices

@@ -7,11 +7,18 @@ import sys
 
 
 DENY_PATTERNS: list[tuple[str, str]] = [
-    (r"\bsend_pdf_via_yahoo\.py\b", "External send is release-gated; do not send email without explicit human approval."),
+    (
+        r"^\s*(?:(?:python|python3|bash|sh)\b.*\bsend_pdf_via_yahoo\.py\b|(?:\./|scripts/)?send_pdf_via_yahoo\.py\b)",
+        "External send is release-gated; do not send email without explicit human approval.",
+    ),
     (r"\bgit\s+push\s+--force\b", "Force-push is blocked by repo policy."),
     (r"\brm\s+-rf\b", "Recursive deletion is blocked by repo policy."),
     (
-        r"\b(find|rm)\b.*(formal_slide|result_for_slides)\b",
+        r"\brm\b.*\b(formal_slide|result_for_slides)\b",
+        "Do not bulk-delete generated deliverables without an explicit cleanup task.",
+    ),
+    (
+        r"\bfind\b.*\b(formal_slide|result_for_slides)\b.*-delete\b",
         "Do not bulk-delete generated deliverables without an explicit cleanup task.",
     ),
 ]

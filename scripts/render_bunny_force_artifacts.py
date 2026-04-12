@@ -29,7 +29,8 @@ def main() -> int:
     demos_dir = repo_root / "Newton" / "phystwin_bridge" / "demos"
     sys.path.insert(0, str(demos_dir))
 
-    import demo_cloth_bunny_drop_without_self_contact as demo  # noqa: PLC0415
+    import cloth_bunny.diagnostics as diagnostics  # noqa: PLC0415
+    import cloth_bunny.scene as scene  # noqa: PLC0415
 
     with bundle_path.open("rb") as handle:
         bundle = pickle.load(handle)
@@ -56,8 +57,8 @@ def main() -> int:
                 base_video_path = inferred
 
     wp.init()
-    resolved_device = demo.newton_import_ir.resolve_device(device)
-    model, meta, _ = demo.build_model(ir_obj, render_args, resolved_device)
+    resolved_device = scene.newton_import_ir.resolve_device(device)
+    model, meta, _ = scene.build_model(ir_obj, render_args, resolved_device)
     try:
         if render_sim_data is not None and trigger_substep_global >= 0:
             n_obj = int(np.asarray(render_sim_data["particle_q_object"]).shape[1])
@@ -65,7 +66,7 @@ def main() -> int:
                 "[render_bunny_force_artifacts] building full-process force sequence from rollout states...",
                 flush=True,
             )
-            sequence_snapshots = demo._build_full_process_force_sequence_from_rollout(
+            sequence_snapshots = diagnostics.build_full_process_force_sequence_from_rollout(
                 model=model,
                 meta=meta,
                 ir_obj=ir_obj,
@@ -85,7 +86,7 @@ def main() -> int:
                 f"[render_bunny_force_artifacts] fallback sequence snapshots={len(sequence_snapshots)} trigger={trigger_substep_global}",
                 flush=True,
             )
-        demo._finalize_force_diagnostic_artifacts(
+        diagnostics.finalize_force_diagnostic_artifacts(
             model,
             meta,
             render_args,

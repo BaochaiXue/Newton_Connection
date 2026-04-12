@@ -25,6 +25,7 @@ changes should not be documented here as if they were Newton core changes.
 
 - [architecture.md](./architecture.md)
 - [runtime_and_contacts.md](./runtime_and_contacts.md)
+- [robot_example_patterns.md](./robot_example_patterns.md)
 
 ## Why This Section Exists
 

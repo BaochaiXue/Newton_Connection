@@ -19,9 +19,17 @@ about them.
 
 Main scripts:
 
+- canonical package: `Newton/phystwin_bridge/demos/cloth_bunny/`
 - `demo_cloth_bunny_drop_without_self_contact.py`
 - `demo_cloth_box_drop_with_self_contact.py`
 - `demo_cloth_bunny_realtime_viewer.py`
+
+Layout note:
+
+- `cloth_bunny/offline.py` and `cloth_bunny/example.py` are now the canonical
+  cloth+bunny entrypoints
+- the old top-level cloth+bunny files remain as transition shims for scripts
+  and muscle memory
 
 Main questions:
 
@@ -74,6 +82,7 @@ Main questions:
 Current main script:
 
 - `demo_cloth_bunny_drop_without_self_contact.py`
+- canonical package path: `Newton/phystwin_bridge/demos/cloth_bunny/diagnostics.py`
 
 Current purpose:
 

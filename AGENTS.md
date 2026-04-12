@@ -34,6 +34,27 @@ For any non-trivial task, read in this order:
 Do not dump all project knowledge into this file. Put durable explanations in
 `docs/`.
 
+## Progressive Disclosure
+
+The canonical navigation contract is:
+
+1. `AGENTS.md`
+2. `docs/README.md`
+3. `TODO.md`
+4. `docs/bridge/tasks/README.md`
+5. the active task page
+6. the execution chain under `tasks/` and `plans/`
+
+Do not start a fresh investigation from:
+
+- `tasks/history/`
+- `plans/completed/`
+- deep local bundle `README.md` files under `results/`
+- deep local bundle `README.md` files under `Newton/phystwin_bridge/results/`
+
+Use `docs/archive/tasks/README.md` as the archive hub when historical context is
+needed.
+
 ## Repo-Native Harness
 
 This repo is organized so Codex can work as an engineering agent, not only a
@@ -54,12 +75,25 @@ chat window.
 - `tasks/spec/` stores task specs.
 - `tasks/implement/` stores execution runbooks.
 - `tasks/status/` stores task-local progress logs.
+- `tasks/contracts/` stores milestone-level done contracts for tasks that need pre-agreed acceptance.
+- `tasks/handoffs/` stores structured resume state for tasks that should not rely on hidden chat context.
 
 ### Tooling Layer
 
 - `scripts/` contains canonical wrapper scripts for common workflows.
 - Prefer wrapper scripts over ad hoc shell commands when a wrapper exists.
 - If no wrapper exists and the task will likely repeat, create one.
+
+### Root Hygiene
+
+- Keep root-level tracked files limited to real repo entry surfaces and stable
+  top-level configuration.
+- Reusable operational scripts and example configs belong in `scripts/`, not at
+  repo root.
+- Runtime-local state such as viewer layout files should stay ignored or be
+  marked explicitly local-only, not treated as canonical repo surfaces.
+- If root clutter starts confusing agents, tighten the harness instead of
+  adding another root-level note.
 
 ### Evaluation Layer
 
@@ -80,6 +114,20 @@ For any long-running or multi-step task:
 4. Run validation before claiming success.
 5. Update status docs after each meaningful checkpoint.
 6. Prefer committing only after the task state is documented.
+
+For the repo's required-workflow task class, also:
+
+7. Create or refresh `tasks/contracts/<task>.md` before major implementation.
+8. Create or refresh `tasks/handoffs/<task>.md` when the task should survive a context reset or multi-session handoff.
+
+Current required-workflow exemplars:
+
+- `markdown_harness_maintenance_upgrade`
+- `slide_deck_overhaul`
+- `bridge_code_structure_cleanup`
+- `bunny_penetration_force_diagnostic`
+- `rope_perf_apples_to_apples`
+- `self_collision_transfer`
 
 ## User-Facing Reporting
 

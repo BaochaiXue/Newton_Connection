@@ -14,37 +14,69 @@ This maintenance line is active and currently healthy:
 
 - the robot + deformable line stays retired as historical context only
 - active task/status surfaces are short enough to function as live control-plane pages
-- the maintenance queue is quiet instead of permanently noisy
+- required-workflow tasks now have explicit contract/handoff coverage
+- active entrypoints now route history through archive hubs instead of inline historical ledgers
+- root-level tracked entry surfaces are cleaner and reusable scripts/config examples now live under `scripts/`
+- read-only inspection of watched harness paths now succeeds while risky release/generation flows remain guarded
 - harness lint currently passes
 
 ## What Changed In The Latest Pass
 
-- moved long self-collision scratch notes into:
-  - `tasks/history/status/self_collision_transfer_diagnostic_log_20260401_20260408.md`
-- moved long bunny rollout chronology into:
-  - `tasks/history/status/bunny_penetration_force_diagnostic_log_20260401.md`
-- rewrote the active self-collision and bunny surfaces so they now report:
-  - current state
-  - last completed step
-  - next step
-  - current artifact paths
-- cleaned the generated-doc story so the current maintenance path points only at
-  the `md_*` reports
-- wrapped the long review-PDF command in `tasks/implement/slide_deck_overhaul.md`
-- narrowed `md_staleness_report` so historical archive length no longer keeps
-  the queue permanently red
+- refreshed the canonical markdown-harness task chain so it now explicitly
+  covers:
+  - progressive disclosure
+  - root hygiene
+  - approved deep-bundle entry surfaces
+  - write-strict/read-loose hook semantics
+- rewrote the live entrypoints so they behave more like maps:
+  - `AGENTS.md`
+  - `TODO.md`
+  - `docs/bridge/tasks/README.md`
+  - `docs/bridge/current_status.md`
+  - `tasks/README.md`
+- compressed archive visibility in the active task index:
+  - active entrypoints now link to `docs/archive/tasks/README.md` and the
+    retirement decision instead of enumerating archived task pages inline
+- moved reusable root-level utilities under `scripts/`:
+  - `scripts/render_answer_pdf.py`
+  - `scripts/run_phystwin_newton_pipeline.sh`
+  - `scripts/send_pdf_via_yahoo.local.example.json`
+  - local-only:
+    - `scripts/send_pdf_via_yahoo.py`
+    - `scripts/send_pdf_via_yahoo.local.json`
+- removed `imgui.ini` from tracked repo state and kept it as ignored local
+  runtime state
+- tightened hook behavior:
+  - read-only inspection of watched harness paths now passes
+  - direct execution of `scripts/send_pdf_via_yahoo.py` remains blocked
+  - generation / validation flows still emit follow-up bookkeeping guidance
+- extended the inventory/lint story:
+  - `md_inventory.md` now exposes a `Bundle Entry` column
+  - `md_cleanup_report.md` now audits root allowlist compliance
+  - `md_cleanup_report.md` now records the approved bundle-entry policy
+  - `scripts/lint_harness_consistency.py` now fails on:
+    - inline archive leakage from active indexes
+    - dated changelog sections in `current_status.md`
+    - tracked root components outside the allowlist
+    - unapproved deep-bundle Markdown entering the harness
 
 ## Problem Solved
 
-- active task/status pages no longer masquerade as scratch notebooks
-- the current generated maintenance reports now reflect the real day-to-day path
-- the maintenance queue is quiet enough to trust
+- active entrypoints no longer compete with long historical file lists
+- root-level reusable tools no longer masquerade as repo entry surfaces
+- hooks no longer confuse read-only inspection with risky side effects
+- generated ledgers now explain both root allowlist policy and deep-bundle
+  quarantine instead of only classifying Markdown in isolation
 
 ## Findings / Conclusions
 
-- the repo did not need another harness; it needed active surfaces to stop absorbing historical detail
-- maintenance reports are only useful when historical bulk is pushed out of the live control plane
-- once a generated ledger's role has been absorbed by the current `md_*` reports, it should be retired instead of kept as a parallel maintenance surface
+- the repo still did not need another harness; it needed stronger progressive
+  disclosure inside the existing one
+- archive hubs work better than inline historical lists for agent navigation
+- root clutter is a harness problem, not only an aesthetics problem
+- deep bundle trees can stay in place as long as only a small approved entry set
+  is indexed into the control plane
+- hook policy has to reason about actions, not only path names
 
 ## GIF / Artifact Paths To Review
 
@@ -52,18 +84,20 @@ This maintenance line is active and currently healthy:
 - main evidence to inspect:
   - `docs/bridge/current_status.md`
   - `docs/bridge/tasks/README.md`
-  - `docs/archive/tasks/robot_rope_franka_native_v2.md`
-  - `docs/archive/tasks/robot_rope_franka_split_v3.md`
-  - `docs/archive/tasks/remote_interaction_root_cause.md`
+  - `docs/generated/md_inventory.md`
+  - `docs/generated/md_cleanup_report.md`
+  - `.codex/hooks/pre_tool_use_policy.py`
+  - `.codex/hooks/post_tool_use_review.py`
 
 ## Next Step
 
-- keep trimming or archiving any future robot/predecessor branch that stops
-  driving the active task map
-- keep review-age cleanup focused on the narrowed high-signal queue instead of
-  reopening broad structural cleanup
-- if the project reopens robot + deformable work later, it must start from a
-  new decision-bound task chain instead of reviving the retired demo surfaces
+- keep future historical routing compressed to archive hubs instead of
+  re-expanding live indexes
+- keep new root-level utilities out of repo root unless they are true entry
+  surfaces
+- if a new local bundle Markdown file needs harness visibility, add it
+  explicitly as an approved entry surface instead of letting deep README sprawl
+  leak back in
 
 ## Blocking Issues
 
@@ -72,8 +106,12 @@ This maintenance line is active and currently healthy:
 
 ## Validation
 
-- `python scripts/sync_results_registry.py`
 - `python scripts/generate_md_inventory.py`
 - `python scripts/lint_harness_consistency.py`
+- `head -n 6 docs/bridge/current_status.md`
+- `head -n 6 scripts/send_pdf_via_yahoo.py`
+- `scripts/send_pdf_via_yahoo.py --help`
 - `python -m py_compile .codex/hooks/session_start.py .codex/hooks/post_tool_use_review.py .codex/hooks/stop_continue.py`
+- `python -m py_compile .codex/hooks/pre_tool_use_policy.py`
+- `python -m py_compile scripts/md_truth_inventory_lib.py scripts/generate_md_inventory.py scripts/lint_harness_consistency.py`
 - current result after this pass: `PASS`

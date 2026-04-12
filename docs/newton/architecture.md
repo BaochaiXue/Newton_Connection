@@ -37,6 +37,10 @@ Examples under:
 
 - `Newton/newton/newton/examples/`
 
+Project reading aid:
+
+- `docs/newton/robot_example_patterns.md`
+
 These are useful as reference patterns for supported native workflows.
 
 ## Newton Concepts Most Relevant To This Project

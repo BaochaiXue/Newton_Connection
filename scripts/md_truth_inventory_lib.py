@@ -3,7 +3,9 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 from datetime import date
+from fnmatch import fnmatch
 from pathlib import Path
 
 
@@ -77,6 +79,50 @@ EXTRA_CONTROL_GLOBS = [
     "results/native_robot_rope_drop_release/runs/*/README.md",
     "results/robot_deformable_demo/runs/*/README.md",
 ]
+
+APPROVED_BUNDLE_ENTRY_SURFACES = {
+    "results/README.md",
+    "results/bunny_force_visualization/README.md",
+    "results/bunny_force_visualization/INDEX.md",
+    "results/bunny_force_visualization/QA_WORKFLOW.md",
+    "results/bunny_force_visualization/VERDICT_TEMPLATE.md",
+    "results/bunny_force_visualization/archive/README.md",
+    "results/native_robot_rope_drop_release/README.md",
+    "results/native_robot_rope_drop_release/BEST_RUN.md",
+    "results/native_robot_rope_drop_release/SLIDE_READY.md",
+    "results/robot_deformable_demo/README.md",
+    "results/robot_deformable_demo/BEST_RUN.md",
+    "results/robot_deformable_demo/LEGACY_CANDIDATES.md",
+    "results/robot_deformable_demo/SLIDE_READY.md",
+    "results/robot_deformable_demo/runs/README.md",
+    "results/rope_perf_apples_to_apples/README.md",
+    "results/rope_perf_apples_to_apples/BEST_EVIDENCE.md",
+    "Newton/phystwin_bridge/results/final_self_collision_campaign_20260330_205935_4fdef39/README.md",
+    "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/README.md",
+    "Newton/phystwin_bridge/results/final_self_collision_campaign_20260331_033636_533f3d0/FINAL_STATUS.md",
+    "Newton/phystwin_bridge/results/robot_rope_franka/README.md",
+    "Newton/phystwin_bridge/results/robot_rope_franka/BEST_RUN/README.md",
+}
+
+APPROVED_BUNDLE_ENTRY_GLOBS = tuple(EXTRA_CONTROL_GLOBS)
+
+ROOT_ALLOWED_TRACKED_COMPONENTS = {
+    ".agents",
+    ".codex",
+    ".gitignore",
+    ".gitmodules",
+    "AGENTS.md",
+    "Newton",
+    "PhysTwin",
+    "TODO.md",
+    "diagnostics",
+    "docs",
+    "formal_slide",
+    "plans",
+    "results_meta",
+    "scripts",
+    "tasks",
+}
 
 GENERATED_TARGETS = [
     ROOT / "docs/generated/md_inventory.md",
@@ -246,6 +292,18 @@ ENTRYPOINTS = {
     "docs/generated/README.md",
 }
 
+WORKFLOW_CLASS = {
+    "markdown_harness_maintenance_upgrade": "high_risk_multi_session_maintenance",
+    "slide_deck_overhaul": "meeting_facing_release",
+    "bridge_code_structure_cleanup": "multi_session_structural_refactor",
+    "bunny_penetration_force_diagnostic": "result_bearing_visual_evidence",
+    "rope_perf_apples_to_apples": "result_bearing_benchmark",
+    "self_collision_transfer": "blocked_result_bearing",
+}
+
+CONTRACT_REQUIRED_TASKS = set(WORKFLOW_CLASS)
+HANDOFF_REQUIRED_TASKS = set(WORKFLOW_CLASS)
+
 ABSOLUTE_PATH_RE = re.compile(r"(^|[^A-Za-z])(/home/[^\s`'\"<>()]+)")
 AUTHORITATIVE_WORD_RE = re.compile(
     r"\b(authoritative|current|latest|best run|best|promoted|final|canonical|source of truth)\b",
@@ -320,6 +378,35 @@ def _iter_extra_glob_paths() -> list[Path]:
             seen.add(rel)
             out.append(path)
     return out
+
+
+def is_approved_bundle_entry(rel: str) -> bool:
+    if rel in APPROVED_BUNDLE_ENTRY_SURFACES:
+        return True
+    return any(fnmatch(rel, pattern) for pattern in APPROVED_BUNDLE_ENTRY_GLOBS)
+
+
+def tracked_root_components() -> list[str]:
+    try:
+        result = subprocess.run(
+            ["git", "ls-files"],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except Exception:
+        return []
+    components = {
+        line.split("/", 1)[0]
+        for line in result.stdout.splitlines()
+        if line.strip() and (ROOT / line).exists()
+    }
+    return sorted(components)
+
+
+def root_allowlist_violations() -> list[str]:
+    return [component for component in tracked_root_components() if component not in ROOT_ALLOWED_TRACKED_COMPONENTS]
 
 
 def iter_control_plane_markdown() -> list[Path]:
@@ -672,6 +759,7 @@ def build_inventory() -> list[dict]:
                 "metadata_review_interval": meta.get("review_interval", ""),
                 "metadata_update_rule": meta.get("update_rule", ""),
                 "metadata_notes": meta.get("notes", ""),
+                "approved_bundle_entry": is_approved_bundle_entry(rel),
             }
         )
     row_map = {row["path"]: row for row in rows}
@@ -751,6 +839,9 @@ def task_surface_rows() -> list[dict]:
         contract_files = [path for path in contract_files if path.name != "_contract_template.md"]
         handoff_files = sorted((ROOT / "tasks/handoffs").glob(f"{slug}*.md"))
         handoff_files = [path for path in handoff_files if path.name != "_handoff_template.md"]
+        workflow_class = WORKFLOW_CLASS.get(slug, "")
+        contract_required = slug in CONTRACT_REQUIRED_TASKS
+        handoff_required = slug in HANDOFF_REQUIRED_TASKS
         rows.append(
             {
                 "task_slug": slug,
@@ -761,6 +852,11 @@ def task_surface_rows() -> list[dict]:
                 "status": status.exists(),
                 "contract": bool(contract_files),
                 "handoff": bool(handoff_files),
+                "workflow_class": workflow_class,
+                "contract_required": contract_required,
+                "handoff_required": handoff_required,
+                "contract_ok": (not contract_required) or bool(contract_files),
+                "handoff_ok": (not handoff_required) or bool(handoff_files),
                 "contract_paths": ", ".join(_relative(path) for path in contract_files),
                 "handoff_paths": ", ".join(_relative(path) for path in handoff_files),
                 "registry_backed": bool(registry_entry),

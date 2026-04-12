@@ -7,7 +7,16 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from md_truth_inventory_lib import ROOT, PUBLIC_GENERATOR_CMD, active_task_slugs, build_inventory
+from md_truth_inventory_lib import (
+    ROOT,
+    PUBLIC_GENERATOR_CMD,
+    CONTRACT_REQUIRED_TASKS,
+    HANDOFF_REQUIRED_TASKS,
+    active_task_slugs,
+    build_inventory,
+    is_approved_bundle_entry,
+    root_allowlist_violations,
+)
 
 
 TASK_PAGE_DIR = ROOT / "docs/bridge/tasks"
@@ -172,15 +181,36 @@ def _issues_from_active_task_chain(active_slugs: list[str]) -> list[str]:
     return issues
 
 
+def _issues_from_workflow_requirements(active_slugs: list[str]) -> list[str]:
+    issues: list[str] = []
+    for slug in active_slugs:
+        if slug in CONTRACT_REQUIRED_TASKS and not (ROOT / f"tasks/contracts/{slug}.md").exists():
+            issues.append(f"required-workflow task `{slug}` is missing tasks/contracts/{slug}.md")
+        if slug in HANDOFF_REQUIRED_TASKS and not (ROOT / f"tasks/handoffs/{slug}.md").exists():
+            issues.append(f"required-workflow task `{slug}` is missing tasks/handoffs/{slug}.md")
+    return issues
+
+
 def _issues_from_task_index(active_slugs: list[str]) -> list[str]:
     issues: list[str] = []
     text = TASKS_README.read_text(encoding="utf-8", errors="ignore")
-    if "harness_engineering_upgrade.md" in text.split("## One-Off / Historical Task Records")[0]:
+    active_only = text.split("## Historical / Archive Routing")[0]
+    if "harness_engineering_upgrade.md" in active_only:
         issues.append("docs/bridge/tasks/README.md still lists `harness_engineering_upgrade` as active")
-    if "markdown_truthfulness_cleanup.md" in text.split("## One-Off / Historical Task Records")[0]:
+    if "markdown_truthfulness_cleanup.md" in active_only:
         issues.append("docs/bridge/tasks/README.md still lists `markdown_truthfulness_cleanup` as active")
     if "markdown_harness_maintenance_upgrade.md" not in text:
         issues.append("docs/bridge/tasks/README.md does not list `markdown_harness_maintenance_upgrade`")
+    archive_links = [
+        link
+        for link in re.findall(r"\.\./\.\./archive/tasks/([^)]+\.md)", text)
+        if link != "README.md"
+    ]
+    if archive_links:
+        issues.append(
+            "docs/bridge/tasks/README.md should route history via docs/archive/tasks/README.md instead of inline archive links: "
+            + ", ".join(sorted(archive_links))
+        )
     return issues
 
 
@@ -204,6 +234,8 @@ def _issues_from_current_status(fresh_inventory: list[dict[str, Any]], registry_
     line_count = len(text.splitlines())
     if line_count > 140:
         issues.append(f"current_status.md is too long for a dashboard: {line_count} lines")
+    if re.search(r"^##\s+20\d{2}-\d{2}-\d{2}", text, flags=re.MULTILINE):
+        issues.append("current_status.md contains dated changelog-style sections; move those details into task status pages")
     if "results_meta/INDEX.md" not in text or "results_meta/LATEST.md" not in text:
         issues.append("current_status.md must point readers to results_meta/INDEX.md and results_meta/LATEST.md")
     missing_slugs = [slug for slug in active_task_slugs() if f"`{slug}`" not in text]
@@ -223,6 +255,26 @@ def _issues_from_current_status(fresh_inventory: list[dict[str, Any]], registry_
     fresh_row = next((row for row in fresh_inventory if row["path"] == "docs/bridge/current_status.md"), None)
     if fresh_row and fresh_row["overgrown_for_role"]:
         issues.append("current_status.md is still flagged as overgrown in the fresh inventory")
+    return issues
+
+
+def _issues_from_root_allowlist() -> list[str]:
+    return [f"tracked root component is outside the root allowlist: {component}" for component in root_allowlist_violations()]
+
+
+def _issues_from_bundle_entry_policy(fresh_inventory: list[dict[str, Any]]) -> list[str]:
+    issues: list[str] = []
+    for row in fresh_inventory:
+        rel = row["path"]
+        if not rel.startswith(("results/", "Newton/phystwin_bridge/results/")):
+            continue
+        if not is_approved_bundle_entry(rel):
+            issues.append(f"deep bundle markdown must not be indexed unless explicitly approved as an entry surface: {rel}")
+            continue
+        if row["classification"] not in {"LOCAL_ONLY_SECONDARY", "DEPRECATED_POINTER", "HISTORICAL_ARCHIVE"}:
+            issues.append(
+                f"approved deep bundle entry surface must stay local-only, deprecated-pointer, or historical: {rel}"
+            )
     return issues
 
 
@@ -443,12 +495,15 @@ def _collect_issues() -> list[str]:
     issues.extend(_issues_from_generated_inventory(fresh_inventory))
     issues.extend(_issues_from_root_singletons())
     issues.extend(_issues_from_active_task_chain(active_slugs))
+    issues.extend(_issues_from_workflow_requirements(active_slugs))
     issues.extend(_issues_from_task_index(active_slugs))
     issues.extend(_issues_from_doc_task_neighborhood(active_slugs))
     issues.extend(_issues_from_current_status(fresh_inventory, registry_entries))
     issues.extend(_issues_from_metadata(active_slugs, fresh_inventory))
     issues.extend(_issues_from_generator_story())
     issues.extend(_issues_from_reporting_discipline())
+    issues.extend(_issues_from_root_allowlist())
+    issues.extend(_issues_from_bundle_entry_policy(fresh_inventory))
     issues.extend(_issues_from_authority_surfaces(fresh_inventory, registry_entries))
     issues.extend(_issues_from_archived_task_pages())
     issues.extend(_issues_from_registry_json(registry_entries))

@@ -4,6 +4,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 OUT_ROOT="${1:-${ROOT}/results/rope_perf_apples_to_apples/nsight}"
 FRAME_LIMIT="${2:-}"
+PHYSTWIN_ENV="${PHYSTWIN_ENV:-phystwin}"
 
 mkdir -p "${OUT_ROOT}/newton_A1" "${OUT_ROOT}/phystwin_B0"
 
@@ -92,6 +93,10 @@ NEWTON_CMD=(
 )
 
 PHYSTWIN_CMD=(
+  conda
+  run
+  -n
+  "${PHYSTWIN_ENV}"
   python
   "${ROOT}/scripts/benchmark_phystwin_rope_headless.py"
   --base-path "${ROOT}/PhysTwin/data/different_types"
