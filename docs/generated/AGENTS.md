@@ -18,9 +18,3 @@ This subtree stores generated or machine-maintained control-plane artifacts.
 - `md_deprecation_matrix.md`
 - `md_staleness_report.md`
 - `task_surface_matrix.md`
-
-## Historical / Compatibility Files
-
-- `harness_audit.md` is a historical snapshot, not a live operating ledger.
-- `harness_deprecations.md` is a deprecated compatibility stub; update
-  `md_deprecation_matrix.md` instead of expanding it.

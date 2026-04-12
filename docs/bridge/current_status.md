@@ -1,14 +1,14 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `bridge_control_plane`
-> last_reviewed: `2026-04-09`
+> last_reviewed: `2026-04-11`
 > review_interval: `7d`
 > update_rule: `Update when active workstreams, blockers, or promoted result meaning changes. Keep detailed run notes in task status pages and results_meta.`
 > notes: Short operational dashboard only. Do not turn this page into a run ledger or changelog dump.
 
 # Current Status
 
-Last updated: 2026-04-09
+Last updated: 2026-04-11
 
 This page is the shortest operational dashboard for the bridge project.
 
@@ -20,6 +20,8 @@ Detailed result meaning belongs in:
 
 ## Current Priorities
 
+- `bridge_code_structure_cleanup`
+  - keep the bridge layer easier to navigate by extracting bounded helper modules without changing current experiment semantics
 - `markdown_harness_maintenance_upgrade`
   - keep the markdown/control-plane harness fail-closed: active-vs-historical separation, dashboard scope, local-only result wording, and lint enforcement
 - `slide_deck_overhaul`

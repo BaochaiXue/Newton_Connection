@@ -7,6 +7,7 @@ Template files alone do not count as workflow usage.
 
 | Task | Task Page | Spec | Plan | Implement | Status | Contract | Handoff | Registry | Registry State | Current Run |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `bridge_code_structure_cleanup` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `False` | `` | `` |
 | `markdown_harness_maintenance_upgrade` | `True` | `True` | `True` | `True` | `True` | `True` | `True` | `False` | `` | `` |
 |  |  |  |  |  |  | `tasks/contracts/markdown_harness_maintenance_upgrade.md` | `tasks/handoffs/markdown_harness_maintenance_upgrade.md` |  |  |  |
 | `slide_deck_overhaul` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `False` | `` | `` |

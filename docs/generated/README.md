@@ -26,11 +26,6 @@ Current public generated/control-plane files include:
 - `md_staleness_report.md`
 - `task_surface_matrix.md`
 
-Historical / compatibility leftovers:
-
-- `harness_audit.md` keeps the original audit narrative as a historical snapshot
-- `harness_deprecations.md` is now only a deprecated compatibility stub pointing at `md_deprecation_matrix.md`
-
 Regenerate the Markdown truth artifacts with:
 
 ```bash

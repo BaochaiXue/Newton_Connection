@@ -28,9 +28,8 @@ This maintenance line is active and currently healthy:
   - last completed step
   - next step
   - current artifact paths
-- cleaned the generated-doc story so the current maintenance path points at the
-  `md_*` reports, while `harness_audit.md` is treated as a historical snapshot
-  and `harness_deprecations.md` has been collapsed into a compatibility stub
+- cleaned the generated-doc story so the current maintenance path points only at
+  the `md_*` reports
 - wrapped the long review-PDF command in `tasks/implement/slide_deck_overhaul.md`
 - narrowed `md_staleness_report` so historical archive length no longer keeps
   the queue permanently red
@@ -45,7 +44,7 @@ This maintenance line is active and currently healthy:
 
 - the repo did not need another harness; it needed active surfaces to stop absorbing historical detail
 - maintenance reports are only useful when historical bulk is pushed out of the live control plane
-- legacy generated material should either stay as a clearly historical snapshot or shrink to a stub; it should not compete with the live `md_*` surfaces
+- once a generated ledger's role has been absorbed by the current `md_*` reports, it should be retired instead of kept as a parallel maintenance surface
 
 ## GIF / Artifact Paths To Review
 

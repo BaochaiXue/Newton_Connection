@@ -53,9 +53,8 @@ headline.
 10. Review `docs/generated/md_staleness_report.md` and `docs/generated/task_surface_matrix.md`.
 11. Run `python scripts/lint_harness_consistency.py`.
 12. Refresh local bundle pointers only if they still add local convenience.
-13. Treat `docs/generated/harness_audit.md` as a historical snapshot only.
-14. Treat `docs/generated/harness_deprecations.md` as a deprecated compatibility stub; update `md_deprecation_matrix.md` instead of recreating a second deprecation ledger.
-15. When reporting the pass, follow `docs/runbooks/agent_reporting.md`: lead
+13. Do not recreate retired generated ledgers once their role has been absorbed by the `md_*` report set.
+14. When reporting the pass, follow `docs/runbooks/agent_reporting.md`: lead
     with changes, solved problems, conclusions, artifacts, and next steps, not
     bookkeeping.
 

@@ -22,8 +22,6 @@ DOC_GARDENING = ROOT / "docs/runbooks/doc_gardening.md"
 AGENT_REPORTING = ROOT / "docs/runbooks/agent_reporting.md"
 GENERATED_README = ROOT / "docs/generated/README.md"
 RESULTS_README = ROOT / "results_meta/README.md"
-HARNESS_AUDIT = ROOT / "docs/generated/harness_audit.md"
-HARNESS_DEPRECATIONS = ROOT / "docs/generated/harness_deprecations.md"
 MD_INVENTORY_JSON = ROOT / "docs/generated/md_inventory.json"
 ROOT_AGENTS = ROOT / "AGENTS.md"
 TASKS_AGENTS = ROOT / "tasks/AGENTS.md"
@@ -436,39 +434,6 @@ def _issues_from_registry_json(registry_entries: dict[str, dict[str, Any]]) -> l
     return issues
 
 
-def _issues_from_harness_audit() -> list[str]:
-    issues: list[str] = []
-    if not HARNESS_AUDIT.exists():
-        issues.append("missing docs/generated/harness_audit.md")
-        return issues
-    text = HARNESS_AUDIT.read_text(encoding="utf-8", errors="ignore")
-    if "> status: historical" not in text.splitlines()[:10]:
-        issues.append("harness_audit.md should be marked as a historical snapshot")
-    if "Current status: `resolved for major task families; future promotions must keep the registry updated`" in text:
-        robot_root = ROOT / "Newton/phystwin_bridge/results/robot_rope_franka/README.md"
-        if robot_root.exists():
-            robot_text = robot_root.read_text(encoding="utf-8", errors="ignore").lower()
-            if "local-only" not in robot_text:
-                issues.append("harness_audit.md still overclaims result-authority resolution while robot tabletop local surfaces sound canonical")
-    return issues
-
-
-def _issues_from_harness_deprecations_stub() -> list[str]:
-    issues: list[str] = []
-    if not HARNESS_DEPRECATIONS.exists():
-        return issues
-    text = HARNESS_DEPRECATIONS.read_text(encoding="utf-8", errors="ignore")
-    lines = text.splitlines()
-    head = lines[:10]
-    if "> status: deprecated" not in head:
-        issues.append("harness_deprecations.md should be marked as a deprecated compatibility stub")
-    if "docs/generated/md_deprecation_matrix.md" not in text:
-        issues.append("harness_deprecations.md must point to docs/generated/md_deprecation_matrix.md")
-    if len(lines) > 40:
-        issues.append("harness_deprecations.md regrew into a long-form ledger; keep it as a short compatibility stub")
-    return issues
-
-
 def _collect_issues() -> list[str]:
     issues: list[str] = []
     active_slugs = active_task_slugs()
@@ -487,8 +452,6 @@ def _collect_issues() -> list[str]:
     issues.extend(_issues_from_authority_surfaces(fresh_inventory, registry_entries))
     issues.extend(_issues_from_archived_task_pages())
     issues.extend(_issues_from_registry_json(registry_entries))
-    issues.extend(_issues_from_harness_audit())
-    issues.extend(_issues_from_harness_deprecations_stub())
 
     for row in fresh_inventory:
         if row["classification"] == "ORPHAN":
