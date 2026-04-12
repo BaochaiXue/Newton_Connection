@@ -42,3 +42,11 @@ Retired this cycle:
 - Current focus:
   - test whether Fast-FoundationStereo can replace RealSense depth
   - evaluate near-infrared stereo support
+
+## 4. Bridge Code Structure Cleanup
+
+- Task page:
+  - [bridge_code_structure_cleanup.md](./docs/bridge/tasks/bridge_code_structure_cleanup.md)
+- Current focus:
+  - reduce bridge-layer monolith size
+  - extract pure helper logic from the cloth+bunny demo into clearer modules

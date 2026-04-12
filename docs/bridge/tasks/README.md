@@ -20,6 +20,7 @@ Each task page should answer:
 
 ## Active Task Set
 
+- [bridge_code_structure_cleanup.md](./bridge_code_structure_cleanup.md)
 - [markdown_harness_maintenance_upgrade.md](./markdown_harness_maintenance_upgrade.md)
 - [slide_deck_overhaul.md](./slide_deck_overhaul.md)
 - [meeting_20260408_recall_part.md](./meeting_20260408_recall_part.md)
