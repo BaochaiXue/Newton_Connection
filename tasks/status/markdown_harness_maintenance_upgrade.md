@@ -10,102 +10,42 @@
 
 ## Current State
 
-Current follow-up completed for this pass: the robot + deformable PS-object
-line remains retired, the active self-collision / bunny / slide-maintenance
-surfaces are now shorter and easier to review, and the latest harness lint
-passes on a quieter maintenance queue.
+This maintenance line is active and currently healthy:
 
-## What Changed This Pass
+- the robot + deformable line stays retired as historical context only
+- active task/status surfaces are short enough to function as live control-plane pages
+- the maintenance queue is quiet instead of permanently noisy
+- harness lint currently passes
 
-- added a canonical reporting runbook at `docs/runbooks/agent_reporting.md`
-- tightened `AGENTS.md`, `tasks/AGENTS.md`, and status/handoff templates around
-  outcome-first reporting
-- retired the full bridge-side robot + deformable PS-object line as a failed
-  final claim and added one canonical retrospective:
-  - `docs/decisions/2026-04-09_robot_ps_interaction_retirement.md`
-- moved the remaining robot task chains out of live task neighborhoods:
-  - `robot_deformable_demo`
-  - `robot_rope_franka_tabletop_push_hero`
-  - `robot_rope_true_size_recalibration`
-  - `robot_rope_franka_semiimplicit_oneway`
-  - `robot_rope_franka_physical_blocking`
-  - `native_robot_physical_blocking_minimal`
-  - `robot_visible_rigid_tool_baseline`
-  - `native_robot_rope_drop_release`
-- removed robot demo surfaces from:
-  - `docs/bridge/tasks/README.md`
-  - `docs/bridge/current_status.md`
-  - `TODO.md`
-  - `docs/PROJECT_MAP.md`
-  - `docs/bridge/demos_and_diagnostics.md`
-- downgraded robot result-authority surfaces from promoted live truth to
-  historical evidence in `results_meta/`
-- deleted bridge-side robot demo entrypoints and their dedicated wrappers /
-  validators so the repo no longer pretends that the robotics line is still a
-  runnable current demo family
-- archived the stale / non-active robot predecessor chains out of live task
-  neighborhoods:
-  - `remote_interaction_root_cause`
-  - `robot_rope_franka_native_v2`
-  - `robot_rope_franka_split_v3`
-- moved their task pages into `docs/archive/tasks/`, their plans into
-  `plans/completed/`, and their execution-layer surfaces into `tasks/history/`
-- marked those moved files as historical so they stop sounding current
-- removed `remote_interaction_root_cause` from the active task index and moved
-  the three archived robot surfaces into the historical section
-- rewrote `docs/bridge/current_status.md` back toward a real dashboard instead
-  of a mixed dashboard + task ledger
-- reinforced the reporting contract in:
-  - `.codex/hooks/session_start.py`
-  - `.codex/hooks/post_tool_use_review.py`
-  - `.codex/hooks/stop_continue.py`
-- expanded the active maintenance task/spec/plan/implement pages so reporting
-  discipline is part of the harness scope
-- moved the detailed self-collision scratch chronology out of the active status
-  page into:
+## What Changed In The Latest Pass
+
+- moved long self-collision scratch notes into:
   - `tasks/history/status/self_collision_transfer_diagnostic_log_20260401_20260408.md`
-- rewrote the active self-collision and bunny task surfaces so they no longer
-  duplicate long experiment diaries:
-  - `docs/bridge/tasks/self_collision_transfer.md`
-  - `tasks/status/self_collision_transfer.md`
-  - `docs/bridge/tasks/bunny_penetration_force_diagnostic.md`
-- added metadata and readable wrapped commands to:
-  - `tasks/implement/slide_deck_overhaul.md`
-- narrowed `md_staleness_report` so overgrown historical archives no longer
-  keep the report permanently noisy
-- cleared the remaining lint blockers exposed during this follow-up:
-- preserved the earlier semantic-hardening wins:
-  - hidden active chains are no longer left in active neighborhoods
-  - local manifest authority drift is fixed
-  - maintenance reports are narrower and more actionable
+- moved long bunny rollout chronology into:
+  - `tasks/history/status/bunny_penetration_force_diagnostic_log_20260401.md`
+- rewrote the active self-collision and bunny surfaces so they now report:
+  - current state
+  - last completed step
+  - next step
+  - current artifact paths
+- cleaned the generated-doc story so the current maintenance path points at the
+  `md_*` reports, while `harness_audit.md` is treated as a historical snapshot
+  and `harness_deprecations.md` has been collapsed into a compatibility stub
+- wrapped the long review-PDF command in `tasks/implement/slide_deck_overhaul.md`
+- narrowed `md_staleness_report` so historical archive length no longer keeps
+  the queue permanently red
 
 ## Problem Solved
 
-- active directories no longer contain three stale robot/predecessor chains
-  that competed with the actual active task map
-- the bridge task index and dashboard now point at the live surfaces again
-- outcome-first reporting rules no longer exist in duplicated near-copy form
-- the repo no longer presents failed robot + deformable partial baselines as
-  current active work or promoted committed truth
-- dead bridge-side robot demos and dedicated wrappers are gone from the active
-  code surface, so future agents are less likely to restart the failed line by
-  accident
-- the remaining active task pages no longer masquerade as scratch notebooks,
-  and the staleness queue is now quiet instead of permanently red
+- active task/status pages no longer masquerade as scratch notebooks
+- the current generated maintenance reports now reflect the real day-to-day path
+- the maintenance queue is quiet enough to trust
 
 ## Findings / Conclusions
 
-- the repo did not need another harness; it needed stale robot branches and
-  completed investigations moved out of live-looking neighborhoods
-- `docs/bridge/current_status.md` had drifted back toward a duplicate task
-  ledger; trimming it is part of truth maintenance, not cosmetic editing
-- the duplicated reporting rules in `AGENTS.md` and `tasks/AGENTS.md` were
-  low-grade harness residue and are now collapsed into single canonical rules
-- the robot + deformable line produced useful mechanism studies and historical
-  partial baselines, but it never reached a meeting-grade combined success and
-  should not remain promoted or runnable by default
-- active task/status surfaces need an explicit size discipline; otherwise
-  experiment logs naturally expand until the maintenance reports become noise
+- the repo did not need another harness; it needed active surfaces to stop absorbing historical detail
+- maintenance reports are only useful when historical bulk is pushed out of the live control plane
+- legacy generated material should either stay as a clearly historical snapshot or shrink to a stub; it should not compete with the live `md_*` surfaces
 
 ## GIF / Artifact Paths To Review
 

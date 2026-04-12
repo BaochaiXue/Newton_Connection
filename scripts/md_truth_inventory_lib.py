@@ -88,8 +88,6 @@ GENERATED_TARGETS = [
 ]
 
 GENERATED_MARKDOWN = {
-    "docs/generated/harness_audit.md",
-    "docs/generated/harness_deprecations.md",
     "docs/generated/md_inventory.md",
     "docs/generated/md_cleanup_report.md",
     "docs/generated/md_orphans.md",

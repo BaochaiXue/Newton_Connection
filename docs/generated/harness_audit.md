@@ -1,12 +1,17 @@
 # Harness Audit
 
-> status: generated
-> canonical_replacement: `python scripts/lint_harness_consistency.py` plus the repo control-plane files it checks
-> owner_surface: `harness_engineering_upgrade`
-> last_reviewed: `2026-04-01`
-> notes: Machine-maintained audit ledger. Update this file only when the harness audit itself changes.
+> status: historical
+> canonical_replacement: `docs/bridge/tasks/markdown_harness_maintenance_upgrade.md`
+> owner_surface: `markdown_harness_maintenance_upgrade`
+> last_reviewed: `2026-04-11`
+> review_interval: `90d`
+> update_rule: `Keep as a historical snapshot only. Do not expand or refresh this file for routine maintenance; use the live markdown-maintenance task plus the md_* generated reports instead.`
+> notes: Historical harness audit snapshot kept for context. The current day-to-day maintenance path is `docs/bridge/tasks/markdown_harness_maintenance_upgrade.md` plus `md_inventory.md`, `md_cleanup_report.md`, `md_staleness_report.md`, and `task_surface_matrix.md`.
 
-Updated: 2026-04-01
+Updated: 2026-04-11
+
+This file is intentionally archival. It records the original harness-audit
+findings, but it is no longer a live operating ledger.
 
 This audit records the harness issues that materially affected long-running
 Codex work in this repo and the exact remediation chosen in the current

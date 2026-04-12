@@ -46,14 +46,16 @@ headline.
 5. If a workstream ends in a negative result or failed final claim, write a
    single decision/retrospective surface under `docs/decisions/` and point the
    archived task chain at that retirement record.
-6. Refresh `docs/generated/harness_deprecations.md` when the deprecation set changes.
+6. Refresh `docs/generated/md_deprecation_matrix.md` and `docs/generated/md_cleanup_report.md` when the deprecation set changes.
 7. Update `results_meta/` if run meaning changed.
 8. Run `python scripts/sync_results_registry.py` when registry JSON changed.
 9. Run `python scripts/generate_md_inventory.py`.
 10. Review `docs/generated/md_staleness_report.md` and `docs/generated/task_surface_matrix.md`.
 11. Run `python scripts/lint_harness_consistency.py`.
 12. Refresh local bundle pointers only if they still add local convenience.
-13. When reporting the pass, follow `docs/runbooks/agent_reporting.md`: lead
+13. Treat `docs/generated/harness_audit.md` as a historical snapshot only.
+14. Treat `docs/generated/harness_deprecations.md` as a deprecated compatibility stub; update `md_deprecation_matrix.md` instead of recreating a second deprecation ledger.
+15. When reporting the pass, follow `docs/runbooks/agent_reporting.md`: lead
     with changes, solved problems, conclusions, artifacts, and next steps, not
     bookkeeping.
 
