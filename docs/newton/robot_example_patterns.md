@@ -8,6 +8,9 @@ matter to this project.
 This page is a durable reference for future bridge work. It is not a claim that
 the current bridge-side robot + deformable line is active or already solved.
 
+For robot-driving questions, prefer this page over archived bridge robot demo
+surfaces.
+
 ## Repo Boundary
 
 As of `2026-04-11`, the local repo still treats the old bridge-side robot +
@@ -24,6 +27,120 @@ That means the examples below should be used as:
 
 They should not be cited as proof that the local bridge task already satisfies
 the old combined robot-table-deformable claim.
+
+## How Native Demos Currently Drive Robots
+
+Current Newton native examples fall into three main robot-driving families.
+
+### 1. IK-only reference generation
+
+Representative example:
+
+- `ik_franka`
+
+Driving pattern:
+
+- set end-effector targets
+- solve IK directly with `IKSolver`
+- update joint coordinates for the current frame
+
+Interpretation:
+
+- this is a kinematic reference-generation pattern
+- it is useful for online target generation
+- it is not the same thing as contact-rich rigid-body execution
+
+### 2. Rigid-body execution through joint targets
+
+Representative examples:
+
+- `robot_panda_hydro`
+- `robot_ur10`
+- `robot_policy`
+
+Driving pattern:
+
+- compute or update a desired joint target
+- write the target into `control.joint_target_pos`
+- let the rigid-body solver advance the robot state
+
+Interpretation:
+
+- this is the main current native pattern for robot-side execution
+- when robot/table/contact truth matters, this is the family to study first
+
+### 3. Split robot/deformable staged coupling
+
+Representative examples:
+
+- `cloth_franka`
+- `softbody_franka`
+
+Driving pattern:
+
+- compute a robot-side reference from IK or task-space control
+- stage the robot update through a dedicated rigid-body path
+- then advance the deformable subsystem separately
+
+Interpretation:
+
+- this is the current native pattern for robot + deformable coordination
+- it is useful for scheduling and subsystem boundaries
+- it should not be over-read as proof that any local strict robot-table-
+  deformable claim is already solved
+
+## Outdated Local Practices
+
+The following local bridge-side robot practices are now historical and should
+not be used as reference templates.
+
+### Direct state overwrite around the solver
+
+Non-reference-worthy pattern:
+
+- write desired values into `state_in.joint_q/joint_qd`
+- step the solver
+- write the target back into `state_out.joint_q/joint_qd`
+
+Why it is outdated:
+
+- it suppresses the very tracking error and contact response that the robot
+  execution path is supposed to reveal
+
+Use instead:
+
+- solver-owned state progression with targets written into `control`
+
+### Treating the old bridge-side SemiImplicit Franka path as the baseline robot template
+
+Non-reference-worthy pattern:
+
+- start robot design discussions from the archived bridge-side
+  `SolverSemiImplicit` Franka actuation experiments
+
+Why it is outdated:
+
+- those experiments are useful as failure analysis
+- they are not the current native reference for how Newton examples drive
+  articulated robots
+
+Use instead:
+
+- `robot_panda_hydro` for rigid manipulation semantics
+- `ik_franka` for online target generation
+- `cloth_franka` / `softbody_franka` for split deformable scheduling
+
+### Treating retired bridge robot demos as positive design priors
+
+Non-reference-worthy pattern:
+
+- inheriting controller assumptions from retired local robot demos because they
+  are already in-repo
+
+Why it is outdated:
+
+- those surfaces remain valuable as archived evidence and negative results
+- they are no longer recommended starting points for implementation decisions
 
 ## Recommended Reading Order
 
@@ -232,6 +349,7 @@ What they do not automatically prove:
 - A giant monolithic bridge demo that mixes robot control semantics,
   deformable stepping, diagnostics, and presentation logic in one path.
 - State overwrite used as a hidden truth surface.
+- Archived local bridge robot demos used as positive control templates.
 - The assumption that any split robot/deformable upstream example is already a
   match for the local bridge claim boundary.
 
@@ -245,6 +363,8 @@ If robot-side work is reopened later:
 - any Stage-1 deformable reintegration should read `cloth_franka` and
   `softbody_franka` with an explicit written claim boundary
 - broader robot deployment scaffolding can borrow from `robot_policy`
+- archived bridge robot demos should be consulted only for failure analysis, not
+  as primary implementation templates
 
 ## Related Pages
 

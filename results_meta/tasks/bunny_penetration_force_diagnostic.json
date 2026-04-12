@@ -23,10 +23,10 @@
     ],
     "validator_outputs": [
       "results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/qa/report.json",
-      "results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/qa/verdict.md"
+      "results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/qa/verdict.txt"
     ],
     "verdict_pointers": [
-      "results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/qa/verdict.md"
+      "results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/qa/verdict.txt"
     ],
     "repo_friendly_evidence": {
       "summary": [
@@ -69,9 +69,10 @@
     }
   ],
   "local_only_surfaces": [
-    "results/bunny_force_visualization/INDEX.md",
+    "results/bunny_force_visualization/README.md",
+    "results/bunny_force_visualization/INDEX.txt",
     "results/bunny_force_visualization/LATEST_ATTEMPT.txt",
     "results/bunny_force_visualization/LATEST_SUCCESS.txt"
   ],
-  "updated_at": "2026-04-01"
+  "updated_at": "2026-04-12"
 }

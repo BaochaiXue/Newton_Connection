@@ -14,6 +14,8 @@
 - Demo and wrapper implemented
 - First probe run completed
 - Artifact validation succeeded
+- Generated markdown inventory is refreshed
+- Harness consistency lint passes
 
 ## What Changed In The Latest Pass
 
@@ -75,4 +77,6 @@
 - `python -m py_compile Newton/phystwin_bridge/demos/demo_native_robot_table_penetration_probe.py`
 - `bash scripts/run_native_robot_table_penetration_probe.sh`
 - `python scripts/validate_experiment_artifacts.py tmp/native_robot_table_penetration_probe_20260412_135029 --require-video --require-gif --summary-field attempt_blocked`
+- `python scripts/generate_md_inventory.py`
+- `python scripts/lint_harness_consistency.py`
 - current result after this pass: `PASS`

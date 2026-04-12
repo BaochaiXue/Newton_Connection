@@ -28,17 +28,12 @@ rendering.
 ## Outputs
 
 - `results/rope_perf_apples_to_apples/README.md`
-- `results/rope_perf_apples_to_apples/BEST_EVIDENCE.md`
 - `results/rope_perf_apples_to_apples/index.csv`
-- `results/rope_perf_apples_to_apples/newton/A0_baseline_throughput/`
-- `results/rope_perf_apples_to_apples/newton/A1_precomputed_throughput/`
-- `results/rope_perf_apples_to_apples/newton/A2_baseline_attribution/`
-- `results/rope_perf_apples_to_apples/newton/A3_precomputed_attribution/`
-- `results/rope_perf_apples_to_apples/phystwin/B0_headless_throughput/`
-- `results/rope_perf_apples_to_apples/phystwin/B1_headless_attribution/`
-- `results/rope_perf_apples_to_apples/notes/methodology.md`
-- `results/rope_perf_apples_to_apples/notes/conclusions.md`
-- `results/rope_perf_apples_to_apples/notes/open_questions.md`
+- `results/rope_perf_apples_to_apples/newton/`
+- `results/rope_perf_apples_to_apples/phystwin/`
+- `results/rope_perf_apples_to_apples/nsight/`
+- `results/rope_perf_apples_to_apples/report/`
+- local `.txt` notes under `results/rope_perf_apples_to_apples/`
 
 ## Constraints
 

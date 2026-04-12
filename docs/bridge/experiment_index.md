@@ -97,18 +97,18 @@ For promoted result bundles that should stay easy to navigate, prefer a
 dedicated folder under `results/<bundle_name>/` with:
 
 - `README.md`
-- `README.template.md` when templating is useful
+- `README.template.txt` when templating is useful
 - `manifest.template.json` when the bundle uses manifests
-- `INDEX.md` and/or `index.csv` depending on the bundle
+- `INDEX.txt` and/or `index.csv` depending on the bundle
 - `LATEST_ATTEMPT.txt` and `LATEST_SUCCESS.txt` as secondary local-only
   convenience pointers when the bundle promotes runs by pointer
 - a `runs/<run_id>/` subtree for the actual artifacts
 
 Current and preserved bundles intentionally vary slightly:
 
-- `results/bunny_force_visualization/` uses `INDEX.md` plus local-only pointer files
-- `results/robot_deformable_demo/` uses `index.csv` plus local-only `BEST_RUN.md`
-- `results/native_robot_rope_drop_release/` uses `index.csv` plus local-only pointer files
+- `results/bunny_force_visualization/` uses a family-root `README.md` plus local `.txt` pointer files
+- `results/robot_deformable_demo/` uses a family-root `README.md` plus `index.csv` and local `.txt` helpers
+- `results/native_robot_rope_drop_release/` uses a family-root `README.md` plus `index.csv` and local `.txt` pointer files
 
 These local surfaces are now secondary/local-only. The committed registry under
 `results_meta/` is the canonical cross-task surface.
@@ -143,7 +143,7 @@ Status:
 Historical local result roots:
 
 - `results/robot_deformable_demo/`
-  - local-only `BEST_RUN.md`
+  - local-only `BEST_RUN.txt`
   - `index.csv`
   - `runs/<run_id>/`
 - `rejected/<run_id>/`
@@ -164,16 +164,16 @@ Its required review artifacts are:
 - `qa/contact_sheet.png`
 - `qa/event_sheet.png`
 - `qa/validation.json`
-- `qa/verdict.md`
+- `qa/verdict.txt`
 
 Separate historical stage-0 sanity baseline bundle:
 
 - `results/native_robot_rope_drop_release/`
-  - local-only `BEST_RUN.md`
+  - local-only `BEST_RUN.txt`
   - `index.csv`
-  - `README.template.md`
+  - `README.template.txt`
   - `manifest.template.json`
-  - `SLIDE_READY.md`
+  - `SLIDE_READY.txt`
   - `drag_ab_compare.json`
 
 This bundle is reserved for the simpler native robot + semi-implicit
@@ -201,10 +201,10 @@ Matched drag-ON comparison:
 The historical robot bundle still keeps local helpers so archived runs remain
 auditable without rediscovering the layout:
 
-- `results/robot_deformable_demo/README.template.md`
+- `results/robot_deformable_demo/README.template.txt`
 - `results/robot_deformable_demo/manifest.template.json`
-- `results/robot_deformable_demo/SLIDE_READY.md`
-- a run-local `README.md` in each promoted `runs/<run_id>/` directory
+- `results/robot_deformable_demo/SLIDE_READY.txt`
+- a run-local `README.txt` in each promoted `runs/<run_id>/` directory
 
 Historical registry record for the stage-0 baseline lives in:
 

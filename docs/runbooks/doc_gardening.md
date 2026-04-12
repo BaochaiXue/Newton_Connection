@@ -133,6 +133,10 @@ Rules:
   surfaces indexed into the harness.
 - Deeper run-local `README.md` files are for local browsing only unless they
   are explicitly promoted into the approved entry set.
+- Under `results/`, prefer keeping one family-root `README.md` and demoting
+  deeper local notes, verdicts, and run summaries to `.txt`.
+- Use `python scripts/demote_results_markdown.py --dry-run` before a broad
+  `results/` demotion pass so the rename scope stays auditable.
 
 ## Root Allowlist
 

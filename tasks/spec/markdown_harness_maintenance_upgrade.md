@@ -45,6 +45,8 @@ of bookkeeping.
 - root-level allowlist policy for tracked files
 - narrowed hook policy: write-strict, read-loose
 - approved bundle-entry policy for `results/` and `Newton/phystwin_bridge/results/`
+- family-root-only Markdown policy for `results/`, with deeper local notes
+  demoted to `.txt`
 - refreshed generated markdown ledgers
 - stronger lint/hook policy for markdown drift
 - explicit outcome-first reporting policy for user-facing agent summaries
@@ -63,6 +65,8 @@ of bookkeeping.
 - active entrypoints use progressive disclosure instead of inline historical enumerations
 - tracked root clutter is moved into `scripts/` or converted into local-only ignored state
 - deep bundle markdown is indexed only when explicitly approved as an entry surface
+- `results/` family roots keep one local-browsing `README.md` each while deeper
+  local notes/verdicts stop using Markdown
 - current-status, task status pages, and `results_meta/` agree on authority
 - generator/lint docs name one public inventory entrypoint
 - active canonical task pages expose review metadata

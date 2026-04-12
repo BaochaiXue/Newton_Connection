@@ -27,6 +27,7 @@ The canonical cloth+bunny implementation now lives under:
 
 - `Newton/phystwin_bridge/demos/cloth_bunny/offline.py`
 - `Newton/phystwin_bridge/demos/cloth_bunny/example.py`
+- `Newton/phystwin_bridge/demos/cloth_bunny/profiling.py`
 - `Newton/phystwin_bridge/demos/cloth_bunny/scene.py`
 - `Newton/phystwin_bridge/demos/cloth_bunny/render.py`
 - `Newton/phystwin_bridge/demos/cloth_bunny/outputs.py`
@@ -61,6 +62,7 @@ The old paths are still present, but only as compatibility wrappers.
 
 ## Next Step
 
-Reduce how much force-diagnostic machinery still lives in
-`cloth_bunny/offline.py`, so `runtime.py` and `diagnostics.py` become real
-owners instead of public wrapper surfaces.
+Reduce how much manual substep / profiling / UI bookkeeping still lives in
+`cloth_bunny/example.py` and how much force-diagnostic machinery still lives in
+`cloth_bunny/offline.py`, now that `runtime.py`, `profiling.py`, and
+`diagnostics.py` own real parts of the canonical support logic.

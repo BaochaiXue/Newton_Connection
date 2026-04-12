@@ -60,9 +60,9 @@ promotion:
 ## Artifact Paths
 
 - `results_meta/tasks/bunny_penetration_force_diagnostic.json`
+- `results/bunny_force_visualization/README.md`
 - `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/summary.json`
 - `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/artifacts/collision_force_board/collision_force_board_2x2.mp4`
 - `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/artifacts/collision_force_board/collision_force_board_2x2.gif`
 - `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/artifacts/collision_force_board_slow4x/collision_force_board_2x2_slow4x.mp4`
 - `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/qa/report.json`
-- `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/qa/verdict.md`

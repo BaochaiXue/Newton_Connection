@@ -16,6 +16,11 @@ cleanup pass.
 - generator and lint now encode:
   - root allowlist auditing
   - approved bundle-entry quarantine
+- `results/` now keeps one family-root `README.md` per family and demotes
+  deeper local notes/verdicts to `.txt`
+- robot-driving guidance now routes through
+  `docs/newton/robot_example_patterns.md`, and archived bridge robot practices
+  are treated as historical failure analysis rather than recommended templates
 - smoke checks confirmed:
   - read-only access to watched files succeeds
   - direct execution of `scripts/send_pdf_via_yahoo.py` is still denied
@@ -26,8 +31,9 @@ cleanup pass.
 
 The repo still does not need another harness. The load-bearing fixes are:
 progressive disclosure in live entrypoints, less root clutter, approved
-bundle-entry quarantine, and hooks that stop confusing path names with risky
-actions.
+bundle-entry quarantine, hooks that stop confusing path names with risky
+actions, explicit routing away from stale local robot-practice guidance, and
+family-root-only Markdown browsing under `results/`.
 
 ## Exact Next Command
 
@@ -49,13 +55,17 @@ into history or get blocked during read-only inspection.
 ## Key GIF / Artifact Paths
 
 - `docs/runbooks/agent_reporting.md`
+- `docs/newton/robot_example_patterns.md`
 - `docs/archive/tasks/README.md`
 - `docs/bridge/tasks/README.md`
 - `docs/bridge/current_status.md`
+- `results/README.md`
+- `results/rope_perf_apples_to_apples/README.md`
 - `.codex/hooks/session_start.py`
 - `.codex/hooks/pre_tool_use_policy.py`
 - `.codex/hooks/post_tool_use_review.py`
 - `.codex/hooks/stop_continue.py`
+- `scripts/demote_results_markdown.py`
 - `scripts/md_truth_inventory_lib.py`
 - `scripts/generate_md_inventory.py`
 - `scripts/lint_harness_consistency.py`

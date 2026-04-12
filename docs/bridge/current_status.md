@@ -1,14 +1,14 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `bridge_control_plane`
-> last_reviewed: `2026-04-11`
+> last_reviewed: `2026-04-12`
 > review_interval: `7d`
 > update_rule: `Update when active workstreams, blockers, promoted result meaning, or control-plane routing rules change. Keep detailed run notes in task status pages and results_meta.`
 > notes: Short operational dashboard only. Keep this page map-like: current work, blockers, promoted surfaces, and where to go next.
 
 # Current Status
 
-Last updated: 2026-04-11
+Last updated: 2026-04-12
 
 This page is the shortest operational dashboard for the bridge project.
 
@@ -24,6 +24,8 @@ Detailed result meaning belongs in:
   - keep the bridge layer easier to navigate by extracting bounded helper modules without changing current experiment semantics
 - `newton_robot_examples_kb_update`
   - move official Newton robot-example lessons into `docs/newton/` so future agents do not have to recover them from retired robot diagnostics
+- `native_robot_table_penetration_probe`
+  - build a minimal robot_panda_hydro-style bridge demo that intentionally targets below the table and records whether native rigid-table blocking holds
 - `markdown_harness_maintenance_upgrade`
   - keep the harness fail-closed: progressive disclosure, archive-hub routing, root hygiene, local-only result wording, and write-strict/read-loose hook behavior
 - `slide_deck_overhaul`

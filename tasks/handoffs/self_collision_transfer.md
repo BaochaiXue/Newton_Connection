@@ -37,7 +37,7 @@ blocked comparison surface.
 
 - `results_meta/tasks/self_collision_transfer.json`
 - `Newton/phystwin_bridge/results/ground_contact_self_collision_repro_fix_20260404_200830_aa5e607/final_verdict.json`
-- `Newton/phystwin_bridge/results/ground_contact_self_collision_visual_bundle_20260408_042645_00feebe/README.md`
+- `Newton/phystwin_bridge/results/ground_contact_self_collision_visual_bundle_20260408_042645_00feebe/`
 
 ## What Not To Redo
 

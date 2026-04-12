@@ -45,6 +45,8 @@ semantics without creating a parallel control plane.
 - root-level reusable tools/config moved under `scripts/` and local runtime state removed from tracked root
 - hook reminders/blockers that stay strict for mutation/publish flows without blocking read-only inspection
 - lint/inventory rules that enforce the root allowlist and approved bundle-entry policy
+- durable guidance that routes robot-driving questions to current Newton native
+  example patterns instead of retired local bridge robot practices
 - AGENTS/tasks-AGENTS guidance for outcome-first summaries
 - regenerated generated ledgers after the control-plane edits
 
@@ -54,6 +56,8 @@ semantics without creating a parallel control plane.
 - tracked root files outside the allowlist still compete with entry surfaces
 - hooks still block read-only inspection just because a watched path appears in the command
 - approved deep-bundle entry policy still lives only in chat, not in versioned files
+- retired local robot practices still sound like recommended implementation
+  templates in current canonical docs
 
 ## Acceptance Criteria
 
@@ -64,6 +68,9 @@ semantics without creating a parallel control plane.
 - `docs/bridge/current_status.md` stays dashboard-like and avoids dated changelog sections
 - root-level tracked files outside the allowlist are moved or removed from tracking
 - hooks allow read-only inspection of watched paths and still guard mutation/publish flows
+- current canonical docs route robot-driving guidance to
+  `docs/newton/robot_example_patterns.md` and explicitly downgrade archived
+  bridge robot practices to failure-analysis-only status
 - `docs/runbooks/agent_reporting.md` remains the canonical reporting runbook
 
 ## Evaluator Evidence Required
@@ -76,6 +83,7 @@ semantics without creating a parallel control plane.
   - read-only command mentioning the PDF-send helper succeeds
   - risky mutation/publish command remains guarded
 - artifact paths:
+  - `docs/newton/robot_example_patterns.md`
   - `docs/bridge/tasks/README.md`
   - `docs/bridge/current_status.md`
   - `docs/runbooks/agent_reporting.md`

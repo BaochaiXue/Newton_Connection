@@ -45,7 +45,7 @@ authority surface unless a future benchmark update is explicitly promoted.
   - benchmark bundle verdicts recorded under `results/rope_perf_apples_to_apples/`
 - artifact paths:
   - `results_meta/tasks/rope_perf_apples_to_apples.json`
-  - `results/rope_perf_apples_to_apples/BEST_EVIDENCE.md`
+  - `results/rope_perf_apples_to_apples/README.md`
 - skeptical review required: no
 
 ## Next Command After Acceptance

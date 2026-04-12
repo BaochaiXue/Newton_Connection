@@ -46,7 +46,8 @@ meeting-facing result surface.
   - `python scripts/validate_bunny_force_visualization.py <run_dir>`
   - `python scripts/validate_experiment_artifacts.py <run_dir>`
 - artifact paths:
-  - `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/qa/verdict.md`
+  - `results/bunny_force_visualization/README.md`
+  - `results/bunny_force_visualization/runs/20260401_013500_realtime_allcolliding_2x2_v5/`
 - skeptical review required: yes
 
 ## Next Command After Acceptance

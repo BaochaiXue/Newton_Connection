@@ -32,7 +32,7 @@
   - Nsight A1/B0 traces
   - summary + notes + slide update
 - Built a standalone Todo 2 rope performance report for external sharing:
-  - `results/rope_perf_apples_to_apples/report/todo2_rope_perf_report.md`
+  - `results/rope_perf_apples_to_apples/report/todo2_rope_perf_report.txt`
   - `results/rope_perf_apples_to_apples/report/todo2_rope_perf_report.pdf`
 - Release decision:
   - user explicitly requested email send
@@ -145,13 +145,9 @@
 - Committed results metadata:
   - `results_meta/tasks/rope_perf_apples_to_apples.json`
 - Key outputs:
+  - `results/rope_perf_apples_to_apples/README.md`
   - `results/rope_perf_apples_to_apples/index.csv`
-  - `results/rope_perf_apples_to_apples/BEST_EVIDENCE.md` (local-only pointer)
-  - `results/rope_perf_apples_to_apples/notes/methodology.md`
-  - `results/rope_perf_apples_to_apples/notes/conclusions.md`
-  - `results/rope_perf_apples_to_apples/notes/nsight.md`
   - `results/rope_perf_apples_to_apples/report/todo2_rope_perf_report.pdf`
 - Local refresh outputs:
-  - `results/rope_perf_apples_to_apples_refresh/20260411_221904/BEST_EVIDENCE.md`
+  - `results/rope_perf_apples_to_apples_refresh/README.md`
   - `results/rope_perf_apples_to_apples_refresh/20260411_221904/index.csv`
-  - `results/rope_perf_apples_to_apples_refresh/20260411_221904/notes/conclusions.md`

@@ -21,6 +21,7 @@ helper files have been demoted to transition shims.
 - moved the canonical cloth+bunny implementation into:
   - `Newton/phystwin_bridge/demos/cloth_bunny/offline.py`
   - `Newton/phystwin_bridge/demos/cloth_bunny/example.py`
+  - `Newton/phystwin_bridge/demos/cloth_bunny/profiling.py`
   - `Newton/phystwin_bridge/demos/cloth_bunny/scene.py`
   - `Newton/phystwin_bridge/demos/cloth_bunny/render.py`
   - `Newton/phystwin_bridge/demos/cloth_bunny/outputs.py`
@@ -38,6 +39,19 @@ helper files have been demoted to transition shims.
     `inferred` path
   - `build_bunny_collision_force_bundle.py` now falls back to all sim frames
     when `render_output_frame_indices` is absent in a skip-render bundle
+- moved realtime-playground profiling helpers out of
+  `cloth_bunny/example.py` into `Newton/phystwin_bridge/demos/cloth_bunny/profiling.py`
+- expanded `Newton/phystwin_bridge/demos/cloth_bunny/runtime.py` from a thin
+  forwarder into the owner of realtime playground path normalization, mode
+  normalization, and model / solver setup
+- moved force bundle / subprocess render bundle ownership into
+  `Newton/phystwin_bridge/demos/cloth_bunny/diagnostics.py` for:
+  - `resolve_force_dump_dir(...)`
+  - `write_force_render_bundle(...)`
+  - `render_force_artifacts_subprocess(...)`
+- made `ClothBunnyExample.create_parser()` a real class entrypoint so the
+  canonical realtime viewer reads more like a Newton example and less like a
+  utility script with an embedded example class
 
 ## Problem Solved
 
@@ -47,6 +61,10 @@ helper files have been demoted to transition shims.
   layer, which matches Newton's example-family organization much more closely
 - downstream scripts no longer need to reach into underscore-prefixed helper
   names to drive cloth+bunny workflows
+- the canonical realtime playground entrypoint is less monolithic because setup
+  and profiling/reporting logic now live in package support modules
+- `runtime.py` and `diagnostics.py` are now real owners instead of symbolic
+  wrappers
 
 ## Findings / Conclusions
 
@@ -56,11 +74,18 @@ helper files have been demoted to transition shims.
   multiple scripts still expect the old file paths
 - wrapper-script smoke testing found real compatibility issues that static
   import checking would not catch
+- ownership cleanup inside the canonical package matters almost as much as the
+  original file move into `cloth_bunny/`
+- profiling output code and runtime setup code were low-risk extractions that
+  improved readability without changing cloth+bunny behavior
 
 ## Artifact Paths To Review
 
 - realtime headless smoke log: `tmp/cloth_bunny_example_smoke/`
 - offline skip-render smoke log: `tmp/cloth_bunny_offline_smoke/`
+- realtime headless smoke log (refactor pass): `tmp/cloth_bunny_example_smoke_refactor/`
+- offline skip-render smoke log (refactor pass): `tmp/cloth_bunny_offline_smoke_refactor/`
+- diagnostics bundle smoke output: `tmp/cloth_bunny_diag_bundle_smoke/`
 - wrapper smoke outputs:
   - `tmp/cloth_bunny_script_smoke/`
   - `tmp/cloth_bunny_force_bundle_build_case/`
@@ -69,6 +94,9 @@ helper files have been demoted to transition shims.
 
 ## Next Step
 
+- shrink `Newton/phystwin_bridge/demos/cloth_bunny/example.py` further by
+  extracting manual substep and viewer-UI bookkeeping so the file looks even
+  closer to a Newton official example
 - shrink `Newton/phystwin_bridge/demos/cloth_bunny/offline.py` further by
   moving force-diagnostic mechanics into a real runtime/diagnostics split
 - once that settles, decide whether rope/box families should adopt the same
@@ -91,6 +119,9 @@ helper files have been demoted to transition shims.
 - `python Newton/phystwin_bridge/demos/demo_cloth_bunny_realtime_viewer.py --help`
 - `python Newton/phystwin_bridge/demos/cloth_bunny/example.py --viewer null --num-frames 2 --mode off --out-dir tmp/cloth_bunny_example_smoke`
 - `python Newton/phystwin_bridge/demos/cloth_bunny/offline.py --out-dir tmp/cloth_bunny_offline_smoke --frames 2 --skip-render`
+- `python Newton/phystwin_bridge/demos/cloth_bunny/example.py --viewer null --num-frames 2 --mode off --out-dir tmp/cloth_bunny_example_smoke_refactor`
+- `python Newton/phystwin_bridge/demos/cloth_bunny/offline.py --out-dir tmp/cloth_bunny_offline_smoke_refactor --frames 2 --skip-render`
+- `python - <<'PY' ... diagnostics.write_force_render_bundle(...) ... PY`
 - `python scripts/run_bunny_force_case.py --out-dir tmp/cloth_bunny_script_smoke --frames 2 --substeps 1 --skip-render`
 - `python scripts/render_bunny_force_artifacts.py --bundle tmp/cloth_bunny_force_bundle_build_case/force_diagnostic/force_render_bundle.pkl --force-dump-dir tmp/cloth_bunny_force_artifacts_smoke`
 - `python scripts/build_bunny_collision_force_bundle.py --bundle tmp/cloth_bunny_force_bundle_build_case/force_diagnostic/force_render_bundle.pkl --out-dir tmp/cloth_bunny_collision_bundle_smoke`

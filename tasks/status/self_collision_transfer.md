@@ -75,8 +75,6 @@ That means the old headline gap is no longer the main blocker.
 
 - `results_meta/tasks/self_collision_transfer.json`
 - `Newton/phystwin_bridge/results/ground_contact_self_collision_repro_fix_20260404_200830_aa5e607/final_verdict.json`
-- `Newton/phystwin_bridge/results/ground_contact_self_collision_repro_fix_20260404_200830_aa5e607/repro_audit_summary.md`
 - `Newton/phystwin_bridge/results/ground_contact_self_collision_rmse_matrix_20260408_070232_eb0d80b/rmse_matrix_summary.json`
 - `Newton/phystwin_bridge/results/ground_contact_self_collision_restart137_matrix_20260408_070609_eb0d80b/rmse_matrix_summary.json`
-- `Newton/phystwin_bridge/results/self_collision_transfer_case3_vs_case4_followup_20260404_210334_ac9ec33/final_recommendation.md`
-- `Newton/phystwin_bridge/results/ground_contact_self_collision_visual_bundle_20260408_042645_00feebe/README.md`
+- `Newton/phystwin_bridge/results/ground_contact_self_collision_visual_bundle_20260408_042645_00feebe/`

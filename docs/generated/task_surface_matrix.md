@@ -13,6 +13,7 @@ Template files alone do not count as workflow usage.
 | `markdown_harness_maintenance_upgrade` | `high_risk_multi_session_maintenance` | `True` | `True` | `True` | `True` | `True` | `True` | `True` | `True` | `True` | `False` | `` | `` |
 |  |  |  |  |  |  |  | `tasks/contracts/markdown_harness_maintenance_upgrade.md` |  | `tasks/handoffs/markdown_harness_maintenance_upgrade.md` |  |  |  |  |
 | `newton_robot_examples_kb_update` | `` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `False` | `False` | `False` | `` | `` |
+| `native_robot_table_penetration_probe` | `` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `False` | `False` | `False` | `` | `` |
 | `slide_deck_overhaul` | `meeting_facing_release` | `True` | `True` | `True` | `True` | `True` | `True` | `True` | `True` | `True` | `False` | `` | `` |
 |  |  |  |  |  |  |  | `tasks/contracts/slide_deck_overhaul.md` |  | `tasks/handoffs/slide_deck_overhaul.md` |  |  |  |  |
 | `meeting_20260408_recall_part` | `` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `False` | `False` | `False` | `` | `` |

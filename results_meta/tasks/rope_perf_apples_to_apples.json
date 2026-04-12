@@ -19,20 +19,21 @@
     "expected_artifacts": [
       "results/rope_perf_apples_to_apples/index.csv",
       "results/rope_perf_apples_to_apples/summary.json",
-      "results/rope_perf_apples_to_apples/BEST_EVIDENCE.md",
-      "results/rope_perf_apples_to_apples/notes/methodology.md",
-      "results/rope_perf_apples_to_apples/notes/conclusions.md",
-      "results/rope_perf_apples_to_apples/notes/nsight.md"
+      "results/rope_perf_apples_to_apples/README.md",
+      "results/rope_perf_apples_to_apples/BEST_EVIDENCE.txt",
+      "results/rope_perf_apples_to_apples/notes/methodology.txt",
+      "results/rope_perf_apples_to_apples/notes/conclusions.txt",
+      "results/rope_perf_apples_to_apples/notes/nsight.txt"
     ],
     "validator_outputs": [
-      "results/rope_perf_apples_to_apples/newton/A0_baseline_throughput/verdict.md",
-      "results/rope_perf_apples_to_apples/newton/A1_precomputed_throughput/verdict.md",
-      "results/rope_perf_apples_to_apples/phystwin/B0_headless_throughput/verdict.md",
-      "results/rope_perf_apples_to_apples/nsight/newton_A1/verdict.md",
-      "results/rope_perf_apples_to_apples/nsight/phystwin_B0/verdict.md"
+      "results/rope_perf_apples_to_apples/newton/A0_baseline_throughput/verdict.txt",
+      "results/rope_perf_apples_to_apples/newton/A1_precomputed_throughput/verdict.txt",
+      "results/rope_perf_apples_to_apples/phystwin/B0_headless_throughput/verdict.txt",
+      "results/rope_perf_apples_to_apples/nsight/newton_A1/verdict.txt",
+      "results/rope_perf_apples_to_apples/nsight/phystwin_B0/verdict.txt"
     ],
     "verdict_pointers": [
-      "results/rope_perf_apples_to_apples/BEST_EVIDENCE.md"
+      "results/rope_perf_apples_to_apples/BEST_EVIDENCE.txt"
     ],
     "repo_friendly_evidence": {
       "summary": [
@@ -58,8 +59,9 @@
   },
   "superseded_runs": [],
   "local_only_surfaces": [
-    "results/rope_perf_apples_to_apples/BEST_EVIDENCE.md",
+    "results/rope_perf_apples_to_apples/README.md",
+    "results/rope_perf_apples_to_apples/BEST_EVIDENCE.txt",
     "results/rope_perf_apples_to_apples/index.csv"
   ],
-  "updated_at": "2026-04-01"
+  "updated_at": "2026-04-12"
 }

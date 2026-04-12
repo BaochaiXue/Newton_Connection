@@ -24,13 +24,13 @@
       "results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation/qa/contact_sheet.png",
       "results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation/qa/event_sheet.png",
       "results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation/qa/validation.json",
-      "results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation/qa/verdict.md"
+      "results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation/qa/verdict.txt"
     ],
     "validator_outputs": [
       "results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation/qa/validation.json"
     ],
     "verdict_pointers": [
-      "results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation/qa/verdict.md"
+      "results/robot_deformable_demo/runs/20260331_030148_native_franka_lift_release_presentation/qa/verdict.txt"
     ],
     "repo_friendly_evidence": {
       "summary": [
@@ -74,8 +74,10 @@
     }
   ],
   "local_only_surfaces": [
-    "results/robot_deformable_demo/BEST_RUN.md",
+    "results/robot_deformable_demo/README.md",
+    "results/robot_deformable_demo/BEST_RUN.txt",
+    "results/robot_deformable_demo/LEGACY_CANDIDATES.txt",
     "results/robot_deformable_demo/index.csv"
   ],
-  "updated_at": "2026-04-09"
+  "updated_at": "2026-04-12"
 }

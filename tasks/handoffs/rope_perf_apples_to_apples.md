@@ -34,7 +34,7 @@ benchmark result.
 ## Key GIF / Artifact Paths
 
 - `results_meta/tasks/rope_perf_apples_to_apples.json`
-- `results/rope_perf_apples_to_apples/BEST_EVIDENCE.md`
+- `results/rope_perf_apples_to_apples/README.md`
 - `results/rope_perf_apples_to_apples/report/todo2_rope_perf_report.pdf`
 
 ## What Not To Redo

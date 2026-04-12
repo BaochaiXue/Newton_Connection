@@ -28,10 +28,12 @@ discipline.
 2. compress live entrypoints into maps and route history through archive hubs
 3. clean root-level tracked clutter and encode a root allowlist policy
 4. keep deep bundle Markdown quarantined to approved entry surfaces only
-5. trim `current_status.md` into a real dashboard and align result authority
-6. normalize inventory generation, staleness reporting, and task-surface reporting
-7. strengthen lint/hooks with write-strict/read-loose behavior and regenerate ledgers
-8. enforce review metadata and outcome-first user reporting in AGENTS/runbook/hooks
+5. demote deep local `results/` Markdown into `.txt` browsing files while
+   keeping one family-root `README.md` per family
+6. trim `current_status.md` into a real dashboard and align result authority
+7. normalize inventory generation, staleness reporting, and task-surface reporting
+8. strengthen lint/hooks with write-strict/read-loose behavior and regenerate ledgers
+9. enforce review metadata and outcome-first user reporting in AGENTS/runbook/hooks
 
 ## Validation
 

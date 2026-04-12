@@ -78,6 +78,31 @@ BASE_REQUIRED_METADATA_SURFACES = {
     "tasks/status/markdown_harness_maintenance_upgrade.md",
 }
 
+ACTIVE_CONTROL_ROOT_FILES = (
+    ROOT / "AGENTS.md",
+    ROOT / "TODO.md",
+)
+
+ACTIVE_CONTROL_DIRS = (
+    ROOT / "docs/bridge",
+    ROOT / "tasks/spec",
+    ROOT / "tasks/status",
+    ROOT / "tasks/handoffs",
+    ROOT / "tasks/contracts",
+    ROOT / "plans/active",
+)
+
+ALLOWED_ACTIVE_RESULTS_MD = {
+    "results/README.md",
+    "results/bunny_force_visualization/README.md",
+    "results/interactive_playground_profiling/README.md",
+    "results/native_robot_rope_drop_release/README.md",
+    "results/robot_deformable_demo/README.md",
+    "results/rope_perf_apples_to_apples/README.md",
+    "results/rope_perf_apples_to_apples_refresh/README.md",
+    "results/rope_perf_apples_to_apples_smoke/README.md",
+}
+
 
 def _relative(path: Path) -> str:
     return str(path.relative_to(ROOT))
@@ -138,7 +163,13 @@ def _issues_from_generated_inventory(fresh: list[dict[str, Any]]) -> list[str]:
 
     for path, fresh_row in fresh_by_path.items():
         gen_row = generated_by_path[path]
-        for key in ("classification", "action", "contains_machine_local_paths", "indexed_from_canonical_entrypoint"):
+        for key in (
+            "classification",
+            "action",
+            "contains_machine_local_paths",
+            "indexed_from_canonical_entrypoint",
+            "approved_bundle_entry",
+        ):
             if gen_row.get(key) != fresh_row.get(key):
                 issues.append(
                     f"generated inventory is stale for `{path}` field `{key}`: generated={gen_row.get(key)!r}, fresh={fresh_row.get(key)!r}"
@@ -275,6 +306,40 @@ def _issues_from_bundle_entry_policy(fresh_inventory: list[dict[str, Any]]) -> l
             issues.append(
                 f"approved deep bundle entry surface must stay local-only, deprecated-pointer, or historical: {rel}"
             )
+    return issues
+
+
+def _iter_active_control_plane_markdown() -> list[Path]:
+    seen: set[Path] = set()
+    out: list[Path] = []
+    for path in ACTIVE_CONTROL_ROOT_FILES:
+        if path.exists():
+            seen.add(path)
+            out.append(path)
+    for directory in ACTIVE_CONTROL_DIRS:
+        if not directory.exists():
+            continue
+        for path in sorted(directory.rglob("*.md")):
+            if path in seen:
+                continue
+            seen.add(path)
+            out.append(path)
+    return out
+
+
+def _issues_from_active_local_md_links() -> list[str]:
+    issues: list[str] = []
+    pattern = re.compile(r"(results/[^\s`'\"<>()]+\.md|Newton/phystwin_bridge/results/[^\s`'\"<>()]+\.md)")
+    for path in _iter_active_control_plane_markdown():
+        rel = _relative(path)
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        for match in sorted(set(pattern.findall(text))):
+            if match.startswith("results/"):
+                if match in ALLOWED_ACTIVE_RESULTS_MD:
+                    continue
+                issues.append(f"active control-plane file deep-links local results markdown instead of a family-root entry surface: {rel} -> {match}")
+                continue
+            issues.append(f"active control-plane file links deep Newton local-results markdown; use a directory root or non-Markdown artifact instead: {rel} -> {match}")
     return issues
 
 
@@ -504,6 +569,7 @@ def _collect_issues() -> list[str]:
     issues.extend(_issues_from_reporting_discipline())
     issues.extend(_issues_from_root_allowlist())
     issues.extend(_issues_from_bundle_entry_policy(fresh_inventory))
+    issues.extend(_issues_from_active_local_md_links())
     issues.extend(_issues_from_authority_surfaces(fresh_inventory, registry_entries))
     issues.extend(_issues_from_archived_task_pages())
     issues.extend(_issues_from_registry_json(registry_entries))

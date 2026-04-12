@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `markdown_harness_maintenance_upgrade`
-> last_reviewed: `2026-04-11`
+> last_reviewed: `2026-04-12`
 > review_interval: `7d`
 > update_rule: `Update after each meaningful cleanup milestone and after final validation. Keep the page outcome-first rather than process-first.`
 > notes: Live status log for the current markdown/control-plane maintenance pass.
@@ -18,6 +18,10 @@ This maintenance line is active and currently healthy:
 - active entrypoints now route history through archive hubs instead of inline historical ledgers
 - root-level tracked entry surfaces are cleaner and reusable scripts/config examples now live under `scripts/`
 - read-only inspection of watched harness paths now succeeds while risky release/generation flows remain guarded
+- retired local robot-driving practices no longer need to serve as implicit
+  reference points for robot questions
+- `results/` deep local notes now stay outside the harness by using `.txt`
+  instead of `.md`
 - harness lint currently passes
 
 ## What Changed In The Latest Pass
@@ -59,6 +63,27 @@ This maintenance line is active and currently healthy:
     - dated changelog sections in `current_status.md`
     - tracked root components outside the allowlist
     - unapproved deep-bundle Markdown entering the harness
+- tightened robot-guidance routing:
+  - `docs/newton/robot_example_patterns.md` now explains the current native
+    robot-driving families explicitly
+  - the same page now marks archived local bridge robot practices as
+    non-reference-worthy implementation templates
+  - `docs/bridge/tasks/markdown_harness_maintenance_upgrade.md` now names
+    stale mechanism guidance as harness drift
+- demoted deep local Markdown under `results/`:
+  - added `scripts/demote_results_markdown.py`
+  - preserved one family-root `README.md` per family
+  - renamed `226` deeper local `.md` files to `.txt`
+- rewrote the retained `results/` family-root `README.md` files so they now
+  act as local browsing roots rather than mini control planes
+- removed active deep links to run-local Markdown from:
+  - rope benchmark status/spec/contract/handoff
+  - bunny diagnostic status/contract/handoff
+  - self-collision status/handoff
+- shrank the inventory-approved `results/` entry set to family-root `README.md`
+  surfaces only and removed run-level `README.md` approval
+- aligned `results_meta/tasks/*.json` and `results_meta/DEPRECATED.md` with the
+  new `.txt` local-note paths
 
 ## Problem Solved
 
@@ -67,6 +92,10 @@ This maintenance line is active and currently healthy:
 - hooks no longer confuse read-only inspection with risky side effects
 - generated ledgers now explain both root allowlist policy and deep-bundle
   quarantine instead of only classifying Markdown in isolation
+- the local-noise problem was mostly `results/` deep Markdown, not the core
+  harness entry surfaces
+- family-root `README.md` plus `.txt` deep notes is a better compromise than
+  keeping every verdict/report as Markdown
 
 ## Findings / Conclusions
 
@@ -77,11 +106,16 @@ This maintenance line is active and currently healthy:
 - deep bundle trees can stay in place as long as only a small approved entry set
   is indexed into the control plane
 - hook policy has to reason about actions, not only path names
+- stale mechanism advice is also a harness problem when historical local demos
+  keep sounding more canonical than current upstream references
 
 ## GIF / Artifact Paths To Review
 
 - no new GIF belongs to this maintenance pass
 - main evidence to inspect:
+  - `results/README.md`
+  - `results/rope_perf_apples_to_apples/README.md`
+  - `docs/newton/robot_example_patterns.md`
   - `docs/bridge/current_status.md`
   - `docs/bridge/tasks/README.md`
   - `docs/generated/md_inventory.md`
@@ -95,9 +129,13 @@ This maintenance line is active and currently healthy:
   re-expanding live indexes
 - keep new root-level utilities out of repo root unless they are true entry
   surfaces
+- keep robot-driving guidance anchored to current Newton native examples instead
+  of archived bridge robot experiments
 - if a new local bundle Markdown file needs harness visibility, add it
   explicitly as an approved entry surface instead of letting deep README sprawl
   leak back in
+- if a local `results/` family grows new notes/verdicts, default them to `.txt`
+  unless there is a concrete reason to promote another Markdown entry surface
 
 ## Blocking Issues
 
@@ -107,7 +145,9 @@ This maintenance line is active and currently healthy:
 ## Validation
 
 - `python scripts/generate_md_inventory.py`
+- `python scripts/demote_results_markdown.py --dry-run`
 - `python scripts/lint_harness_consistency.py`
+- `python scripts/sync_results_registry.py`
 - `head -n 6 docs/bridge/current_status.md`
 - `head -n 6 scripts/send_pdf_via_yahoo.py`
 - `scripts/send_pdf_via_yahoo.py --help`
