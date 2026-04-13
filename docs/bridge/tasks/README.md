@@ -24,6 +24,7 @@ Each task page should answer:
 - [markdown_harness_maintenance_upgrade.md](./markdown_harness_maintenance_upgrade.md)
 - [newton_robot_examples_kb_update.md](./newton_robot_examples_kb_update.md)
 - [native_robot_table_penetration_probe.md](./native_robot_table_penetration_probe.md)
+- [robot_table_rope_split_mujoco_semiimplicit.md](./robot_table_rope_split_mujoco_semiimplicit.md)
 - [slide_deck_overhaul.md](./slide_deck_overhaul.md)
 - [meeting_20260408_recall_part.md](./meeting_20260408_recall_part.md)
 - [bunny_penetration_force_diagnostic.md](./bunny_penetration_force_diagnostic.md)

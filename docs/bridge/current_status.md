@@ -1,14 +1,14 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `bridge_control_plane`
-> last_reviewed: `2026-04-12`
+> last_reviewed: `2026-04-13`
 > review_interval: `7d`
 > update_rule: `Update when active workstreams, blockers, promoted result meaning, or control-plane routing rules change. Keep detailed run notes in task status pages and results_meta.`
 > notes: Short operational dashboard only. Keep this page map-like: current work, blockers, promoted surfaces, and where to go next.
 
 # Current Status
 
-Last updated: 2026-04-12
+Last updated: 2026-04-13
 
 This page is the shortest operational dashboard for the bridge project.
 
@@ -26,6 +26,8 @@ Detailed result meaning belongs in:
   - move official Newton robot-example lessons into `docs/newton/` so future agents do not have to recover them from retired robot diagnostics
 - `native_robot_table_penetration_probe`
   - build a minimal robot_panda_hydro-style bridge demo that intentionally targets below the table and records whether native rigid-table blocking holds
+- `robot_table_rope_split_mujoco_semiimplicit`
+  - split demo code is now live; best-known fine-step one-way run keeps truthful rope render plus simultaneous rope-table and rope-ground contact, but `finger first contact` is still the open blocker
 - `markdown_harness_maintenance_upgrade`
   - keep the harness fail-closed: progressive disclosure, archive-hub routing, root hygiene, local-only result wording, and write-strict/read-loose hook behavior
 - `slide_deck_overhaul`
@@ -47,6 +49,10 @@ Detailed result meaning belongs in:
   - the fair matrix is reproducible, but strict parity is still blocked by the broader controller-spring / strict-parity mismatch
 - `interactive_playground_profiling`
   - keep exploratory profiling separate from the committed rope benchmark truth under `rope_perf_apples_to_apples`
+- `robot_table_rope_split_mujoco_semiimplicit`
+  - the split MuJoCo/SemiImplicit stack is running, but the current side-finger
+    push path still misses the settled rope segment in the best-known one-way
+    artifact `/tmp/robot_table_rope_split_one_way_fine_v5`
 
 ## Promoted Surfaces At A Glance
 

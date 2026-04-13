@@ -128,6 +128,7 @@ Current required-workflow exemplars:
 - `bunny_penetration_force_diagnostic`
 - `rope_perf_apples_to_apples`
 - `self_collision_transfer`
+- `robot_table_rope_split_mujoco_semiimplicit`
 
 ## User-Facing Reporting
 

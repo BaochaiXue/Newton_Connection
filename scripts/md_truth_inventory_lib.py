@@ -253,6 +253,7 @@ WORKFLOW_CLASS = {
     "bunny_penetration_force_diagnostic": "result_bearing_visual_evidence",
     "rope_perf_apples_to_apples": "result_bearing_benchmark",
     "self_collision_transfer": "blocked_result_bearing",
+    "robot_table_rope_split_mujoco_semiimplicit": "result_bearing_split_demo",
 }
 
 CONTRACT_REQUIRED_TASKS = set(WORKFLOW_CLASS)
