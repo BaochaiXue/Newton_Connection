@@ -1,14 +1,14 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `bridge_control_plane`
-> last_reviewed: `2026-04-13`
+> last_reviewed: `2026-04-15`
 > review_interval: `7d`
 > update_rule: `Update when active workstreams, blockers, promoted result meaning, or control-plane routing rules change. Keep detailed run notes in task status pages and results_meta.`
 > notes: Short operational dashboard only. Keep this page map-like: current work, blockers, promoted surfaces, and where to go next.
 
 # Current Status
 
-Last updated: 2026-04-13
+Last updated: 2026-04-15
 
 This page is the shortest operational dashboard for the bridge project.
 
@@ -30,7 +30,8 @@ Detailed result meaning belongs in:
   - split demo code is live; rope default total mass is `0.1kg`, default
     physical radius is `0.2x`, recording now starts post-settle, and the demo
     now measures support penetration explicitly instead of trusting contact
-    counts alone
+    counts alone; the validated default-support artifact now passes the
+    non-burying gate and finger-targeting is the next active step
 - `markdown_harness_maintenance_upgrade`
   - keep the harness fail-closed: progressive disclosure, archive-hub routing, root hygiene, local-only result wording, and write-strict/read-loose hook behavior
 - `slide_deck_overhaul`
@@ -53,10 +54,12 @@ Detailed result meaning belongs in:
 - `interactive_playground_profiling`
   - keep exploratory profiling separate from the committed rope benchmark truth under `rope_perf_apples_to_apples`
 - `robot_table_rope_split_mujoco_semiimplicit`
-  - support stabilization is still the main blocker under the new gate:
-    the current default candidate keeps contact, but it fails the new
-    non-burying criterion with `max_support_penetration_m = 0.05157` in
-    `/tmp/robot_table_rope_split_penetration_gate_default`
+  - support calibration is no longer the blocker:
+    the new default support artifact keeps `rope_table_contact_frames_first_30 = 30`
+    and `rope_ground_contact_frames_first_30 = 30` while reducing
+    `max_support_penetration_m` to `0.000639` in
+    `tmp/robot_table_rope_split_support_default_authoritative_20260415`;
+    the remaining blocker is still `first_finger_rope_contact_frame = null`
 
 ## Promoted Surfaces At A Glance
 
@@ -64,6 +67,10 @@ Detailed result meaning belongs in:
   - meeting-facing bunny penetration board under the reopened `2 x 2` contract
 - `rope_perf_apples_to_apples`
   - same-case no-render rope replay benchmark; viewer `E1` remains supporting context only
+- `robot_table_rope_split_mujoco_semiimplicit`
+  - current authoritative partial surface: the split demo's default support
+    parameters now satisfy the non-burying support gate, but finger-first
+    contact is still unresolved
 - full committed meaning:
   - `results_meta/INDEX.md`
   - `results_meta/LATEST.md`

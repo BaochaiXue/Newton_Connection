@@ -14,7 +14,7 @@ Template files alone do not count as workflow usage.
 |  |  |  |  |  |  |  | `tasks/contracts/markdown_harness_maintenance_upgrade.md` |  | `tasks/handoffs/markdown_harness_maintenance_upgrade.md` |  |  |  |  |
 | `newton_robot_examples_kb_update` | `` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `False` | `False` | `False` | `` | `` |
 | `native_robot_table_penetration_probe` | `` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `False` | `False` | `False` | `` | `` |
-| `robot_table_rope_split_mujoco_semiimplicit` | `result_bearing_split_demo` | `True` | `True` | `True` | `True` | `True` | `True` | `True` | `True` | `True` | `False` | `` | `` |
+| `robot_table_rope_split_mujoco_semiimplicit` | `result_bearing_split_demo` | `True` | `True` | `True` | `True` | `True` | `True` | `True` | `True` | `True` | `True` | `partial` | `robot_table_rope_split_support_default_authoritative_20260415` |
 |  |  |  |  |  |  |  | `tasks/contracts/robot_table_rope_split_mujoco_semiimplicit.md` |  | `tasks/handoffs/robot_table_rope_split_mujoco_semiimplicit.md` |  |  |  |  |
 | `slide_deck_overhaul` | `meeting_facing_release` | `True` | `True` | `True` | `True` | `True` | `True` | `True` | `True` | `True` | `False` | `` | `` |
 |  |  |  |  |  |  |  | `tasks/contracts/slide_deck_overhaul.md` |  | `tasks/handoffs/slide_deck_overhaul.md` |  |  |  |  |
@@ -29,3 +29,5 @@ Template files alone do not count as workflow usage.
 |  |  |  |  |  |  |  | `tasks/contracts/self_collision_transfer.md` |  | `tasks/handoffs/self_collision_transfer.md` |  |  |  |  |
 | `data_collection_protocol` | `` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `False` | `False` | `False` | `` | `` |
 | `fast_foundation_stereo` | `` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `False` | `False` | `False` | `` | `` |
+| `phystwin_four_new_cases_pipeline` | `` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `False` | `False` | `False` | `` | `` |
+| `phystwin_upstream_sync_review` | `` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `False` | `False` | `False` | `` | `` |

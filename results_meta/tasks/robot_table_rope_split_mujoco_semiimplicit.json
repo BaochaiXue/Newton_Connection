@@ -1,0 +1,73 @@
+{
+  "registry_version": 1,
+  "task_slug": "robot_table_rope_split_mujoco_semiimplicit",
+  "task_chain": {
+    "task_page": "docs/bridge/tasks/robot_table_rope_split_mujoco_semiimplicit.md",
+    "spec": "tasks/spec/robot_table_rope_split_mujoco_semiimplicit.md",
+    "plan": "plans/active/robot_table_rope_split_mujoco_semiimplicit.md",
+    "implement": "tasks/implement/robot_table_rope_split_mujoco_semiimplicit.md",
+    "status": "tasks/status/robot_table_rope_split_mujoco_semiimplicit.md"
+  },
+  "bundle_root": "tmp/robot_table_rope_split_support_default_authoritative_20260415",
+  "authoritative_run": {
+    "run_id": "robot_table_rope_split_support_default_authoritative_20260415",
+    "authoritative": true,
+    "task_state": "partial",
+    "claim_boundary": "Current authoritative partial surface for the split MuJoCo robot/table + SemiImplicit rope demo: the default support parameters now satisfy the non-burying support gate while preserving truthful render thickness and persistent table+ground contact over the first 30 post-settle frames. This does not yet claim finger-first contact.",
+    "local_artifact_root": "tmp/robot_table_rope_split_support_default_authoritative_20260415",
+    "command_pointer": "tmp/robot_table_rope_split_support_default_authoritative_20260415/command.sh",
+    "expected_artifacts": [
+      "tmp/robot_table_rope_split_support_default_authoritative_20260415/README.md",
+      "tmp/robot_table_rope_split_support_default_authoritative_20260415/command.sh",
+      "tmp/robot_table_rope_split_support_default_authoritative_20260415/run.log",
+      "tmp/robot_table_rope_split_support_default_authoritative_20260415/summary.json",
+      "tmp/robot_table_rope_split_support_default_authoritative_20260415/scene.npz",
+      "tmp/robot_table_rope_split_support_default_authoritative_20260415/timeseries.csv",
+      "tmp/robot_table_rope_split_support_default_authoritative_20260415/hero.mp4",
+      "tmp/robot_table_rope_split_support_default_authoritative_20260415/hero.gif",
+      "tmp/robot_table_rope_split_support_default_authoritative_20260415/contact_sheet.jpg",
+      "tmp/robot_table_rope_split_support_default_authoritative_20260415/first_30_frames_sheet.jpg"
+    ],
+    "validator_outputs": [],
+    "verdict_pointers": [
+      "tmp/robot_table_rope_split_support_default_authoritative_20260415/summary.json",
+      "tasks/status/robot_table_rope_split_mujoco_semiimplicit.md"
+    ],
+    "repo_friendly_evidence": {
+      "summary": [
+        "Default support parameters now pass the non-burying support gate without any support override flags.",
+        "Persistent table+ground contact is preserved across the first 30 post-settle frames.",
+        "Finger-first contact is still unresolved, so this is a partial support claim rather than milestone-1 acceptance."
+      ],
+      "key_metrics": {
+        "rope_table_contact_frames_first_30": 30,
+        "rope_ground_contact_frames_first_30": 30,
+        "max_support_penetration_m": 0.0006391536444425583,
+        "final_support_penetration_p99_m": 0.0,
+        "max_ground_penetration_m": 0.0006391536444425583,
+        "max_table_penetration_m": 0.0006147925741970539,
+        "robot_table_contact_frames_first_30": 0,
+        "rope_render_matches_physics": true
+      },
+      "thumbnail_paths": [
+        "tmp/robot_table_rope_split_support_default_authoritative_20260415/hero.gif",
+        "tmp/robot_table_rope_split_support_default_authoritative_20260415/first_30_frames_sheet.jpg"
+      ]
+    },
+    "why_passed": [
+      "The default parser values now satisfy the current support gate without any support-specific CLI overrides.",
+      "Support contact remains truthful: table and ground are both active for all first 30 post-settle frames while robot-table contact stays at zero.",
+      "The rope still renders at its physical radius, so the support-pass claim does not depend on visual thickening or proxy geometry."
+    ],
+    "predecessor": null,
+    "superseded_by": null
+  },
+  "superseded_runs": [],
+  "local_only_surfaces": [
+    "tmp/robot_table_rope_split_support_default_authoritative_20260415/README.md",
+    "tmp/robot_table_rope_split_support_default_authoritative_20260415/run.log",
+    "tmp/robot_table_rope_split_support_default_authoritative_20260415/contact_sheet.jpg",
+    "tmp/robot_table_rope_split_support_default_authoritative_20260415/first_30_frames_sheet.jpg"
+  ],
+  "updated_at": "2026-04-15"
+}

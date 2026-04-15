@@ -35,6 +35,7 @@ Each task page should answer:
 - [data_collection_protocol.md](./data_collection_protocol.md)
 - [fast_foundation_stereo.md](./fast_foundation_stereo.md)
 - [phystwin_four_new_cases_pipeline.md](./phystwin_four_new_cases_pipeline.md)
+- [phystwin_upstream_sync_review.md](./phystwin_upstream_sync_review.md)
 
 ## Historical / Archive Routing
 

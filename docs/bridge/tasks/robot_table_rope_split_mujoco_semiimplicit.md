@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `robot_table_rope_split_mujoco_semiimplicit`
-> last_reviewed: `2026-04-13`
+> last_reviewed: `2026-04-15`
 > review_interval: `14d`
 > update_rule: `Update when the milestone boundary, coupling mode, artifact contract, or recommended implementation path changes.`
 > notes: Active task for a split robot/table/rope demo that uses MuJoCo on the native robot/table side and SemiImplicit on the bridged rope side, with direct-finger contact and physical rope rendering.
@@ -44,6 +44,8 @@ without reviving the old monolithic bridge robot stack:
 - Recording now starts from post-settle state by default
 - The demo now tracks support penetration proxies and no longer treats
   support-contact counts alone as success
+- Default support parameters now satisfy the non-burying gate without any
+  support override flags
 - Best-known one-way fine-step artifact:
   - keeps `rope_table_contact` and `rope_ground_contact` true in the same run
   - keeps `rope_render_matches_physics = true`
@@ -58,6 +60,7 @@ without reviving the old monolithic bridge robot stack:
   - `Newton/phystwin_bridge/demos/demo_robot_table_rope_split_mujoco_semiimplicit.py`
 - New wrapper:
   - `scripts/run_robot_table_rope_split_demo.sh`
+  - `scripts/run_robot_table_rope_split_support_sweep.sh`
 - Relevant bridge helpers:
   - `Newton/phystwin_bridge/demos/bridge_deformable_common.py`
   - `Newton/phystwin_bridge/demos/bridge_shared.py`
@@ -81,6 +84,7 @@ without reviving the old monolithic bridge robot stack:
 
 ```bash
 bash scripts/run_robot_table_rope_split_demo.sh
+bash scripts/run_robot_table_rope_split_support_sweep.sh <out_dir>
 python scripts/validate_experiment_artifacts.py <out_dir> --require-video --require-gif --summary-field rope_motion_after_contact --summary-field rope_render_matches_physics
 python scripts/lint_harness_consistency.py
 ```
@@ -138,14 +142,19 @@ Mass-control flags now supported by the split demo:
   - `/tmp/robot_table_rope_split_penetration_gate_default/summary.json`
   - `/tmp/robot_table_rope_split_penetration_gate_default/hero.mp4`
   - `/tmp/robot_table_rope_split_penetration_gate_default/first_30_frames_sheet.jpg`
+- Support-default authoritative run:
+  - `tmp/robot_table_rope_split_support_default_authoritative_20260415/summary.json`
+  - `tmp/robot_table_rope_split_support_default_authoritative_20260415/hero.mp4`
+  - `tmp/robot_table_rope_split_support_default_authoritative_20260415/first_30_frames_sheet.jpg`
 - Current conclusion:
   - the split solver architecture is viable at the fine rope timestep
-  - the light-rope setup no longer needs to pass only a fly-away check; it must
-    also pass a non-burying support gate
-  - `candidate_c` is no longer treated as a passing default, because it keeps
-    contact by burying into the support geometry
-  - the remaining blocker is still support calibration under the new
-    non-burying gate; finger-targeting comes after that
+  - the default support parameter set now passes the non-burying support gate
+    while keeping `rope_table_contact_frames_first_30 = 30` and
+    `rope_ground_contact_frames_first_30 = 30`
+  - `candidate_c` remains a failed support-calibration example, because it
+    keeps contact by burying into the support geometry
+  - the next blocker is no longer support calibration; finger-targeting is the
+    next active milestone
 
 ## Open Questions
 

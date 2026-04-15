@@ -7,6 +7,9 @@ It is meant to function as a maintenance queue, not a permanent wall of red temp
 
 | Path | Classification | Review | Age (d) | Interval (d) | Enforced | Overgrown | Compressed | Action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `docs/bridge/tasks/phystwin_four_new_cases_pipeline.md` | `CANONICAL` | `missing` | `None` | `21` | `True` | `False` | `False` | `REFORMAT` |
+| `docs/bridge/tasks/phystwin_upstream_sync_review.md` | `CANONICAL` | `missing` | `None` | `21` | `True` | `False` | `False` | `REFORMAT` |
 | `plans/active/bridge_code_structure_cleanup.md` | `ACTIVE_SUPPORTING` | `out_of_scope` | `None` | `None` | `False` | `False` | `True` | `REFORMAT` |
 | `tasks/status/bridge_code_structure_cleanup.md` | `ACTIVE_SUPPORTING` | `out_of_scope` | `None` | `None` | `False` | `False` | `True` | `REFORMAT` |
+| `tasks/status/phystwin_four_new_cases_pipeline.md` | `ACTIVE_SUPPORTING` | `out_of_scope` | `None` | `None` | `False` | `False` | `True` | `REFORMAT` |
 | `tasks/status/robot_table_rope_split_mujoco_semiimplicit.md` | `ACTIVE_SUPPORTING` | `out_of_scope` | `None` | `None` | `False` | `False` | `True` | `REFORMAT` |
