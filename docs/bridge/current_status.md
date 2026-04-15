@@ -27,7 +27,10 @@ Detailed result meaning belongs in:
 - `native_robot_table_penetration_probe`
   - build a minimal robot_panda_hydro-style bridge demo that intentionally targets below the table and records whether native rigid-table blocking holds
 - `robot_table_rope_split_mujoco_semiimplicit`
-  - split demo code is now live; best-known fine-step one-way run keeps truthful rope render plus simultaneous rope-table and rope-ground contact, but `finger first contact` is still the open blocker
+  - split demo code is live; rope default total mass is `0.1kg`, default
+    physical radius is `0.2x`, recording now starts post-settle, and the demo
+    now measures support penetration explicitly instead of trusting contact
+    counts alone
 - `markdown_harness_maintenance_upgrade`
   - keep the harness fail-closed: progressive disclosure, archive-hub routing, root hygiene, local-only result wording, and write-strict/read-loose hook behavior
 - `slide_deck_overhaul`
@@ -50,9 +53,10 @@ Detailed result meaning belongs in:
 - `interactive_playground_profiling`
   - keep exploratory profiling separate from the committed rope benchmark truth under `rope_perf_apples_to_apples`
 - `robot_table_rope_split_mujoco_semiimplicit`
-  - the split MuJoCo/SemiImplicit stack is running, but the current side-finger
-    push path still misses the settled rope segment in the best-known one-way
-    artifact `/tmp/robot_table_rope_split_one_way_fine_v5`
+  - support stabilization is still the main blocker under the new gate:
+    the current default candidate keeps contact, but it fails the new
+    non-burying criterion with `max_support_penetration_m = 0.05157` in
+    `/tmp/robot_table_rope_split_penetration_gate_default`
 
 ## Promoted Surfaces At A Glance
 

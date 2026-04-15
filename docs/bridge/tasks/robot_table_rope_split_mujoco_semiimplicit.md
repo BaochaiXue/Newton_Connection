@@ -37,6 +37,13 @@ without reviving the old monolithic bridge robot stack:
 - Initial implementation target is `one_way`; `two_way` is explicitly the next
   milestone, not a hidden assumption for first acceptance
 - Code and wrapper now exist
+- Rope default total object mass is now `0.1kg` through the shared bridge
+  `weight_scale` path
+- Rope default physical radius is now `0.2x` of the previous value through the
+  shared bridge `particle_radius_scale` path
+- Recording now starts from post-settle state by default
+- The demo now tracks support penetration proxies and no longer treats
+  support-contact counts alone as success
 - Best-known one-way fine-step artifact:
   - keeps `rope_table_contact` and `rope_ground_contact` true in the same run
   - keeps `rope_render_matches_physics = true`
@@ -78,6 +85,13 @@ python scripts/validate_experiment_artifacts.py <out_dir> --require-video --requ
 python scripts/lint_harness_consistency.py
 ```
 
+Mass-control flags now supported by the split demo:
+
+- `--auto-set-weight` (default `0.1`)
+- `--mass-spring-scale`
+- `--object-mass`
+- `--particle-radius-scale` (default `0.2`)
+
 ## Required Artifacts
 
 - experiment directory with:
@@ -108,10 +122,30 @@ python scripts/lint_harness_consistency.py
   - `/tmp/robot_table_rope_split_one_way_fine_v5/summary.json`
   - `/tmp/robot_table_rope_split_one_way_fine_v5/hero.mp4`
   - `/tmp/robot_table_rope_split_one_way_fine_v5/contact_sheet.jpg`
+- Default-mass validation run:
+  - `/tmp/robot_table_rope_split_weight_0p1_default/summary.json`
+  - `/tmp/robot_table_rope_split_weight_0p1_default/hero.mp4`
+  - `/tmp/robot_table_rope_split_weight_0p1_default/contact_sheet.jpg`
+- Default-radius validation run:
+  - `/tmp/robot_table_rope_split_radius_0p2_default/summary.json`
+  - `/tmp/robot_table_rope_split_radius_0p2_default/hero.mp4`
+  - `/tmp/robot_table_rope_split_radius_0p2_default/contact_sheet.jpg`
+- Calibrated light-rope run:
+  - `/tmp/robot_table_rope_split_candidate_c/summary.json`
+  - `/tmp/robot_table_rope_split_candidate_c/hero.mp4`
+  - `/tmp/robot_table_rope_split_candidate_c/first_30_frames_sheet.jpg`
+- Penetration-gate default run:
+  - `/tmp/robot_table_rope_split_penetration_gate_default/summary.json`
+  - `/tmp/robot_table_rope_split_penetration_gate_default/hero.mp4`
+  - `/tmp/robot_table_rope_split_penetration_gate_default/first_30_frames_sheet.jpg`
 - Current conclusion:
   - the split solver architecture is viable at the fine rope timestep
-  - the remaining blocker is motion/scene alignment for `finger first contact`,
-    not rope render truth or support-contact semantics
+  - the light-rope setup no longer needs to pass only a fly-away check; it must
+    also pass a non-burying support gate
+  - `candidate_c` is no longer treated as a passing default, because it keeps
+    contact by burying into the support geometry
+  - the remaining blocker is still support calibration under the new
+    non-burying gate; finger-targeting comes after that
 
 ## Open Questions
 

@@ -9,3 +9,4 @@ It is meant to function as a maintenance queue, not a permanent wall of red temp
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `plans/active/bridge_code_structure_cleanup.md` | `ACTIVE_SUPPORTING` | `out_of_scope` | `None` | `None` | `False` | `False` | `True` | `REFORMAT` |
 | `tasks/status/bridge_code_structure_cleanup.md` | `ACTIVE_SUPPORTING` | `out_of_scope` | `None` | `None` | `False` | `False` | `True` | `REFORMAT` |
+| `tasks/status/robot_table_rope_split_mujoco_semiimplicit.md` | `ACTIVE_SUPPORTING` | `out_of_scope` | `None` | `None` | `False` | `False` | `True` | `REFORMAT` |

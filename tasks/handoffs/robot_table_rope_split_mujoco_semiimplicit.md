@@ -12,6 +12,27 @@ Milestone 1: truthful one-way direct-finger split demo.
   - `scripts/run_robot_table_rope_split_demo.sh`
 - the best-known one-way artifact is:
   - `/tmp/robot_table_rope_split_one_way_fine_v5`
+- the split demo now uses the shared bridge mass-scaling path and defaults the
+  rope total object mass to `0.1kg`
+- the split demo now also defaults the physical rope radius to `0.2x` of the
+  previous value through `particle_radius_scale`
+- the split demo now defaults to post-settle recording instead of recording the
+  manual placement phase
+- the current calibrated defaults are:
+  - `ground_shape_contact_scale = 1e-5`
+  - `ground_shape_contact_damping_multiplier = 8.0`
+  - `table_shape_contact_scale = 1e-5`
+  - `table_shape_contact_damping_multiplier = 8.0`
+  - `finger_shape_contact_scale = 0.1`
+  - `finger_shape_contact_damping_multiplier = 1.5`
+  - `table_edge_inset_y = 0.17`
+  - `overhang_drop_factor = 0.15`
+- the default-mass validation artifact is:
+  - `/tmp/robot_table_rope_split_weight_0p1_default`
+- the default-radius validation artifact is:
+  - `/tmp/robot_table_rope_split_radius_0p2_default`
+- the current calibrated-default artifact is:
+  - `/tmp/robot_table_rope_split_candidate_c`
 - a real two-way bookkeeping bug was fixed:
   - rope reaction wrench is now read from the post-step rope state instead of
     the force-cleared pre-step state
@@ -27,6 +48,37 @@ best-known one-way result proves:
 
 But the current motion layout still misses `finger first contact`, so milestone
 1 is not yet accepted. Two-way robot-rope reaction remains milestone 2.
+
+The new default mass is confirmed by summary fields:
+
+- `rope_current_total_object_mass_kg ~= 0.1`
+- `rope_weight_scale ~= 5.7e-05`
+
+but the current `0.1kg` default also weakens persistent table/ground support in
+the existing scene layout, so that geometry must be retuned next.
+
+The new default radius is also confirmed by summary fields:
+
+- `particle_radius_scale = 0.2`
+- `rope_physical_radius_m = rope_render_radius_m = 0.005200476`
+- `rope_render_matches_physics = true`
+
+The current calibrated-default artifact confirms the first-second stabilization:
+
+- `record_start_mode = "post_settle"`
+- `rope_table_contact_frames_first_30 = 30`
+- `rope_ground_contact_frames_first_30 = 30`
+- `robot_table_contact_frames_first_30 = 0`
+- `max_rope_com_z_first_30 = -0.02668`
+
+This is no longer sufficient. The task now also requires a non-burying gate.
+The current candidate and the current default both fail it:
+
+- `max_support_penetration_m = 0.05157`
+- `final_support_penetration_p99_m = 0.04519`
+
+So `candidate_c` must be treated as a failed support-calibration example, not
+as an accepted default.
 
 ## Exact Next Command
 
@@ -47,6 +99,9 @@ The blocker is no longer solver instability. The blocker is geometric:
 
 - `first_finger_rope_contact_frame` is still `null` in the best-known one-way
   fine-step artifact
+- in the new default-mass validation run, support contact is only brief:
+  - `rope_table_contact_frames = 1`
+  - `rope_ground_contact_frames = 2`
 
 ## Key GIF / Artifact Paths
 
