@@ -23,6 +23,17 @@
 
 ## What Changed In The Latest Pass
 
+- fast-forwarded `Newton/newton` to the latest official upstream `origin/main`
+  commit:
+  - `b6a879957cd321e37ca0f3bf15a1f6ea8a55112b`
+- ran a post-core-update split-demo smoke artifact to confirm the bridge path
+  still imports, builds, simulates, and renders without any bridge-side API
+  patch:
+  - `tmp/robot_table_rope_split_post_core_update_smoke_20260415`
+- validated the post-core-update smoke artifact with
+  `scripts/validate_experiment_artifacts.py`
+- confirmed that no bridge interface updates were required for the active split
+  demo path after the core refresh
 - added a support-only sweep wrapper:
   - `scripts/run_robot_table_rope_split_support_sweep.sh`
 - promoted a support-passing default parameter set into the demo parser:
@@ -91,6 +102,13 @@
   - `max_support_penetration_m = 0.000639`
   - `final_support_penetration_p99_m = 0.0`
   - `rope_render_matches_physics = true`
+- the active split bridge path still works after the core update to
+  `b6a87995`:
+  - `tmp/robot_table_rope_split_post_core_update_smoke_20260415`
+  - `rope_table_contact_frames = 5`
+  - `rope_ground_contact_frames = 5`
+  - `max_support_penetration_m = 0.000608`
+  - `rope_render_matches_physics = true`
 - current blocker is geometric, not architectural:
   - the split stack, render truth, and support contacts are now aligned under
     the default parameter set
@@ -105,6 +123,10 @@
   - `tmp/robot_table_rope_split_support_default_authoritative_20260415/hero.gif`
   - `tmp/robot_table_rope_split_support_default_authoritative_20260415/contact_sheet.jpg`
   - `tmp/robot_table_rope_split_support_default_authoritative_20260415/first_30_frames_sheet.jpg`
+- post-core-update smoke artifact:
+  - `tmp/robot_table_rope_split_post_core_update_smoke_20260415/summary.json`
+  - `tmp/robot_table_rope_split_post_core_update_smoke_20260415/hero.mp4`
+  - `tmp/robot_table_rope_split_post_core_update_smoke_20260415/hero.gif`
 - best-known one-way artifact:
   - `/tmp/robot_table_rope_split_one_way_fine_v5/summary.json`
   - `/tmp/robot_table_rope_split_one_way_fine_v5/hero.mp4`
@@ -144,6 +166,9 @@
 ## Validation
 
 - `python -m py_compile Newton/phystwin_bridge/demos/demo_robot_table_rope_split_mujoco_semiimplicit.py`
+- `python -m py_compile Newton/phystwin_bridge/demos/demo_robot_table_rope_split_mujoco_semiimplicit.py Newton/phystwin_bridge/tools/core/newton_import_ir.py Newton/phystwin_bridge/demos/demo_native_robot_table_penetration_probe.py`
+- `bash scripts/run_robot_table_rope_split_demo.sh tmp/robot_table_rope_split_post_core_update_smoke_20260415 --num-frames 5 --coupling-mode one_way --width 320 --height 180`
+- `python scripts/validate_experiment_artifacts.py tmp/robot_table_rope_split_post_core_update_smoke_20260415 --require-video --require-gif --summary-field max_support_penetration_m --summary-field rope_render_matches_physics`
 - `bash scripts/run_robot_table_rope_split_demo.sh tmp/robot_table_rope_split_support_default_authoritative_20260415 --num-frames 30 --coupling-mode one_way`
 - `python scripts/validate_experiment_artifacts.py tmp/robot_table_rope_split_support_default_authoritative_20260415 --require-video --require-gif --summary-field max_support_penetration_m --summary-field final_support_penetration_p99_m --summary-field rope_render_matches_physics`
 - `python scripts/sync_results_registry.py`

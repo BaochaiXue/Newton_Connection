@@ -31,7 +31,9 @@ Detailed result meaning belongs in:
     physical radius is `0.2x`, recording now starts post-settle, and the demo
     now measures support penetration explicitly instead of trusting contact
     counts alone; the validated default-support artifact now passes the
-    non-burying gate and finger-targeting is the next active step
+    non-burying gate, and a post-core-update smoke run still passes after
+    refreshing `Newton/newton` to official upstream `origin/main`; that smoke
+    artifact also passed `validate_experiment_artifacts.py`
 - `markdown_harness_maintenance_upgrade`
   - keep the harness fail-closed: progressive disclosure, archive-hub routing, root hygiene, local-only result wording, and write-strict/read-loose hook behavior
 - `slide_deck_overhaul`
@@ -59,7 +61,8 @@ Detailed result meaning belongs in:
     and `rope_ground_contact_frames_first_30 = 30` while reducing
     `max_support_penetration_m` to `0.000639` in
     `tmp/robot_table_rope_split_support_default_authoritative_20260415`;
-    the remaining blocker is still `first_finger_rope_contact_frame = null`
+    the post-core-update smoke artifact also still runs on the refreshed core,
+    so the remaining blocker is still `first_finger_rope_contact_frame = null`
 
 ## Promoted Surfaces At A Glance
 

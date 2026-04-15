@@ -37,6 +37,10 @@ Milestone 1: truthful one-way direct-finger split demo.
   - `tmp/robot_table_rope_split_support_default_authoritative_20260415`
 - the old calibrated-default artifact is still preserved as a failed example:
   - `/tmp/robot_table_rope_split_candidate_c`
+- the official `Newton/newton` core has now been refreshed to upstream
+  `origin/main = b6a87995`, and the active split bridge path still passes a
+  post-update smoke run:
+  - `tmp/robot_table_rope_split_post_core_update_smoke_20260415`
 - a real two-way bookkeeping bug was fixed:
   - rope reaction wrench is now read from the post-step rope state instead of
     the force-cleared pre-step state
