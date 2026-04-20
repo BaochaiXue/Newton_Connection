@@ -8,7 +8,7 @@
 
 # Current Status
 
-Last updated: 2026-04-15
+Last updated: 2026-04-16
 
 This page is the shortest operational dashboard for the bridge project.
 
@@ -32,8 +32,13 @@ Detailed result meaning belongs in:
     now measures support penetration explicitly instead of trusting contact
     counts alone; the validated default-support artifact now passes the
     non-burying gate, and a post-core-update smoke run still passes after
-    refreshing `Newton/newton` to official upstream `origin/main`; that smoke
-    artifact also passed `validate_experiment_artifacts.py`
+    refreshing `Newton/newton` to official upstream `origin/main`; the rigid-side
+    builder is now aligned more closely with the newer upstream
+    `example_robot_panda_hydro.py` config style, and the post-refactor smoke
+    artifact also passed `validate_experiment_artifacts.py`; a separate
+    presentation-video path now also exists with visible-opening recording,
+    full-cycle rendering, dedicated camera framing, and pad-center-targeted IK,
+    but it is not yet accepted as a meeting-facing artifact
 - `markdown_harness_maintenance_upgrade`
   - keep the harness fail-closed: progressive disclosure, archive-hub routing, root hygiene, local-only result wording, and write-strict/read-loose hook behavior
 - `slide_deck_overhaul`
@@ -62,7 +67,17 @@ Detailed result meaning belongs in:
     `max_support_penetration_m` to `0.000639` in
     `tmp/robot_table_rope_split_support_default_authoritative_20260415`;
     the post-core-update smoke artifact also still runs on the refreshed core,
-    so the remaining blocker is still `first_finger_rope_contact_frame = null`
+    and the new presentation path now fixes the old artifact-type mismatch, but
+    the current best presentation run
+    `tmp/robot_table_rope_split_presentation_smoke_v10_20260416` still fails
+    because `first_finger_rope_contact_frame = null` and
+    `min_leading_pad_to_rope_distance_m = 0.05427`; later presentation variants
+    also started surfacing rope-side contact-buffer overflow warnings, so the
+    blocker is now presentation contact targeting, not support or recording;
+    the best current presentation artifact passes
+    `validate_experiment_artifacts.py` and has a prepared review bundle at
+    `tmp/review_bundle_presentation_smoke_v10_20260416`, but it is still not a
+    skeptical-review `PASS`
 
 ## Promoted Surfaces At A Glance
 

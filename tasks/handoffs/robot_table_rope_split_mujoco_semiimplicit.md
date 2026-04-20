@@ -12,6 +12,8 @@ Milestone 1: truthful one-way direct-finger split demo.
   - `scripts/run_robot_table_rope_split_demo.sh`
 - a support-only sweep wrapper now also exists:
   - `scripts/run_robot_table_rope_split_support_sweep.sh`
+- a presentation-video wrapper now also exists:
+  - `scripts/run_robot_table_rope_split_presentation_video.sh`
 - the best-known one-way artifact is:
   - `/tmp/robot_table_rope_split_one_way_fine_v5`
 - the split demo now uses the shared bridge mass-scaling path and defaults the
@@ -59,6 +61,19 @@ best-known one-way result proves:
 But the current motion layout still misses `finger first contact`, so milestone
 1 is not yet accepted. Two-way robot-rope reaction remains milestone 2.
 
+There is now also a dedicated presentation path for meeting-facing rendering:
+
+- `video_mode = "presentation_lifted"`
+- `record_start_mode = "visible_opening"`
+- `rope_preroll_seconds = 0.0`
+- render length is derived from the motion phases instead of a fixed short
+  support window
+- camera framing is now dedicated to the contact region
+- pad-center-targeted IK is now wired in for the presentation path
+
+This fixes the old “wrong artifact type” problem, but it does not yet produce a
+passable meeting video because finger-rope contact still remains unproven.
+
 The new default mass is confirmed by summary fields:
 
 - `rope_current_total_object_mass_kg ~= 0.1`
@@ -89,7 +104,7 @@ support-calibration example, not an accepted default.
 ## Exact Next Command
 
 ```bash
-bash scripts/run_robot_table_rope_split_demo.sh tmp/robot_table_rope_split_finger_targeting_next --num-frames 120 --coupling-mode one_way
+bash scripts/run_robot_table_rope_split_presentation_video.sh tmp/robot_table_rope_split_presentation_followup --width 960 --height 540
 ```
 
 ## Current Blocker
@@ -98,21 +113,32 @@ The blocker is no longer solver instability or support calibration. The blocker
 is geometric:
 
 - the support-default drape is now stable and non-burying
-- the finger path no longer scrapes the table
-- but the leading finger still does not intersect the settled tabletop rope
-  segment early enough to register first contact
+- the presentation video path now records a truthful lifted opening and keeps
+  the rope in frame
+- the leading pad is now the intended contactor in the presentation IK setup
+- but the current best presentation artifact still bottoms out at
+  `min_leading_pad_to_rope_distance_m = 0.05427`, so first contact remains
+  unproven
 
 ## Last Failed Acceptance Criterion
 
-- `first_finger_rope_contact_frame` is still `null` in the best-known one-way
-  fine-step artifact
-- the task still lacks a run where finger contact is detected before rope motion
+- `first_finger_rope_contact_frame` is still `null` in the best current
+  presentation artifact:
+  - `tmp/robot_table_rope_split_presentation_smoke_v10_20260416`
+- the current best presentation run also still has
+  `min_leading_pad_to_rope_distance_m = 0.05427`
+- the slower/lower follow-up presentation runs (`v11`, `v12`) did not fix
+  contact and started surfacing repeated rope-side contact-buffer overflow
+  warnings
 
 ## Key GIF / Artifact Paths
 
 - `tmp/robot_table_rope_split_support_default_authoritative_20260415/summary.json`
 - `tmp/robot_table_rope_split_support_default_authoritative_20260415/hero.mp4`
 - `tmp/robot_table_rope_split_support_default_authoritative_20260415/first_30_frames_sheet.jpg`
+- `tmp/robot_table_rope_split_presentation_smoke_v10_20260416/summary.json`
+- `tmp/robot_table_rope_split_presentation_smoke_v10_20260416/hero.mp4`
+- `tmp/robot_table_rope_split_presentation_smoke_v10_20260416/contact_sheet.jpg`
 - `/tmp/robot_table_rope_split_one_way_fine_v5/summary.json`
 - `/tmp/robot_table_rope_split_one_way_fine_v5/hero.mp4`
 - `/tmp/robot_table_rope_split_one_way_fine_v5/contact_sheet.jpg`
@@ -125,11 +151,14 @@ is geometric:
 - do not go back to coarse rope stepping; the `64`-substep one-way runs were not
   stable enough to trust
 - do not re-open support sweep unless the new default-support artifact regresses
+- do not promote a presentation artifact as accepted until skeptical review can
+  conservatively defend visible finger-rope contact and rope response
 
 ## Missing Evidence
 
 - a one-way artifact with non-null `first_finger_rope_contact_frame`
 - a first-contact window where the leading pad is the purposeful contactor
+- a skeptical-review `PASS` bundle for a meeting-facing presentation artifact
 - a two-way artifact with nonzero rope-to-robot wrench after contact
 
 ## Context Reset Recommendation

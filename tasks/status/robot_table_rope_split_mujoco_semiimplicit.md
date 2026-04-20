@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `robot_table_rope_split_mujoco_semiimplicit`
-> last_reviewed: `2026-04-15`
+> last_reviewed: `2026-04-16`
 > review_interval: `7d`
 > update_rule: `Update after each meaningful milestone or experiment run.`
 > notes: Live status log for the split MuJoCo robot/table + SemiImplicit rope demo.
@@ -18,6 +18,12 @@
   support candidates
 - The default support parameter set now passes the full
   `no fly-away + no burying` gate
+- A separate presentation-oriented video path now exists for meeting-facing
+  rendering:
+  - visible opening instead of hidden preroll
+  - full-cycle render length derived from motion phases
+  - dedicated presentation camera framing
+  - pad-center-targeted IK instrumentation
 - `finger first contact` is still not achieved, so milestone 1 is not yet
   accepted
 
@@ -34,6 +40,54 @@
   `scripts/validate_experiment_artifacts.py`
 - confirmed that no bridge interface updates were required for the active split
   demo path after the core refresh
+- refactored the rigid-side Panda/table builder to match the newer upstream
+  `example_robot_panda_hydro.py` configuration style:
+  - base `ShapeConfig`
+  - explicit hydroelastic mesh config
+  - explicit hydroelastic primitive config
+- ran a post-refactor smoke artifact and validated it:
+  - `tmp/robot_table_rope_split_post_builder_refactor_smoke_20260415`
+- prepared skeptical review bundles for the latest rendered smoke video and the
+  current default-support authoritative video:
+  - `tmp/review_bundle_post_builder_refactor_smoke_20260415`
+  - `tmp/review_bundle_support_default_authoritative_20260415`
+- conservative video verdict for both bundles is `FAIL`:
+  - the latest rendered smoke video is only `5` frames (`0.1667s`) and does
+    not show a complete process window
+  - the current default-support video is stable and readable, but it still does
+    not show a defensible finger-rope contact or visible manipulation outcome
+- added a dedicated presentation wrapper:
+  - `scripts/run_robot_table_rope_split_presentation_video.sh`
+- implemented a presentation-only video mode in the split demo:
+  - `video_mode = "presentation_lifted"`
+  - `record_start_mode = "visible_opening"`
+  - `rope_preroll_seconds = 0.0`
+  - `render_frame_count = rigid.total_frames + presentation_tail_frames`
+- presentation mode now also uses:
+  - presentation-specific rope placement
+  - presentation-specific camera framing
+  - runtime pad-distance instrumentation
+  - pad-center-targeted IK instead of only EE-indirect targeting
+- ran a series of presentation smokes to iterate on geometry, camera, and
+  control targeting:
+  - `tmp/robot_table_rope_split_presentation_smoke_v6_20260416`
+  - `tmp/robot_table_rope_split_presentation_smoke_v8_20260416`
+  - `tmp/robot_table_rope_split_presentation_smoke_v10_20260416`
+  - `tmp/robot_table_rope_split_presentation_smoke_v11_20260416`
+- current best presentation-facing artifact is still not acceptable:
+  - `tmp/robot_table_rope_split_presentation_smoke_v10_20260416`
+  - it now shows a complete visible process window with rope kept in frame
+  - but `first_finger_rope_contact_frame` remains `null`
+  - and `min_leading_pad_to_rope_distance_m = 0.05427`, so there is still no
+    conservative visual proof of finger-rope contact
+- validated the current best presentation artifact with
+  `scripts/validate_experiment_artifacts.py`
+- prepared a skeptical review bundle for the current best presentation artifact:
+  - `tmp/review_bundle_presentation_smoke_v10_20260416`
+- slower or lower presentation follow-ups did not rescue contact and started to
+  trigger repeated rope-side contact-buffer overflow warnings:
+  - `tmp/robot_table_rope_split_presentation_smoke_v11_20260416`
+  - `tmp/robot_table_rope_split_presentation_smoke_v12_20260416`
 - added a support-only sweep wrapper:
   - `scripts/run_robot_table_rope_split_support_sweep.sh`
 - promoted a support-passing default parameter set into the demo parser:
@@ -109,11 +163,37 @@
   - `rope_ground_contact_frames = 5`
   - `max_support_penetration_m = 0.000608`
   - `rope_render_matches_physics = true`
+- the rigid-side builder refactor also preserved current split behavior:
+  - `tmp/robot_table_rope_split_post_builder_refactor_smoke_20260415`
+  - `rope_table_contact_frames = 5`
+  - `rope_ground_contact_frames = 5`
+  - `max_support_penetration_m = 0.000666`
+  - `rope_render_matches_physics = true`
+- but video acceptance still fails under a skeptical review:
+  - latest rendered smoke bundle:
+    `tmp/review_bundle_post_builder_refactor_smoke_20260415/skeptical_audit.json`
+  - default-support bundle:
+    `tmp/review_bundle_support_default_authoritative_20260415/skeptical_audit.json`
+  - neither video currently provides conservative visual proof of purposeful
+    finger-rope interaction
+- the new presentation path fixes the previous artifact-type mismatch:
+  - recording begins from a visible lifted opening state
+  - the rope now stays on-screen through the early window
+  - camera framing is finally good enough for meeting-facing review
+- but the presentation control path is still short of acceptance:
+  - pad-center targeting is now active, so the remaining miss is no longer just
+    “EE tracking the wrong surrogate”
+  - the best presentation run still bottoms out at
+    `min_leading_pad_to_rope_distance_m = 0.05427`
+  - `first_finger_rope_contact_frame` and `first_rope_motion_frame` both remain
+    `null`
 - current blocker is geometric, not architectural:
   - the split stack, render truth, and support contacts are now aligned under
-    the default parameter set
-  - finger-targeting is again the next blocker because
-    `first_finger_rope_contact_frame` is still `null`
+  the default parameter set
+  - support-proof and presentation rendering are now separate, which is the
+    right product split
+  - the remaining blocker is presentation contact targeting under the current
+    one-way controller path
 
 ## Artifact Paths To Review
 
@@ -127,6 +207,21 @@
   - `tmp/robot_table_rope_split_post_core_update_smoke_20260415/summary.json`
   - `tmp/robot_table_rope_split_post_core_update_smoke_20260415/hero.mp4`
   - `tmp/robot_table_rope_split_post_core_update_smoke_20260415/hero.gif`
+- post-builder-refactor smoke artifact:
+  - `tmp/robot_table_rope_split_post_builder_refactor_smoke_20260415/summary.json`
+  - `tmp/robot_table_rope_split_post_builder_refactor_smoke_20260415/hero.mp4`
+  - `tmp/robot_table_rope_split_post_builder_refactor_smoke_20260415/hero.gif`
+- skeptical review bundles:
+  - `tmp/review_bundle_post_builder_refactor_smoke_20260415/contact_sheet.png`
+  - `tmp/review_bundle_post_builder_refactor_smoke_20260415/event_sheet.png`
+  - `tmp/review_bundle_support_default_authoritative_20260415/contact_sheet.png`
+  - `tmp/review_bundle_support_default_authoritative_20260415/event_sheet.png`
+- best current presentation artifact:
+  - `tmp/robot_table_rope_split_presentation_smoke_v10_20260416/summary.json`
+  - `tmp/robot_table_rope_split_presentation_smoke_v10_20260416/hero.mp4`
+  - `tmp/robot_table_rope_split_presentation_smoke_v10_20260416/hero.gif`
+  - `tmp/robot_table_rope_split_presentation_smoke_v10_20260416/contact_sheet.jpg`
+  - `tmp/robot_table_rope_split_presentation_smoke_v10_20260416/first_30_frames_sheet.jpg`
 - best-known one-way artifact:
   - `/tmp/robot_table_rope_split_one_way_fine_v5/summary.json`
   - `/tmp/robot_table_rope_split_one_way_fine_v5/hero.mp4`
@@ -159,9 +254,12 @@
 
 ## Next Step
 
-- keep the current solver split, support defaults, and render rules unchanged
-- resume finger-targeting on top of the new support-passing defaults
-- do not re-open support sweep unless the new default-support artifact regresses
+- keep the current solver split and support defaults unchanged
+- keep the new presentation mode and wrapper as the meeting-video path
+- continue presentation contact targeting on top of the current v10 framing:
+  - do not re-open support sweep unless the authoritative support artifact regresses
+  - do not promote a presentation artifact until skeptical review can defend
+    visible finger-rope contact and rope response
 
 ## Validation
 
@@ -169,8 +267,15 @@
 - `python -m py_compile Newton/phystwin_bridge/demos/demo_robot_table_rope_split_mujoco_semiimplicit.py Newton/phystwin_bridge/tools/core/newton_import_ir.py Newton/phystwin_bridge/demos/demo_native_robot_table_penetration_probe.py`
 - `bash scripts/run_robot_table_rope_split_demo.sh tmp/robot_table_rope_split_post_core_update_smoke_20260415 --num-frames 5 --coupling-mode one_way --width 320 --height 180`
 - `python scripts/validate_experiment_artifacts.py tmp/robot_table_rope_split_post_core_update_smoke_20260415 --require-video --require-gif --summary-field max_support_penetration_m --summary-field rope_render_matches_physics`
+- `bash scripts/run_robot_table_rope_split_demo.sh tmp/robot_table_rope_split_post_builder_refactor_smoke_20260415 --num-frames 5 --coupling-mode one_way --width 320 --height 180`
+- `python scripts/validate_experiment_artifacts.py tmp/robot_table_rope_split_post_builder_refactor_smoke_20260415 --require-video --require-gif --summary-field max_support_penetration_m --summary-field rope_render_matches_physics`
 - `bash scripts/run_robot_table_rope_split_demo.sh tmp/robot_table_rope_split_support_default_authoritative_20260415 --num-frames 30 --coupling-mode one_way`
 - `python scripts/validate_experiment_artifacts.py tmp/robot_table_rope_split_support_default_authoritative_20260415 --require-video --require-gif --summary-field max_support_penetration_m --summary-field final_support_penetration_p99_m --summary-field rope_render_matches_physics`
+- `bash scripts/run_robot_table_rope_split_demo.sh tmp/robot_table_rope_split_presentation_smoke_v10_20260416 --num-frames 5 --coupling-mode one_way --video-mode presentation_lifted --width 320 --height 180`
+- `python scripts/prepare_video_review_bundle.py --video tmp/robot_table_rope_split_presentation_smoke_v10_20260416/hero.mp4 --out-dir tmp/review_bundle_presentation_smoke_v10_20260416`
+- `python scripts/validate_experiment_artifacts.py tmp/robot_table_rope_split_presentation_smoke_v10_20260416 --require-video --require-gif --summary-field video_mode --summary-field record_start_mode --summary-field min_leading_pad_to_rope_distance_m --summary-field rope_render_matches_physics`
 - `python scripts/sync_results_registry.py`
 - `python scripts/generate_md_inventory.py`
 - `python scripts/lint_harness_consistency.py`
+  - still `FAIL`, but only for pre-existing unrelated metadata problems on
+    `phystwin_four_new_cases_pipeline` / `phystwin_upstream_sync_review`
