@@ -42,10 +42,17 @@ Main questions:
 
 Main scripts:
 
+- canonical package skeleton: `Newton/phystwin_bridge/demos/rope/`
 - `demo_rope_bunny_drop.py`
 - `demo_two_ropes_ground_contact.py`
 - `demo_two_ropes_ground_contact_box.py`
 - `demo_rope_sloth_ground_contact.py`
+
+Layout note:
+
+- `rope/common.py` now owns the small shared helper implementation
+- the package entrypoints currently delegate to the top-level `demo_rope_*`
+  modules so active commands keep the same behavior while migration continues
 
 Main questions:
 

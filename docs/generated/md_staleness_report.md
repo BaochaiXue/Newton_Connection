@@ -7,9 +7,22 @@ It is meant to function as a maintenance queue, not a permanent wall of red temp
 
 | Path | Classification | Review | Age (d) | Interval (d) | Enforced | Overgrown | Compressed | Action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `docs/bridge/current_status.md` | `CANONICAL` | `ok` | `0` | `7` | `True` | `True` | `False` | `REFORMAT` |
+| `docs/bridge/tasks/README.md` | `CANONICAL` | `due` | `17` | `14` | `True` | `False` | `False` | `REFORMAT` |
+| `docs/bridge/tasks/data_collection_protocol.md` | `CANONICAL` | `due` | `27` | `21` | `True` | `False` | `False` | `REFORMAT` |
+| `docs/bridge/tasks/fast_foundation_stereo.md` | `CANONICAL` | `due` | `27` | `21` | `True` | `False` | `False` | `REFORMAT` |
+| `docs/bridge/tasks/markdown_harness_maintenance_upgrade.md` | `CANONICAL` | `due` | `16` | `14` | `True` | `False` | `False` | `REFORMAT` |
+| `docs/bridge/tasks/meeting_20260408_recall_part.md` | `CANONICAL` | `due` | `20` | `14` | `True` | `False` | `False` | `REFORMAT` |
+| `docs/bridge/tasks/native_robot_table_penetration_probe.md` | `CANONICAL` | `due` | `16` | `14` | `True` | `False` | `False` | `REFORMAT` |
+| `docs/bridge/tasks/newton_robot_examples_kb_update.md` | `CANONICAL` | `due` | `17` | `14` | `True` | `False` | `False` | `REFORMAT` |
 | `docs/bridge/tasks/phystwin_four_new_cases_pipeline.md` | `CANONICAL` | `missing` | `None` | `21` | `True` | `False` | `False` | `REFORMAT` |
 | `docs/bridge/tasks/phystwin_upstream_sync_review.md` | `CANONICAL` | `missing` | `None` | `21` | `True` | `False` | `False` | `REFORMAT` |
+| `docs/bridge/tasks/robot_table_rope_split_mujoco_semiimplicit.md` | `CANONICAL` | `ok` | `0` | `14` | `True` | `True` | `True` | `REFORMAT` |
+| `docs/bridge/tasks/rope_perf_apples_to_apples.md` | `CANONICAL` | `due` | `27` | `21` | `True` | `False` | `False` | `REFORMAT` |
+| `docs/bridge/tasks/slide_deck_overhaul.md` | `CANONICAL` | `due` | `27` | `21` | `True` | `False` | `False` | `REFORMAT` |
+| `docs/bridge/tasks/video_presentation_quality.md` | `CANONICAL` | `due` | `27` | `21` | `True` | `False` | `False` | `REFORMAT` |
 | `plans/active/bridge_code_structure_cleanup.md` | `ACTIVE_SUPPORTING` | `out_of_scope` | `None` | `None` | `False` | `False` | `True` | `REFORMAT` |
+| `tasks/README.md` | `CANONICAL` | `due` | `17` | `14` | `True` | `False` | `False` | `REFORMAT` |
 | `tasks/status/bridge_code_structure_cleanup.md` | `ACTIVE_SUPPORTING` | `out_of_scope` | `None` | `None` | `False` | `False` | `True` | `REFORMAT` |
 | `tasks/status/phystwin_four_new_cases_pipeline.md` | `ACTIVE_SUPPORTING` | `out_of_scope` | `None` | `None` | `False` | `False` | `True` | `REFORMAT` |
 | `tasks/status/robot_table_rope_split_mujoco_semiimplicit.md` | `ACTIVE_SUPPORTING` | `out_of_scope` | `None` | `None` | `False` | `True` | `True` | `REFORMAT` |

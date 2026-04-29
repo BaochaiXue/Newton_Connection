@@ -17,6 +17,7 @@ and object-specific data products that the bridge later maps into Newton.
 
 - [architecture.md](./architecture.md)
 - [artifacts.md](./artifacts.md)
+- [data_process_flow.md](./data_process_flow.md)
 
 ## Key Repo Roots
 
@@ -24,9 +25,13 @@ and object-specific data products that the bridge later maps into Newton.
 - `PhysTwin/export_topology.py`
 - `PhysTwin/qqtt/`
 - `PhysTwin/configs/`
+- `PhysTwin/pipeline_commnad.py`
+- `PhysTwin/script_process_data.py`
+- `PhysTwin/process_data.py`
 - `PhysTwin/experiments/`
 - `PhysTwin/experiments_optimization/`
 - `PhysTwin/gaussian_output/`
+- `scripts/run_phystwin_local_pipeline.sh`
 
 ## Relationship To The Bridge
 

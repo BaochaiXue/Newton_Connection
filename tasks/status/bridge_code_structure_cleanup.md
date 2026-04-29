@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `bridge_code_structure_cleanup`
-> last_reviewed: `2026-04-11`
+> last_reviewed: `2026-04-28`
 > review_interval: `7d`
 > update_rule: `Update after each meaningful refactor milestone and after validation.`
 > notes: Live status log for cloth+bunny package-first cleanup.
@@ -12,9 +12,14 @@
 
 In progress.
 
-The cloth+bunny path now has a canonical family package under
+The cloth+bunny path has a canonical family package under
 `Newton/phystwin_bridge/demos/cloth_bunny/`, while the old top-level demo and
 helper files have been demoted to transition shims.
+
+The rope path now has a first package skeleton under
+`Newton/phystwin_bridge/demos/rope/`. This pass creates the destination
+namespace and moves only the small shared helper implementation; the large
+top-level rope demo scripts still own behavior.
 
 ## What Changed This Pass
 
@@ -52,6 +57,15 @@ helper files have been demoted to transition shims.
 - made `ClothBunnyExample.create_parser()` a real class entrypoint so the
   canonical realtime viewer reads more like a Newton example and less like a
   utility script with an embedded example class
+- added the rope family package skeleton:
+  - `Newton/phystwin_bridge/demos/rope/__init__.py`
+  - `Newton/phystwin_bridge/demos/rope/common.py`
+  - `Newton/phystwin_bridge/demos/rope/control_viewer.py`
+  - `Newton/phystwin_bridge/demos/rope/bunny_drop.py`
+  - `Newton/phystwin_bridge/demos/rope/two_ropes_ground_contact.py`
+  - `Newton/phystwin_bridge/demos/rope/sloth_ground_contact.py`
+- converted `Newton/phystwin_bridge/demos/rope_demo_common.py` into a
+  compatibility wrapper over `rope.common`
 
 ## Problem Solved
 
@@ -78,6 +92,8 @@ helper files have been demoted to transition shims.
   original file move into `cloth_bunny/`
 - profiling output code and runtime setup code were low-risk extractions that
   improved readability without changing cloth+bunny behavior
+- the rope cleanup can now proceed package-first without immediately changing
+  active performance/profiling commands
 
 ## Artifact Paths To Review
 
@@ -91,24 +107,30 @@ helper files have been demoted to transition shims.
   - `tmp/cloth_bunny_force_bundle_build_case/`
   - `tmp/cloth_bunny_force_artifacts_smoke/`
   - `tmp/cloth_bunny_collision_bundle_smoke/`
+- rope package skeleton has no runtime artifact; it is validated by compile and
+  help checks
 
 ## Next Step
 
-- shrink `Newton/phystwin_bridge/demos/cloth_bunny/example.py` further by
-  extracting manual substep and viewer-UI bookkeeping so the file looks even
-  closer to a Newton official example
-- shrink `Newton/phystwin_bridge/demos/cloth_bunny/offline.py` further by
-  moving force-diagnostic mechanics into a real runtime/diagnostics split
-- once that settles, decide whether rope/box families should adopt the same
-  package template
+- move rope profiling/output helper logic into package-owned modules while
+  keeping `demo_rope_control_realtime_viewer.py` as a compatibility entrypoint
+- migrate rope wrapper scripts to package paths only after those imports are
+  validated
+- continue shrinking cloth+bunny force-diagnostic internals only when active
+  bunny work needs it
 
 ## Blocking Issues
 
 - `scripts/build_bunny_collision_force_bundle.py` is slower than the other
   wrapper smokes because it reconstructs explicit per-frame force states
-- `python scripts/lint_harness_consistency.py` still reports one unrelated
-  pre-existing issue: `tasks/status/rope_perf_apples_to_apples.md` contains a
-  machine-local absolute path
+- `python scripts/lint_harness_consistency.py` still fails on unrelated
+  pre-existing control-plane hygiene issues:
+  - `docs/bridge/current_status.md` is over the dashboard length limit
+  - `docs/bridge/current_status.md` is missing `phystwin_four_new_cases_pipeline`
+    and `phystwin_upstream_sync_review` in the dashboard/workstream view
+  - `docs/bridge/tasks/phystwin_four_new_cases_pipeline.md` and
+    `docs/bridge/tasks/phystwin_upstream_sync_review.md` lack standard metadata
+  - several existing active task surfaces have due review metadata
 
 ## Validation
 
@@ -127,3 +149,12 @@ helper files have been demoted to transition shims.
 - `python scripts/build_bunny_collision_force_bundle.py --bundle tmp/cloth_bunny_force_bundle_build_case/force_diagnostic/force_render_bundle.pkl --out-dir tmp/cloth_bunny_collision_bundle_smoke`
 - `python scripts/generate_md_inventory.py`
 - `python scripts/lint_harness_consistency.py` -> fails only on unrelated `tasks/status/rope_perf_apples_to_apples.md` machine-local path
+- `python -m py_compile Newton/phystwin_bridge/demos/rope/*.py Newton/phystwin_bridge/demos/rope_demo_common.py`
+- `python Newton/phystwin_bridge/demos/rope/control_viewer.py --help`
+- `python Newton/phystwin_bridge/demos/demo_rope_control_realtime_viewer.py --help`
+- `python - <<'PY' ... assert rope_demo_common.rope_endpoints is rope.common.rope_endpoints ... PY`
+- `python Newton/phystwin_bridge/demos/rope/bunny_drop.py --help`
+- `python scripts/generate_md_inventory.py`
+- `python scripts/lint_harness_consistency.py` -> fails on the unrelated
+  pre-existing control-plane issues listed above; this task's updated contract,
+  handoff, and task page are no longer reported as stale

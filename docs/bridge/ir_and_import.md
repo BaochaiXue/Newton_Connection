@@ -47,7 +47,8 @@ parameters can remain physically interpretable.
 Representative code paths:
 
 - `cloth_bunny_common.py`
-- `rope_demo_common.py`
+- `Newton/phystwin_bridge/demos/rope/common.py`
+- `rope_demo_common.py` as a compatibility wrapper
 - demo-specific scaling logic in the main scripts
 
 ## Documentation Rule

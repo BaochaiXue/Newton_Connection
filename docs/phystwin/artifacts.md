@@ -35,7 +35,8 @@ Newton deformable model:
 - `Newton/phystwin_bridge/tools/core/export_ir.py`
 - `Newton/phystwin_bridge/tools/core/newton_import_ir.py`
 - `Newton/phystwin_bridge/demos/cloth_bunny_common.py`
-- `Newton/phystwin_bridge/demos/rope_demo_common.py`
+- `Newton/phystwin_bridge/demos/rope/common.py`
+- `Newton/phystwin_bridge/demos/rope_demo_common.py` as a compatibility wrapper
 
 ## Documentation Rule
 

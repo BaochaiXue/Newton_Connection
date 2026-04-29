@@ -65,7 +65,9 @@ This page is the shortest possible map of the repository.
 - `Newton/phystwin_bridge/demos/bridge_shared.py`
 - `Newton/phystwin_bridge/demos/bridge_deformable_common.py`
 - `Newton/phystwin_bridge/demos/cloth_bunny_common.py`
-- `Newton/phystwin_bridge/demos/rope_demo_common.py`
+- `Newton/phystwin_bridge/demos/rope/`
+  - transitional canonical rope-family package
+  - `rope_demo_common.py` is a compatibility wrapper over `rope/common.py`
 - `Newton/phystwin_bridge/demos/rollout_storage.py`
 - `Newton/phystwin_bridge/demos/semiimplicit_bridge_kernels.py`
 - `Newton/phystwin_bridge/demos/self_contact_bridge_kernels.py`
@@ -99,6 +101,7 @@ Retired root singleton docs:
   - `demo_cloth_box_drop_with_self_contact.py`
   - `demo_cloth_bunny_realtime_viewer.py`
 - Rope vs bunny / rope / sloth
+  - package path: `Newton/phystwin_bridge/demos/rope/`
   - `demo_rope_bunny_drop.py`
   - `demo_two_ropes_ground_contact.py`
   - `demo_two_ropes_ground_contact_box.py`

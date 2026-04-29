@@ -15,10 +15,35 @@ Each wrapper should:
 
 ## Current Wrappers
 
+- `scripts/run_phystwin_local_pipeline.sh`
 - `scripts/run_bunny_force_diag.sh`
 - `scripts/run_realtime_profile.sh`
 - `scripts/run_robot_rope_franka.sh`
 - `scripts/render_gif.sh`
+
+## PhysTwin Local Runs
+
+Use the repo-level wrapper instead of launching PhysTwin internals directly
+when a run should be reproducible from the workspace root:
+
+```bash
+scripts/run_phystwin_local_pipeline.sh \
+  --mode data-process \
+  --config-path PhysTwin/configs/data_config_four_new_cases.csv \
+  --task-name phystwin_four_cases_reprocess_20260427
+```
+
+For full PhysTwin processing/training/inference/evaluation:
+
+```bash
+scripts/run_phystwin_local_pipeline.sh \
+  --mode full \
+  --config-path PhysTwin/configs/data_config_four_new_cases.csv \
+  --task-name phystwin_four_cases_full_20260427
+```
+
+The detailed stage contract is documented in
+`docs/phystwin/data_process_flow.md`.
 
 ## After Running
 

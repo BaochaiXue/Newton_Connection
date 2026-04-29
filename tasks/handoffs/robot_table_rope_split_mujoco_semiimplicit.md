@@ -14,6 +14,19 @@ Milestone 1: truthful one-way direct-finger split demo.
   - `scripts/run_robot_table_rope_split_support_sweep.sh`
 - a presentation-video wrapper now also exists:
   - `scripts/run_robot_table_rope_split_presentation_video.sh`
+- the presentation wrapper now runs the staged pick-place path by default:
+  - `--video-mode presentation_pick_place`
+  - `--motion-pattern grasp_lift_place`
+  - `--rope-rigid-contact-max 8192`
+  - `--rope-soft-contact-max 8192`
+  - `--no-presentation-grasp-assist`
+  - `--presentation-gripper-geometry panda_fingers`
+  - `--gripper-yaw 2.89159265359`
+  - `--presentation-grasp-closed-opening 0.004`
+  - `--presentation-edge-grasp-outset-y 0.000`
+  - `--presentation-grasp-x-offset 0.030`
+  - `--presentation-grasp-z-clearance 0.006`
+  - `--presentation-table-shape-contact-scale 8.0`
 - the best-known one-way artifact is:
   - `/tmp/robot_table_rope_split_one_way_fine_v5`
 - the split demo now uses the shared bridge mass-scaling path and defaults the
@@ -46,6 +59,19 @@ Milestone 1: truthful one-way direct-finger split demo.
 - a real two-way bookkeeping bug was fixed:
   - rope reaction wrench is now read from the post-step rope state instead of
     the force-cleared pre-step state
+- the previous `strict_contact_only_pass_20260426` video is demoted after
+  visual review because it read as rope self-drop under the old, too-local
+  lift gate
+- the best physics-contact artifact is now:
+  - `tmp/robot_table_rope_split_side_suction_fix_edge_balanced_20260427`
+  - it is demoted from final meeting-video acceptance by visual review because
+    the helper cradle and particle-rope render still look unnatural
+- the best native-Panda-finger-only diagnostic is now:
+  - `tmp/robot_table_rope_split_native_panda_fingers_outside_tight_20260428`
+  - it uses `presentation_gripper_geometry = panda_fingers`, no
+    `grasp_assist`, no `rope_cradle`, and no auxiliary pad mesh
+  - it is not accepted because `strict_contact_only_pass = false`,
+    `rope_lift_height_m = 0.0`, and the rope is contacted rather than carried
 
 ## Current Conclusion
 
@@ -58,21 +84,33 @@ best-known one-way result proves:
 - support defaults can now satisfy the non-burying gate without any extra
   support override flags
 
-But the current motion layout still misses `finger first contact`, so milestone
-1 is not yet accepted. Two-way robot-rope reaction remains milestone 2.
+The old side-push motion layout missed `finger first contact`, so the next
+presentation attempt changed strategy rather than continuing parameter-only
+tuning. Two-way robot-rope reaction remains milestone 2.
 
 There is now also a dedicated presentation path for meeting-facing rendering:
 
-- `video_mode = "presentation_lifted"`
+- `video_mode = "presentation_pick_place"`
+- `motion_pattern = "grasp_lift_place"`
 - `record_start_mode = "visible_opening"`
 - `rope_preroll_seconds = 0.0`
 - render length is derived from the motion phases instead of a fixed short
   support window
 - camera framing is now dedicated to the contact region
-- pad-center-targeted IK is now wired in for the presentation path
+- gripper-center-targeted IK is now wired in for the presentation path
+- the selected rope segment is at the table edge, where the lower jaw has
+  access and does not need to close through the table
+- finite-force grasp assist is now disallowed by default for the meeting-video
+  path
 
-This fixes the old “wrong artifact type” problem, but it does not yet produce a
-passable meeting video because finger-rope contact still remains unproven.
+This fixes the old “wrong artifact type”, “hidden assist”, self-drop
+false-positive, and side-suction false-positive problems at the metrics level.
+The previous `rope_cradle` candidate remains a demoted physics-contact surface:
+it had non-null contact, no assist, balanced contact, whole-rope visible lift,
+clean release, and a skeptical-video `PASS`, but user visual review rejected it
+because it depended on a visible helper fixture. The current default route is
+now stricter: final acceptance requires real Panda finger meshes via
+`presentation_gripper_geometry = panda_fingers`.
 
 The new default mass is confirmed by summary fields:
 
@@ -109,30 +147,84 @@ bash scripts/run_robot_table_rope_split_presentation_video.sh tmp/robot_table_ro
 
 ## Current Blocker
 
-The blocker is no longer solver instability or support calibration. The blocker
-is geometric:
+The blocker is no longer solver instability, support calibration, recording,
+basic table-edge contact geometry, grasp assist, side-suction metrics, or the
+visible helper route. The active blocker is now true native Panda finger carry:
 
 - the support-default drape is now stable and non-burying
-- the presentation video path now records a truthful lifted opening and keeps
-  the rope in frame
-- the leading pad is now the intended contactor in the presentation IK setup
-- but the current best presentation artifact still bottoms out at
-  `min_leading_pad_to_rope_distance_m = 0.05427`, so first contact remains
-  unproven
+- the presentation video path records a complete visible process and keeps the
+  contact window in frame
+- the current native-only diagnostic records
+  `first_finger_rope_contact_frame = 6` and
+  `rope_motion_after_contact = true`
+- the current native-only diagnostic records
+  `lift_window_contact_balance_ratio = 0.337578` and
+  `lift_window_unilateral_finger_rope_contact_frames = 0`, so the first-order
+  side-suction metric is no longer the immediate issue
+- the current native-only diagnostic still fails carry:
+  `rope_lift_height_m = 0.0`,
+  `grasp_particle_lift_during_lift_transfer_m = 0.010288`, and
+  `nonfinger_table_contact_frames = 7`
+- contact-buffer overflow warnings are gone in the latest candidate
+- `strict_contact_only_pass = false`
+- remaining meeting-video work is to make the native Panda finger pads form a
+  real pinch/support structure that lifts and transfers the rope; continuous
+  rope rendering remains useful but is secondary until physical carry works
 
 ## Last Failed Acceptance Criterion
 
-- `first_finger_rope_contact_frame` is still `null` in the best current
-  presentation artifact:
-  - `tmp/robot_table_rope_split_presentation_smoke_v10_20260416`
-- the current best presentation run also still has
-  `min_leading_pad_to_rope_distance_m = 0.05427`
-- the slower/lower follow-up presentation runs (`v11`, `v12`) did not fix
-  contact and started surfacing repeated rope-side contact-buffer overflow
-  warnings
+- previous failed strict-contact artifact:
+  - `tmp/robot_table_rope_split_strict_contact_default_20260426/summary.json`
+- fail reasons:
+  - both fingers did not maintain contact during the lift/transfer window
+  - local grasp segment did not lift enough
+- fail-closed skeptical review was `FAIL`:
+  - `tmp/robot_table_rope_split_strict_contact_default_20260426/review_bundle/skeptical_audit.json`
+- self-drop-fix replacement later demoted for side-suction visual:
+  - `tmp/robot_table_rope_split_selfdrop_fix_contact_only_20260426/summary.json`
+  - `strict_contact_only_pass = true`
+  - `rope_lift_height_m = 0.116019`
+  - `grasp_particle_lift_during_lift_transfer_m = 0.116898`
+  - `tmp/robot_table_rope_split_selfdrop_fix_contact_only_20260426/review_bundle/skeptical_audit.json`
+  - skeptical verdict is `PASS`
+- demoted side-suction-fix replacement:
+  - `tmp/robot_table_rope_split_side_suction_fix_edge_balanced_20260427/summary.json`
+  - `strict_contact_only_pass = true`
+  - `lift_window_contact_balance_ratio = 0.310864`
+  - `lift_window_unilateral_finger_rope_contact_frames = 0`
+  - `rope_lift_height_m = 0.135920`
+  - `grasp_particle_lift_during_lift_transfer_m = 0.153220`
+  - `tmp/robot_table_rope_split_side_suction_fix_edge_balanced_20260427/review_bundle/skeptical_audit.json`
+  - skeptical verdict is `PASS`
+- current native-finger diagnostic:
+  - `tmp/robot_table_rope_split_native_panda_fingers_outside_tight_20260428/summary.json`
+  - `presentation_gripper_geometry = panda_fingers`
+  - `presentation_aux_panda_pad_geometry_enabled = false`
+  - `strict_contact_only_pass = false`
+  - `rope_lift_height_m = 0.0`
+  - `grasp_particle_lift_during_lift_transfer_m = 0.010288`
+  - `lift_window_contact_balance_ratio = 0.337578`
+  - `lift_window_unilateral_finger_rope_contact_frames = 0`
 
 ## Key GIF / Artifact Paths
 
+- `tmp/robot_table_rope_split_side_suction_fix_edge_balanced_20260427/summary.json`
+- `tmp/robot_table_rope_split_side_suction_fix_edge_balanced_20260427/hero.mp4`
+- `tmp/robot_table_rope_split_side_suction_fix_edge_balanced_20260427/hero.gif`
+- `tmp/robot_table_rope_split_side_suction_fix_edge_balanced_20260427/review_bundle/contact_sheet.png`
+- `tmp/robot_table_rope_split_side_suction_fix_edge_balanced_20260427/review_bundle/skeptical_audit.json`
+- `tmp/robot_table_rope_split_native_panda_fingers_outside_tight_20260428/summary.json`
+- `tmp/robot_table_rope_split_native_panda_fingers_outside_tight_20260428/hero.mp4`
+- `tmp/robot_table_rope_split_native_panda_fingers_outside_tight_20260428/hero.gif`
+- `tmp/robot_table_rope_split_native_panda_fingers_outside_tight_20260428/contact_sheet.jpg`
+- `tmp/robot_table_rope_split_native_panda_fingers_outside_tight_20260428/review_bundle/contact_sheet.png`
+- `tmp/robot_table_rope_split_selfdrop_fix_contact_only_20260426/summary.json`
+- `tmp/robot_table_rope_split_selfdrop_fix_contact_only_20260426/hero.mp4`
+- `tmp/robot_table_rope_split_selfdrop_fix_contact_only_20260426/hero.gif`
+- `tmp/robot_table_rope_split_strict_contact_default_20260426/summary.json`
+- `tmp/robot_table_rope_split_strict_contact_default_20260426/hero.mp4`
+- `tmp/robot_table_rope_split_strict_contact_default_20260426/hero.gif`
+- `tmp/robot_table_rope_split_strict_contact_default_20260426/review_bundle/contact_sheet.png`
 - `tmp/robot_table_rope_split_support_default_authoritative_20260415/summary.json`
 - `tmp/robot_table_rope_split_support_default_authoritative_20260415/hero.mp4`
 - `tmp/robot_table_rope_split_support_default_authoritative_20260415/first_30_frames_sheet.jpg`
@@ -151,14 +243,12 @@ is geometric:
 - do not go back to coarse rope stepping; the `64`-substep one-way runs were not
   stable enough to trust
 - do not re-open support sweep unless the new default-support artifact regresses
-- do not promote a presentation artifact as accepted until skeptical review can
-  conservatively defend visible finger-rope contact and rope response
+- do not treat automatic QC alone as meeting-video acceptance; keep the
+  skeptical review bundle attached to the accepted artifact
+- do not re-enable, hide, or relabel grasp assist as pure contact-only physics
 
 ## Missing Evidence
 
-- a one-way artifact with non-null `first_finger_rope_contact_frame`
-- a first-contact window where the leading pad is the purposeful contactor
-- a skeptical-review `PASS` bundle for a meeting-facing presentation artifact
 - a two-way artifact with nonzero rope-to-robot wrench after contact
 
 ## Context Reset Recommendation

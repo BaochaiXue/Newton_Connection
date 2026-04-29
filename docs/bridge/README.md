@@ -43,7 +43,10 @@ bridge is where the actual project logic lives.
 - `Newton/phystwin_bridge/demos/cloth_bunny/`
   - canonical cloth+bunny family package
   - top-level `demo_cloth_bunny_*` and `cloth_bunny_*` files are transition shims
-- `Newton/phystwin_bridge/demos/rope_demo_common.py`
+- `Newton/phystwin_bridge/demos/rope/`
+  - transitional canonical rope-family package
+  - top-level `demo_rope_*` files still own behavior during the first rope pass
+  - `rope_demo_common.py` is a transition shim over `rope/common.py`
 - `Newton/phystwin_bridge/demos/rollout_storage.py`
 
 ### Kernel-Like Bridge Overrides

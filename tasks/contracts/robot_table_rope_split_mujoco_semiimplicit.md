@@ -18,6 +18,13 @@ MuJoCo on the rigid side and SemiImplicit on the rope side.
   - full two-way robot-rope coupling as a first-pass acceptance gate
   - Newton core changes
   - any return to state overwrite semantics
+  - treating the presentation grasp-assist video as a pure contact-only
+    contract pass
+  - using `grasp_assist` for the final meeting-facing pick-place video
+  - using visible helper gripper geometry such as `rope_cradle` or auxiliary
+    `panda_pads` as the final meeting-facing route
+  - accepting one-sided lift/transfer contact that reads as side suction, side
+    pickup, or hidden hook support
 
 ## Required Inputs
 
@@ -39,6 +46,20 @@ MuJoCo on the rigid side and SemiImplicit on the rope side.
 - rope render thickness differs from the physical rope radius in the accepted run
 - rope motion begins before any detectable finger-rope contact
 - accepted run lacks either rope-table or rope-ground contact
+- accepted presentation video uses `grasp_assist`
+- accepted final meeting video uses anything other than
+  `presentation_gripper_geometry = "panda_fingers"`
+- accepted final meeting video relies on auxiliary green pad meshes,
+  `rope_cradle`, or any other helper contactor that is not the native Panda
+  finger mesh
+- accepted final meeting video makes the rope fly away or exceed the strict
+  max rope height guard
+- accepted presentation video lifts primarily through one visible side wall,
+  hook, or unilateral finger/cradle contact
+- accepted final meeting video depends on visually obvious helper hardware that
+  does not read as part of the Panda gripper
+- accepted final meeting video shows the rope as particle clumps rather than a
+  continuous rope-like object at truthful physical radius
 
 ## Acceptance Criteria
 
@@ -75,3 +96,36 @@ MuJoCo on the rigid side and SemiImplicit on the rope side.
 ```bash
 python scripts/lint_harness_consistency.py
 ```
+
+## Presentation Addendum
+
+The meeting-facing `presentation_pick_place` path is a separate video artifact
+track. It must run without `grasp_assist` for final acceptance. Diagnostic runs
+may still enable assist explicitly, but assisted artifacts are not eligible for
+final meeting-video PASS.
+
+Strict presentation acceptance additionally requires:
+
+- `grasp_assist_enabled == false`
+- `first_grasp_assist_frame == null`
+- `grasp_assist_frames == 0`
+- `presentation_gripper_geometry == "panda_fingers"`
+- `presentation_aux_panda_pad_geometry_enabled == false`
+- `strict_require_native_panda_fingers == true`
+- `strict_contact_only_pass == true`
+- nonzero sustained two-finger contact during the lift/transfer window
+- `lift_window_contact_balance_ratio >= strict_min_lift_contact_balance_ratio`
+- `lift_window_unilateral_finger_rope_contact_frames <=
+  strict_max_unilateral_lift_contact_frames`
+- measurable local grasp-segment lift during the closed lift/transfer window
+- measurable whole-rope visible lift, so a local contact/release bounce cannot
+  pass as a pick
+- zero final finger/cradle-rope contact after release
+- zero non-finger robot-body table contact; finger/cradle edge contact may be
+  reported separately for the physical edge-scoop path
+- skeptical video review must be able to defend the interaction as a physical
+  two-sided grasp/lift rather than side suction or side hooking
+- final meeting-facing acceptance additionally requires visual naturalness:
+  the contactor must read as the robot gripper rather than a colored helper
+  fixture, and rope rendering must preserve physical thickness while reading as
+  a continuous strand instead of a bead cluster

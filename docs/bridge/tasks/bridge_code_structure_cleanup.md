@@ -1,25 +1,27 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `bridge_code_structure_cleanup`
-> last_reviewed: `2026-04-11`
+> last_reviewed: `2026-04-28`
 > review_interval: `7d`
-> update_rule: `Update when the cloth+bunny canonical package boundary or validation story changes.`
-> notes: Canonical task page for the cloth+bunny family package reorg and shim transition.
+> update_rule: `Update when a bridge demo-family package boundary, compatibility shim, or validation story changes.`
+> notes: Canonical task page for bridge demo-family package cleanup and shim transition.
 
 # Bridge Code Structure Cleanup
 
 ## Goal
 
-Replace the old flat cloth+bunny demo/helper layout with a canonical
-family-specific package that is easier to navigate and closer to Newton's
-official example organization.
+Replace old flat demo/helper layout with canonical family-specific packages
+that are easier to navigate and closer to Newton's official example
+organization.
 
 ## Current Focus
 
-- cloth+bunny only
-- package-first canonical path under `Newton/phystwin_bridge/demos/cloth_bunny/`
-- keep legacy top-level demo/helper files as one-pass transition shims
-- keep wrapper scripts functional while moving them to public package APIs
+- preserve the completed cloth+bunny package-first cleanup
+- start the rope-family cleanup with a low-risk package skeleton under
+  `Newton/phystwin_bridge/demos/rope/`
+- keep legacy top-level demo/helper files as transition shims
+- keep wrapper scripts and historical commands functional while moving toward
+  public package APIs
 
 ## Current State
 
@@ -36,6 +38,18 @@ The canonical cloth+bunny implementation now lives under:
 - `Newton/phystwin_bridge/demos/cloth_bunny/diagnostics.py`
 
 The old paths are still present, but only as compatibility wrappers.
+
+The rope family now has a transitional package path under:
+
+- `Newton/phystwin_bridge/demos/rope/common.py`
+- `Newton/phystwin_bridge/demos/rope/control_viewer.py`
+- `Newton/phystwin_bridge/demos/rope/bunny_drop.py`
+- `Newton/phystwin_bridge/demos/rope/two_ropes_ground_contact.py`
+- `Newton/phystwin_bridge/demos/rope/sloth_ground_contact.py`
+
+The current rope package mostly delegates to legacy top-level demo scripts. That
+is intentional for the first rope pass: it creates the destination namespace
+without changing simulation behavior.
 
 ## Why This Matters
 
@@ -62,7 +76,6 @@ The old paths are still present, but only as compatibility wrappers.
 
 ## Next Step
 
-Reduce how much manual substep / profiling / UI bookkeeping still lives in
-`cloth_bunny/example.py` and how much force-diagnostic machinery still lives in
-`cloth_bunny/offline.py`, now that `runtime.py`, `profiling.py`, and
-`diagnostics.py` own real parts of the canonical support logic.
+Move rope logic into the package one owner at a time, starting with pure helpers
+and profiling/output code, while keeping top-level `demo_rope_*` scripts as
+compatibility entrypoints until wrapper scripts have migrated.
