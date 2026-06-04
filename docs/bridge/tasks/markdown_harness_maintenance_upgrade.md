@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `markdown_harness_maintenance_upgrade`
-> last_reviewed: `2026-04-12`
+> last_reviewed: `2026-05-21`
 > review_interval: `14d`
 > update_rule: `Update when progressive-disclosure policy, root hygiene, bundle-entry quarantine, hook semantics, inventory generation, or lint policy changes.`
 > notes: Current canonical harness-maintenance task for markdown truthfulness, active-vs-historical separation, root hygiene, registry-backed result authority, and outcome-first agent reporting.

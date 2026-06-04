@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `markdown_harness_maintenance_upgrade`
-> last_reviewed: `2026-04-11`
+> last_reviewed: `2026-05-21`
 > review_interval: `14d`
 > update_rule: `Update when milestones or validation steps change materially.`
 > notes: Active plan for the current markdown/control-plane maintenance pass, including progressive disclosure, root hygiene, and outcome-first reporting enforcement.

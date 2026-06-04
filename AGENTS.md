@@ -60,6 +60,11 @@ needed.
 This repo is organized so Codex can work as an engineering agent, not only a
 chat window.
 
+The canonical harness-engineering loop is documented in
+[docs/runbooks/harness_engineering.md](./docs/runbooks/harness_engineering.md).
+Use it to decide when work needs planner/spec/status artifacts, milestone
+contracts, handoffs, evaluator evidence, and garbage collection.
+
 ### Knowledge Layer
 
 - `docs/` is the system of record for durable project knowledge.

@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `meeting_20260408_recall_part`
-> last_reviewed: `2026-04-08`
+> last_reviewed: `2026-05-21`
 > review_interval: `14d`
 > update_rule: `Update when the 2026-04-08 meeting scope, source slides, or generated artifacts change.`
 > notes: Meeting-specific task for the 2026-04-08 bundle; started as recall-only, then expanded with later weekly sections.

@@ -1,7 +1,7 @@
 > status: canonical
 > canonical_replacement: none
 > owner_surface: `results_registry`
-> last_reviewed: `2026-04-12`
+> last_reviewed: `2026-05-21`
 > review_interval: `30d`
 > update_rule: `Update when local-only pointer surfaces are added, retired, or re-scoped relative to results_meta.`
 > notes: Canonical deprecation ledger for result-authority surfaces that must no longer sound committed-truth.

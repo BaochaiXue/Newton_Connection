@@ -60,6 +60,10 @@ MuJoCo on the rigid side and SemiImplicit on the rope side.
   does not read as part of the Panda gripper
 - accepted final meeting video shows the rope as particle clumps rather than a
   continuous rope-like object at truthful physical radius
+- accepted final meeting video lacks sustained same grasp-particle ids through
+  the lift/transfer window
+- accepted final meeting video has lift-window particle speeds above the
+  strict fly-away guard
 
 ## Acceptance Criteria
 
@@ -72,6 +76,14 @@ MuJoCo on the rigid side and SemiImplicit on the rope side.
   - `rope_ground_contact_frames`
   - `rope_render_matches_physics`
   - `coupling_mode`
+  - `opposing_contact_normal_score`
+  - `finger_contact_impulse_sum_by_side`
+  - `upward_friction_margin_estimate`
+  - `same_grasp_particle_ids_sustained`
+  - `rope_table_contact_frames_lift_window`
+  - `peak_particle_speed_lift_window_mps`
+  - `visible_collision_shape_manifest`
+  - `same_history_multiview_hash`
 - `rope_motion_after_contact == true`
 - `rope_render_matches_physics == true`
 - `rope_table_contact_frames > 0`
@@ -84,6 +96,7 @@ MuJoCo on the rigid side and SemiImplicit on the rope side.
   - `python -m py_compile Newton/phystwin_bridge/demos/demo_robot_table_rope_split_mujoco_semiimplicit.py`
   - `bash scripts/run_robot_table_rope_split_demo.sh`
   - `python scripts/validate_experiment_artifacts.py <out_dir> --require-video --require-gif --summary-field rope_motion_after_contact --summary-field rope_render_matches_physics`
+  - `bash scripts/run_robot_table_rope_native_finger_ablation_matrix.sh <out_dir>`
 - artifact paths:
   - experiment `summary.json`
   - `hero.mp4`
@@ -118,8 +131,10 @@ Strict presentation acceptance additionally requires:
 - `lift_window_unilateral_finger_rope_contact_frames <=
   strict_max_unilateral_lift_contact_frames`
 - measurable local grasp-segment lift during the closed lift/transfer window
+- sustained same grasp-particle ids through the lift/transfer window
 - measurable whole-rope visible lift, so a local contact/release bounce cannot
   pass as a pick
+- lift-window peak particle speed stays below the strict fly-away guard
 - zero final finger/cradle-rope contact after release
 - zero non-finger robot-body table contact; finger/cradle edge contact may be
   reported separately for the physical edge-scoop path

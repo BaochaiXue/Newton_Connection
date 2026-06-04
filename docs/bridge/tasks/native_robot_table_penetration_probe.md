@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `native_robot_table_penetration_probe`
-> last_reviewed: `2026-04-12`
+> last_reviewed: `2026-05-21`
 > review_interval: `14d`
 > update_rule: `Update when the probe scope, code path, artifact contract, or conclusion changes.`
 > notes: Active task for building a minimal robot_panda_hydro-style Newton-native robot + rigid-table probe that intentionally targets below the table and records whether the table blocks the robot.

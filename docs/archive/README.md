@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `docs_archive`
-> last_reviewed: `2026-04-01`
+> last_reviewed: `2026-05-21`
 > review_interval: `30d`
 > update_rule: `Update when archive policy or archive sub-indexes change.`
 > notes: Canonical policy surface for documentation archives. Archived files must not remain in live-looking neighborhoods.

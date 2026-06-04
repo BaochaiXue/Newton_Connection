@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `task_index`
-> last_reviewed: `2026-04-11`
+> last_reviewed: `2026-05-21`
 > review_interval: `30d`
 > update_rule: `Update when the meeting-level TODO list, active task routing, or archive-routing rule changes.`
 > notes: Short meeting map only. Route active detail into the task pages and route history through the archive hub instead of inline historical lists.

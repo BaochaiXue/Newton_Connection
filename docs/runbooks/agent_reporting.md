@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `agent_reporting`
-> last_reviewed: `2026-04-05`
+> last_reviewed: `2026-05-21`
 > review_interval: `30d`
 > update_rule: `Update when user-facing report expectations or hook enforcement changes.`
 > notes: Canonical runbook for user-facing Codex reporting style in this repo.

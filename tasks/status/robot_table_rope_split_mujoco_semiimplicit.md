@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `robot_table_rope_split_mujoco_semiimplicit`
-> last_reviewed: `2026-04-28`
+> last_reviewed: `2026-05-11`
 > review_interval: `7d`
 > update_rule: `Update after each meaningful milestone or experiment run.`
 > notes: Live status log for the split MuJoCo robot/table + SemiImplicit rope demo.
@@ -72,6 +72,112 @@
   - `max_support_penetration_m = 0.000327`
   - `rope_render_matches_physics = true`
   - artifact contract validation is `OK`, but this is a failing diagnostic
+
+## Latest Mechanism-Matrix Instrumentation
+
+- added load-bearing contact diagnostics to the split demo summary:
+  - `opposing_contact_normal_score`
+  - `finger_contact_impulse_sum_by_side`
+  - `upward_friction_margin_estimate`
+  - `same_grasp_particle_ids_sustained`
+  - `rope_table_contact_frames_lift_window`
+  - `peak_particle_speed_lift_window_mps`
+  - `visible_collision_shape_manifest`
+  - `same_history_multiview_hash`
+- added optional pick-place trajectory controls:
+  - `--presentation-post-close-hold-seconds`
+  - `--presentation-preload-seconds`
+  - `--presentation-preload-height`
+- added strict diagnostic guards:
+  - `--strict-same-grasp-particle-contact-frames`
+  - `--strict-max-lift-window-peak-particle-speed`
+- added the bounded native-finger ablation wrapper:
+  - `scripts/run_robot_table_rope_native_finger_ablation_matrix.sh`
+  - default matrix cases: baseline replay, rank-1 native rigid capsule sanity,
+    table-edge overhang, measured-gap sweep, close-hold-preload, friction
+    diagnostic, stiffness/damping diagnostic, visible `panda_pads` diagnostic,
+    and radius diagnostic
+  - matrix-level summary now separates `rigid_capsule_sanity_pass` from rope
+    `strict_contact_only_pass` and emits a guarded interpretation only when the
+    capsule run allows a physics conclusion
+- added the rank-1 native rigid capsule sanity control:
+  - demo: `Newton/phystwin_bridge/demos/demo_robot_table_rigid_capsule_panda_sanity.py`
+  - wrapper: `scripts/run_robot_table_rigid_capsule_panda_sanity.sh`
+  - diagnostic object is a native rigid capsule on the native Panda/table side,
+    not a SemiImplicit rope surrogate
+  - summary hard-codes the claim boundary:
+    `uses_semiimplicit_rope = false`, `uses_grasp_assist = false`,
+    `uses_rope_cradle = false`, and `uses_hidden_helper_geometry = false`
+  - default geometry remains `presentation_gripper_geometry = panda_fingers`
+- ran a low-cost instrumentation smoke:
+  - `MATRIX_CASES=04 bash scripts/run_robot_table_rope_native_finger_ablation_matrix.sh tmp/robot_table_rope_native_finger_ablation_smoke_20260511 ...`
+  - artifact root:
+    `tmp/robot_table_rope_native_finger_ablation_smoke_20260511`
+  - validator output:
+    `tmp/robot_table_rope_native_finger_ablation_smoke_20260511/rank_04_close_hold_preload/validate.log`
+  - contract result: artifact files and new summary-field presence validated
+  - physical result: not authoritative; the smoke intentionally used very low
+    substeps/contact buffers and records fly-away/contact-buffer overflow
+- ran a rank-1 capsule smoke through the matrix wrapper:
+  - `MATRIX_CASES=01 bash scripts/run_robot_table_rope_native_finger_ablation_matrix.sh tmp/robot_table_rope_native_finger_ablation_rank1_capsule_smoke_20260511_182913 --width 320 --height 180 --video-fps 15 --smoke-only`
+  - artifact root:
+    `tmp/robot_table_rope_native_finger_ablation_rank1_capsule_smoke_20260511_182913`
+  - rank-1 summary:
+    `tmp/robot_table_rope_native_finger_ablation_rank1_capsule_smoke_20260511_182913/rank_01_native_rigid_capsule_sanity/summary.json`
+  - matrix summary:
+    `tmp/robot_table_rope_native_finger_ablation_rank1_capsule_smoke_20260511_182913/matrix_summary.json`
+  - validator output:
+    `tmp/robot_table_rope_native_finger_ablation_rank1_capsule_smoke_20260511_182913/rank_01_native_rigid_capsule_sanity/validate.log`
+  - contract result: artifact files and required summary fields validated
+  - physical result: not authoritative; `smoke_only = true`,
+    `physics_conclusion_allowed = false`, and
+    `matrix_decision.interpretation = rigid_capsule_sanity_smoke_only_no_physics_decision`
+- ran the non-smoke rank-1 capsule sanity control after correcting the gripper
+  yaw/target:
+  - `MATRIX_CASES=01 bash scripts/run_robot_table_rope_native_finger_ablation_matrix.sh tmp/robot_table_rope_native_finger_ablation_rank1_capsule_yawpi_20260511_184520 --width 960 --height 540 --video-fps 30`
+  - artifact root:
+    `tmp/robot_table_rope_native_finger_ablation_rank1_capsule_yawpi_20260511_184520`
+  - rank-1 summary:
+    `tmp/robot_table_rope_native_finger_ablation_rank1_capsule_yawpi_20260511_184520/rank_01_native_rigid_capsule_sanity/summary.json`
+  - matrix summary:
+    `tmp/robot_table_rope_native_finger_ablation_rank1_capsule_yawpi_20260511_184520/matrix_summary.json`
+  - validator output:
+    `tmp/robot_table_rope_native_finger_ablation_rank1_capsule_yawpi_20260511_184520/rank_01_native_rigid_capsule_sanity/validate.log`
+  - result:
+    `rigid_capsule_sanity_pass = true`,
+    `physics_conclusion_allowed = true`,
+    `capsule_lift_height_m = 0.135674`,
+    `lift_window_both_finger_capsule_contact_frames = 32`,
+    `lift_window_unilateral_finger_capsule_contact_frames = 0`,
+    `capsule_table_contact_frames_after_actual_lift_begins = 2`, and
+    `matrix_decision.interpretation = capsule_pass_native_rope_pending`
+  - interpretation:
+    corrected yaw/target can produce a native-Panda load-bearing pinch on a
+    smooth rigid capsule; the next causal test is native rope under the
+    corrected gripper trajectory
+- static checks passed:
+  - `python -m py_compile Newton/phystwin_bridge/demos/demo_robot_table_rigid_capsule_panda_sanity.py Newton/phystwin_bridge/demos/demo_robot_table_rope_split_mujoco_semiimplicit.py`
+  - `bash -n scripts/run_robot_table_rigid_capsule_panda_sanity.sh`
+  - `python -m py_compile Newton/phystwin_bridge/demos/demo_robot_table_rope_split_mujoco_semiimplicit.py`
+  - `bash -n scripts/run_robot_table_rope_native_finger_ablation_matrix.sh`
+  - `bash -n scripts/run_robot_table_rope_split_presentation_video.sh`
+- refreshed generated markdown inventory/task surface matrix after updating the
+  contract and handoff
+- harness lint remains blocked on unrelated dashboard/metadata issues:
+  - latest captured output:
+    `tmp/lint_harness_consistency_capsule_sanity_20260511.log`
+  - exit code: `1`
+  - `current_status.md` dashboard length remains over the harness threshold
+  - missing metadata on `phystwin_four_new_cases_pipeline` and
+    `phystwin_upstream_sync_review`
+  - stale review metadata on multiple older task/result surfaces
+  - no new `robot_table_rope_split_mujoco_semiimplicit` regression was reported
+- conclusion:
+  - native Panda carry is still unresolved
+  - rank-1 now proves the corrected Panda path can carry a smooth rigid
+    cylinder-like object
+  - the next real experiment should run native rope with the corrected yaw
+    before making the SemiImplicit representation/coupling call
 
 ## Latest Native Panda Finger Reset
 

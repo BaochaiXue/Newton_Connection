@@ -1,3 +1,11 @@
+> status: active
+> canonical_replacement: none
+> owner_surface: `phystwin_four_new_cases_pipeline`
+> last_reviewed: `2026-05-21`
+> review_interval: `14d`
+> update_rule: `Update when the four-case PhysTwin pipeline scope, commands, artifacts, or completion status changes.`
+> notes: Active task page for ingesting and running the four newly provided PhysTwin motion cases.
+
 # Task: PhysTwin Four New Cases Pipeline
 
 ## Question

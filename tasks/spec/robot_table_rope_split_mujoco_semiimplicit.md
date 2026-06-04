@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `robot_table_rope_split_mujoco_semiimplicit`
-> last_reviewed: `2026-04-13`
+> last_reviewed: `2026-05-11`
 > review_interval: `14d`
 > update_rule: `Update when the implementation boundary or first-acceptance scope changes.`
 > notes: Execution spec for the split MuJoCo robot/table + SemiImplicit rope direct-finger demo.
@@ -33,6 +33,7 @@ Implement the first truthful one-way direct-finger split demo:
 ## Outputs
 
 - new split demo and wrapper
+- native-finger mechanism-matrix wrapper and summary diagnostics
 - one validated one-way experiment run
 - task/status/current-status/generated-doc updates
 
@@ -43,10 +44,15 @@ Implement the first truthful one-way direct-finger split demo:
 - direct finger contact uses real finger/pad mesh, not a proxy sphere
 - one-way is the first milestone; two-way may be scaffolded but does not block
   the first accepted run
+- final native-finger acceptance must distinguish contact count from
+  load-bearing pinch using normal/impulse/sustained-particle/velocity
+  diagnostics
 
 ## Done When
 
 - the one-way split demo runs from its wrapper
 - the run records finger-first-contact and rope motion timing
 - the run proves rope-table and rope-ground contact are both active
+- the mechanism matrix records the fields needed to decide
+  geometry/trajectory vs SemiImplicit split architecture
 - artifacts are validated and reflected in task status

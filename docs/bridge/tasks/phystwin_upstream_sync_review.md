@@ -1,3 +1,11 @@
+> status: active
+> canonical_replacement: none
+> owner_surface: `phystwin_upstream_sync_review`
+> last_reviewed: `2026-05-21`
+> review_interval: `14d`
+> update_rule: `Update when upstream divergence, adoption recommendation, or sync status changes.`
+> notes: Active task page for reviewing upstream PhysTwin commits against this workspace.
+
 # Task: PhysTwin Upstream Sync Review
 
 ## Question

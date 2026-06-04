@@ -28,6 +28,7 @@ TASK_HISTORY_DIR = ROOT / "tasks/history"
 CURRENT_STATUS = ROOT / "docs/bridge/current_status.md"
 TASKS_README = ROOT / "docs/bridge/tasks/README.md"
 DOC_GARDENING = ROOT / "docs/runbooks/doc_gardening.md"
+HARNESS_ENGINEERING = ROOT / "docs/runbooks/harness_engineering.md"
 AGENT_REPORTING = ROOT / "docs/runbooks/agent_reporting.md"
 GENERATED_README = ROOT / "docs/generated/README.md"
 RESULTS_README = ROOT / "results_meta/README.md"
@@ -68,6 +69,7 @@ BASE_REQUIRED_METADATA_SURFACES = {
     "docs/generated/README.md",
     "docs/runbooks/agent_reporting.md",
     "docs/runbooks/doc_gardening.md",
+    "docs/runbooks/harness_engineering.md",
     "results_meta/README.md",
     "results_meta/DEPRECATED.md",
     "results_meta/schema.md",
@@ -422,6 +424,41 @@ def _issues_from_reporting_discipline() -> list[str]:
     return issues
 
 
+def _issues_from_harness_engineering_runbook() -> list[str]:
+    issues: list[str] = []
+    if not HARNESS_ENGINEERING.exists():
+        issues.append("missing docs/runbooks/harness_engineering.md")
+        return issues
+
+    text = HARNESS_ENGINEERING.read_text(encoding="utf-8", errors="ignore").lower()
+    required_terms = (
+        "planner",
+        "builder",
+        "evaluator",
+        "contract",
+        "handoff",
+        "results_meta",
+        "generate_md_inventory.py",
+        "lint_harness_consistency.py",
+    )
+    for term in required_terms:
+        if term not in text:
+            issues.append(f"harness_engineering.md is missing required harness control term: {term}")
+
+    runbooks_readme = (ROOT / "docs/runbooks/README.md").read_text(encoding="utf-8", errors="ignore")
+    if "harness_engineering.md" not in runbooks_readme:
+        issues.append("docs/runbooks/README.md does not list harness_engineering.md")
+
+    root_agents = ROOT_AGENTS.read_text(encoding="utf-8", errors="ignore")
+    if "docs/runbooks/harness_engineering.md" not in root_agents:
+        issues.append("AGENTS.md must point to docs/runbooks/harness_engineering.md")
+
+    docs_readme = (ROOT / "docs/README.md").read_text(encoding="utf-8", errors="ignore")
+    if "harness-engineering" not in docs_readme:
+        issues.append("docs/README.md must mention the harness-engineering control loop")
+    return issues
+
+
 def _issues_from_authority_surfaces(fresh_inventory: list[dict[str, Any]], registry_entries: dict[str, dict[str, Any]]) -> list[str]:
     issues: list[str] = []
     fresh_by_path = {row["path"]: row for row in fresh_inventory}
@@ -567,6 +604,7 @@ def _collect_issues() -> list[str]:
     issues.extend(_issues_from_metadata(active_slugs, fresh_inventory))
     issues.extend(_issues_from_generator_story())
     issues.extend(_issues_from_reporting_discipline())
+    issues.extend(_issues_from_harness_engineering_runbook())
     issues.extend(_issues_from_root_allowlist())
     issues.extend(_issues_from_bundle_entry_policy(fresh_inventory))
     issues.extend(_issues_from_active_local_md_links())

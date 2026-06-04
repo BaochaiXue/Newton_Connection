@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `robot_table_rope_split_mujoco_semiimplicit`
-> last_reviewed: `2026-04-13`
+> last_reviewed: `2026-05-11`
 > review_interval: `14d`
 > update_rule: `Update when the implementation sequence or canonical wrapper changes materially.`
 > notes: Runbook for the split MuJoCo robot/table + SemiImplicit rope direct-finger demo.
@@ -29,7 +29,20 @@
 4. Render the rigid model through ViewerGL and overlay the rope points/lines
    manually using the rope solver state.
 5. Emit one-way metrics and artifact bundle.
-6. Validate the run and sync task status/docs.
+6. For native-finger carry diagnostics, emit load-bearing metrics:
+   - contact normal opposition
+   - finger impulse by side
+   - upward friction margin estimate
+   - sustained same grasp-particle ids
+   - lift-window table contact
+   - lift-window peak particle speed
+   - visible collision shape manifest
+   - same-history multiview hash
+7. Run the bounded matrix wrapper:
+   `bash scripts/run_robot_table_rope_native_finger_ablation_matrix.sh <out_dir>`.
+8. Add and run the separate rank-1 native rigid capsule sanity diagnostic
+   before declaring the blocker to be SemiImplicit rope architecture.
+9. Validate the run and sync task status/docs.
 
 ## Validation Notes
 

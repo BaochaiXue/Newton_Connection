@@ -1,22 +1,20 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `bridge_control_plane`
-> last_reviewed: `2026-04-28`
+> last_reviewed: `2026-05-21`
 > review_interval: `7d`
 > update_rule: `Update when active workstreams, blockers, promoted result meaning, or control-plane routing rules change. Keep detailed run notes in task status pages and results_meta.`
 > notes: Short operational dashboard only. Keep this page map-like: current work, blockers, promoted surfaces, and where to go next.
 
 # Current Status
 
-Last updated: 2026-04-28
-
-This page is the shortest operational dashboard for the bridge project.
+Last updated: 2026-05-11
 
 Detailed result meaning belongs in:
 
 - `results_meta/INDEX.md`
 - `results_meta/LATEST.md`
-- active task status pages under `tasks/status/`
+- `tasks/status/`
 
 ## Current Priorities
 
@@ -26,20 +24,17 @@ Detailed result meaning belongs in:
   - move official Newton robot-example lessons into `docs/newton/` so future agents do not have to recover them from retired robot diagnostics
 - `native_robot_table_penetration_probe`
   - build a minimal robot_panda_hydro-style bridge demo that intentionally targets below the table and records whether native rigid-table blocking holds
+- `pure_semiimplicit_robot_loaded_object`
+  - full-Panda pure-SemiImplicit remains a clean negative result, but the
+    proxy robot pusher now gives a finite positive two-way coupling demo with
+    the PhysTwin-like rope IR
 - `robot_table_rope_split_mujoco_semiimplicit`
-  - split demo code is live; rope default total mass is `0.1kg`, default
-    physical radius is `0.2x`, recording now starts post-settle, and the demo
-    now measures support penetration explicitly instead of trusting contact
-    counts alone; the validated default-support artifact now passes the
-    non-burying gate, and a post-core-update smoke run still passes after
-    refreshing `Newton/newton` to official upstream `origin/main`; the rigid-side
-    builder is now aligned more closely with the newer upstream
-    `example_robot_panda_hydro.py` config style; the presentation route now
-    defaults back to true native Panda fingers with
-    `--presentation-gripper-geometry panda_fingers`, no `grasp_assist`, no
-    `rope_cradle`, and no auxiliary green pad mesh; the current native-only
-    diagnostic artifact is complete but remains a failing result because the
-    hard Panda finger pads contact the rope without visibly carrying it
+  - split demo remains the main meeting-video route; default support passes the
+    non-burying gate, native Panda fingers are now the presentation default,
+    and the current native-only rope diagnostic still fails strict carry; the
+    rank-1 native rigid capsule sanity now passes with corrected yaw/target,
+    so the next interpretation hinge is native rope under that corrected
+    gripper trajectory
 - `markdown_harness_maintenance_upgrade`
   - keep the harness fail-closed: progressive disclosure, archive-hub routing, root hygiene, local-only result wording, and write-strict/read-loose hook behavior
 - `slide_deck_overhaul`
@@ -51,13 +46,9 @@ Detailed result meaning belongs in:
 - `self_collision_transfer`
   - preserve the fair `2 x 2` cloth+ground matrix while strict parity remains blocked
 - supporting tasks
-  - `video_presentation_quality`
-  - `data_collection_protocol`
-  - `fast_foundation_stereo`
-  - `phystwin_local_harness_engineering`
-    - local PhysTwin data-process flow is now documented and has a repo-level
-      wrapper for data-process-only or full-pipeline runs with task-scoped
-      command/log/summary artifacts
+  - `video_presentation_quality`, `data_collection_protocol`,
+    `fast_foundation_stereo`, `phystwin_local_harness_engineering`,
+    `phystwin_four_new_cases_pipeline`, and `phystwin_upstream_sync_review`
 
 ## Current Blockers
 
@@ -66,25 +57,35 @@ Detailed result meaning belongs in:
 - `interactive_playground_profiling`
   - keep exploratory profiling separate from the committed rope benchmark truth under `rope_perf_apples_to_apples`
 - `robot_table_rope_split_mujoco_semiimplicit`
-  - active meeting-video blocker is now true native Panda finger carry:
-    the new default support artifact keeps `rope_table_contact_frames_first_30 = 30`
-    and `rope_ground_contact_frames_first_30 = 30` while reducing
-    `max_support_penetration_m` to `0.000639` in
-    `tmp/robot_table_rope_split_support_default_authoritative_20260415`;
-    the post-core-update smoke artifact also still runs on the refreshed core,
-    and the presentation path now records the full visible process; the former
-    `rope_cradle` strict pass is demoted from final meeting-video acceptance,
-    and the current native-finger diagnostic
+  - active meeting-video blocker is true native Panda finger carry:
     `tmp/robot_table_rope_split_native_panda_fingers_outside_tight_20260428`
-    records `presentation_gripper_geometry = panda_fingers`,
-    `presentation_aux_panda_pad_geometry_enabled = false`,
-    `grasp_assist_enabled = false`, `first_finger_rope_contact_frame = 6`,
-    `rope_motion_after_contact = true`,
-    `lift_window_contact_balance_ratio = 0.337578`,
-    `lift_window_unilateral_finger_rope_contact_frames = 0`, but still
-    `strict_contact_only_pass = false`, `rope_lift_height_m = 0.0`, and
-    `grasp_particle_lift_during_lift_transfer_m = 0.010288`; harness lint still
-    fails on unrelated stale metadata surfaces outside this artifact
+    records native fingers and contact-driven rope motion, but still
+    `strict_contact_only_pass = false` and `rope_lift_height_m = 0.0`; rank-1
+    native rigid capsule sanity passes, which rules out a blanket
+    "Panda cannot carry any cylinder-like object" failure for the corrected
+    yaw/target
+- `pure_semiimplicit_robot_loaded_object`
+  - the repaired diagnostic confirms the full-Panda pure-SemiImplicit path is
+    still blocked: in
+    `tmp/pure_semiimplicit_robot_loaded_object_timing_fixed_smoke_20260511`,
+    `pure_semiimplicit = true`, `solver_owned_robot_state = true`,
+    `motion_time_source = sim_time`, but `numerics_finite = false`,
+    `finger_object_contact_frames = 0`, and
+    `rope_motion_after_contact = false`; do not claim two-way robot/object
+    reaction from the full-Panda path
+
+## Latest Validation Note
+
+- `pure_semiimplicit_robot_loaded_object`
+  - proxy two-way artifact:
+    `tmp/proxy_robot_rope_two_way_soft_20260511`; validator passed with
+    `two_way_coupling_signal = true`, `numerics_finite = true`,
+    `robot_rope_contact_frames = 117`, and
+    `rope_motion_after_robot_contact = true`
+- `robot_table_rope_split_mujoco_semiimplicit`
+  - rank-1 native rigid capsule pass:
+    `tmp/robot_table_rope_native_finger_ablation_rank1_capsule_yawpi_20260511_184520`;
+    native rope under that corrected gripper trajectory is still pending
 
 ## Promoted Surfaces At A Glance
 
@@ -99,47 +100,40 @@ Detailed result meaning belongs in:
     fails strict carry because the rope is contacted rather than lifted; the
     previous default-support artifact remains the supporting non-burying
     calibration surface
+- `pure_semiimplicit_robot_loaded_object`
+  - positive proxy robot two-way artifact:
+    `tmp/proxy_robot_rope_two_way_soft_20260511`; full-Panda negative
+    diagnostic remains:
+    `tmp/pure_semiimplicit_robot_loaded_object_timing_fixed_smoke_20260511`;
+    inspect both `hero.mp4` files and `summary.json`
 - full committed meaning:
   - `results_meta/INDEX.md`
   - `results_meta/LATEST.md`
 
 ## Recent Retirements
 
-- robot + deformable PS-object demo line
-  - retired on `2026-04-09`
-  - strongest partial robot baselines remain archived as historical evidence only
-  - canonical explanation lives in `docs/decisions/2026-04-09_robot_ps_interaction_retirement.md`
+- robot + deformable PS-object demo line retired on `2026-04-09`; canonical
+  explanation lives in `docs/decisions/2026-04-09_robot_ps_interaction_retirement.md`
 
 ## Active Workstreams
 
-The full active task map lives in:
-
-- `docs/bridge/tasks/README.md`
-- `tasks/README.md`
+The full active task map lives in `docs/bridge/tasks/README.md` and
+`tasks/README.md`.
 
 Use those indexes for the complete active set. Keep this page as the short
 dashboard, not a duplicate task ledger.
 
 ## History Routing
 
-When historical context is needed, start from:
-
-- `docs/archive/tasks/README.md`
-- `docs/decisions/2026-04-09_robot_ps_interaction_retirement.md`
-
-Do not use deep local bundle README files or dated status notes as the first
-entrypoint for current work.
+When historical context is needed, start from `docs/archive/tasks/README.md`
+and `docs/decisions/2026-04-09_robot_ps_interaction_retirement.md`, not deep
+local bundle README files.
 
 ## Authority Rule
 
 - `results_meta/` is the committed authority for current/promoted/best run meaning
-- tracked local result READMEs, `BEST_RUN` mirrors, and subtree status stubs are secondary/local-only surfaces
-- active robot/demo predecessor branches that no longer drive the live task map belong in archive/history neighborhoods, not beside active chains
-- active execution chains live in:
-  - `tasks/spec/`
-  - `tasks/implement/`
-  - `tasks/status/`
-  - `plans/active/`
-- historical execution artifacts live in:
-  - `tasks/history/`
-  - `plans/completed/`
+- tracked local result READMEs, `BEST_RUN` mirrors, and subtree status stubs are secondary/local-only
+- active execution chains live in `tasks/spec/`, `tasks/implement/`,
+  `tasks/status/`, and `plans/active/`
+- historical execution artifacts live in `tasks/history/` and
+  `plans/completed/`

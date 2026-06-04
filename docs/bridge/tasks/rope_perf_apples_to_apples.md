@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `rope_perf_apples_to_apples`
-> last_reviewed: `2026-04-01`
+> last_reviewed: `2026-05-21`
 > review_interval: `21d`
 > update_rule: `Update when benchmark rows, claim boundary, or promoted performance evidence changes.`
 > notes: Active canonical task page for the same-case rope replay benchmark.

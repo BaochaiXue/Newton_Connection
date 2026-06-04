@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `bunny_penetration_force_diagnostic`
-> last_reviewed: `2026-04-11`
+> last_reviewed: `2026-05-21`
 > review_interval: `21d`
 > update_rule: `Update when the promoted board contract, accepted workpoint, or meeting-facing force semantics change.`
 > notes: Active canonical task page for the bunny penetration mechanism and meeting-facing board workflow. Keep this page on the current deliverable rather than repeating the full experimental history.

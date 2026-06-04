@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `self_collision_transfer`
-> last_reviewed: `2026-04-11`
+> last_reviewed: `2026-05-21`
 > review_interval: `21d`
 > update_rule: `Update when the strict-scope interpretation, committed blocked surface, or decision boundary changes.`
 > notes: Active canonical task page for the self-collision decision and strict parity blocker analysis. Keep this page decision-oriented rather than turning it into a long experiment diary.

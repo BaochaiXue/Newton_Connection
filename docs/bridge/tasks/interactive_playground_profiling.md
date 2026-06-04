@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `interactive_playground_profiling`
-> last_reviewed: `2026-04-08`
+> last_reviewed: `2026-05-21`
 > review_interval: `21d`
 > update_rule: `Update when exploratory profiling scope or the boundary against committed rope benchmark truth changes.`
 > notes: Methodology/umbrella profiling page only. Committed same-case rope benchmark truth belongs to `rope_perf_apples_to_apples`.

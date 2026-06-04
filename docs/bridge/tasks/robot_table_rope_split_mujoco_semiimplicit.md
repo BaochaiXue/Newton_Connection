@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `robot_table_rope_split_mujoco_semiimplicit`
-> last_reviewed: `2026-04-28`
+> last_reviewed: `2026-05-21`
 > review_interval: `14d`
 > update_rule: `Update when the milestone boundary, coupling mode, artifact contract, or recommended implementation path changes.`
 > notes: Active task for a split robot/table/rope demo that uses MuJoCo on the native robot/table side and SemiImplicit on the bridged rope side, with direct-finger contact and physical rope rendering.
@@ -75,6 +75,24 @@ without reviving the old monolithic bridge robot stack:
   - `nonfinger_table_contact_frames = 7`
   - validator passes the artifact contract, but the result is not accepted
     because true Panda fingers contact the rope without forming a visible carry
+- Mechanism-matrix instrumentation now exists for the native-finger blocker:
+  - per-run summary fields expose contact normal opposition, finger impulse by
+    side, upward friction margin estimate, same grasp-particle id persistence,
+    lift-window table contact, lift-window peak particle speed, visible
+    collision shape manifest, and same-history multiview hash
+  - pick-place timing now supports optional post-close hold and tiny preload
+    phases before lift
+  - `scripts/run_robot_table_rigid_capsule_panda_sanity.sh` runs the rank-1
+    native rigid capsule control on the native Panda/table side with
+    `uses_semiimplicit_rope = false`
+  - `scripts/run_robot_table_rope_native_finger_ablation_matrix.sh` now includes
+    rank-1 capsule sanity and writes a matrix-level decision summary that keeps
+    capsule pass/fail separate from rope pass/fail
+  - rank-1 native rigid capsule sanity now passes with corrected yaw/target:
+    `tmp/robot_table_rope_native_finger_ablation_rank1_capsule_yawpi_20260511_184520`
+  - smoke artifacts are not physical conclusions; the current non-smoke
+    capsule pass means native rope should next be tested under the corrected
+    gripper trajectory before blaming the SemiImplicit rope architecture
 - Earlier one-way fine-step support artifact:
   - keeps `rope_table_contact` and `rope_ground_contact` true in the same run
   - keeps `rope_render_matches_physics = true`
@@ -88,10 +106,14 @@ without reviving the old monolithic bridge robot stack:
   - `Newton/phystwin_bridge/demos/demo_native_robot_table_penetration_probe.py`
 - New split demo:
   - `Newton/phystwin_bridge/demos/demo_robot_table_rope_split_mujoco_semiimplicit.py`
+- Native rigid capsule control:
+  - `Newton/phystwin_bridge/demos/demo_robot_table_rigid_capsule_panda_sanity.py`
 - New wrapper:
   - `scripts/run_robot_table_rope_split_demo.sh`
   - `scripts/run_robot_table_rope_split_support_sweep.sh`
   - `scripts/run_robot_table_rope_split_presentation_video.sh`
+  - `scripts/run_robot_table_rigid_capsule_panda_sanity.sh`
+  - `scripts/run_robot_table_rope_native_finger_ablation_matrix.sh`
 - Relevant bridge helpers:
   - `Newton/phystwin_bridge/demos/bridge_deformable_common.py`
   - `Newton/phystwin_bridge/demos/bridge_shared.py`
@@ -118,8 +140,11 @@ without reviving the old monolithic bridge robot stack:
 bash scripts/run_robot_table_rope_split_demo.sh
 bash scripts/run_robot_table_rope_split_support_sweep.sh <out_dir>
 bash scripts/run_robot_table_rope_split_presentation_video.sh <out_dir> --width 960 --height 540
+bash scripts/run_robot_table_rigid_capsule_panda_sanity.sh <out_dir> --width 960 --height 540
+bash scripts/run_robot_table_rope_native_finger_ablation_matrix.sh <out_dir>
 python scripts/validate_experiment_artifacts.py <out_dir> --require-video --require-gif --summary-field strict_contact_only_pass --summary-field grasp_assist_enabled --summary-field lift_window_contact_balance_ratio --summary-field lift_window_unilateral_finger_rope_contact_frames --summary-field rope_render_matches_physics
-python scripts/validate_experiment_artifacts.py <out_dir> --require-video --require-gif --summary-field strict_contact_only_pass --summary-field grasp_assist_enabled --summary-field presentation_gripper_geometry --summary-field presentation_aux_panda_pad_geometry_enabled --summary-field strict_require_native_panda_fingers --summary-field rope_lift_height_m --summary-field rope_render_matches_physics
+python scripts/validate_experiment_artifacts.py <out_dir> --require-video --require-gif --summary-field diagnostic_kind --summary-field strict_native_panda_fingers --summary-field uses_semiimplicit_rope --summary-field capsule_lift_height_m --summary-field rigid_capsule_sanity_pass --summary-field same_history_hash --summary-field visible_collision_manifest
+python scripts/validate_experiment_artifacts.py <out_dir> --require-video --require-gif --summary-field strict_contact_only_pass --summary-field grasp_assist_enabled --summary-field presentation_gripper_geometry --summary-field presentation_aux_panda_pad_geometry_enabled --summary-field strict_require_native_panda_fingers --summary-field rope_lift_height_m --summary-field rope_render_matches_physics --summary-field opposing_contact_normal_score --summary-field finger_contact_impulse_sum_by_side --summary-field upward_friction_margin_estimate --summary-field same_grasp_particle_ids_sustained --summary-field rope_table_contact_frames_lift_window --summary-field peak_particle_speed_lift_window_mps --summary-field visible_collision_shape_manifest --summary-field same_history_multiview_hash
 python scripts/lint_harness_consistency.py
 ```
 
@@ -139,6 +164,9 @@ Mass-control flags now supported by the split demo:
 - `--presentation-panda-finger-grasp-local-y`
 - `--presentation-panda-finger-grasp-local-z`
 - `--presentation-grasp-closed-opening`
+- `--presentation-post-close-hold-seconds`
+- `--presentation-preload-seconds`
+- `--presentation-preload-height`
 - `--gripper-yaw`
 - `--finger-shape-friction-multiplier`
 - `--presentation-edge-grasp-outset-y`
@@ -147,6 +175,8 @@ Mass-control flags now supported by the split demo:
 - `--strict-max-unilateral-lift-contact-frames`
 - `--strict-require-native-panda-fingers`
 - `--strict-max-rope-height`
+- `--strict-same-grasp-particle-contact-frames`
+- `--strict-max-lift-window-peak-particle-speed`
 
 ## Required Artifacts
 
@@ -222,6 +252,13 @@ Mass-control flags now supported by the split demo:
   - `tmp/robot_table_rope_split_native_panda_fingers_outside_tight_20260428/review_bundle/contact_sheet.png`
   - current verdict: true native Panda fingers and no assist/helper geometry,
     but strict carry fails because the rope does not lift
+- Mechanism-matrix smoke artifact, instrumentation-only:
+  - `tmp/robot_table_rope_native_finger_ablation_smoke_20260511/matrix_summary.json`
+  - `tmp/robot_table_rope_native_finger_ablation_smoke_20260511/rank_04_close_hold_preload/summary.json`
+  - `tmp/robot_table_rope_native_finger_ablation_smoke_20260511/rank_04_close_hold_preload/hero.mp4`
+  - validator passes the artifact contract and new summary-field presence
+  - not a physical conclusion: the smoke deliberately used low substeps and a
+    small contact buffer and records fly-away/contact-buffer overflow
 - Current physical blocker:
   - the hard native Panda finger meshes can touch the rope and sometimes create
     balanced two-sided contact, but they do not yet form a stable pinch/support
@@ -279,6 +316,8 @@ Mass-control flags now supported by the split demo:
 
 - Does the first direct-finger layout already yield a clean single-leading-pad
   contact window, or does that require a follow-up orientation tweak?
+- Does native rope still fail under the corrected rank-1 yaw/target that can
+  lift the smooth rigid capsule?
 - Is the SemiImplicit body-force output sufficiently clean for the planned
   two-way wrench feedback, or will that stage need additional filtering?
 

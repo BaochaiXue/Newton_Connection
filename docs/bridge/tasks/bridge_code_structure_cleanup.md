@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `bridge_code_structure_cleanup`
-> last_reviewed: `2026-04-28`
+> last_reviewed: `2026-05-21`
 > review_interval: `7d`
 > update_rule: `Update when a bridge demo-family package boundary, compatibility shim, or validation story changes.`
 > notes: Canonical task page for bridge demo-family package cleanup and shim transition.

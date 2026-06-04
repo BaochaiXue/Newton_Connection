@@ -1,14 +1,14 @@
 > status: canonical
 > canonical_replacement: none
 > owner_surface: `bridge_control_plane`
-> last_reviewed: `2026-04-04`
+> last_reviewed: `2026-05-21`
 > review_interval: `30d`
 > update_rule: `Update when an open question is answered, superseded, or promoted into a dedicated task or decision surface.`
 > notes: Canonical unresolved-question ledger for bridge work. Keep resolved items out of this page.
 
 # Open Questions
 
-Last updated: 2026-04-04
+Last updated: 2026-05-11
 
 This page records unresolved bridge questions that still matter technically.
 
@@ -60,6 +60,9 @@ This page records unresolved bridge questions that still matter technically.
   - robot pushes rope
   - robot manipulates cloth
   - robot interacts with rigid-supported deformable
+- For the native Panda finger rope blocker, does a same-radius/same-mass native
+  rigid capsule get carried by the current gripper geometry and trajectory, or
+  does it fail before SemiImplicit rope representation enters the picture?
 
 ## Native Rope Drop Baseline
 

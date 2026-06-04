@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `markdown_harness_maintenance_upgrade`
-> last_reviewed: `2026-04-12`
+> last_reviewed: `2026-05-21`
 > review_interval: `7d`
 > update_rule: `Update after each meaningful cleanup milestone and after final validation. Keep the page outcome-first rather than process-first.`
 > notes: Live status log for the current markdown/control-plane maintenance pass.
@@ -12,6 +12,10 @@
 
 This maintenance line is active and currently healthy:
 
+- canonical harness-engineering rules now live in
+  `docs/runbooks/harness_engineering.md`
+- harness lint now checks that the runbook exists, is indexed, and names the
+  required planner / builder / evaluator / contract / handoff control points
 - the robot + deformable line stays retired as historical context only
 - active task/status surfaces are short enough to function as live control-plane pages
 - required-workflow tasks now have explicit contract/handoff coverage
@@ -24,7 +28,19 @@ This maintenance line is active and currently healthy:
   instead of `.md`
 - harness lint currently passes
 
-## What Changed In The Latest Pass
+## What Changed In Recent Passes
+
+2026-05-21 harness-management pass:
+
+- added `docs/runbooks/harness_engineering.md` as the canonical repo-level
+  control loop for agent-readable engineering work
+- linked the harness runbook from `AGENTS.md`, `docs/README.md`, and
+  `docs/runbooks/README.md`
+- encoded the new runbook in markdown inventory ownership and harness lint
+- refreshed required review metadata and added missing task-page metadata for:
+  - `docs/bridge/tasks/phystwin_four_new_cases_pipeline.md`
+  - `docs/bridge/tasks/phystwin_upstream_sync_review.md`
+- regenerated generated markdown control-plane surfaces
 
 - refreshed the canonical markdown-harness task chain so it now explicitly
   covers:
@@ -154,4 +170,7 @@ This maintenance line is active and currently healthy:
 - `python -m py_compile .codex/hooks/session_start.py .codex/hooks/post_tool_use_review.py .codex/hooks/stop_continue.py`
 - `python -m py_compile .codex/hooks/pre_tool_use_policy.py`
 - `python -m py_compile scripts/md_truth_inventory_lib.py scripts/generate_md_inventory.py scripts/lint_harness_consistency.py`
+- `python -m py_compile scripts/md_truth_inventory_lib.py scripts/lint_harness_consistency.py`
+- `python scripts/generate_md_inventory.py`
+- `python scripts/lint_harness_consistency.py`
 - current result after this pass: `PASS`

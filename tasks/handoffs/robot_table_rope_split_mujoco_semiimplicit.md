@@ -72,6 +72,24 @@ Milestone 1: truthful one-way direct-finger split demo.
     `grasp_assist`, no `rope_cradle`, and no auxiliary pad mesh
   - it is not accepted because `strict_contact_only_pass = false`,
     `rope_lift_height_m = 0.0`, and the rope is contacted rather than carried
+- the split demo summary now includes mechanism diagnostics for load-bearing
+  pinch evaluation:
+  - contact normal opposition
+  - finger impulse by side
+  - upward friction margin estimate
+  - sustained same grasp-particle ids
+  - lift-window table contact
+  - lift-window peak particle speed
+  - visible collision shape manifest
+  - same-history multiview hash
+- the pick-place trajectory now supports optional post-close hold and tiny
+  preload before lift
+- the native-finger SemiImplicit ablation wrapper now exists:
+  - `scripts/run_robot_table_rope_native_finger_ablation_matrix.sh`
+  - smoke artifact:
+    `tmp/robot_table_rope_native_finger_ablation_smoke_20260511`
+  - the smoke validates fields/artifact contract only; it is not a physical
+    result because it used very low substeps/contact buffers
 
 ## Current Conclusion
 
@@ -142,7 +160,7 @@ support-calibration example, not an accepted default.
 ## Exact Next Command
 
 ```bash
-bash scripts/run_robot_table_rope_split_presentation_video.sh tmp/robot_table_rope_split_presentation_followup --width 960 --height 540
+bash scripts/run_robot_table_rope_native_finger_ablation_matrix.sh tmp/robot_table_rope_native_finger_ablation_full_$(date +%Y%m%d) --width 960 --height 540
 ```
 
 ## Current Blocker
@@ -170,6 +188,9 @@ visible helper route. The active blocker is now true native Panda finger carry:
 - remaining meeting-video work is to make the native Panda finger pads form a
   real pinch/support structure that lifts and transfers the rope; continuous
   rope rendering remains useful but is secondary until physical carry works
+- rank-1 native rigid capsule sanity is still missing from the matrix; add that
+  native rigid-object diagnostic before claiming the blocker is SemiImplicit
+  rope architecture rather than gripper geometry/trajectory
 
 ## Last Failed Acceptance Criterion
 

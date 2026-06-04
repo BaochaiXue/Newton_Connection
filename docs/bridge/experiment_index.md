@@ -1,7 +1,7 @@
 > status: canonical
 > canonical_replacement: none
 > owner_surface: `bridge_control_plane`
-> last_reviewed: `2026-04-09`
+> last_reviewed: `2026-05-21`
 > review_interval: `30d`
 > update_rule: `Update when the experiment directory contract, index policy, or canonical validation path changes.`
 > notes: Canonical experiment-contract surface for bridge work; keep this as the durable index rather than a run ledger.

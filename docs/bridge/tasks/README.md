@@ -1,7 +1,7 @@
 > status: canonical
 > canonical_replacement: none
 > owner_surface: `task_index`
-> last_reviewed: `2026-04-11`
+> last_reviewed: `2026-05-21`
 > review_interval: `14d`
 > update_rule: `Update when the active task set, historical task section, or task-index policy changes.`
 > notes: Canonical bridge-task index. Keep active tasks separate from predecessor or one-off historical records.
@@ -24,6 +24,7 @@ Each task page should answer:
 - [markdown_harness_maintenance_upgrade.md](./markdown_harness_maintenance_upgrade.md)
 - [newton_robot_examples_kb_update.md](./newton_robot_examples_kb_update.md)
 - [native_robot_table_penetration_probe.md](./native_robot_table_penetration_probe.md)
+- [pure_semiimplicit_robot_loaded_object.md](./pure_semiimplicit_robot_loaded_object.md)
 - [robot_table_rope_split_mujoco_semiimplicit.md](./robot_table_rope_split_mujoco_semiimplicit.md)
 - [slide_deck_overhaul.md](./slide_deck_overhaul.md)
 - [meeting_20260408_recall_part.md](./meeting_20260408_recall_part.md)

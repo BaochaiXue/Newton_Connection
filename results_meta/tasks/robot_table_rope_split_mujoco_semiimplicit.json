@@ -13,7 +13,7 @@
     "run_id": "robot_table_rope_split_native_panda_fingers_outside_tight_20260428",
     "authoritative": false,
     "task_state": "blocked",
-    "claim_boundary": "Current best native-Panda-finger-only diagnostic for the split MuJoCo robot/table + SemiImplicit rope demo. It removes grasp_assist, rope_cradle, and auxiliary green pad geometry, and proves the controller can reach and contact the table-edge rope with two-sided contact. It is not an accepted meeting video because the native Panda fingers do not visibly carry the rope: the rope is contacted but not lifted or placed. This does not claim two-way robot-rope reaction feedback.",
+    "claim_boundary": "Current best native-Panda-finger-only diagnostic for the split MuJoCo robot/table + SemiImplicit rope demo. It removes grasp_assist, rope_cradle, and auxiliary green pad geometry, and proves the controller can reach and contact the table-edge rope with two-sided contact. It is not an accepted meeting video because the native Panda fingers do not visibly carry the rope: the rope is contacted but not lifted or placed. Rank-1 native rigid capsule sanity now passes with corrected yaw/target, proving the corrected native Panda path can carry a smooth cylinder-like object. The next causal test is native rope under that corrected gripper trajectory before blaming SemiImplicit rope representation or split contact coupling. This does not claim two-way robot-rope reaction feedback.",
     "local_artifact_root": "tmp/robot_table_rope_split_native_panda_fingers_outside_tight_20260428",
     "command_pointer": "tmp/robot_table_rope_split_native_panda_fingers_outside_tight_20260428/command.sh",
     "expected_artifacts": [
@@ -41,7 +41,8 @@
       "summary": [
         "The default presentation route is now true native Panda fingers: no grasp_assist, no rope_cradle, and no auxiliary pad mesh.",
         "The current diagnostic reaches the rope, records finger-rope contact, and records rope response after contact.",
-        "The run remains a fail-closed diagnostic because the native hard fingers do not carry the rope off the table."
+        "The run remains a fail-closed diagnostic because the native hard fingers do not carry the rope off the table.",
+        "Rank-1 native rigid capsule sanity passes with corrected yaw/target; native rope under the same corrected gripper trajectory is still pending."
       ],
       "key_metrics": {
         "strict_contact_only_pass": false,
@@ -84,13 +85,15 @@
     "why_passed": [
       "It is the current best diagnostic because it uses the true native Panda finger meshes with no grasp_assist, no rope_cradle, and no auxiliary pad mesh.",
       "It proves the controller reaches the rope and produces rope response after finger contact.",
-      "It fails closed instead of promoting helper geometry as a meeting-facing pass."
+      "It fails closed instead of promoting helper geometry as a meeting-facing pass.",
+      "The rank-1 native rigid capsule sanity control now passes, so the corrected Panda path can carry a smooth rigid cylinder-like object without helper geometry."
     ],
     "why_blocked": [
       "The run uses native Panda finger meshes and disables all assist/helper geometry, but the rope does not visibly lift.",
       "The best native-only probe has balanced lift-window contact and zero unilateral frames, so the immediate blocker is not the previous side-suction false positive.",
       "The hard native finger mesh does not yet provide a stable physical pinch/support structure; the rope slips or remains on the table as lift begins.",
-      "Lowering rope mass alone is unsafe because a light-rope native-finger probe flew away; strict acceptance now includes a max-rope-height guard."
+      "Lowering rope mass alone is unsafe because a light-rope native-finger probe flew away; strict acceptance now includes a max-rope-height guard.",
+      "Native rope has not yet been re-run under the corrected capsule-passing yaw/target, so the SemiImplicit representation/coupling interpretation remains pending."
     ],
     "predecessor": "robot_table_rope_split_side_suction_fix_edge_balanced_20260427",
     "superseded_by": null
@@ -173,7 +176,10 @@
     "tmp/robot_table_rope_split_native_panda_fingers_outside_tight_20260428/contact_sheet.jpg",
     "tmp/robot_table_rope_split_native_panda_fingers_outside_tight_20260428/review_bundle/contact_sheet.png",
     "tmp/robot_table_rope_split_native_panda_fingers_outside_tight_20260428/review_bundle/event_sheet.png",
-    "tmp/robot_table_rope_split_native_panda_fingers_outside_tight_20260428/review_bundle/manual_review_template.json"
+    "tmp/robot_table_rope_split_native_panda_fingers_outside_tight_20260428/review_bundle/manual_review_template.json",
+    "tmp/robot_table_rope_native_finger_ablation_rank1_capsule_yawpi_20260511_184520/matrix_summary.json",
+    "tmp/robot_table_rope_native_finger_ablation_rank1_capsule_yawpi_20260511_184520/rank_01_native_rigid_capsule_sanity/summary.json",
+    "tmp/robot_table_rope_native_finger_ablation_rank1_capsule_yawpi_20260511_184520/rank_01_native_rigid_capsule_sanity/validate.log"
   ],
-  "updated_at": "2026-04-28"
+  "updated_at": "2026-05-11"
 }

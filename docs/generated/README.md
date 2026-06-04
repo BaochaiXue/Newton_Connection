@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `generated_docs`
-> last_reviewed: `2026-04-11`
+> last_reviewed: `2026-05-21`
 > review_interval: `30d`
 > update_rule: `Update when generated control-plane files, root-allowlist auditing, approved bundle-entry auditing, or their public regeneration command changes.`
 > notes: Canonical README for in-repo generated docs. Use the public generator wrapper, not the compatibility alias.

@@ -22,3 +22,5 @@ Examples:
   - canonical outcome-first reporting contract for Codex progress updates and closeouts
 - [doc_gardening.md](./doc_gardening.md)
   - markdown truthfulness closeout flow for rename / deprecate / archive / supersede work
+- [harness_engineering.md](./harness_engineering.md)
+  - repo-level control-loop rules for planner / builder / evaluator work, contracts, handoffs, validation, and garbage collection

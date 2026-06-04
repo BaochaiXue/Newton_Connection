@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `newton_robot_examples_kb_update`
-> last_reviewed: `2026-04-11`
+> last_reviewed: `2026-05-21`
 > review_interval: `14d`
 > update_rule: `Update when official Newton robot-example conclusions are promoted into durable docs or when the bridge-side robot claim boundary changes.`
 > notes: Canonical task page for promoting official Newton robot-example lessons from historical diagnostics into the long-lived repo knowledge base.

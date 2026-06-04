@@ -14,6 +14,7 @@ Template files alone do not count as workflow usage.
 |  |  |  |  |  |  |  | `tasks/contracts/markdown_harness_maintenance_upgrade.md` |  | `tasks/handoffs/markdown_harness_maintenance_upgrade.md` |  |  |  |  |
 | `newton_robot_examples_kb_update` | `` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `False` | `False` | `False` | `` | `` |
 | `native_robot_table_penetration_probe` | `` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `False` | `False` | `False` | `` | `` |
+| `pure_semiimplicit_robot_loaded_object` | `` | `True` | `True` | `True` | `True` | `True` | `False` | `False` | `False` | `False` | `False` | `` | `` |
 | `robot_table_rope_split_mujoco_semiimplicit` | `result_bearing_split_demo` | `True` | `True` | `True` | `True` | `True` | `True` | `True` | `True` | `True` | `True` | `blocked` | `robot_table_rope_split_native_panda_fingers_outside_tight_20260428` |
 |  |  |  |  |  |  |  | `tasks/contracts/robot_table_rope_split_mujoco_semiimplicit.md` |  | `tasks/handoffs/robot_table_rope_split_mujoco_semiimplicit.md` |  |  |  |  |
 | `slide_deck_overhaul` | `meeting_facing_release` | `True` | `True` | `True` | `True` | `True` | `True` | `True` | `True` | `True` | `False` | `` | `` |

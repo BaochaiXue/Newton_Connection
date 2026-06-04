@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `doc_gardening`
-> last_reviewed: `2026-04-11`
+> last_reviewed: `2026-05-21`
 > review_interval: `30d`
 > update_rule: `Update when markdown closeout policy, inventory generation, or review-age expectations change.`
 > notes: Canonical runbook for markdown truthfulness maintenance, progressive disclosure, root hygiene, and stale-doc garbage collection.

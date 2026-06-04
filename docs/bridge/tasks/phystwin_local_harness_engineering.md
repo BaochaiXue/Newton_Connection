@@ -1,7 +1,7 @@
 > status: active
 > canonical_replacement: none
 > owner_surface: `phystwin_local_harness_engineering`
-> last_reviewed: `2026-04-27`
+> last_reviewed: `2026-05-21`
 > review_interval: `14d`
 > update_rule: `Update when PhysTwin local pipeline wrappers, data-process stage contracts, or local run artifact expectations change.`
 > notes: Canonical task page for making local PhysTwin runs reproducible through repo-native wrappers and status surfaces.
